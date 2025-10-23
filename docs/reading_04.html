@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta name="description" content="">
+	<meta name="author" content="">
+
+	<title>Reading 04: Markov Models and Bayesian Reasoning</title>
+
+	<!-- Bootstrap core CSS -->
+	<link href="static/css/blugold.css" rel="stylesheet">
+	<script src="https://kit.fontawesome.com/9d2722956c.js" crossorigin="anonymous"></script>
+
+	<!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+	<!--[if lt IE 9]>
+	<script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+	<script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+	<![endif]-->
+
+	<style>
+	body {
+	    padding: 10px;
+	}
+	</style>
+    </head>
+    <body>
+	<div class="container">
+
+	    <div class="row">
+		<div class="page-header">
+		    <ul class="nav nav-pills pull-right">
+			
+			<li><a href="index.html"><i class="fa fa-gavel"></i> <span class="visible-md-inline visible-lg-inline">Home</span></a></li>
+			
+		    </ul>
+		    <h1><i class="fa fa-book"></i> Reading 04: Markov Models and Bayesian Reasoning</h1>
+		</div>
+	    </div>
+
+		
+<p>
+
+
+</p>
+<p><strong>Everyone</strong>:</p>
+<h2 id="markov-models">Markov Models<a class="headerlink" href="#markov-models" title="Permanent link">&para;</a></h2>
+<div class="row">
+    <div class="col-md-4">
+        <h4><i class="fa-solid fa-book"></i> Readings</h4>
+        <ul>
+        
+            
+                <li><a href="https://artint.info/3e/html/ArtInt3e.Ch9.html">FCA - Section 9.6</a></li>
+            
+        
+            
+        
+            
+                <li><a href="https://probml.github.io/pml-book/book1.html">PML - Sections 3.6.1.2</a></li>
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+        </ul>
+    </div>
+    <div class="col-md-4">
+        <h4><i class="fa-solid fa-video-camera"></i> Videos</h4>
+        <ul>
+        
+            
+        
+            
+        
+            
+        
+            
+                <li><a href="https://youtu.be/D8RRq3TbtHU?si=OHgr_CzMVECPEqdc&amp;t=5578">Harvard CS50</a></li>
+            
+        
+            
+                <li><a href="https://www.youtube.com/watch?v=neeaJb3wCYw&amp;list=PLoROMvodv4rOca_Ovz1DvdtWuz8BfSWL2&amp;index=30">Stanford CS221</a></li>
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+        </ul>
+    </div>
+    <div class="col-md-4">
+        <h4><i class="fa-brands fa-python"></i> Notebooks</h4>
+        <ul>
+        
+            
+        
+            
+                <li><a href="https://colab.research.google.com/drive/1dthRebtlLdXYt9ZSYuCsC11896ovNkCV?usp=sharing">Markov Babbler</a></li>
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+        </ul>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-6">
+        <h4><i class="fa-solid fa-share-alt"></i> Blogposts</h4>
+        <ul>
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+                <li><a href="https://web.stanford.edu/~jurafsky/slp3/3.pdf">N-Gram Language Models</a></li>
+            
+        
+            
+        
+            
+        
+            
+        
+        </ul>
+    </div>
+    <div class="col-md-6">
+        <h4><i class="fa-solid fa-file-pdf"></i> Papers</h4>
+        <ul>
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+                <li><a href="https://www.emis.de/journals/JEHPS/Novembre2006/Markov3pdf.pdf">(1906) Extension of the Law of Large Numbers to Dependent Events (Markov)</a></li>
+            
+        
+            
+                <li><a href="https://projecteuclid.org/journals/annals-of-mathematical-statistics/volume-37/issue-6/Statistical-Inference-for-Probabilistic-Functions-of-Finite-State-Markov-Chains/10.1214/aoms/1177699147.full">(1966) Statistical Inference for Probabilistic Functions of Finite State Markove Chains (Baum and Petrie)</a></li>
+            
+        
+            
+                <li><a href="https://ieeexplore.ieee.org/document/18626">(1989) A Tutorial on Hidden Markov Models and Selected Applications in Speech Recognition (Rabiner)</a></li>
+            
+        
+        </ul>
+    </div>
+</div>
+
+<hr>
+<h2 id="bayesian-reasoning">Bayesian Reasoning<a class="headerlink" href="#bayesian-reasoning" title="Permanent link">&para;</a></h2>
+<div class="row">
+    <div class="col-md-4">
+        <h4><i class="fa-solid fa-book"></i> Readings</h4>
+        <ul>
+        
+            
+                <li><a href="https://artint.info/3e/html/ArtInt3e.Ch9.html">FCA - Sections 9.1 through 9.4</a></li>
+            
+        
+            
+                <li><a href="https://probml.github.io/pml-book/book1.html">PML - Sections 2.3, 3.6.1, 4.6, 5.1, 9.3</a></li>
+            
+        
+            
+                <li><a href="https://www.statlearning.com/">ISLP - Section 4.4.4</a></li>
+            
+        
+            
+                <li><a href="https://www.cs.huji.ac.il/~shais/UnderstandingMachineLearning/copy.html">UML - Chapter 24</a></li>
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+                <li><a href="https://hannibunny.github.io/mlbook/machinelearning/parametricClassification1D.html">Bayesian Reasoning (HdM)</a></li>
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+        </ul>
+    </div>
+    <div class="col-md-4">
+        <h4><i class="fa-solid fa-video-camera"></i> Videos</h4>
+        <ul>
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+                <li><a href="https://www.youtube.com/watch?v=D8RRq3TbtHU">Harvard CS50</a></li>
+            
+        
+            
+                <li><a href="https://www.youtube.com/watch?v=fA7zP6EcVdw&amp;list=PLoROMvodv4rOca_Ovz1DvdtWuz8BfSWL2&amp;index=32">Stanford CS221</a></li>
+            
+        
+            
+                <li><a href="https://www.youtube.com/watch?v=A6Ud6oUCRak">MIT 6.034</a></li>
+            
+        
+            
+        
+            
+        
+            
+                <li><a href="https://youtu.be/pDHEX2usCS0?si=cPLXGP4n4A-FuNtI">Cornell CS4780</a></li>
+            
+        
+            
+                <li><a href="https://youtu.be/1ONDvW1UIJc?si=3mNParEk5_PjfnZN">Conditional Probability (StatQuest)</a></li>
+            
+        
+            
+                <li><a href="https://youtu.be/9wCnvr7Xw4E?si=PEhYzKTasfIq1xOx">Bayes&#x27; Theorem (StatQuest)</a></li>
+            
+        
+            
+                <li><a href="https://youtu.be/pYxNSUDSFH4?si=zt0zdX9Kf8-Z58jR">Likelihood (StatQuest)</a></li>
+            
+        
+            
+                <li><a href="https://youtu.be/oI3hZJqXJuc?si=z0mmgAYp_kQXztLu">PDFs (StatQuest)</a></li>
+            
+        
+            
+                <li><a href="https://youtu.be/XepXtl9YKwc?si=eIiQ1SJeyVNEj_ey">MLE (StatQuest)</a></li>
+            
+        
+            
+                <li><a href="https://youtu.be/O2L2Uv9pdDA?si=rAU-89pPD7qt_U-l">Naive Bayes (StatQuest)</a></li>
+            
+        
+            
+                <li><a href="https://youtu.be/H3EjCKtlVog?si=BlD029fjYUcvGMAq">Gaussian NB (StatQuest)</a></li>
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+        </ul>
+    </div>
+    <div class="col-md-4">
+        <h4><i class="fa-brands fa-python"></i> Notebooks</h4>
+        <ul>
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+                <li><a href="https://drive.google.com/file/d/1ucLp9MQWaBnmBXlaCNBuba8WYWLwl0pH/view?usp=sharing">Naive Bayes for Iris Classification</a></li>
+            
+        
+            
+                <li><a href="https://colab.research.google.com/drive/1irskT_qQ0EQOZIvf35u7RNbKZu3Sea3w?usp=sharing">Naive Bayes Visualizer</a></li>
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+        </ul>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-6">
+        <h4><i class="fa-solid fa-share-alt"></i> Blogposts</h4>
+        <ul>
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+                <li><a href="https://sebastianraschka.com/Articles/2014_naive_bayes_1.html">Naive Bayes (Raschka)</a></li>
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+        </ul>
+    </div>
+    <div class="col-md-6">
+        <h4><i class="fa-solid fa-file-pdf"></i> Papers</h4>
+        <ul>
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+                <li><a href="https://royalsocietypublishing.org/doi/10.1098/rstl.1763.0053">(1763) An Essay towards Solving a Problem in the Doctrine of Chances (Bayes)</a></li>
+            
+        
+            
+                <li><a href="https://archive.org/details/thorieanalytiqu01laplgoog">&quot;(1812) Th\xE9orie Analytique des Probabilit\xE9s (Laplace)&quot;</a></li>
+            
+        
+            
+                <li><a href="https://ftp.cs.ucla.edu/tech-report/198_-reports/850017.pdf">(1985) Bayesian Networks - A Model of Self-Activated Memory for Evidential Reasoning (Pearl)</a></li>
+            
+        
+            
+                <li><a href="https://www.sciencedirect.com/book/9780080514895/probabilistic-reasoning-in-intelligent-systems">(1988) Probabilistic Reasoning in Intelligent Systems - Networks of Plausible Inference (Pearl)</a></li>
+            
+        
+            
+                <li><a href="https://cdn.aaai.org/Workshops/1998/WS-98-05/WS98-05-007.pdf">(1998) A Comparison of Event Models for Naive Bayes Text Classification (McCallum and Nigam)</a></li>
+            
+        
+        </ul>
+    </div>
+</div>
+
+
+	    <div class="row">
+		<hr/>
+
+		<footer class="text-center">
+		    <p class="text-muted">
+		    <small>
+		    Built using
+		    <a href="http://twitter.github.com/bootstrap/">Bootstrap</a>,
+		    <a href="http://fortawesome.github.com/Font-Awesome/">Font Awesome</a>, and
+		    <a href="http://www.python.org/">Python</a>.
+		    <br/>
+		    &copy; 2022 <a href="http://www.nd.edu">University of Notre Dame</a>
+		    </small>
+		    </p>
+		</footer>
+	    </div>
+
+	</div> <!-- /container -->
+
+	<!-- Bootstrap core JavaScript
+	================================================== -->
+	<!-- Placed at the end of the document so the pages load faster -->
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+	
+	
+    </body>
+</html>
+

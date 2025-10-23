@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta name="description" content="">
+	<meta name="author" content="">
+
+	<title>Reading 01: Course Introduction, Search, and A*</title>
+
+	<!-- Bootstrap core CSS -->
+	<link href="static/css/blugold.css" rel="stylesheet">
+	<script src="https://kit.fontawesome.com/9d2722956c.js" crossorigin="anonymous"></script>
+
+	<!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+	<!--[if lt IE 9]>
+	<script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+	<script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+	<![endif]-->
+
+	<style>
+	body {
+	    padding: 10px;
+	}
+	</style>
+    </head>
+    <body>
+	<div class="container">
+
+	    <div class="row">
+		<div class="page-header">
+		    <ul class="nav nav-pills pull-right">
+			
+			<li><a href="index.html"><i class="fa fa-gavel"></i> <span class="visible-md-inline visible-lg-inline">Home</span></a></li>
+			
+		    </ul>
+		    <h1><i class="fa fa-book"></i> Reading 01: Course Introduction, Search, and A*</h1>
+		</div>
+	    </div>
+
+		
+<p></p>
+<p></p>
+<p><strong>Welcome</strong> to <a href="index.html">CSE 30124 Introduction to Artifical Intelligence</a>, which (as the syllabus
+states) is a broad introduction to the field of artificial intelligence. We
+will begin the semester with a brief history of the field and review of relevant
+mathematical concepts that form the foundation of AI. As the semester continues
+we will dive into Machine and Deep Learning and then at the very end loop back
+around to where we started.</p>
+<div class="alert alert-info">
+<h4 id="tldr"><i class="fa fa-bookmark"></i> TL;DR<a class="headerlink" href="#tldr" title="Permanent link">&para;</a></h4>
+<p>For this week, you should familiarize yourself with using [Slack], setup
+your [GitHub] assignments repository, decide how you will run the notebook
+software used in this course and then submit your first reading quiz.</p>
+</div>
+<h2 id="course-overview">Course Overview<a class="headerlink" href="#course-overview" title="Permanent link">&para;</a></h2>
+<p>Artificial Intelligence is an extremely broad field and while no doubt all of
+you will be familiar with some aspects of it, likely the GPT family, these
+tools are only a small subset of what the field encompasses as a whole.</p>
+<div class="thumbnail">
+    <img src="static/svg/AI_Layers.svg">
+</div>
+
+<p>We will begin the course at the top of the circle and work our way down.
+However at the end of the semester and the bottom of the circles we will
+find that we start to wrap back around again to the top.</p>
+<h2 id="task-1-slack">Task 1: Slack<a class="headerlink" href="#task-1-slack" title="Permanent link">&para;</a></h2>
+<p>For communication outside of our meeting time, we will be using [Slack],
+specifically the <code>#cse-30124-fa25</code> channel:</p>
+<blockquote>
+<p><a href="https://nd-cse.slack.com/messages/cse-30124-fa25">https://nd-cse.slack.com/messages/cse-30124-fa25</a></p>
+</blockquote>
+<p>There is a <a href="mailto:sp25-cse-30124-01-group@nd.edu">class mailing list</a>, but most day-to-day communication
+(including office hours and homework help) should take place on [Slack].</p>
+<div class="alert alert-warning">
+<p>Be aware of the following:</p>
+<p><br></p>
+<ul>
+<li>
+<p>You will need to signup and create a [Slack] account if you don't already
+  have one.</p>
+</li>
+<li>
+<p>You can use the web interface or download the [Slack] desktop client
+  (there are also mobile applications as well).</p>
+</li>
+<li>
+<p>Feel free to join any other channels that may interest you such as
+  <code>#commons</code> or <code>#jobs</code>.</p>
+</li>
+</ul>
+</div>
+<h2 id="task-2-github">Task 2: GitHub<a class="headerlink" href="#task-2-github" title="Permanent link">&para;</a></h2>
+<p>All of your homeworks will be submitted to [GitHub] using <a href="https://git-scm.com/">git</a> and may be done either with a partner or individually.
+Your third task is to setup your [GitHub] repository by doing the following:</p>
+<ol>
+<li>
+<p>(Optional) Find a partner to work with.</p>
+</li>
+<li>
+<p><strong>Sign-in</strong> or <strong>create</strong> a [GitHub] account if you do not already have one.</p>
+</li>
+<li>
+<p><strong>Either:</strong></p>
+<ul>
+<li>
+<p><strong>Fork</strong> the class homework repository from the following template:</p>
+<blockquote>
+<p><a href="https://classroom.github.com/a/4JvWlt8h">https://classroom.github.com/a/4JvWlt8h</a></p>
+</blockquote>
+<p>This will create a <strong>private</strong> <code>homeworks-repository-$TEAMNAME</code>
+repository under your own account and linked to the [nd-cse-30124-fa25]
+organization.</p>
+<p>Then invite your partner to join your repository by adding them as a collaborator.</p>
+</li>
+<li>
+<p><strong>Join</strong> your partner's repository.</p>
+</li>
+</ul>
+</li>
+<li>
+<p>Once this is done, you can <a href="https://git-scm.com/docs/git-clone">clone</a> your <a href="https://git-scm.com/">git</a> repository to your local
+machine (or the <strong>student</strong> machines):</p>
+<div class="codehilite" style="background: #f8f8f8"><pre style="line-height: 125%;"><span></span><code>$<span style="color: #BBB"> </span>git<span style="color: #BBB"> </span>clone<span style="color: #BBB"> </span>git@github.com:nd-cse-30124-fa25/homeworks-repository-<span style="color: #19177C">$TEAMNAME</span>
+</code></pre></div>
+
+<p><div class="alert alert-danger" markdown="1">
+<strong>Note</strong>, that [GitHub] has recently shutdown <a href="https://github.blog/changelog/2022-08-12-git-password-authentication-is-shutting-down/">password authentication</a>.
+</div></p>
+<p>To remotely access your repository from the command-line, you have two options:</p>
+<ol>
+<li>
+<p><a href="https://docs.github.com/en/github/authenticating-to-github/keeping-your-account-and-data-secure/creating-a-personal-access-token">Setup a Personal Access Token</a>: With this method, [GitHub] will
+  generate an application specific password that you can use with
+  <strong>HTTPS</strong>.  As the <strong>PAT</strong> is a long string of characters, it is
+  recommended that you use it in conjunction with a <strong>password
+  manager</strong> or <strong>keyring</strong>.</p>
+</li>
+<li>
+<p><a href="https://docs.github.com/en/github/authenticating-to-github/connecting-to-github-with-ssh/about-ssh">Setup SSH Keys</a>: With this method, you generate a local public and
+  private key pair on your computer and then upload the <strong>public key</strong>
+  to [GitHub].  When accessing [GitHub] from the command-line, you will
+  use the <strong>private key</strong> to authenticate to the server.  This is the
+  <strong>recommended</strong> way to setup your repository as it will allow for
+  <strong>passwordless</strong> access.</p>
+</li>
+</ol>
+<div class="alert alert-success" markdown="1">
+<h4 id="setup-ssh-keys"><i class="fa fa-lock"></i> Setup SSH Keys<a class="headerlink" href="#setup-ssh-keys" title="Permanent link">&para;</a></h4>
+<p><p>Here is a quick tutorial on how to <a href="https://docs.github.com/en/github/authenticating-to-github/connecting-to-github-with-ssh/about-ssh">Setup SSH Keys</a> on the student
+machines (if you have not already):</p></p>
+<ol>
+<li>
+<p>Generate SSH keys if you don't have them yet:</p>
+<div class="codehilite" style="background: #f8f8f8"><pre style="line-height: 125%;"><span></span><code><span style="color: #3D7B7B; font-style: italic"># Accept the defaults, don&#39;t make a password if you want to go passwordless</span>
+$<span style="color: #BBB"> </span>ssh-keygen
+</code></pre></div>
+
+</li>
+<li>
+<p>Copy the contents of <code>~/.ssh/id_rsa.pub</code> to the SSH Keys section of
+your [GitHub] settings page:</p>
+<blockquote>
+<p><a href="https://github.com/settings/keys">https://github.com/settings/keys</a></p>
+</blockquote>
+<div class="codehilite" style="background: #f8f8f8"><pre style="line-height: 125%;"><span></span><code><span style="color: #3D7B7B; font-style: italic"># Copy and paste the contents of this file into GitHub</span>
+$<span style="color: #BBB"> </span>cat<span style="color: #BBB"> </span>~/.ssh/id_rsa.pub
+</code></pre></div>
+
+</li>
+<li>
+<p>Edit/create <code>~/.ssh/config</code> to use this key with [GitHub]:</p>
+<div class="codehilite" style="background: #f8f8f8"><pre style="line-height: 125%;"><span></span><code><span style="color: #3D7B7B; font-style: italic"># Add the following to your config (replace $NETID with your netid)</span>
+$<span style="color: #BBB"> </span><span style="color: #19177C">$EDITOR</span><span style="color: #BBB"> </span>~/.ssh/config
+Host<span style="color: #BBB"> </span>github.com
+<span style="color: #BBB">        </span>User<span style="color: #BBB"> </span>git
+<span style="color: #BBB">        </span>Hostname<span style="color: #BBB"> </span>github.com
+<span style="color: #BBB">        </span>PreferredAuthentications<span style="color: #BBB"> </span>publickey
+<span style="color: #BBB">        </span>IdentityFile<span style="color: #BBB"> </span>/escnfs/home/<span style="color: #19177C">$NETID</span>/.ssh/id_rsa
+</code></pre></div>
+
+</li>
+</ol>
+<p>Once this is done, you should be able to do <a href="https://git-scm.com/">git</a> operations without a password.
+You will need to accept the host key the first time by typing in "yes".
+</div></p>
+<div class="alert alert-warning" markdown="1">
+<p><strong>Note</strong>: Please update the <code>README.md</code> file to include your <strong>name</strong>
+and <strong>NetID</strong> so it is straightforward to identify your account.</p>
+</div>
+</li>
+</ol>
+<div class="alert alert-danger">
+<h4 id="github-repository"><i class="fa fa-github"></i> GitHub Repository<a class="headerlink" href="#github-repository" title="Permanent link">&para;</a></h4>
+<p>You are responsible for ensuring that your [GitHub] assignments repository
+is in proper order, which means you have the correct settings and
+permissions set.  Failure to properly configure your repository will
+adversely impact your grade.</p>
+</div>
+<h2 id="task-3-notebooks">Task 3: Notebooks<a class="headerlink" href="#task-3-notebooks" title="Permanent link">&para;</a></h2>
+<ul>
+<li>
+<p><a href="https://realpython.com/jupyter-notebook-introduction/">Jupyter Notebooks</a></p>
+</li>
+<li>
+<p><a href="https://code.visualstudio.com/docs/datascience/jupyter-notebooks">VSCode Notebooks</a></p>
+</li>
+<li>
+<p><a href="https://www.kaggle.com/code/alexisbcook/creating-your-own-notebooks">Kaggle Notebooks</a></p>
+</li>
+<li>
+<p><a href="https://colab.research.google.com/notebooks/basic_features_overview.ipynb">Google Colab</a></p>
+</li>
+</ul>
+<p>Please at least skim all four, but for the purposes of this course you just
+need to get one of the methods working to run your notebooks. Notebooks
+can be run locally through something like VSCode, and this is what I
+recommend and use. If you have other methods, please feel free to reach out to 
+your me to discuss them.</p>
+<p>Once you have read the above, run the following notebook using
+the method of your choosing:</p>
+<div class="alert alert-success">
+<p><a href="static/homeworks/course_primer.ipynb">DOWNLOAD NOTEBOOK</a></p>
+</div>
+<p>For your convenience the notebook is displayed below as HTML but you will likely
+find it easier to download the raw notebook file given above.</p>
+<iframe src="static/homework_htmls/course_primer.html" width="100%" height="800px"></iframe>
+
+<h2 id="task-4-reading">Task 4: Reading<a class="headerlink" href="#task-4-reading" title="Permanent link">&para;</a></h2>
+<pre style="display: none;" id="dr-container" class="codehilite"><code id="dredd-response"></code></pre>
+
+<h3 id="syllabus-cse-30124-introduction-to-artificial-intelligence">Syllabus: <a href="index.html">CSE 30124 Introduction to Artificial Intelligence</a><a class="headerlink" href="#syllabus-cse-30124-introduction-to-artificial-intelligence" title="Permanent link">&para;</a></h3>
+<p>Most weeks you will have a reading assignment followed by a brief quiz that will cover the two upcoming lectures. Each of the two will have a primary reading and then a link to a number of additional resources that I encourage you to explore if you're interested. Once completing the readings, use the google form to submit your answers to the quiz. Quizzes are due at 3:00 PM on the day of the first lecture for the topic.</p>
+<div class="alert alert-info">
+<p><strong>Note</strong>: We will be a little lenient on this first reading quiz.</p>
+</div>
+<div class="alert alert-info">
+<p><strong>Note</strong>: Most of the readings are significantly more in depth than what you will need to answer the quizzes. It's completely fine if you skim portions (especially the ones full of equations (yuck)), these are merely meant to prepare you for the lectures so you at least have some familiarity with the material (and they allow me to shift some of the exam points to the quizzes, which are hopefully less stressful).</p>
+</div>
+<h3 id="search-search-algorithms-in-ai-uninformed-search-section-reading">Search: <a href="https://www.appliedaicourse.com/blog/search-algorithms-in-ai/">Search Algorithms in AI (Uninformed Search Section) (Reading)</a><a class="headerlink" href="#search-search-algorithms-in-ai-uninformed-search-section-reading" title="Permanent link">&para;</a></h3>
+<p>Additional Resources:</p>
+<ul>
+<li><a href="https://artint.info/3e/html/ArtInt3e.Ch3.S5.html">Foundations of Computational Agents - Section 3.5</a></li>
+<li><a href="https://www.youtube.com/watch?v=WbzNRTTrX0g">Harvard CS50 (Video)</a></li>
+<li><a href="https://www.youtube.com/watch?v=j1H3jAAGlEA">MIT 6.034 (Video)</a></li>
+</ul>
+<h3 id="a-search-introduction-to-the-a-algorithm">A* Search: <a href="https://www.redblobgames.com/pathfinding/a-star/introduction.html">Introduction to the A* Algorithm</a><a class="headerlink" href="#a-search-introduction-to-the-a-algorithm" title="Permanent link">&para;</a></h3>
+<p>Additional Resources:</p>
+<ul>
+<li><a href="https://artint.info/3e/html/ArtInt3e.Ch3.S6.html">Foundations of Computation Agents - Section 3.6 (Reading)</a></li>
+<li><a href="https://youtu.be/WbzNRTTrX0g?si=mqYHjM8hTRsed8h4&amp;t=3269">Harvard CS50 (Video)</a></li>
+<li><a href="https://www.youtube.com/watch?v=HEs1ZCvLH2s&amp;list=PLoROMvodv4rOca_Ovz1DvdtWuz8BfSWL2&amp;index=18">Stanford CS221 (Video)</a></li>
+<li><a href="https://www.youtube.com/watch?v=gGQ-vAmdAOI">MIT 6.034 (Video)</a></li>
+<li><a href="https://courses.grainger.illinois.edu/cs440/fa2024/lectures/astar.html">A* Search (Blog Post)</a></li>
+<li><a href="https://theory.stanford.edu/~amitp/GameProgramming/AStarComparison.html">Introduction to A* (Blog Post)</a></li>
+<li><a href="https://theory.stanford.edu/~amitp/GameProgramming/Heuristics.html">Heuristics (Blog Post)</a></li>
+<li><a href="https://ieeexplore.ieee.org/document/4082128">(1968) A Formal Basis for the Heuristic Determination of Minimum Cost
+    Paths (Hart et al.) (Paper)</a></li>
+</ul>
+<h2 id="task-5-quiz">Task 5: Quiz<a class="headerlink" href="#task-5-quiz" title="Permanent link">&para;</a></h2>
+<p>Please respond to the quiz below, you will need to be signed into your ND email in order to respond. You may edit your responses after each submission, so there's really no reason you shouldn't get full credit on these!</p>
+<iframe src="https://docs.google.com/forms/d/e/1FAIpQLSdPlfelDAEdQp6iYnU7pE0S4SuEd-xW2WBRvpLl9XNRmIsIzA/viewform?embedded=true" width="640" height="2933" frameborder="0" marginheight="0" marginwidth="0">Loading…</iframe>
+
+
+	    <div class="row">
+		<hr/>
+
+		<footer class="text-center">
+		    <p class="text-muted">
+		    <small>
+		    Built using
+		    <a href="http://twitter.github.com/bootstrap/">Bootstrap</a>,
+		    <a href="http://fortawesome.github.com/Font-Awesome/">Font Awesome</a>, and
+		    <a href="http://www.python.org/">Python</a>.
+		    <br/>
+		    &copy; 2022 <a href="http://www.nd.edu">University of Notre Dame</a>
+		    </small>
+		    </p>
+		</footer>
+	    </div>
+
+	</div> <!-- /container -->
+
+	<!-- Bootstrap core JavaScript
+	================================================== -->
+	<!-- Placed at the end of the document so the pages load faster -->
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+	
+	
+    </body>
+</html>
+

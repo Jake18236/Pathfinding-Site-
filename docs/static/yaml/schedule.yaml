@@ -1,0 +1,1059 @@
+- name: Welcome
+  days:
+  - date: Mon 08/25
+    topics: Syllabus, History of AI
+    resources:
+    - name: Slides
+      type: reading
+      link: https://drive.google.com/file/d/1yUot9T3myty2Tsx1KpXLxhyd77KbFlUl/view?usp=sharing
+    - name: Panopto
+      type: video
+      link: https://notredame.hosted.panopto.com/Panopto/Pages/Viewer.aspx?id=a449561f-8558-4c15-9d9f-b34401576fc6
+- name: 'Unit 01: Good Old Fashioned AI (GOFAI)'
+- name: Search and Representations
+  days:
+  - date: Wed 08/27
+    topics: Search
+    resources:
+    - name: Slides
+      type: reading
+      link: https://drive.google.com/file/d/1Rc5V0QSkbObr1hWjcuLyDZ0dnPDhd538/view?usp=sharing
+    - name: FCA - Section 3.5
+      type: reading
+      link: https://artint.info/3e/html/ArtInt3e.Ch3.S5.html
+    - name: Panopto
+      type: video
+      link: https://notredame.hosted.panopto.com/Panopto/Pages/Viewer.aspx?id=61ec6c47-5064-4cf2-aab5-b34601597a14
+    - name: Harvard CS50
+      type: video
+      link: https://www.youtube.com/watch?v=WbzNRTTrX0g
+    - name: MIT 6.034
+      type: video
+      link: https://www.youtube.com/watch?v=j1H3jAAGlEA
+    assignments:
+    - Reading 01
+  - date: Mon 09/01
+    topics: A* Search
+    resources:
+    - name: Slides
+      type: reading
+      link: https://drive.google.com/file/d/1TXsuZZx0iFe7HXixaGD_vB6a8mMBZLIF/view?usp=sharing
+    - name: FCA - Section 3.6
+      type: reading
+      link: https://artint.info/3e/html/ArtInt3e.Ch3.S6.html
+    - name: Panopto
+      type: video
+      link: https://notredame.hosted.panopto.com/Panopto/Pages/Viewer.aspx?id=17f3a92c-9d44-41a4-9027-b34b015993fd
+    - name: Harvard CS50
+      type: video
+      link: https://youtu.be/WbzNRTTrX0g?si=mqYHjM8hTRsed8h4&t=3269
+    - name: Stanford CS221
+      type: video
+      link: https://www.youtube.com/watch?v=HEs1ZCvLH2s&list=PLoROMvodv4rOca_Ovz1DvdtWuz8BfSWL2&index=18
+    - name: MIT 6.034
+      type: video
+      link: https://www.youtube.com/watch?v=gGQ-vAmdAOI
+    - name: A* Search
+      type: blogpost
+      link: https://courses.grainger.illinois.edu/cs440/fa2024/lectures/astar.html
+    - name: Introduction to A*
+      type: blogpost
+      link: https://theory.stanford.edu/~amitp/GameProgramming/AStarComparison.html
+    - name: Heuristics
+      type: blogpost
+      link: https://theory.stanford.edu/~amitp/GameProgramming/Heuristics.html
+    - name: (1968) A Formal Basis for the Heuristic Determination of Minimum Cost
+        Paths (Hart et al.)
+      type: paper
+      link: https://ieeexplore.ieee.org/document/4082128
+    - name: A* in Minecraft
+      type: video
+      student: Grant Flesher '26
+      link: https://www.youtube.com/watch?v=Zg0Cxn8AVZA
+  - date: Wed 09/03
+    topics: Constraint Satisfaction Problems
+    resources:
+    - name: Slides
+      type: reading
+      link: https://drive.google.com/file/d/1Zap5C2R7DehHFriGWHMQ6sRbLxEclROF/view?usp=sharing
+    - name: FCA - Sections 4.1 through 4.6
+      type: reading
+      link: https://artint.info/3e/html/ArtInt3e.Ch4.html
+    - name: Panopto
+      type: video
+      link: https://notredame.hosted.panopto.com/Panopto/Pages/Viewer.aspx?id=e7127bc8-8355-4d55-8aba-b34d015921a9
+    - name: Harvard CS50
+      type: video
+      link: https://youtu.be/qK46ET1xk2A?si=tSAHHe0Sp-OxWUpD&t=3033
+    - name: Stanford CS221
+      type: video
+      link: https://www.youtube.com/watch?v=-IO4fPO0rxk&list=PLoROMvodv4rOca_Ovz1DvdtWuz8BfSWL2&index=23
+    - name: MIT 6.034
+      type: video
+      link: https://www.youtube.com/watch?v=dARl_gGrS4o
+    - name: CSPs for Sudoku
+      type: blogpost
+      link: https://medium.com/my-udacity-ai-nanodegree-notes/solving-sudoku-think-constraint-satisfaction-problem-75763f0742c9
+    - name: (1977) Consistency in Networks of Relations (Mackworth)
+      type: paper
+      link: https://www.sciencedirect.com/science/article/pii/0004370277900078
+    - name: (1988) Network Based Heuristics for Constraint Satisfaction Problems (Dechter
+        and Pearl)
+      type: paper
+      link: https://ics.uci.edu/~csp/r3.pdf
+    - name: (1980) Increasing Tree Search Efficiency for Constraint Satisfaction Problems
+        (Haralick and Elliot)
+      type: paper
+      link: https://www.sciencedirect.com/science/article/pii/000437028090051X
+    - name: Sudoku CSP python code
+      type: notebook
+      link: https://drive.google.com/file/d/18xHvWJXqeaI_CcPXUhRJVyXgjVHC9s-d/view?usp=sharing
+    assignments:
+    - Reading 02
+  - date: Mon 09/08
+    topics: Adversarial Search
+    resources:
+    - name: Slides
+      type: reading
+      link: https://docs.google.com/presentation/d/1NT-vQ1_5XP3wtdTlFY7zoNubtSjVK_ua/edit?usp=sharing&ouid=111601855049772661603&rtpof=true&sd=true
+    - name: FCA - Sections 14.2 and 14.3
+      type: reading
+      link: https://artint.info/3e/html/ArtInt3e.Ch14.S2.html
+    - name: Panopto
+      type: video
+      link: https://notredame.hosted.panopto.com/Panopto/Pages/Viewer.aspx?id=5aad0ebb-3b39-45cc-a3f3-b2740169d60b
+    - name: Harvard CS50
+      type: video
+      link: https://youtu.be/WbzNRTTrX0g?si=CAG9IhmN4MBSzHfi&t=4323
+    - name: Stanford CS221
+      type: video
+      link: https://www.youtube.com/watch?v=3pU-Hrz_xy4&list=PLoROMvodv4rOca_Ovz1DvdtWuz8BfSWL2&index=21
+    - name: MIT 6.034
+      type: video
+      link: https://www.youtube.com/watch?v=STjW3eH0Cik
+    - name: Adversarial Search
+      type: blogpost
+      link: https://stackabuse.com/minimax-and-alpha-beta-pruning-in-python/
+    - name: (1928) Zur Theorie der Gesellschaftsspiele (von Neumann)
+      type: paper
+      link: https://link.springer.com/article/10.1007/BF01448847
+    - name: (1950) Programming a Computer for Playing Chess (Shannon)
+      type: paper
+      link: https://link.springer.com/chapter/10.1007/978-1-4757-1968-0_1
+    - name: (1975) An Analysis of Alpha-Beta Pruning (Knuth and Moore)
+      type: paper
+      link: https://www.sciencedirect.com/science/article/pii/0004370275900193
+  - date: Wed 09/10
+    topics: Knowledge Representation and Feature Engineering
+    resources:
+    - name: Slides
+      type: reading
+      link: https://docs.google.com/presentation/d/1iVij_RXDROvklFN7HEU-x1-80KVR0JiU/edit?usp=sharing&ouid=111601855049772661603&rtpof=true&sd=true
+    - name: FCA - Chapters 5, 15, and 16
+      type: reading
+      link: https://artint.info/3e/html/ArtInt3e.Ch5.html
+    - name: Panopto
+      type: video
+      link: https://notredame.hosted.panopto.com/Panopto/Pages/Viewer.aspx?id=d450ea46-dd55-498e-9af6-b2790167db7c
+    - name: Harvard CS50
+      type: video
+      link: https://www.youtube.com/watch?v=HWQLez87vqM
+    - name: Stanford CS221
+      type: video
+      link: https://www.youtube.com/watch?v=RIk67yGMVv4&list=PLoROMvodv4rOca_Ovz1DvdtWuz8BfSWL2&index=44
+    assignments:
+    - Reading 03
+- name: 'Unit 02: Machine Learning'
+- name: Direct Fit Models
+  days:
+  - date: Mon 09/15
+    topics: Decision Trees
+    assignments:
+    - Homework 01
+  - date: Wed 09/17
+    topics: Markov Models
+    assignments:
+    - Reading 04
+  - date: Mon 09/22
+    topics: Bayesian Reasoning
+  - date: Wed 09/24
+    topics: Linear Regression
+    resources:
+    - name: Slides
+      type: reading
+      link: 
+    - name: FCA - Sections 7.3.2 (First few paragraphs) and 7.4.2
+      type: reading
+      link: https://artint.info/3e/html/ArtInt3e.Ch7.S3.html
+    - name: Panopto
+      type: video
+      link: https://notredame.hosted.panopto.com/Panopto/Pages/Viewer.aspx?id=f05aae98-bacc-46cd-86a0-b287016e7805
+    - name: PML - Sections 7.5, 8.1.3, Chapter 11
+      type: reading
+      link: https://probml.github.io/pml-book/book1.html
+    - name: ISLP - Chapter 3
+      type: reading
+      link: https://www.statlearning.com/
+    - name: D2L - Chapter 3.1
+      type: reading
+      link: https://d2l.ai/chapter_linear-regression/linear-regression.html
+    - name: UML - Chapter 9.2
+      type: reading
+      link: https://www.cs.huji.ac.il/~shais/UnderstandingMachineLearning/copy.html
+    - name: Stanford CS221
+      type: video
+      link: https://www.youtube.com/watch?v=nEWNNt2KmfQ&list=PLoROMvodv4rOca_Ovz1DvdtWuz8BfSWL2&index=5
+    - name: Harvard CS50
+      type: video
+      link: https://youtu.be/-g0iJjnO2_w?si=jNuQG0o83uKw0qbR&t=2371
+    - name: Cornell CS4780
+      type: video
+      link: https://youtu.be/_21o_ylL0q4?si=ee6JJ2WxAvA9hfyr
+    - name: Singular Value Decomposition
+      type: notebook
+      link: https://notredame.hosted.panopto.com/Panopto/Pages/Viewer.aspx?id=5aad0ebb-3b39-45cc-a3f3-b2740169d60b
+    - name: Linear Regression and Regularization
+      type: notebook
+      link: https://notredame.hosted.panopto.com/Panopto/Pages/Viewer.aspx?id=5aad0ebb-3b39-45cc-a3f3-b2740169d60b
+    - name: Polynomial Regression
+      type: notebook
+      link: https://notredame.hosted.panopto.com/Panopto/Pages/Viewer.aspx?id=5aad0ebb-3b39-45cc-a3f3-b2740169d60b
+    - name: Linear Regression (StatQuest)
+      type: video
+      link: https://youtu.be/nk2CQITm_eo?si=LtdQNRlau17NbjjF
+    - name: Multiple Regression (StatQuest)
+      type: video
+      link: https://youtu.be/zITIFTsivN8?si=f0YbEmnZ6_XFMpY5
+    - name: Bias and Variance (StatQuest)
+      type: video
+      link: https://youtu.be/EuBBz3bI-aA?si=WYsqtbrIZ6ICrYGP
+    - name: L2 Regularization (StatQuest)
+      type: video
+      link: https://youtu.be/Q81RR3yKn30?si=tMvAc1m9RHe7WYgH
+    - name: L1 Regularization (StatQuest)
+      type: video
+      link: https://youtu.be/NGf0voTMlcs?si=QACQkO-8Msm95saj
+    - name: L1 vs. L2 Visualization (StatQuest)
+      type: video
+      link: https://youtu.be/Xm2C_gTAl8c?si=MovbjzS6Cf-PN70-
+    - name: Linear Regression (MLU)
+      type: blogpost
+      link: https://mlu-explain.github.io/linear-regression/
+    - name: Linear Regression (rasbt)
+      type: notebook
+      link: https://github.com/rasbt/machine-learning-book/blob/main/ch09/ch09.ipynb
+    - name: Linear Regression (HdM)
+      type: reading
+      link: https://hannibunny.github.io/mlbook/machinelearning/LinReg.html
+    - name: "(1805) Nouvelles M\xE9thodes Pour la D\xE9termination des Orbites des\
+        \ Com\xE8tes (Legendre)"
+      type: paper
+      link: https://books.google.com/books/about/Nouvelles_m%C3%A9thodes_pour_la_d%C3%A9terminati.html?id=FRcOAAAAQAAJ
+    - name: (1809) Theoria Motus Corporum Coelestium in Sectionibus Conicis Solem
+        Ambientium (Gauss)
+      type: paper
+      link: https://archive.org/details/bub_gb_ORUOAAAAQAAJ
+    - name: (1970) Ridge Regression - Biased Estimation for Nonorthogonal Problems
+        (Hoerl and Kennard)
+      type: paper
+      link: https://homepages.math.uic.edu/~lreyzin/papers/ridge.pdf
+    - name: (1996) Regression Shrinkage and Selection via the Lasso (Tibshirani)
+      type: paper
+      link: https://www.jstor.org/stable/2346178?seq=1
+    assignments:
+    - Reading 05
+- name: Supervised Learning
+  days:
+  - date: Mon 09/29
+    topics: Perceptrons
+    resources:
+    - name: Slides
+      type: reading
+      link: 
+    - name: PML - Section 10.2.5
+      type: reading
+      link: https://probml.github.io/pml-book/book1.html
+    - name: UML - Section 9.1.2
+      type: reading
+      link: https://www.cs.huji.ac.il/~shais/UnderstandingMachineLearning/copy.html
+    - name: Panopto
+      type: video
+      link: https://notredame.hosted.panopto.com/Panopto/Pages/Viewer.aspx?id=ed8b2037-1683-41ad-af60-b290016968af
+    - name: Harvard CS50
+      type: video
+      link: https://youtu.be/-g0iJjnO2_w?si=rsqf3IhYQV_PKjkc&t=751
+    - name: Cornell CS4780
+      type: video
+      link: https://youtu.be/wl7gVvI-HuY?si=25ULeFrFpBytCOTn
+    - name: Perceptrons
+      type: video
+      student: Anthony Tsiantis '26
+      link: https://youtu.be/l-9ALe3U-Fg?si=tS0U8QDoRylnSHnZ
+    - name: Perceptron
+      type: notebook
+      link: https://drive.google.com/file/d/1iX-UsNbA9hPjXkK2xUWrKpGQ-YyQtqcT/view?usp=sharing
+    - name: Perceptrons (Raschka)
+      type: blogpost
+      link: https://sebastianraschka.com/Articles/2015_singlelayer_neurons.html
+    - name: (1958) The Perceptron - A Probabilistic Model for Information Storage
+        and Organization in the Brain (Rosenblatt)
+      type: paper
+      link: https://www.ling.upenn.edu/courses/cogs501/Rosenblatt1958.pdf
+    - name: (1960) Adaptive Switching Circuits (Widrow and Hoff)
+      type: paper
+      link: https://isl.stanford.edu/~widrow/papers/c1960adaptiveswitching.pdf
+    - name: (1969) Perceptrons - An Introduction to Computational Geometry (Minsky
+        and Papert)
+      type: paper
+      link: https://direct.mit.edu/books/monograph/3132/PerceptronsAn-Introduction-to-Computational
+    assignments:
+    - Reading 06
+- name: Exam 01
+  days:
+  - date: Wed 10/01
+    topics: Review
+    resources:
+    - name: Panopto
+      type: video
+      link: https://notredame.hosted.panopto.com/Panopto/Pages/Viewer.aspx?id=357cce38-675e-4cd8-9620-b28901732a3a
+  - date: Wed 10/06
+    topics: Exam 01
+    assignments:
+    - Exam 01 Practice Packet
+    - Exam 01
+- name: Supervised Learning
+  days:
+  - date: Wed 10/08
+    topics: Logistic Regression and Gradient Descent
+    resources:
+    - name: Slides
+      type: reading
+      link: 
+    - name: FCA - Section 7.3.2
+      type: reading
+      link: https://artint.info/3e/html/ArtInt3e.Ch7.S3.html
+    - name: PML - Chapter 10
+      type: reading
+      link: https://probml.github.io/pml-book/book1.html
+    - name: ISLP - Chapter 4.3
+      type: reading
+      link: https://www.statlearning.com/
+    - name: UML - Section 9.3
+      type: reading
+      link: https://www.cs.huji.ac.il/~shais/UnderstandingMachineLearning/copy.html
+    - name: Panopto
+      type: video
+      link: https://notredame.hosted.panopto.com/Panopto/Pages/Viewer.aspx?id=ce3f234d-f8c8-463f-b7f0-b2950169e996
+    - name: Numpy LR and GD
+      type: notebook
+      link: https://colab.research.google.com/drive/1Td14eL3FLIjn5WxUlmdIT1A2nyYZ-Oms?usp=sharing
+    - name: Cornell CS4780
+      type: video
+      link: https://youtu.be/GnkDzIOxfzI?si=zeTur4eTkD7uHHiv
+    - name: Logistic Regression (StatQuest)
+      type: video
+      link: https://youtu.be/yIYKR4sgzI8?si=1HhaymUgRNNAMEy3
+    - name: Gradient Descent (StatQuest)
+      type: video
+      link: https://youtu.be/sDv4f4s2SB8?si=TrI_ge8kywlfgmrv
+    - name: Gradient Descent (3b1b)
+      type: video
+      link: https://youtu.be/IHZwWFHWa-w?si=Kn21ycaonExUo5Br
+    - name: Visualizing Gradient Descent
+      type: notebook
+      link: https://www.kaggle.com/code/christianwittmann/visualizing-gradient-descent-in-3d
+    - name: Logistic Regression (MLU)
+      type: blogpost
+      link: https://mlu-explain.github.io/logistic-regression/
+    - name: Logistic Regression Visualization
+      type: notebook
+      link: https://colab.research.google.com/drive/1EEsiC4noy6ncQdm9wxLnPwO82R9zncWQ?usp=sharing
+    - name: Logistic Regression (HdM)
+      type: reading
+      link: https://hannibunny.github.io/mlbook/machinelearning/LinearClassification.html
+    - name: (1838) Notice sur la loi que la population poursuit dans son accroissement
+        (Verhulst)
+      type: paper
+      link: https://www.neo-classical-physics.info/uploads/3/4/3/6/34363841/verhulst_-_law_of_population.pdf
+    - name: "(1847) M\xE9thode g\xE9n\xE9rale pour la r\xE9solution des syst\xE8mes\
+        \ d\u2019\xE9quations simultan\xE9es (Cauchy)"
+      type: paper
+      link: https://cs.uwaterloo.ca/~y328yu/classics/cauchy-en.pdf
+    - name: (1958) The Regression Analysis of Binary Sequences (Cox)
+      type: paper
+      link: https://www.jstor.org/stable/2983890?seq=1
+  - date: Mon 10/13
+    topics: SVMs and KNNs
+    resources:
+    - name: Slides
+      type: reading
+      link: 
+    - name: PML - Sections 16.1, 17.3
+      type: reading
+      link: https://probml.github.io/pml-book/book1.html
+    - name: ISLP - Sections 3.5, 4.7.6 and Chapter 9
+      type: reading
+      link: https://www.statlearning.com/
+    - name: UML - Chapters 15, 19
+      type: reading
+      link: https://www.cs.huji.ac.il/~shais/UnderstandingMachineLearning/copy.html
+    - name: Panopto
+      type: video
+      link: https://notredame.hosted.panopto.com/Panopto/Pages/Viewer.aspx?id=a38cd616-4164-463e-a3f1-b29701687382
+    - name: Harvard CS50 (0:00 - 12:30 and 33:29 - 39:41)
+      type: video
+      link: https://www.youtube.com/watch?v=-g0iJjnO2_w
+    - name: MIT 6.034 SVMs
+      type: video
+      link: https://www.youtube.com/watch?v=_PwhiWxHK8o
+    - name: MIT 6.034 KNNs
+      type: video
+      link: https://www.youtube.com/watch?v=09mb78oiPkA
+    - name: Cornell CS4780 KNNs
+      type: video
+      link: https://youtu.be/oymtGlGdT-k?si=Lg6X6xXHV2BlrJsF
+    - name: Cornell CS4780 SVMs 1
+      type: video
+      link: https://youtu.be/xpHQ6UhMlx4?si=o64fVVn6-FDP3Ar3
+    - name: Cornell CS4780 SVMs 2
+      type: video
+      link: https://youtu.be/RwF1esLCG4U?si=780GX0R-c0qWDogU
+    - name: SVMs (StatQuest)
+      type: video
+      link: https://youtu.be/efR1C6CvhmE?si=i5q-s8QuxKEAQ3Az
+    - name: KNN (StatQuest)
+      type: video
+      link: https://youtu.be/HVXime0nQeI?si=vUOtkw1Q6nxt9Aj3
+    - name: KNN (HdM)
+      type: reading
+      link: https://hannibunny.github.io/mlbook/machinelearning/knn.html
+    - name: SVMs (HdM)
+      type: reading
+      link: https://hannibunny.github.io/mlbook/machinelearning/svm.html
+    - name: Kernel Methods (Raschka)
+      type: blogpost
+      link: https://sebastianraschka.com/Articles/2014_kernel_pca.html
+    - name: (1963) A Note on One Class of Perceptrons (Vapnik and Chervonenkis)
+      type: paper
+      link: https://www.semanticscholar.org/paper/A-note-one-class-of-perceptrons-Vapnik/4c2d9e61b7f406f2ca35e63cbbb23e7cf7a85c2a
+    - name: (1992) A Training Algorithm for Optimal Margin Classifiers (Boser et al.)
+      type: paper
+      link: https://dl.acm.org/doi/10.1145/130385.130401
+    - name: (1995) Support-Vector Networks (Cortes and Vapnik)
+      type: paper
+      link: https://link.springer.com/article/10.1007/BF00994018
+    assignments:
+    - Homework 02
+    - Reading 07
+- name: Unsupervised Learning
+  days:
+  - date: Wed 10/15
+    topics: Clustering
+    resources:
+    - name: Slides
+      type: reading
+      link: 
+    - name: FCA - Section 10.3
+      type: reading
+      link: https://artint.info/3e/html/ArtInt3e.Ch10.S3.html
+    - name: PML - Chapter 21
+      type: reading
+      link: https://probml.github.io/pml-book/book1.html
+    - name: ISLP - Section 12.4
+      type: reading
+      link: https://www.statlearning.com/
+    - name: UML - Chapter 22
+      type: reading
+      link: https://www.cs.huji.ac.il/~shais/UnderstandingMachineLearning/copy.html
+    - name: Panopto
+      type: video
+      link: https://notredame.hosted.panopto.com/Panopto/Pages/Viewer.aspx?id=550c09db-9c29-4e62-8e91-b2a30158051d
+    - name: Clustering Visualizations
+      type: notebook
+      link: https://colab.research.google.com/drive/1WWysdY8e08f9tEC_P_lxt0INBAzmx8yn?usp=sharing
+    - name: GMM Clustering
+      type: notebook
+      link: https://colab.research.google.com/drive/1tYH-ZkSDrRlJlPKxKsY89SSR01teZ0dr?usp=sharing
+    - name: Hierarchical (StatQuest)
+      type: video
+      link: https://youtu.be/7xHsRkOdVwo?si=f8UkfIYcaxpyEUVk
+    - name: K-Means (StatQuest)
+      type: video
+      link: https://youtu.be/4b5d3muPQmA?si=T2ow71QcEXdbKt7V
+    - name: Clustering (rasbt)
+      type: notebook
+      link: https://github.com/rasbt/machine-learning-book/blob/main/ch10/ch10.ipynb
+- name: Fall Break
+- name: Dimensionality Reduction
+  days:
+  - date: Mon 10/27
+    topics: Dimensionality Reduction
+    resources:
+    - name: Slides
+      type: reading
+      link: 
+    - name: PML - Section 20.1
+      type: reading
+      link: https://probml.github.io/pml-book/book1.html
+    - name: ISLP - Section 12.2
+      type: reading
+      link: https://www.statlearning.com/
+    - name: UML - Chapter 23.1
+      type: reading
+      link: https://www.cs.huji.ac.il/~shais/UnderstandingMachineLearning/copy.html
+    - name: PCA Visualization
+      type: notebook
+      link: https://colab.research.google.com/drive/1v1DV3oqt-XiMxsqTGyek6stAJ_S8LjeJ?usp=sharing
+    - name: Covariance (StatQuest)
+      type: video
+      link: https://youtu.be/qtaqvPAeEJY?si=bw-zWo3JmyX0PvGg
+    - name: PCA (Short) - Statquest
+      type: video
+      link: https://youtu.be/HMOI_lkzW08?si=MkLlaC0hgAeh9009
+    - name: PCA - Statquest
+      type: video
+      link: https://youtu.be/FgakZw6K1QQ?si=rvTJ67NAVVYZhoOh
+    - name: t-SNE (StatQuest)
+      type: video
+      link: https://youtu.be/NEaUSP4YerM?si=lME2kIla7hilnX4w
+    - name: PCA (rasbt)
+      type: notebook
+      link: https://github.com/rasbt/machine-learning-book/blob/main/ch05/ch05.ipynb
+    - name: MNIST (Olah)
+      type: blogpost
+      link: https://colah.github.io/posts/2014-10-Visualizing-MNIST/
+    - name: PCA (Raschka)
+      type: blogpost
+      link: https://sebastianraschka.com/Articles/2015_pca_in_3_steps.html
+    - name: PCA from scratch (Raschka)
+      type: blogpost
+      link: https://sebastianraschka.com/Articles/2014_pca_step_by_step.html
+    - name: Standardization (Raschka)
+      type: blogpost
+      link: https://sebastianraschka.com/Articles/2014_about_feature_scaling.html
+    - name: LDA (Raschka)
+      type: blogpost
+      link: https://sebastianraschka.com/Articles/2014_python_lda.html
+    assignments:
+    - Reading 08
+- name: Applied ML
+  days:
+  - date: Wed 10/29
+    topics: Practicum - Exploratory Data Analysis
+    resources:
+    - name: Slides
+      type: reading
+      link: 
+    - name: Practicum
+      type: notebook
+      link: https://drive.google.com/file/d/1dWiGow2faAKcG3s0XDem1r0WpYJPn6Al/view?usp=sharing
+    - name: Confusion Matrix (StatQuest)
+      type: video
+      link: https://youtu.be/Kdsp6soqA7o?si=g3ssfI10Oqdms09K
+    - name: ROC/AUC (StatQuest)
+      type: video
+      link: https://youtu.be/4jRBRDbJemM?si=5sp5qUoMbHvygXYP
+    - name: Model Evaluation (rasbt)
+      type: notebook
+      link: https://github.com/rasbt/machine-learning-book/blob/main/ch06/ch06.ipynb
+    - name: Ensemble Learning (rasbt)
+      type: notebook
+      link: https://github.com/rasbt/machine-learning-book/blob/main/ch07/ch07.ipynb
+    - name: Model Evaluation (Raschka)
+      type: paper
+      link: https://arxiv.org/pdf/1811.12808
+    - name: Model Evaluation (Raschka)
+      type: blogpost
+      link: https://sebastianraschka.com/blog/2016/model-evaluation-selection-part3.html
+    - name: Ensemble Classifier (Raschka)
+      type: blogpost
+      link: https://sebastianraschka.com/Articles/2014_ensemble_classifier.html
+    - name: Precision vs. Recall
+      type: video
+      student: Catherine Healy '26
+      link: https://www.youtube.com/watch?v=qWfzIYCvBqo
+- name: ML to DL
+  days:
+  - date: Mon 11/03
+    topics: Multi-Layer Perceptrons (FFNs)
+    resources:
+    - name: Slides
+      type: reading
+      link: 
+    - name: FCA - Section 8.1 (Until 8.1.1)
+      type: reading
+      link: https://artint.info/3e/html/ArtInt3e.Ch8.html
+    - name: PML - Section 13.2
+      type: reading
+      link: https://probml.github.io/pml-book/book1.html
+    - name: ISLP - Sections 10.1, 10.2
+      type: reading
+      link: https://www.statlearning.com/
+    - name: D2L - Sections 5.1 and 5.2
+      type: reading
+      link: https://d2l.ai/chapter_multilayer-perceptrons/index.html
+    - name: UML - Sections 20.1 - 20.5
+      type: reading
+      link: https://www.cs.huji.ac.il/~shais/UnderstandingMachineLearning/copy.html
+    - name: Panopto
+      type: video
+      link: https://notredame.hosted.panopto.com/Panopto/Pages/Viewer.aspx?id=64dff764-0306-4caa-8e38-b2ac01594013
+    - name: Harvard CS50 (0:00 - 16:00)
+      type: video
+      link: https://www.youtube.com/watch?v=J1QD9hLDEDY
+    - name: Stanford CS221
+      type: video
+      link: https://www.youtube.com/watch?v=pnKXgBHuN58&list=PLoROMvodv4rOca_Ovz1DvdtWuz8BfSWL2&index=11
+    - name: MIT 6.034
+      type: video
+      link: https://www.youtube.com/watch?v=uXt8qF2Zzfo
+    - name: Simple FFN Visualization
+      type: notebook
+      link: https://colab.research.google.com/drive/14S8IbQQ59TNdJAF0jqGVKjh4kpu3tT_L?usp=sharing
+    - name: Neural Networks (StatQuest)
+      type: video
+      link: https://youtu.be/CqOfi41LfDw?si=uc3frgwCzGIqxuQN
+    - name: pytorch (StatQuest)
+      type: video
+      link: https://youtu.be/FHdlXe1bSe4?si=jrQBr_XpoS7moqoO
+    - name: Matrix Math (StatQuest)
+      type: video
+      link: https://youtu.be/ZTt9gsGcdDo?si=WPN9Vxtbm_94C-nq
+    - name: MLP from scratch (rasbt)
+      type: notebook
+      link: https://github.com/rasbt/machine-learning-book/blob/main/ch11/ch11.ipynb
+    - name: Neural Networks (HdM)
+      type: reading
+      link: https://hannibunny.github.io/mlbook/neuralnetworks/01NeuralNets.html
+    - name: Neural Networks (Zhou)
+      type: blogpost
+      link: https://victorzhou.com/blog/intro-to-neural-networks/
+    - name: Softmax (Zhou)
+      type: blogpost
+      link: https://victorzhou.com/blog/softmax/
+    - name: One-hot (Zhou)
+      type: blogpost
+      link: https://victorzhou.com/blog/one-hot/
+    - name: Loss Functions (Raschka)
+      type: blogpost
+      link: https://sebastianraschka.com/blog/2022/losses-learned-part1.html
+    assignments:
+    - Homework 03
+    - Reading 09
+  - date: Wed 11/05
+    topics: Gradient Descent and Backpropagation
+    resources:
+    - name: Slides
+      type: reading
+      link: 
+    - name: FCA - Sections 8.1.1 and 8.2
+      type: reading
+      link: https://artint.info/3e/html/ArtInt3e.Ch8.S1.html
+    - name: PML - Section 13.3
+      type: reading
+      link: https://probml.github.io/pml-book/book1.html
+    - name: ISLP - Section 10.7
+      type: reading
+      link: https://www.statlearning.com/
+    - name: D2L - Section 5.3
+      type: reading
+      link: https://d2l.ai/chapter_multilayer-perceptrons/backprop.html
+    - name: UML - Section 20.6
+      type: reading
+      link: https://www.cs.huji.ac.il/~shais/UnderstandingMachineLearning/copy.html
+    - name: Panopto
+      type: video
+      link: https://notredame.hosted.panopto.com/Panopto/Pages/Viewer.aspx?id=36c905b4-cbd9-4a0d-aa0c-b2b10162772b
+    - name: Harvard CS50 (16:00 - 39:00)
+      type: video
+      link: https://www.youtube.com/watch?v=J1QD9hLDEDY
+    - name: Stanford CS221 - SGD
+      type: video
+      link: https://www.youtube.com/watch?v=bl2WgBLH0tI&list=PLoROMvodv4rOca_Ovz1DvdtWuz8BfSWL2&index=7
+    - name: Stanford CS221 - Backprop
+      type: video
+      link: https://www.youtube.com/watch?v=OcAF-l2xB9Y&list=PLoROMvodv4rOca_Ovz1DvdtWuz8BfSWL2&index=12
+    - name: MIT 6.034
+      type: video
+      link: https://www.youtube.com/watch?v=uXt8qF2Zzfo
+    - name: Numpy Backprop
+      type: notebook
+      link: https://colab.research.google.com/drive/1ogAx_Bqe80PsFzloNR7W0Ijd1YePNGVU?usp=sharing
+    - name: SGD (StatQuest)
+      type: video
+      link: https://youtu.be/vMh0zPT0tLI?si=V4gwCG8HGbcQ6kX7
+    - name: Chain Rule (StatQuest)
+      type: video
+      link: https://youtu.be/wl1myxrtQHQ?si=npy0cR-pfY5RIT5t
+    - name: Backprop (StatQuest)
+      type: video
+      link: https://youtu.be/IN2XmBhILt4?si=9tYxD7DT3xvBuYGz
+    - name: Building Micograd (Karpathy)
+      type: video
+      link: https://www.youtube.com/watch?v=VMj-3S1tku0
+    - name: Pytorch Computation Graphs (rasbt)
+      type: notebook
+      link: https://github.com/rasbt/machine-learning-book/blob/main/ch13/ch13_part1.ipynb
+    - name: Backprop (Olah)
+      type: blogpost
+      link: https://colah.github.io/posts/2015-08-Backprop/
+    - name: Backprop (Karpathy)
+      type: blogpost
+      link: https://karpathy.medium.com/yes-you-should-understand-backprop-e2f06eab496b
+- name: Foundations of Deep Learning
+  days:
+  - date: Mon 11/10
+    topics: Convolutional Neural Networks
+    resources:
+    - name: Slides
+      type: reading
+      link: 
+    - name: FCA - Section 8.4
+      type: reading
+      link: https://artint.info/3e/html/ArtInt3e.Ch8.S4.html
+    - name: PML - Chapter 14
+      type: reading
+      link: https://probml.github.io/pml-book/book1.html
+    - name: ISLP - Section 10.3
+      type: reading
+      link: https://www.statlearning.com/
+    - name: D2L - Chapters 7 and 8
+      type: reading
+      link: https://d2l.ai/chapter_convolutional-neural-networks/index.html
+    - name: Panopto
+      type: video
+      link: https://notredame.hosted.panopto.com/Panopto/Pages/Viewer.aspx?id=b966a9da-a5cb-47fd-9c37-b2ba015b45b5
+    - name: Harvard CS50 (53:00 - 1:27:12)
+      type: video
+      link: https://www.youtube.com/watch?v=J1QD9hLDEDY
+    - name: MNIST CNN
+      type: notebook
+      link: https://colab.research.google.com/drive/1yYw7SwTl5Q5F_gFLfjEWwW328v3SbPB0?usp=sharing
+    - name: CNNs (StatQuest)
+      type: video
+      link: https://youtu.be/HGwBXDKFk9I?si=5k2GTtevGNxIMEXQ
+    - name: Convolution (3b1b)
+      type: video
+      link: https://youtu.be/KuXjwB4LzSA?si=ulXCDjK3Qd2WZOc0
+    - name: Convolution 2 (3b1b)
+      type: video
+      link: https://www.youtube.com/watch?v=8rrHTtUzyZA
+    - name: CNNs (HdM)
+      type: reading
+      link: https://hannibunny.github.io/mlbook/neuralnetworks/03ConvolutionNeuralNetworks.html
+    - name: CNN Animations (HdM)
+      type: reading
+      link: https://hannibunny.github.io/mlbook/neuralnetworks/convolutionDemos.html
+    - name: CNN (rasbt)
+      type: notebook
+      link: https://github.com/rasbt/machine-learning-book/blob/main/ch14/ch14_part1.ipynb
+    - name: CNNs (Zhou)
+      type: blogpost
+      link: https://victorzhou.com/blog/intro-to-cnns-part-1/
+    - name: Convolutions (Olah)
+      type: blogpost
+      link: https://colah.github.io/posts/2014-07-Understanding-Convolutions/
+    - name: CNNs (Olah)
+      type: blogpost
+      link: https://colah.github.io/posts/2014-07-Conv-Nets-Modular/
+    - name: CNNs (Rao)
+      type: blogpost
+      link: https://medium.com/data-science/deep-learning-illustrated-part-3-convolutional-neural-networks-96b900b0b9e0
+    assignments:
+    - Reading 11
+- name: Midterm 02
+  days:
+  - date: Mon 11/12
+    topics: Review
+    resources:
+    - name: Panopto
+      type: video
+      link: https://notredame.hosted.panopto.com/Panopto/Pages/Viewer.aspx?id=6877fd1b-5dd1-4894-896e-b2b3016366a8
+    assignments:
+    - Reading 10
+  - date: Wed 11/17
+    topics: Exam 02
+    assignments:
+    - Exam 02 Practice Packet
+    - Exam 02
+- name: 'Unit 03: Deep Learning'
+- name: Foundations of Deep Learning
+  days:
+  - date: Wed 11/19
+    topics: Recurrent Neural Networks
+    resources:
+    - name: Slides
+      type: reading
+      link: 
+    - name: FCA - Section 8.5 until 8.5.4
+      type: reading
+      link: https://artint.info/3e/html/ArtInt3e.Ch8.S5.html
+    - name: PML - Section 15.2
+      type: reading
+      link: https://probml.github.io/pml-book/book1.html
+    - name: ISLP - Section 10.5
+      type: reading
+      link: https://www.statlearning.com/
+    - name: D2L - Chapters 9 and 10
+      type: reading
+      link: https://d2l.ai/chapter_recurrent-neural-networks/index.html
+    - name: Harvard CS50 (1:27:00 - end)
+      type: video
+      link: https://www.youtube.com/watch?v=J1QD9hLDEDY
+    - name: Character-Level LSTM
+      type: notebook
+      link: https://colab.research.google.com/drive/1soMewNR1oVJvznbfa6oI1PUnKeblZdRc?usp=sharing
+    - name: RNNs (StatQuest)
+      type: video
+      link: https://youtu.be/AsNTP8Kwu80?si=Dm7SlTxtLYedMi7R
+    - name: LSTMs (StatQuest)
+      type: video
+      link: https://youtu.be/YCzL96nL7j0?si=cy5A4boGNLkMu6os
+    - name: RNN Part 1 (rasbt)
+      type: notebook
+      link: https://github.com/rasbt/machine-learning-book/blob/main/ch15/ch15_part1.ipynb
+    - name: RNN Part 2 (rasbt)
+      type: notebook
+      link: https://github.com/rasbt/machine-learning-book/blob/main/ch15/ch15_part2.ipynb
+    - name: RNN (HdM)
+      type: reading
+      link: https://hannibunny.github.io/mlbook/neuralnetworks/02RecurrentNeuralNetworks.html
+    - name: RNN Cheatsheet (Stanford)
+      type: reading
+      link: https://stanford.edu/~shervine/teaching/cs-230/cheatsheet-recurrent-neural-networks
+    - name: Word Embeddings (Lilian)
+      type: blogpost
+      link: https://lilianweng.github.io/posts/2017-10-15-word-embedding/
+    - name: RNN Stock Prices (Lilian)
+      type: blogpost
+      link: https://lilianweng.github.io/posts/2017-07-08-stock-rnn-part-1/
+    - name: RNNs (Zhou)
+      type: blogpost
+      link: https://victorzhou.com/blog/intro-to-rnns/
+    - name: BoW (Zhou)
+      type: blogpost
+      link: https://victorzhou.com/blog/bag-of-words/
+    - name: Word Embeddings (Olah)
+      type: blogpost
+      link: https://colah.github.io/posts/2014-07-NLP-RNNs-Representations/
+    - name: LSTMs (Olah)
+      type: blogpost
+      link: https://colah.github.io/posts/2015-08-Understanding-LSTMs/
+    - name: Neural Machine Translation by Jointly Learning to Align and Translate
+        (Bahdanau et al.)
+      type: paper
+      link: https://arxiv.org/pdf/1409.0473
+    - name: RNNs (Karpathy)
+      type: blogpost
+      link: https://karpathy.github.io/2015/05/21/rnn-effectiveness/
+    - name: Panopto
+      type: video
+      link: https://notredame.hosted.panopto.com/Panopto/Pages/Viewer.aspx?id=cb9b155b-1306-414b-b059-b2bf0156d398
+    assignments:
+    - Reading 12
+- name: Modern Deep Learning
+  days:
+  - date: Mon 11/24
+    topics: Self-Attention and Transformers
+    resources:
+    - name: Slides
+      type: reading
+      link: 
+    - name: FCA - Section 8.5.4
+      type: reading
+      link: https://artint.info/3e/html/ArtInt3e.Ch8.S5.html
+    - name: PML - Section 15.4
+      type: reading
+      link: https://probml.github.io/pml-book/book1.html
+    - name: D2L - Sections 11.1 through 11.6
+      type: reading
+      link: https://d2l.ai/chapter_attention-mechanisms-and-transformers/index.html
+    - name: Panopto (forgot)
+      type: video
+      link: null
+    - name: Harvard CS50 (35:40 - 54:15)
+      type: video
+      link: https://www.youtube.com/watch?v=QAZc9xsQNjQ
+    - name: 3b1b
+      type: video
+      link: https://www.youtube.com/watch?v=eMlx5fFNoYc
+    - name: Simple Self-Attention
+      type: notebook
+      link: https://colab.research.google.com/drive/1zrnOd6wE57gefw9VJMFDD_9LTzeng9D8?usp=sharing
+    - name: Attention (StatQuest)
+      type: video
+      link: https://youtu.be/PSs6nxngL6k?si=gfuV6LQqtS0jDxQc
+    - name: Matrix Math (StatQuest)
+      type: video
+      link: https://youtu.be/KphmOJnLAdI?si=dkXEgyn5ImhMdDnD
+    - name: Attention (HdM)
+      type: reading
+      link: https://hannibunny.github.io/mlbook/transformer/attention.html
+    - name: Attention (rasbt)
+      type: notebook
+      link: https://github.com/rasbt/machine-learning-book/blob/main/ch16/ch16-part1-self-attention.ipynb
+    - name: Attention (Lilian)
+      type: blogpost
+      link: https://lilianweng.github.io/posts/2018-06-24-attention/
+    - name: Annotated Transformer (Harvard)
+      type: blogpost
+      link: http://nlp.seas.harvard.edu/annotated-transformer/
+    - name: Attention is All You Need (Vaswani et al.)
+      type: paper
+      link: https://arxiv.org/abs/1706.03762
+    - name: Illustrated Transformer (Alammar)
+      type: blogpost
+      link: https://jalammar.github.io/illustrated-transformer/
+    - name: Transformers (Lilian)
+      type: blogpost
+      link: https://lilianweng.github.io/posts/2023-01-27-the-transformer-family-v2/
+    - name: Transformer Family Tree (Amatriain et al.)
+      type: paper
+      link: https://arxiv.org/pdf/2302.07730
+    - name: BERT Pre-training of Deep Bidirectional Transformers for Language Understanding
+        (Devlin et al.)
+      type: paper
+      link: https://arxiv.org/pdf/1810.04805
+    - name: Improving Language Understanding by Generative Pre-Training (Radford et
+        al.)
+      type: paper
+      link: https://gwern.net/doc/www/s3-us-west-2.amazonaws.com/d73fdc5ffa8627bce44dcda2fc012da638ffb158.pdf
+    - name: Programming Self-Attention (Raschka)
+      type: blogpost
+      link: https://sebastianraschka.com/blog/2023/self-attention-from-scratch.html
+    assignments:
+    - Homework 04
+    - Reading 13
+  - date: Wed 11/26
+    topics: Cancelled (Thanksgiving Break)
+  - date: Mon 12/01
+    topics: Reinforcement Learning
+    resources:
+    - name: Slides
+      type: reading
+      link: 
+    - name: FCA - Chapter 13
+      type: reading
+      link: https://artint.info/3e/html/ArtInt3e.Ch13.html
+    - name: D2L - Chapter 17
+      type: reading
+      link: https://d2l.ai/chapter_reinforcement-learning/index.html
+    - name: Panopto
+      type: video
+      link: https://notredame.hosted.panopto.com/Panopto/Pages/Viewer.aspx?id=8f436438-4d36-4efd-a213-b2c8015975d5
+    - name: Harvard CS50 (1:09:57 - 1:38:24)
+      type: video
+      link: https://www.youtube.com/watch?v=-g0iJjnO2_w&t=4197s
+    - name: Stanford CS221
+      type: video
+      link: https://www.youtube.com/watch?v=HpaHTfY52RQ&list=PLoROMvodv4rOca_Ovz1DvdtWuz8BfSWL2&index=20
+    - name: RL Lunar Lander
+      type: notebook
+      link: https://colab.research.google.com/drive/1WtcWFv57EBsRTlk1_Zl0ammBHO1iG1LM?usp=sharing
+    - name: RL (rasbt)
+      type: notebook
+      link: https://github.com/rasbt/machine-learning-book/blob/main/ch19/ch19.ipynb
+    - name: RL (HdM)
+      type: reading
+      link: https://hannibunny.github.io/mlbook/rl/reinforcement.html
+    - name: Deep RL (HdM)
+      type: reading
+      link: https://hannibunny.github.io/mlbook/rl/DQN.html
+    - name: Multi-Armed Bandit (Lilian)
+      type: blogpost
+      link: https://lilianweng.github.io/posts/2018-01-23-multi-armed-bandit/
+    - name: RL (Lilian)
+      type: blogpost
+      link: https://lilianweng.github.io/posts/2018-02-19-rl-overview/
+    - name: Deep RL (Lilian)
+      type: blogpost
+      link: https://lilianweng.github.io/posts/2018-05-05-drl-implementation/
+    - name: AlphaGo (Karpathy)
+      type: blogpost
+      link: https://karpathy.medium.com/alphago-in-context-c47718cb95a5
+    assignments:
+    - Reading 14
+  - date: Wed 12/03
+    topics: LLMs and Agents (Guest Lecture)
+    resources:
+    - name: Slides
+      type: reading
+      link: 
+    - name: FCA - Section 8.5.5
+      type: reading
+      link: https://artint.info/3e/html/ArtInt3e.Ch8.S5.html
+    - name: PML - Section 15.5
+      type: reading
+      link: https://probml.github.io/pml-book/book1.html
+    - name: D2L - Section 11.7
+      type: reading
+      link: https://d2l.ai/chapter_attention-mechanisms-and-transformers/transformer.html
+    - name: Panopto
+      type: video
+      link: null
+    - name: Harvard CS50 (54:15 - end)
+      type: video
+      link: https://www.youtube.com/watch?v=QAZc9xsQNjQ
+    - name: 3b1b
+      type: video
+      link: https://www.youtube.com/watch?v=wjZofJX0v4M
+    - name: Cornell CS4780
+      type: video
+      link: https://youtu.be/Nu7VZeW5TaE?si=VvFyOFVWecFkuuSX
+    - name: Transformers (StatQuest)
+      type: video
+      link: https://youtu.be/zxQyTK8quyY?si=TfF6rH36dN7WcZdN
+    - name: GPT3 (Alammar)
+      type: blogpost
+      link: https://jalammar.github.io/how-gpt3-works-visualizations-animations/
+    - name: MoE (Maarten)
+      type: blogpost
+      link: https://newsletter.maartengrootendorst.com/p/a-visual-guide-to-mixture-of-experts
+    - name: LLM Reasoning (Maarten)
+      type: blogpost
+      link: https://newsletter.maartengrootendorst.com/p/a-visual-guide-to-reasoning-llms
+    - name: Deepseek (Alammar)
+      type: blogpost
+      link: https://newsletter.languagemodels.co/p/the-illustrated-deepseek-r1
+    - name: LLM Agents (Lilian)
+      type: blogpost
+      link: https://lilianweng.github.io/posts/2023-06-23-agent/
+  - date: Mon 12/08
+    topics: Diffusion Models
+    resources:
+    - name: Slides
+      type: reading
+      link: 
+    - name: FCA - Section 8.6.3
+      type: reading
+      link: https://artint.info/3e/html/ArtInt3e.Ch8.S6.html
+    - name: Diffusion Models
+      type: video
+      link: https://www.youtube.com/watch?v=1pgiu--4W3I
+    - name: Simple Diffusion Model
+      type: notebook
+      link: https://colab.research.google.com/drive/1H3ztaNIIsshhPQx3j5oTQ8lGwvgsWDGz?usp=sharing
+    - name: Diffusion Models (Lilian)
+      type: blogpost
+      link: https://lilianweng.github.io/posts/2021-07-11-diffusion-models/
+    - name: Video Diffusion (Lilian)
+      type: blogpost
+      link: https://lilianweng.github.io/posts/2024-04-12-diffusion-video/
+    - name: Panopto
+      type: video
+      link: https://notredame.hosted.panopto.com/Panopto/Pages/Viewer.aspx?id=234a27fe-5c95-4d40-bffe-b2cf014e66a5
+    assignments:
+    - Reading 15
+  - date: Wed 12/10
+    topics: Review
+    assignments:
+    - Final Practice Packet
+    - Homework 05
+    - Bonus Homework
+    - CIF Bribe
+- name: Final
+  days:
+  - date: Tue 12/16
+    topics:  (TENTATIVELY) Final Exam (1:45 PM - 3:45 PM)
+    assignments:
+    - Final Exam

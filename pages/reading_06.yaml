@@ -1,0 +1,25 @@
+title:      "Reading 06: Logistic Regression and Gradient Descent"
+icon:       fa-book
+navigation:
+  - name: "Home"
+    link: "index.html"
+    icon: "fa-gavel"
+internal:
+external:
+    resources:  'csv:static/csv/resources.csv'
+body:       |
+
+    ## Logistic Regression and Gradient Descent
+
+    <table>
+        <tr>
+            <td colspan="3">
+                {% set resources =  page.external.get('resources', {}).get(lecture_id_for('Logistic Regression and Gradient Descent'), [])%}
+                {% include "resource_sections.tmpl" %}
+            </td>
+        </tr>
+    </table>
+
+    ## Quiz
+
+    <iframe src="https://docs.google.com/forms/d/e/1FAIpQLSczAG2SilHGfFZea0weB10cEOhXuUZtGeCCarug5tz9XXPu-Q/viewform?embedded=true" width="640" height="3164" frameborder="0" marginheight="0" marginwidth="0">Loading…</iframe>

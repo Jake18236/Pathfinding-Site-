@@ -1,0 +1,132 @@
+title:      "Homework 04: Detective Work (20 pts.)"
+icon:       fa-book
+navigation:
+  - name: "Home"
+    link: "index.html"
+    icon: "fa-gavel"
+internal:
+external:
+body:       |
+
+    ## Task 1: Notebook
+
+    Run the following notebook and answer the included questions using the method of your choosing:
+
+    <div class="alert alert-success" markdown="1">
+    [DOWNLOAD NOTEBOOK](https://github.com/nd-cse-30124-fa25/cse-30124-homeworks/blob/main/homework04/homework04.ipynb)
+    </div>
+
+    For your convenience the notebook is displayed below as HTML but you will likely
+    find it easier to download the notebook file from the homework repo linked above.
+
+    <iframe src="https://ai.williamtheisen.com/cse-30124-homeworks/homework04/homework04.html" width="100%" height="800"></iframe> 
+
+    <pre style="display: none;" id="dr-container" class="codehilite"><code id="dredd-response"></code></pre>
+
+    To submit your answers, you will need add your `homework04.ipynb` file
+    in the `homework04` folder of your **assignments** repository:
+
+    Answer the questions in your notebook file using the method of your choice and
+    once you are finished, submit your notebook using the workflow outlined below.
+
+    ## Task 2: Homework Submission Instructions
+
+    To submit your homework answers, you will need add your `homework04.ipynb` file
+    in the `homework04` folder of your **assignments** repository:
+
+    Answer the questions in your notebook file using the method of your choice and
+    once you are finished, follow the instructions below to submit your notebook.
+
+    1. For this class, you must use a **separate [git] branch for each
+    assignment**.  This means that the work for each reading and challenge must
+    be done in a separate branch.  To create and checkout a new branch, you can
+    do the following:
+
+            :::bash
+            $ git checkout main         # Make sure we are in master branch
+            $ git pull --rebase           # Make sure we are up-to-date with github repository
+
+            $ git checkout -b homework04   # Create homework00 branch and check it out
+
+        Once you do the above, you should see the following output for the
+        [git-branch] command:
+
+            :::bash
+            $ git branch
+              main
+              homework01
+              homework02
+              homework03
+            * homework04
+
+        The `*` indicates that we are currently on the `homework04` branch.
+
+    2. Once you have your notebook filled out, you need to add, commit the file, and
+    push your commits to [GitHub]:
+
+            :::bash
+            $ git add homework04.ipynb                # Add answers.json to staging area
+            $ git commit -m "Homework 02: Done"    # Commit work
+
+            $ git push -u origin homework04        # Push branch to GitHub
+
+        <div class="alert alert-success" markdown="1">
+        **Note**: You may edit and commit changes to your branch as many times
+        as you wish.  Just make sure all of your work goes in the appropriate
+        branch and then perform a `git push` when you are done.
+        </div>
+
+    3. When you are ready for your final submission, you need to create a
+    **pull request** via the [GitHub] interface:
+
+        - First, go to your repository's **Branches** page and then press the
+        **New pull request** button for the appropriate branch:
+
+            <div class="thumbnail">
+            <img src="static/img/pr_step_1.png" class="img-responsive"/>
+            </div>
+
+        - Next, edit the **pull request** title to "Homework 02", write a
+          comment if necessary and then press the "Create pull request" button.
+
+            <div class="thumbnail">
+            <img src="static/img/pr_step_2.png" class="img-responsive"/>
+            </div>
+
+        - Finally, assign the **pull request** to the **teaching assistant**
+          assigned to you for the given week. 
+
+            <div class="thumbnail">
+            <img src="static/img/pr_step_3.png" class="img-responsive"/>
+            </div>
+
+    <div class="alert alert-info" markdown="1">
+    #### <i class="fa fa-gavel"></i> Graders
+
+    Please refer to the [Homework 04 TA List](homework04_tas.html) to determine
+    who your grader is for the assignment is.
+
+    </div>
+
+    Once you have made the **pull request**, the instructor or teaching
+    assistant can verify your work and provide feedback via the discussion form
+    inside the **pull request**.  If necessary, you can update your submission
+    by simply committing and pushing to the appropriate branch; the **pull
+    request** will automatically be updated to match your latest work.
+
+    When all work is graded, the grader will merge your branch and close the
+    **pull request**.
+
+    <div class="alert alert-danger" markdown="1">
+    **Note**: Please **do not merge** your own **pull request**.  This makes it
+    more difficult for the graders to keep track of what needs to be graded.
+    </div>
+
+    [CSE 30124 Introduction to Artificial Intelligence]:     index.html
+    [GitHub]:                               https://github.com
+    [Zoom]:                                 https://notredame.zoom.us/
+    [Slack]:                                https://nd-cse.slack.com/
+    [SSH Keys]:                             https://help.github.com/en/github/authenticating-to-github/connecting-to-github-with-ssh
+    [nd-cse-30124-sp25]:                    https://github.com/nd-cse-30124-sp25
+    [git-branch]:                           https://git-scm.com/docs/git-branch
+    [Homework 04 TA List]:                   homework04_tas.html

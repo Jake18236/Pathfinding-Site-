@@ -1,0 +1,222 @@
+title:      "Course Primer: Orientation and Review"
+icon:       fa-book
+navigation:
+  - name: "Home"
+    link: "index.html"
+    icon: "fa-gavel"
+internal:
+external:
+    semester_info: 'static/yaml/semester_info.yaml'
+body:       |
+
+    {% set term_code = page.external['semester_info']['Term'][:2].lower() + page.external['semester_info']['Year'][-2:] %}
+
+    **Everyone**:
+
+    Welcome to [CSE 30124 Introduction to Artifical Intelligence](index.html), which (as the syllabus
+    states) is a broad introduction to the field of artificial intelligence. We
+    will begin the semester with a brief history of the field and review of relevant
+    mathematical concepts that form the foundation of AI. As the semester continues
+    we will dive into Machine and Deep Learning and then at the very end loop back
+    around to where we started.
+
+    <div class="alert alert-info" markdown="1">
+
+    #### <i class="fa fa-bookmark"></i> TL;DR
+
+    For this week, you should familiarize yourself with using [Slack], setup
+    your [GitHub] assignments repository, decide how you will run the notebook
+    software used in this course and then submit your notebook for the course primer.
+
+    </div>
+
+    ## Course Overview
+
+    Artificial Intelligence is an extremely broad field and while no doubt all of
+    you will be familiar with some aspects of it, likely the GPT family, these
+    tools are only a small subset of what the field encompasses as a whole.
+
+    <div class="thumbnail">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/3/34/Unraveling_AI_Complexity_-_A_Comparative_View_of_AI%2C_Machine_Learning%2C_Deep_Learning%2C_and_Generative_AI.png">
+    </div>
+
+    We will begin the course at the top of the circle and work our way down.
+    However at the end of the semester and the bottom of the circles we will
+    find that we start to wrap back around again to the top.
+
+    ## Task 1: Slack
+
+    For communication outside of our meeting time, we will be using [Slack],
+    specifically the `#cse-30124-{{ term_code }}` channel:
+
+    > [https://nd-cse.slack.com/messages/cse-30124-{{ term_code }}](https://nd-cse.slack.com/messages/cse-30124-{{ term_code }})
+
+    There is a [class mailing list], but most day-to-day communication
+    (including office hours and homework help) should take place on [Slack].
+
+    [class mailing list]: mailto:sp25-cse-30124-01-group@nd.edu
+
+    <div class="alert alert-warning" markdown="1">
+    <p>Be aware of the following:</p><br>
+
+    - You will need to signup and create a [Slack] account if you don't already
+      have one.
+
+    - You can use the web interface or download the [Slack] desktop client
+      (there are also mobile applications as well).
+
+    - Feel free to join any other channels that may interest you such as
+      `#commons` or `#jobs`.
+
+    </div>
+
+    ## Task 2: GitHub
+
+    All of your work, other than the notebook for the Course Primer, will be submitted to [GitHub] using [git]. 
+    Your third task is to setup your [GitHub] repository by doing the following:
+
+    1. **Sign-in** or **create** a [GitHub] account if you do not already have one.
+
+    2. **Fork** the class homeworks repository from the following template:
+
+        > [https://classroom.github.com/a/Qv4jfPvn](https://classroom.github.com/a/Qv4jfPvn)
+
+        This will create a **private** `cse-30124-homeworks-$TEAMNAME`
+        repository under your own account and linked to the [nd-cse-30124-sp25]
+        organization.
+
+    3. Once this is done, you can [clone] your [git] repository to your local
+    machine (or the **student** machines):
+
+            :::bash
+            $ git clone git@github.com:nd-cse-30124-sp25/cse-30124-homeworks-$TEAMNAME
+
+        <div class="alert alert-danger" markdown="1">
+        **Note**, that [GitHub] has recently shutdown [password authentication].
+        </div>
+
+        To remotely access your repository from the command-line, you have two options:
+
+        1. [Setup a Personal Access Token]: With this method, [GitHub] will
+          generate an application specific password that you can use with
+          **HTTPS**.  As the **PAT** is a long string of characters, it is
+          recommended that you use it in conjunction with a **password
+          manager** or **keyring**.
+
+        2. [Setup SSH Keys]: With this method, you generate a local public and
+          private key pair on your computer and then upload the **public key**
+          to [GitHub].  When accessing [GitHub] from the command-line, you will
+          use the **private key** to authenticate to the server.  This is the
+          **recommended** way to setup your repository as it will allow for
+          **passwordless** access.
+
+        <div class="alert alert-success" markdown="1">
+        #### <i class="fa fa-lock"></i> Setup SSH Keys
+
+        <p>Here is a quick tutorial on how to [Setup SSH Keys] on the student
+        machines (if you have not already):</p>
+
+        1. Generate SSH keys if you don't have them yet:
+
+                :::bash
+                # Accept the defaults, don't make a password if you want to go passwordless
+                $ ssh-keygen
+
+        2. Copy the contents of `~/.ssh/id_rsa.pub` to the SSH Keys section of
+        your [GitHub] settings page:
+
+            > [https://github.com/settings/keys](https://github.com/settings/keys)
+
+                :::bash
+                # Copy and paste the contents of this file into GitHub
+                $ cat ~/.ssh/id_rsa.pub
+
+        3. Edit/create `~/.ssh/config` to use this key with [GitHub]:
+
+                :::bash
+                # Add the following to your config (replace $NETID with your netid)
+                $ $EDITOR ~/.ssh/config
+                Host github.com
+                        User git
+                        Hostname github.com
+                        PreferredAuthentications publickey
+                        IdentityFile /escnfs/home/$NETID/.ssh/id_rsa
+
+        Once this is done, you should be able to do [git] operations without a password.
+        You will need to accept the host key the first time by typing in "yes".
+        </div>
+
+        <div class="alert alert-warning" markdown="1">
+
+        **Note**: Please update the `README.md` file to include your **name**
+        and **NetID** so it is straightforward to identify your account.
+
+        </div>
+
+    [clone]:    https://git-scm.com/docs/git-clone
+    [git]:      https://git-scm.com/
+
+    [password authentication]: https://github.blog/changelog/2022-08-12-git-password-authentication-is-shutting-down/
+    [Setup a Personal Access Token]: https://docs.github.com/en/github/authenticating-to-github/keeping-your-account-and-data-secure/creating-a-personal-access-token
+    [Setup SSH Keys]: https://docs.github.com/en/github/authenticating-to-github/connecting-to-github-with-ssh/about-ssh
+
+    <div class="alert alert-danger" markdown="1">
+    #### <i class="fa fa-github"></i> GitHub Repository
+
+    You are responsible for ensuring that your [GitHub] assignments repository
+    is in proper order, which means you have the correct settings and
+    permissions set.  Failure to properly configure your repository will
+    adversely impact your grade.
+
+    </div>
+
+    ## Task 3: Reading
+
+    The readings for **Wednesday, January 22nd** are
+
+    1. [CSE 30124 Introduction to Artificial Intelligence](index.html)
+
+    2. Introduction to Notebooks
+
+        - [Jupyter Notebooks](https://realpython.com/jupyter-notebook-introduction/)
+
+        - [VSCode Notebooks](https://code.visualstudio.com/docs/datascience/jupyter-notebooks)
+
+        - [Kaggle Notebooks](https://www.kaggle.com/code/alexisbcook/creating-your-own-notebooks)
+
+        - [Google Colab](https://colab.research.google.com/notebooks/basic_features_overview.ipynb)
+
+    Please at least skim all four, but for the purposes of this course you just
+    need to get one of the methods working to run your notebooks. Notebooks
+    can be run locally through something like VSCode, and this is what I
+    recommend and use. If you have other methods, please feel free to reach out to 
+    your me to discuss them.
+
+    ## Task 4: Notebooks
+
+    Once you have done the readings, run the following notebook using
+    the method of your choosing:
+
+    <div class="alert alert-success" markdown="1">
+    [DOWNLOAD NOTEBOOK](static/homeworks/course_primer.ipynb)
+    </div>
+
+    For your convenience the notebook is displayed below as HTML but you will likely
+    find it easier to download the raw notebook file given above.
+
+    <iframe src="static/homework_htmls/course_primer.html" width="100%" height="800px"></iframe>
+
+    <pre style="display: none;" id="dr-container" class="codehilite"><code id="dredd-response"></code></pre>
+
+    <br>
+    <div class="alert alert-danger" markdown="1">
+    **Note** After you finish the notebook, upload a copy of it to canvas, this is the one canvas submission this semester.
+    </div>
+
+    [CSE 30124 Introduction to Artificial Intelligence]:     index.html
+    [GitHub]:                               https://github.com
+    [Zoom]:                                 https://notredame.zoom.us/
+    [Slack]:                                https://nd-cse.slack.com/
+    [SSH Keys]:                             https://help.github.com/en/github/authenticating-to-github/connecting-to-github-with-ssh
+    [nd-cse-30124-{{ term_code }}]:         https://github.com/nd-cse-30124-{{ term_code }}
+    [git-branch]:                           https://git-scm.com/docs/git-branch

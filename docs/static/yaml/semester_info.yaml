@@ -1,0 +1,55 @@
+Instructor:
+  github: wtheisen
+  level: Professor
+  name: Bill Theisen
+  netid: wtheisen
+  office_hours:
+    Thursday: 1:00 PM - 5:00 PM | 356B Fitz
+TAs:
+  ccerves:
+    github: ccervera8
+    level: Graduate
+    name: Cesar Cervera
+    netid: ccervera
+    office_hours:
+      Tuesday: 12:30 PM - 2:30 PM | Inno Lounge
+  tlohman:
+    github: Thomas-Lohman
+    level: Graduate
+    name: Thomas Lohman
+    netid: tlohman
+    office_hours:
+      Monday: 7:15 PM - 9:00 PM | CSE Commons
+      Tuesday: 3:15 PM - 5:00 PM | CSE Commons
+  ozino:
+    github: oliviazino
+    level: Undergraduate
+    name: Olivia Zino
+    netid: ozino
+    office_hours:
+      Sunday: 2:00 PM - 4:00 PM | CSE Commons
+      Monday: 2:00 PM - 3:00 PM | CSE Commons
+      Wednesday: 2:00 PM - 3:00 PM | CSE Commons
+  snoonan2:
+    github: snoonan2
+    level: Undergraduate
+    name: Sophia Noonan
+    netid: snoonan2
+    office_hours:
+      Monday: 12:00 PM - 2:00 PM | CSE Commons
+      Wednesday: 12:00 PM - 2:00 PM | CSE Commons
+  jmangion:
+    github: jmangion
+    level: Undergraduate
+    name: Jack Mangione
+    netid: jmangion
+    office_hours:
+      Monday: 5:00 PM - 7:00 PM | CSE Commons
+      Wednesday: 5:00 PM - 7:00 PM | CSE Commons
+Term: Fall
+Year: '2025'
+class_location: 129 Debart
+class_times:
+  Monday: 3:30 PM - 4:45 PM
+  Wednesday: 3:30 PM - 4:45 PM
+gh_homework_link: https://classroom.github.com/a/4JvWlt8h

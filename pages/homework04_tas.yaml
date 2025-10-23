@@ -1,0 +1,45 @@
+title:      Homework 04 - TA Assignment
+icon:       fa-balance-scale
+navigation:
+  - name: "Home"
+    link: "index.html"
+    icon: "fa-gavel"
+internal:
+external:
+    mapping:  static/yaml/homework04_teams_tas_mapping.yaml
+body:       |
+    <table class="table condensed table-striped">
+      <thead>
+        <tr>
+          <th width="100px">Team</th>
+          <th width="100px">Grader</th>
+        </tr>
+      </thead>
+      <tbody>
+      {% for team, grader in page.external['mapping'] %}
+        <tr>
+          <td>{{ team }}</td>
+          <td>{{ grader  }}</td>
+        </tr>
+      {% end %}
+      </tbody>
+    </table>
+
+    <hr>
+
+    <table class="table condensed table-striped">
+      <thead>
+        <tr>
+          <th width="100px">Grader</th>
+          <th width="100px">Team</th>
+        </tr>
+      </thead>
+      <tbody>
+      {% for team, grader in sorted(page.external['mapping'], key=lambda p: p[1]) %}
+        <tr>
+          <td>{{ grader  }}</td>
+          <td>{{ team }}</td>
+        </tr>
+      {% end %}
+      </tbody>
+    </table>

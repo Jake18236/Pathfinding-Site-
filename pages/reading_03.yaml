@@ -1,0 +1,38 @@
+title:      "Reading 03: Knowledge Representation, Feature Engineering, and Decision Trees"
+icon:       fa-book
+navigation:
+  - name: "Home"
+    link: "index.html"
+    icon: "fa-gavel"
+internal:
+external:
+    resources:  'csv:static/csv/resources.csv'
+body:       |
+
+    ## Knowledge Representation and Feature Engineering: 
+
+    <table>
+        <tr>
+            <td colspan="3">
+                {% set resources =  page.external.get('resources', {}).get(lecture_id_for('Knowledge Representation and Feature Engineering'), [])%}
+                {% include "resource_sections.tmpl" %}
+            </td>
+        </tr>
+    </table>
+
+    ## Decision Trees:
+
+    <table>
+        <tr>
+            <td colspan="3">
+                {% set resources =  page.external.get('resources', {}).get(lecture_id_for('Decision Trees'), [])%}
+                {% include "resource_sections.tmpl" %}
+            </td>
+        </tr>
+    </table>
+
+    ## Reading Quiz 03
+
+    Please respond to the quiz below, you will need to be signed into your ND email in order to respond. You may edit your responses after each submission, so there's really no reason you shouldn't get full credit on these!
+
+    <iframe src="https://docs.google.com/forms/d/e/1FAIpQLSd3UkvQcs3LuzsP-XCLhr3PNeMXyUru47i9gUR_MQeLn-26eg/viewform?embedded=true" width="640" height="2830" frameborder="0" marginheight="0" marginwidth="0">Loading…</iframe>

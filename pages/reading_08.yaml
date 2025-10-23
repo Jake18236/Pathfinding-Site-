@@ -1,0 +1,36 @@
+title:      "Reading 08: Dimensionality Reduction and Exploratory Data Analysis"
+icon:       fa-book
+navigation:
+  - name: "Home"
+    link: "index.html"
+    icon: "fa-gavel"
+internal:
+external:
+    resources:  'csv:static/csv/resources.csv'
+body:       |
+
+    ## Dimensionality Reduction
+
+    <table>
+        <tr>
+            <td colspan="3">
+                {% set resources =  page.external.get('resources', {}).get(lecture_id_for('Dimensionality Reduction'), [])%}
+                {% include "resource_sections.tmpl" %}
+            </td>
+        </tr>
+    </table>
+
+    ## Practicum - Exploratory Data Analysis
+
+    <table>
+        <tr>
+            <td colspan="3">
+                {% set resources =  page.external.get('resources', {}).get(lecture_id_for('Practicum - Exploratory Data Analysis'), [])%}
+                {% include "resource_sections.tmpl" %}
+            </td>
+        </tr>
+    </table>
+
+    ## Quiz
+
+    <iframe src="https://docs.google.com/forms/d/e/1FAIpQLSe9ELFwpTQJNhSIj-BN3Vzp_yL0z_HZ_hDGPua4X-9oko7oZQ/viewform?embedded=true" width="640" height="3314" frameborder="0" marginheight="0" marginwidth="0">Loading…</iframe>
