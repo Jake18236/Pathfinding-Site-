@@ -39,7 +39,7 @@ jobs:
       - name: Build site
         working-directory: source
         env:
-          COURSE_RESOURCES_CSV_URL: https://docs.google.com/spreadsheets/d/e/2PACX-1vRyu9MMJnyFOCW7OET4yQ1RMT4MP9Od4RrrirpjspwrSrCak7a6B80GkNCyLN0wyVGSLdnglxfuGCED/pub?gid=1610570298&single=true&output=csv
+          COURSE_RESOURCES_CSV_URL: https://docs.google.com/spreadsheets/d/e/2PACX-1vQ0MhdIkphQZpu5C2sQ_1WhGdE8DLxxlVtRirER3_wLgUsli0wvjdq-rYQeStwf9ubSVeDaKDNUbYeh/pub?gid=518321558&single=true&output=csv
         run: |
           mkdir -p static/csv
           curl -L -s "$COURSE_RESOURCES_CSV_URL" -o static/csv/resources.csv

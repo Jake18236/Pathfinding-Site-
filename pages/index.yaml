@@ -15,6 +15,8 @@ external:
     resources:  'csv:static/csv/resources.csv'
 body:       |
 
+    {% set resources = page.external.get('resources', []) %}
+
     <div class="row" markdown="1">
 
     I am an assistant teaching professor at the University of Notre Dame.
@@ -81,12 +83,149 @@ body:       |
             <h2 id="learning"><i class="fa fa-clock"></i> Learning</h2>
         </div>
     </div>
+    {% set learning_resources = [r for r in resources if 'learning' in (r.get('export_id', '') or '').lower()] %}
+    {% set learning_type_groups = [
+        ('reading', 'fa-solid fa-book', 'Readings'),
+        ('video', 'fa-solid fa-video-camera', 'Videos'),
+        ('notebook', 'fa-brands fa-python', 'Notebooks'),
+        ('slides', 'fa-solid fa-person-chalkboard', 'Slides'),
+        ('podcast', 'fa-solid fa-podcast', 'Podcasts'),
+        ('blogpost', 'fa-solid fa-share-alt', 'Blogposts'),
+        ('paper', 'fa-solid fa-file-pdf', 'Papers')
+    ] %}
+    {% if learning_resources %}
+        <div class="row">
+        {% for type_id, icon_class, label in learning_type_groups %}
+            {% set items = [r for r in learning_resources if (r.get('type', '') or '').lower() == type_id] %}
+            {% if items %}
+                <div class="col-sm-6 col-lg-4">
+                    <h3 style="margin-top: 0.5em;">
+                        <i class="{{ icon_class }}"></i>
+                        {{ label }}
+                    </h3>
+                    <ul class="resource-list">
+                    {% for item in items %}
+                        {% set display_name = (item.get('name', '') or '')|trim %}
+                        <li>
+                            {% if item.get('link') %}
+                                <a href="{{ item['link'] }}">{{ display_name }}</a>
+                            {% else %}
+                                {{ display_name }}
+                            {% end %}
+                            {% if item.get('author') %}
+                                <span class="resource-credit">{{ item['author']|trim }}</span>
+                            {% elif item.get('student') %}
+                                <span class="resource-credit">{{ item['student']|trim }}</span>
+                            {% end %}
+                        </li>
+                    {% end %}
+                    </ul>
+                </div>
+            {% end %}
+        {% end %}
+        </div>
+        {% set handled_learning_types = [group[0] for group in learning_type_groups] %}
+        {% set additional_learning = [r for r in learning_resources if (r.get('type', '') or '').lower() not in handled_learning_types] %}
+        {% if additional_learning %}
+            <div class="row">
+                <div class="col-sm-12">
+                    <h3 style="margin-top: 0.5em;">
+                        <i class="fa-solid fa-layer-group"></i>
+                        Additional Learning Resources
+                    </h3>
+                    <ul class="resource-list">
+                    {% for item in additional_learning %}
+                        {% set display_name = (item.get('name', '') or '')|trim %}
+                        <li>
+                            {% if item.get('link') %}
+                                <a href="{{ item['link'] }}">{{ display_name }}</a>
+                            {% else %}
+                                {{ display_name }}
+                            {% end %}
+                            {% if item.get('author') %}
+                                <span class="resource-credit">{{ item['author']|trim }}</span>
+                            {% elif item.get('student') %}
+                                <span class="resource-credit">{{ item['student']|trim }}</span>
+                            {% end %}
+                        </li>
+                    {% end %}
+                    </ul>
+                </div>
+            </div>
+        {% end %}
+    {% else %}
+        <div class="row">
+            <div class="col-sm-12">
+                <p class="text-muted">Learning resources will appear here once they are added to <code>static/csv/resources.csv</code>.</p>
+            </div>
+        </div>
+    {% end %}
 
     <div class="row">
         <div class="page-header">
             <h2 id="library"><i class="fa fa-balance-scale"></i> Library</h2>
         </div>
     </div>
+    {% set library_resources = [r for r in resources if ((r.get('export_id', '') or '').lower().startswith('lib-') or 'library' in (r.get('export_id', '') or '').lower())] %}
+    {% if library_resources %}
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="table-responsive">
+                    <table class="table table-condensed table-striped">
+                        <thead>
+                            <tr>
+                                <th>Title</th>
+                                <th>Author</th>
+                                <th>Type</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        {% for item in library_resources %}
+                            {% set display_title = (item.get('name', '') or '')|trim %}
+                            {% if not display_title %}
+                                {% set display_title = (item.get('id', '') or '')|trim %}
+                            {% end %}
+                            {% set display_author = (item.get('author', '') or '')|trim %}
+                            {% set raw_type = (item.get('type', '') or '')|trim %}
+                            {% set display_type = raw_type|replace('_', ' ')|title %}
+                            {% set checked_out_raw = (item.get('checked out') or '')|lower %}
+                            {% set checked_out = checked_out_raw in ['true', 'yes', '1'] %}
+                            {% set status_class = 'label-warning' if checked_out else 'label-success' %}
+                            {% set status_text = 'Checked out' if checked_out else 'Available' %}
+                            <tr>
+                                <td>
+                                    {% if item.get('link') %}
+                                        <a href="{{ item['link'] }}">{{ display_title }}</a>
+                                    {% else %}
+                                        {{ display_title }}
+                                    {% end %}
+                                    {% if item.get('notes') %}
+                                        <div class="text-muted" style="font-size: 0.85em; margin-top: 4px;">{{ item['notes']|trim }}</div>
+                                    {% end %}
+                                    {% if item.get('rating') %}
+                                        <span class="label label-info" style="margin-top: 4px; display: inline-block;">Rated {{ item['rating'] }}</span>
+                                    {% end %}
+                                </td>
+                                <td>{{ display_author if display_author else 'N/A' }}</td>
+                                <td>{{ display_type if display_type else 'N/A' }}</td>
+                                <td>
+                                    <span class="label {{ status_class }}">{{ status_text }}</span>
+                                </td>
+                            </tr>
+                        {% end %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    {% else %}
+        <div class="row">
+            <div class="col-sm-12">
+                <p class="text-muted">Library inventory is maintained in <code>static/csv/resources.csv</code>; add entries tagged for the library to populate this table.</p>
+            </div>
+        </div>
+    {% end %}
 
     <script>
         function toggleResources(id, unit) {
