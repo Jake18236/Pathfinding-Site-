@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta name="description" content="">
+	<meta name="author" content="">
+
+	<title>Reading 08: Dimensionality Reduction and Exploratory Data Analysis</title>
+
+	<!-- Bootstrap core CSS -->
+	<link href="static/css/blugold.css" rel="stylesheet">
+	<script src="https://kit.fontawesome.com/9d2722956c.js" crossorigin="anonymous"></script>
+
+	<!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+	<!--[if lt IE 9]>
+	<script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+	<script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+	<![endif]-->
+
+	<style>
+	body {
+	    padding: 10px;
+	}
+	.resource-list {
+	    list-style: none;
+	    padding-left: 0;
+	    margin-bottom: 1.25em;
+	}
+	.resource-credit {
+	    margin-left: 0.5em;
+	    font-size: 0.85em;
+	    color: #777;
+	    font-style: italic;
+	}
+	.resource-credit::before {
+	    content: "\2014";
+	    margin-right: 0.35em;
+	}
+	</style>
+    </head>
+    <body>
+	<div class="container">
+
+	    <div class="row">
+		<div class="page-header">
+		    <ul class="nav nav-pills pull-right">
+			
+			<li><a href="index.html"><i class="fa fa-gavel"></i> <span class="visible-md-inline visible-lg-inline">Home</span></a></li>
+			
+		    </ul>
+		    <h1><i class="fa fa-book"></i> Reading 08: Dimensionality Reduction and Exploratory Data Analysis</h1>
+		</div>
+	    </div>
+
+		
+<h2 id="dimensionality-reduction">Dimensionality Reduction<a class="headerlink" href="#dimensionality-reduction" title="Permanent link">&para;</a></h2>
+<table>
+    <tr>
+        <td colspan="3">
+            
+            <div class="row">
+    <div class="col-md-4">
+        <h4><i class="fa-solid fa-book"></i> Readings</h4>
+        <ul class="resource-list">
+        
+            
+                <li>
+                    
+                        <span style="display:inline-block; width: 1em;">&bull;</span>
+                    
+                    <a href="https://probml.github.io/pml-book/book1.html">PML - Section 20.1</a>
+                    
+                </li>
+            
+        
+            
+                <li>
+                    
+                        <span style="display:inline-block; width: 1em;">&bull;</span>
+                    
+                    <a href="https://www.statlearning.com/">ISLP - Section 12.2</a>
+                    
+                </li>
+            
+        
+            
+                <li>
+                    
+                        <span style="display:inline-block; width: 1em;">&bull;</span>
+                    
+                    <a href="https://www.cs.huji.ac.il/~shais/UnderstandingMachineLearning/copy.html">UML - Chapter 23.1</a>
+                    
+                </li>
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+        </ul>
+    </div>
+    <div class="col-md-4">
+        <h4><i class="fa-solid fa-video-camera"></i> Videos</h4>
+        <ul class="resource-list">
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+                <li>
+                    
+                        <span style="display:inline-block; width: 1em;">&bull;</span>
+                    
+                    <a href="https://youtu.be/qtaqvPAeEJY?si=bw-zWo3JmyX0PvGg">Covariance (StatQuest)</a>
+                    
+                </li>
+            
+        
+            
+                <li>
+                    
+                        <span style="display:inline-block; width: 1em;">&bull;</span>
+                    
+                    <a href="https://youtu.be/HMOI_lkzW08?si=MkLlaC0hgAeh9009">PCA (Short) (StatQuest)</a>
+                    
+                </li>
+            
+        
+            
+                <li>
+                    
+                        <i class="fa-solid fa-star" style="color: #f0ad4e;"></i>
+                    
+                    <a href="https://youtu.be/FgakZw6K1QQ?si=rvTJ67NAVVYZhoOh">PCA (StatQuest)</a>
+                    
+                </li>
+            
+        
+            
+                <li>
+                    
+                        <span style="display:inline-block; width: 1em;">&bull;</span>
+                    
+                    <a href="https://youtu.be/NEaUSP4YerM?si=lME2kIla7hilnX4w">t-SNE (StatQuest)</a>
+                    
+                </li>
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+        </ul>
+    </div>
+    <div class="col-md-4">
+        <h4><i class="fa-brands fa-python"></i> Notebooks</h4>
+        <ul class="resource-list">
+        
+            
+        
+            
+        
+            
+        
+            
+                <li>
+                    
+                        <span style="display:inline-block; width: 1em;">&bull;</span>
+                    
+                    <a href="https://colab.research.google.com/drive/1v1DV3oqt-XiMxsqTGyek6stAJ_S8LjeJ?usp=sharing">PCA Visualization</a>
+                    
+                </li>
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+                <li>
+                    
+                        <span style="display:inline-block; width: 1em;">&bull;</span>
+                    
+                    <a href="https://github.com/rasbt/machine-learning-book/blob/main/ch05/ch05.ipynb">PCA (rasbt)</a>
+                    
+                </li>
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+        </ul>
+    </div>
+</div>
+
+
+<div class="row">
+    
+        <div class="col-md-12">
+            <h4><i class="fa-solid fa-share-alt"></i> Blogposts</h4>
+            <ul class="resource-list">
+            
+                <li>
+                    
+                        <span style="display:inline-block; width: 1em;">&bull;</span>
+                    
+                    <a href="https://colah.github.io/posts/2014-10-Visualizing-MNIST/">MNIST (Olah)</a>
+                    
+                </li>
+            
+                <li>
+                    
+                        <span style="display:inline-block; width: 1em;">&bull;</span>
+                    
+                    <a href="https://sebastianraschka.com/Articles/2015_pca_in_3_steps.html">PCA (Raschka)</a>
+                    
+                </li>
+            
+                <li>
+                    
+                        <span style="display:inline-block; width: 1em;">&bull;</span>
+                    
+                    <a href="https://sebastianraschka.com/Articles/2014_pca_step_by_step.html">PCA from scratch (Raschka)</a>
+                    
+                </li>
+            
+                <li>
+                    
+                        <span style="display:inline-block; width: 1em;">&bull;</span>
+                    
+                    <a href="https://sebastianraschka.com/Articles/2014_about_feature_scaling.html">Standardization (Raschka)</a>
+                    
+                </li>
+            
+                <li>
+                    
+                        <span style="display:inline-block; width: 1em;">&bull;</span>
+                    
+                    <a href="https://sebastianraschka.com/Articles/2014_python_lda.html">LDA (Raschka)</a>
+                    
+                </li>
+            
+            </ul>
+        </div>
+    
+</div>
+
+        </td>
+    </tr>
+</table>
+
+<h2 id="practicum-exploratory-data-analysis">Practicum - Exploratory Data Analysis<a class="headerlink" href="#practicum-exploratory-data-analysis" title="Permanent link">&para;</a></h2>
+<table>
+    <tr>
+        <td colspan="3">
+            
+            <div class="row">
+    <div class="col-md-4">
+        <h4><i class="fa-solid fa-book"></i> Readings</h4>
+        <ul class="resource-list">
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+        </ul>
+    </div>
+    <div class="col-md-4">
+        <h4><i class="fa-solid fa-video-camera"></i> Videos</h4>
+        <ul class="resource-list">
+        
+            
+        
+            
+                <li>
+                    
+                        <i class="fa-solid fa-star" style="color: #f0ad4e;"></i>
+                    
+                    <a href="https://youtu.be/Kdsp6soqA7o?si=g3ssfI10Oqdms09K">Confusion Matrix (StatQuest)</a>
+                    
+                </li>
+            
+        
+            
+                <li>
+                    
+                        <i class="fa-solid fa-star" style="color: #f0ad4e;"></i>
+                    
+                    <a href="https://youtu.be/4jRBRDbJemM?si=5sp5qUoMbHvygXYP">ROC/AUC (StatQuest)</a>
+                    
+                </li>
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+                <li>
+                    
+                        <i class="fa-solid fa-star" style="color: #f0ad4e;"></i>
+                    
+                    <a href="https://www.youtube.com/watch?v=qWfzIYCvBqo">Precision vs. Recall</a>
+                    
+                        <span class="resource-credit">Catherine Healy &#x27;26</span>
+                    
+                </li>
+            
+        
+        </ul>
+    </div>
+    <div class="col-md-4">
+        <h4><i class="fa-brands fa-python"></i> Notebooks</h4>
+        <ul class="resource-list">
+        
+            
+                <li>
+                    
+                        <span style="display:inline-block; width: 1em;">&bull;</span>
+                    
+                    <a href="https://drive.google.com/file/d/1dWiGow2faAKcG3s0XDem1r0WpYJPn6Al/view?usp=sharing">Practicum</a>
+                    
+                </li>
+            
+        
+            
+        
+            
+        
+            
+                <li>
+                    
+                        <span style="display:inline-block; width: 1em;">&bull;</span>
+                    
+                    <a href="https://github.com/rasbt/machine-learning-book/blob/main/ch06/ch06.ipynb">Model Evaluation (rasbt)</a>
+                    
+                </li>
+            
+        
+            
+                <li>
+                    
+                        <span style="display:inline-block; width: 1em;">&bull;</span>
+                    
+                    <a href="https://github.com/rasbt/machine-learning-book/blob/main/ch07/ch07.ipynb">Ensemble Learning (rasbt)</a>
+                    
+                </li>
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+        </ul>
+    </div>
+</div>
+
+
+<div class="row">
+    
+        <div class="col-md-4">
+            <h4><i class="fa-solid fa-share-alt"></i> Blogposts</h4>
+            <ul class="resource-list">
+            
+                <li>
+                    
+                        <span style="display:inline-block; width: 1em;">&bull;</span>
+                    
+                    <a href="https://sebastianraschka.com/blog/2016/model-evaluation-selection-part3.html">Model Evaluation (Raschka)</a>
+                    
+                </li>
+            
+                <li>
+                    
+                        <span style="display:inline-block; width: 1em;">&bull;</span>
+                    
+                    <a href="https://sebastianraschka.com/Articles/2014_ensemble_classifier.html">Ensemble Classifier (Raschka)</a>
+                    
+                </li>
+            
+            </ul>
+        </div>
+        <div class="col-md-8">
+            <h4><i class="fa-solid fa-file-pdf"></i> Papers</h4>
+            <ul class="resource-list">
+            
+                <li>
+                    
+                        <span style="display:inline-block; width: 1em;">&bull;</span>
+                    
+                    <a href="https://arxiv.org/pdf/1811.12808">Model Evaluation (Raschka)</a>
+                    
+                </li>
+            
+            </ul>
+        </div>
+    
+</div>
+
+        </td>
+    </tr>
+</table>
+
+<h2 id="quiz">Quiz<a class="headerlink" href="#quiz" title="Permanent link">&para;</a></h2>
+<iframe src="https://docs.google.com/forms/d/e/1FAIpQLSe9ELFwpTQJNhSIj-BN3Vzp_yL0z_HZ_hDGPua4X-9oko7oZQ/viewform?embedded=true" width="640" height="3314" frameborder="0" marginheight="0" marginwidth="0">Loading…</iframe>
+
+
+	    <div class="row">
+		<hr/>
+
+		<footer class="text-center">
+		    <p class="text-muted">
+		    <small>
+		    Built using
+		    <a href="http://twitter.github.com/bootstrap/">Bootstrap</a>,
+		    <a href="http://fortawesome.github.com/Font-Awesome/">Font Awesome</a>, and
+		    <a href="http://www.python.org/">Python</a>.
+		    <br/>
+		    &copy; 2022 <a href="http://www.nd.edu">University of Notre Dame</a>
+		    </small>
+		    </p>
+		</footer>
+	    </div>
+
+	</div> <!-- /container -->
+
+	<!-- Bootstrap core JavaScript
+	================================================== -->
+	<!-- Placed at the end of the document so the pages load faster -->
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+	
+	
+    </body>
+</html>
+

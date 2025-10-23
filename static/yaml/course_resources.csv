@@ -1,0 +1,240 @@
+Section,Date,Topics,Resource Name,Type,Link
+Welcome,Mon 01/13,"Syllabus, History of AI",Slides,reading,https://drive.google.com/file/d/1yUot9T3myty2Tsx1KpXLxhyd77KbFlUl/view?usp=sharing
+Welcome,Mon 01/13,"Syllabus, History of AI",Panopto,video,https://notredame.hosted.panopto.com/Panopto/Pages/Viewer.aspx?id=58dc4069-548c-4168-9dfe-b2640163d0da
+Search and Representations,Wed 01/15,Search,Slides,reading,https://drive.google.com/file/d/1Rc5V0QSkbObr1hWjcuLyDZ0dnPDhd538/view?usp=sharing
+Search and Representations,Wed 01/15,Search,FCA - Section 3.5,reading,https://artint.info/3e/html/ArtInt3e.Ch3.S5.html
+Search and Representations,Wed 01/15,Search,Panopto,video,https://notredame.hosted.panopto.com/Panopto/Pages/Viewer.aspx?id=2e7e50b5-88a1-44ff-86a4-b2730136eb53
+Search and Representations,Wed 01/15,Search,Harvard CS50,video,https://www.youtube.com/watch?v=WbzNRTTrX0g
+Search and Representations,Wed 01/15,Search,MIT 6.034,video,https://www.youtube.com/watch?v=j1H3jAAGlEA
+Search and Representations,Wed 01/22,A* Search,Slides,reading,https://drive.google.com/file/d/1TXsuZZx0iFe7HXixaGD_vB6a8mMBZLIF/view?usp=sharing
+Search and Representations,Wed 01/22,A* Search,FCA - Section 3.6,reading,https://artint.info/3e/html/ArtInt3e.Ch3.S6.html
+Search and Representations,Wed 01/22,A* Search,Panopto,video,https://notredame.hosted.panopto.com/Panopto/Pages/Viewer.aspx?id=d5fecb7f-fd0b-4103-b41e-b2730130443e
+Search and Representations,Wed 01/22,A* Search,Harvard CS50,video,https://youtu.be/WbzNRTTrX0g?si=mqYHjM8hTRsed8h4&t=3269
+Search and Representations,Wed 01/22,A* Search,Stanford CS221,video,https://www.youtube.com/watch?v=HEs1ZCvLH2s&list=PLoROMvodv4rOca_Ovz1DvdtWuz8BfSWL2&index=18
+Search and Representations,Wed 01/22,A* Search,MIT 6.034,video,https://www.youtube.com/watch?v=gGQ-vAmdAOI
+Search and Representations,Wed 01/22,A* Search,A* Search,blogpost,https://courses.grainger.illinois.edu/cs440/fa2024/lectures/astar.html
+Search and Representations,Wed 01/22,A* Search,Introduction to A*,blogpost,https://theory.stanford.edu/~amitp/GameProgramming/AStarComparison.html
+Search and Representations,Wed 01/22,A* Search,Heuristics,blogpost,https://theory.stanford.edu/~amitp/GameProgramming/Heuristics.html
+Search and Representations,Mon 01/27,Constraint Satisfaction Problems,Slides,reading,https://drive.google.com/file/d/1_KrWnjqZbQ5bnjV9M9R-zGRizqLuJHu2/view?usp=sharing
+Search and Representations,Mon 01/27,Constraint Satisfaction Problems,FCA - Sections 4.1 through 4.6,reading,https://artint.info/3e/html/ArtInt3e.Ch4.html
+Search and Representations,Mon 01/27,Constraint Satisfaction Problems,Panopto,video,https://notredame.hosted.panopto.com/Panopto/Pages/Viewer.aspx?id=950c91e2-7057-47b7-8b53-b272016b79a9
+Search and Representations,Mon 01/27,Constraint Satisfaction Problems,Harvard CS50,video,https://youtu.be/qK46ET1xk2A?si=tSAHHe0Sp-OxWUpD&t=3033
+Search and Representations,Mon 01/27,Constraint Satisfaction Problems,Stanford CS221,video,https://www.youtube.com/watch?v=-IO4fPO0rxk&list=PLoROMvodv4rOca_Ovz1DvdtWuz8BfSWL2&index=23
+Search and Representations,Mon 01/27,Constraint Satisfaction Problems,MIT 6.034,video,https://www.youtube.com/watch?v=dARl_gGrS4o
+Search and Representations,Mon 01/27,Constraint Satisfaction Problems,CSPs for Sudoku,blogpost,https://medium.com/my-udacity-ai-nanodegree-notes/solving-sudoku-think-constraint-satisfaction-problem-75763f0742c9
+Search and Representations,Wed 01/29,Adversarial Search,Slides,reading,https://drive.google.com/file/d/1_40XB0kUsCcmY5luy8iDi74SD-Jk6QR1/view?usp=sharing
+Search and Representations,Wed 01/29,Adversarial Search,FCA - Sections 14.2 and 14.3,reading,https://artint.info/3e/html/ArtInt3e.Ch14.S2.html
+Search and Representations,Wed 01/29,Adversarial Search,Panopto,video,https://notredame.hosted.panopto.com/Panopto/Pages/Viewer.aspx?id=5aad0ebb-3b39-45cc-a3f3-b2740169d60b
+Search and Representations,Wed 01/29,Adversarial Search,Harvard CS50,video,https://youtu.be/WbzNRTTrX0g?si=CAG9IhmN4MBSzHfi&t=4323
+Search and Representations,Wed 01/29,Adversarial Search,Stanford CS221,video,https://www.youtube.com/watch?v=3pU-Hrz_xy4&list=PLoROMvodv4rOca_Ovz1DvdtWuz8BfSWL2&index=21
+Search and Representations,Wed 01/29,Adversarial Search,MIT 6.034,video,https://www.youtube.com/watch?v=STjW3eH0Cik
+Search and Representations,Wed 01/29,Adversarial Search,Tic Tac Toe,notebook,https://colab.research.google.com/drive/1Fys3UaM_dBboKzaCWqMN2RC2iKy8xPE9?usp=sharing
+Search and Representations,Wed 01/29,Adversarial Search,Adversarial Search,blogpost,https://stackabuse.com/minimax-and-alpha-beta-pruning-in-python/
+Search and Representations,Mon 02/03,Knowledge Representation and Feature Engineering,Slides,reading,https://drive.google.com/file/d/1PZTiiiTxianayPFHaLom8LYglS-ZSm0W/view?usp=sharing
+Search and Representations,Mon 02/03,Knowledge Representation and Feature Engineering,"FCA - Chapters 5, 15, and 16",reading,https://artint.info/3e/html/ArtInt3e.Ch5.html
+Search and Representations,Mon 02/03,Knowledge Representation and Feature Engineering,Panopto,video,https://notredame.hosted.panopto.com/Panopto/Pages/Viewer.aspx?id=d450ea46-dd55-498e-9af6-b2790167db7c
+Search and Representations,Mon 02/03,Knowledge Representation and Feature Engineering,Harvard CS50,video,https://www.youtube.com/watch?v=HWQLez87vqM
+Search and Representations,Mon 02/03,Knowledge Representation and Feature Engineering,Stanford CS221,video,https://www.youtube.com/watch?v=RIk67yGMVv4&list=PLoROMvodv4rOca_Ovz1DvdtWuz8BfSWL2&index=44
+Direct Fit Models,Wed 02/05,Decision Trees,Slides,reading,https://drive.google.com/file/d/1jNOF7nxXn-fkEwuArrLaG6cmbl9b-iJx/view?usp=sharing
+Direct Fit Models,Wed 02/05,Decision Trees,FCA - Sections 7.2 and 7.3.1,reading,https://artint.info/3e/html/ArtInt3e.Ch7.S3.html
+Direct Fit Models,Wed 02/05,Decision Trees,Panopto,video,https://notredame.hosted.panopto.com/Panopto/Pages/Viewer.aspx?id=bf4e157a-ee3d-48b6-ac07-b27b016b88f3
+Direct Fit Models,Wed 02/05,Decision Trees,PML - Chapter 18,reading,https://probml.github.io/pml-book/book1.html
+Direct Fit Models,Wed 02/05,Decision Trees,ISLP - Chapter 8,reading,https://www.statlearning.com/
+Direct Fit Models,Wed 02/05,Decision Trees,UML - Chapter 18,reading,https://www.cs.huji.ac.il/~shais/UnderstandingMachineLearning/copy.html
+Direct Fit Models,Wed 02/05,Decision Trees,MIT 6.034,video,https://www.youtube.com/watch?v=SXBG3RGr_Rc
+Direct Fit Models,Wed 02/05,Decision Trees,Cornell CS4780,video,https://youtu.be/a3ioGSwfVpE?si=f0JevsrXU2q3LZw6
+Direct Fit Models,Wed 02/05,Decision Trees,Playing Tennis Decision Tree,notebook,https://colab.research.google.com/drive/1C8MwpktYioRquWU_tz98funLSbe8nM5x?usp=sharing
+Direct Fit Models,Wed 02/05,Decision Trees,Entropy (StatQuest),video,https://youtu.be/YtebGVx-Fxw?si=zC-J1JrOOe64b8cM
+Direct Fit Models,Wed 02/05,Decision Trees,Decision Trees (StatQuest),video,https://youtu.be/7VeUPuFGJHk?si=SO3AHNT9KX1vJdln
+Direct Fit Models,Wed 02/05,Decision Trees,Regression Trees (StatQuest),video,https://youtu.be/g9c66TUylZ4?si=SpvGvKvq9DmjLXYi
+Direct Fit Models,Wed 02/05,Decision Trees,Information Theory (3b1b),video,https://youtu.be/v68zYyaEmEA?si=0mkPXsH4BYhxzSCl
+Direct Fit Models,Wed 02/05,Decision Trees,Decision Trees (MLU),blogpost,https://mlu-explain.github.io/decision-tree/
+Direct Fit Models,Mon 02/10,Markov Models,Slides,reading,https://drive.google.com/file/d/15wSXZcU4LRnjD-6wUeIek4Ev6Bp9XS2h/view?usp=sharing
+Direct Fit Models,Mon 02/10,Markov Models,FCA - Section 9.6,reading,https://artint.info/3e/html/ArtInt3e.Ch9.html
+Direct Fit Models,Mon 02/10,Markov Models,Markov Babbler,notebook,https://colab.research.google.com/drive/1dthRebtlLdXYt9ZSYuCsC11896ovNkCV?usp=sharing
+Direct Fit Models,Mon 02/10,Markov Models,PML - Sections 3.6.1.2,reading,https://probml.github.io/pml-book/book1.html
+Direct Fit Models,Mon 02/10,Markov Models,Harvard CS50,video,https://youtu.be/D8RRq3TbtHU?si=OHgr_CzMVECPEqdc&t=5578
+Direct Fit Models,Mon 02/10,Markov Models,Stanford CS221,video,https://www.youtube.com/watch?v=neeaJb3wCYw&list=PLoROMvodv4rOca_Ovz1DvdtWuz8BfSWL2&index=30
+Direct Fit Models,Mon 02/10,Markov Models,N-Gram Language Models,blogpost,https://web.stanford.edu/~jurafsky/slp3/3.pdf
+Direct Fit Models,Wed 02/12,Bayesian Reasoning,Slides,reading,https://drive.google.com/file/d/1cuuD9_fpXVAGyz-c5vpaH1G0za7lBja-/view?usp=sharing
+Direct Fit Models,Wed 02/12,Bayesian Reasoning,FCA - Sections 9.1 through 9.4,reading,https://artint.info/3e/html/ArtInt3e.Ch9.html
+Direct Fit Models,Wed 02/12,Bayesian Reasoning,Panopto,video,https://notredame.hosted.panopto.com/Panopto/Pages/Viewer.aspx?id=23a718e2-6f4b-45a8-bca0-b282016be13b
+Direct Fit Models,Wed 02/12,Bayesian Reasoning,"PML - Sections 2.3, 3.6.1, 4.6, 5.1, 9.3",reading,https://probml.github.io/pml-book/book1.html
+Direct Fit Models,Wed 02/12,Bayesian Reasoning,ISLP - Section 4.4.4,reading,https://www.statlearning.com/
+Direct Fit Models,Wed 02/12,Bayesian Reasoning,UML - Chapter 24,reading,https://www.cs.huji.ac.il/~shais/UnderstandingMachineLearning/copy.html
+Direct Fit Models,Wed 02/12,Bayesian Reasoning,Harvard CS50,video,https://www.youtube.com/watch?v=D8RRq3TbtHU
+Direct Fit Models,Wed 02/12,Bayesian Reasoning,Stanford CS221,video,https://www.youtube.com/watch?v=fA7zP6EcVdw&list=PLoROMvodv4rOca_Ovz1DvdtWuz8BfSWL2&index=32
+Direct Fit Models,Wed 02/12,Bayesian Reasoning,MIT 6.034,video,https://www.youtube.com/watch?v=A6Ud6oUCRak
+Direct Fit Models,Wed 02/12,Bayesian Reasoning,Naive Bayes for Iris Classification,notebook,https://drive.google.com/file/d/1ucLp9MQWaBnmBXlaCNBuba8WYWLwl0pH/view?usp=sharing
+Direct Fit Models,Wed 02/12,Bayesian Reasoning,Naive Bayes Visualizer,notebook,https://colab.research.google.com/drive/1irskT_qQ0EQOZIvf35u7RNbKZu3Sea3w?usp=sharing
+Direct Fit Models,Wed 02/12,Bayesian Reasoning,Cornell CS4780,video,https://youtu.be/pDHEX2usCS0?si=cPLXGP4n4A-FuNtI
+Direct Fit Models,Wed 02/12,Bayesian Reasoning,Conditional Probability (StatQuest),video,https://youtu.be/1ONDvW1UIJc?si=3mNParEk5_PjfnZN
+Direct Fit Models,Wed 02/12,Bayesian Reasoning,Bayes' Theorem (StatQuest),video,https://youtu.be/9wCnvr7Xw4E?si=PEhYzKTasfIq1xOx
+Direct Fit Models,Wed 02/12,Bayesian Reasoning,Likelihood (StatQuest),video,https://youtu.be/pYxNSUDSFH4?si=zt0zdX9Kf8-Z58jR
+Direct Fit Models,Wed 02/12,Bayesian Reasoning,PDFs (StatQuest),video,https://youtu.be/oI3hZJqXJuc?si=z0mmgAYp_kQXztLu
+Direct Fit Models,Wed 02/12,Bayesian Reasoning,MLE (StatQuest),video,https://youtu.be/XepXtl9YKwc?si=eIiQ1SJeyVNEj_ey
+Direct Fit Models,Wed 02/12,Bayesian Reasoning,Naive Bayes (StatQuest),video,https://youtu.be/O2L2Uv9pdDA?si=rAU-89pPD7qt_U-l
+Direct Fit Models,Wed 02/12,Bayesian Reasoning,Gaussian NB (StatQuest),video,https://youtu.be/H3EjCKtlVog?si=BlD029fjYUcvGMAq
+Direct Fit Models,Mon 02/17,Linear Regression,Slides,reading,https://drive.google.com/file/d/1CC4BIzS1dAEGTmRB6aRQhe9QL2iab7yq/view?usp=sharing
+Direct Fit Models,Mon 02/17,Linear Regression,FCA - Sections 7.3.2 (First few paragraphs) and 7.4.2,reading,https://artint.info/3e/html/ArtInt3e.Ch7.S3.html
+Direct Fit Models,Mon 02/17,Linear Regression,Panopto,video,https://notredame.hosted.panopto.com/Panopto/Pages/Viewer.aspx?id=f05aae98-bacc-46cd-86a0-b287016e7805
+Direct Fit Models,Mon 02/17,Linear Regression,"PML - Sections 7.5, 8.1.3, Chapter 11",reading,https://probml.github.io/pml-book/book1.html
+Direct Fit Models,Mon 02/17,Linear Regression,ISLP - Chapter 3,reading,https://www.statlearning.com/
+Direct Fit Models,Mon 02/17,Linear Regression,D2L - Chapter 3.1,reading,https://d2l.ai/chapter_linear-regression/linear-regression.html
+Direct Fit Models,Mon 02/17,Linear Regression,UML - Chapter 9.2,reading,https://www.cs.huji.ac.il/~shais/UnderstandingMachineLearning/copy.html
+Direct Fit Models,Mon 02/17,Linear Regression,Stanford CS221,video,https://www.youtube.com/watch?v=nEWNNt2KmfQ&list=PLoROMvodv4rOca_Ovz1DvdtWuz8BfSWL2&index=5
+Direct Fit Models,Mon 02/17,Linear Regression,Harvard CS50,video,https://youtu.be/-g0iJjnO2_w?si=jNuQG0o83uKw0qbR&t=2371
+Direct Fit Models,Mon 02/17,Linear Regression,Cornell CS4780,video,https://youtu.be/_21o_ylL0q4?si=ee6JJ2WxAvA9hfyr
+Direct Fit Models,Mon 02/17,Linear Regression,Singular Value Decomposition,notebook,https://notredame.hosted.panopto.com/Panopto/Pages/Viewer.aspx?id=5aad0ebb-3b39-45cc-a3f3-b2740169d60b
+Direct Fit Models,Mon 02/17,Linear Regression,Linear Regression and Regularization,notebook,https://notredame.hosted.panopto.com/Panopto/Pages/Viewer.aspx?id=5aad0ebb-3b39-45cc-a3f3-b2740169d60b
+Direct Fit Models,Mon 02/17,Linear Regression,Polynomial Regression,notebook,https://notredame.hosted.panopto.com/Panopto/Pages/Viewer.aspx?id=5aad0ebb-3b39-45cc-a3f3-b2740169d60b
+Direct Fit Models,Mon 02/17,Linear Regression,Linear Regression (StatQuest),video,https://youtu.be/nk2CQITm_eo?si=LtdQNRlau17NbjjF
+Direct Fit Models,Mon 02/17,Linear Regression,Multiple Regression (StatQuest),video,https://youtu.be/zITIFTsivN8?si=f0YbEmnZ6_XFMpY5
+Direct Fit Models,Mon 02/17,Linear Regression,Bias and Variance (StatQuest),video,https://youtu.be/EuBBz3bI-aA?si=WYsqtbrIZ6ICrYGP
+Direct Fit Models,Mon 02/17,Linear Regression,L2 Regularization (StatQuest),video,https://youtu.be/Q81RR3yKn30?si=tMvAc1m9RHe7WYgH
+Direct Fit Models,Mon 02/17,Linear Regression,L1 Regularization (StatQuest),video,https://youtu.be/NGf0voTMlcs?si=QACQkO-8Msm95saj
+Direct Fit Models,Mon 02/17,Linear Regression,L1 vs. L2 Visualization (StatQuest),video,https://youtu.be/Xm2C_gTAl8c?si=MovbjzS6Cf-PN70-
+Direct Fit Models,Mon 02/17,Linear Regression,Linear Regression (MLU),blogpost,https://mlu-explain.github.io/linear-regression/
+Exam 01,Wed 02/19,Review,Panopto,video,https://notredame.hosted.panopto.com/Panopto/Pages/Viewer.aspx?id=357cce38-675e-4cd8-9620-b28901732a3a
+Supervised Learning,Wed 02/26,Perceptrons,Slides,reading,https://drive.google.com/file/d/1p1dYm8fdBJ1GsKVYdg2cpSUdUPuglWFy/view?usp=sharing
+Supervised Learning,Wed 02/26,Perceptrons,PML - Section 10.2.5,reading,https://probml.github.io/pml-book/book1.html
+Supervised Learning,Wed 02/26,Perceptrons,UML - Section 9.1.2,reading,https://www.cs.huji.ac.il/~shais/UnderstandingMachineLearning/copy.html
+Supervised Learning,Wed 02/26,Perceptrons,Panopto,video,https://notredame.hosted.panopto.com/Panopto/Pages/Viewer.aspx?id=ed8b2037-1683-41ad-af60-b290016968af
+Supervised Learning,Wed 02/26,Perceptrons,Harvard CS50,video,https://youtu.be/-g0iJjnO2_w?si=rsqf3IhYQV_PKjkc&t=751
+Supervised Learning,Wed 02/26,Perceptrons,Cornell CS4780,video,https://youtu.be/wl7gVvI-HuY?si=25ULeFrFpBytCOTn
+Supervised Learning,Wed 02/26,Perceptrons,Perceptrons,video,https://youtu.be/l-9ALe3U-Fg?si=tS0U8QDoRylnSHnZ
+Supervised Learning,Wed 02/26,Perceptrons,Perceptron,notebook,https://drive.google.com/file/d/1iX-UsNbA9hPjXkK2xUWrKpGQ-YyQtqcT/view?usp=sharing
+Supervised Learning,Mon 03/03,Logistic Regression and Gradient Descent,Slides,reading,https://drive.google.com/file/d/1Pn8WPGIpyNlp4LmZVvSvEXcm2qOQiZJ3/view?usp=sharing
+Supervised Learning,Mon 03/03,Logistic Regression and Gradient Descent,FCA - Section 7.3.2,reading,https://artint.info/3e/html/ArtInt3e.Ch7.S3.html
+Supervised Learning,Mon 03/03,Logistic Regression and Gradient Descent,PML - Chapter 10,reading,https://probml.github.io/pml-book/book1.html
+Supervised Learning,Mon 03/03,Logistic Regression and Gradient Descent,ISLP - Chapter 4.3,reading,https://www.statlearning.com/
+Supervised Learning,Mon 03/03,Logistic Regression and Gradient Descent,UML - Section 9.3,reading,https://www.cs.huji.ac.il/~shais/UnderstandingMachineLearning/copy.html
+Supervised Learning,Mon 03/03,Logistic Regression and Gradient Descent,Panopto,video,https://notredame.hosted.panopto.com/Panopto/Pages/Viewer.aspx?id=ce3f234d-f8c8-463f-b7f0-b2950169e996
+Supervised Learning,Mon 03/03,Logistic Regression and Gradient Descent,Numpy LR and GD,notebook,https://colab.research.google.com/drive/1Td14eL3FLIjn5WxUlmdIT1A2nyYZ-Oms?usp=sharing
+Supervised Learning,Mon 03/03,Logistic Regression and Gradient Descent,Cornell CS4780,video,https://youtu.be/GnkDzIOxfzI?si=zeTur4eTkD7uHHiv
+Supervised Learning,Mon 03/03,Logistic Regression and Gradient Descent,Logistic Regression (StatQuest),video,https://youtu.be/yIYKR4sgzI8?si=1HhaymUgRNNAMEy3
+Supervised Learning,Mon 03/03,Logistic Regression and Gradient Descent,Gradient Descent (StatQuest),video,https://youtu.be/sDv4f4s2SB8?si=TrI_ge8kywlfgmrv
+Supervised Learning,Mon 03/03,Logistic Regression and Gradient Descent,Gradient Descent (3b1b),video,https://youtu.be/IHZwWFHWa-w?si=Kn21ycaonExUo5Br
+Supervised Learning,Mon 03/03,Logistic Regression and Gradient Descent,Visualizing Gradient Descent,notebook,https://www.kaggle.com/code/christianwittmann/visualizing-gradient-descent-in-3d
+Supervised Learning,Mon 03/03,Logistic Regression and Gradient Descent,Logistic Regression (MLU),blogpost,https://mlu-explain.github.io/logistic-regression/
+Supervised Learning,Mon 03/03,Logistic Regression and Gradient Descent,Logistic Regression Visualization,notebook,https://colab.research.google.com/drive/1EEsiC4noy6ncQdm9wxLnPwO82R9zncWQ?usp=sharing
+Supervised Learning,Wed 03/05,SVMs and KNNs,Slides,reading,https://drive.google.com/file/d/1yZQ1PU5rskoMkXppoBKQqCFu7FSjjbd-/view?usp=sharing
+Supervised Learning,Wed 03/05,SVMs and KNNs,"PML - Sections 16.1, 17.3",reading,https://probml.github.io/pml-book/book1.html
+Supervised Learning,Wed 03/05,SVMs and KNNs,"ISLP - Sections 3.5, 4.7.6 and Chapter 9",reading,https://www.statlearning.com/
+Supervised Learning,Wed 03/05,SVMs and KNNs,"UML - Chapters 15, 19",reading,https://www.cs.huji.ac.il/~shais/UnderstandingMachineLearning/copy.html
+Supervised Learning,Wed 03/05,SVMs and KNNs,Panopto,video,https://notredame.hosted.panopto.com/Panopto/Pages/Viewer.aspx?id=a38cd616-4164-463e-a3f1-b29701687382
+Supervised Learning,Wed 03/05,SVMs and KNNs,Harvard CS50 (0:00 - 12:30 and 33:29 - 39:41),video,https://www.youtube.com/watch?v=-g0iJjnO2_w
+Supervised Learning,Wed 03/05,SVMs and KNNs,MIT 6.034 SVMs,video,https://www.youtube.com/watch?v=_PwhiWxHK8o
+Supervised Learning,Wed 03/05,SVMs and KNNs,MIT 6.034 KNNs,video,https://www.youtube.com/watch?v=09mb78oiPkA
+Supervised Learning,Wed 03/05,SVMs and KNNs,Cornell CS4780 KNNs,video,https://youtu.be/oymtGlGdT-k?si=Lg6X6xXHV2BlrJsF
+Supervised Learning,Wed 03/05,SVMs and KNNs,Cornell CS4780 SVMs 1,video,https://youtu.be/xpHQ6UhMlx4?si=o64fVVn6-FDP3Ar3
+Supervised Learning,Wed 03/05,SVMs and KNNs,Cornell CS4780 SVMs 2,video,https://youtu.be/RwF1esLCG4U?si=780GX0R-c0qWDogU
+Supervised Learning,Wed 03/05,SVMs and KNNs,SVMs (StatQuest),video,https://youtu.be/efR1C6CvhmE?si=i5q-s8QuxKEAQ3Az
+Supervised Learning,Wed 03/05,SVMs and KNNs,KNN (StatQuest),video,https://youtu.be/HVXime0nQeI?si=vUOtkw1Q6nxt9Aj3
+Unsupervised Learning,Mon 03/17,Clustering,Slides,reading,https://drive.google.com/file/d/1h-f4JpjdasM5h_46AY4DJWd_O7dAD6De/view?usp=sharing
+Unsupervised Learning,Mon 03/17,Clustering,FCA - Section 10.3,reading,https://artint.info/3e/html/ArtInt3e.Ch10.S3.html
+Unsupervised Learning,Mon 03/17,Clustering,PML - Chapter 21,reading,https://probml.github.io/pml-book/book1.html
+Unsupervised Learning,Mon 03/17,Clustering,ISLP - Section 12.4,reading,https://www.statlearning.com/
+Unsupervised Learning,Mon 03/17,Clustering,UML - Chapter 22,reading,https://www.cs.huji.ac.il/~shais/UnderstandingMachineLearning/copy.html
+Unsupervised Learning,Mon 03/17,Clustering,Panopto,video,https://notredame.hosted.panopto.com/Panopto/Pages/Viewer.aspx?id=550c09db-9c29-4e62-8e91-b2a30158051d
+Unsupervised Learning,Mon 03/17,Clustering,Clustering Visualizations,notebook,https://colab.research.google.com/drive/1WWysdY8e08f9tEC_P_lxt0INBAzmx8yn?usp=sharing
+Unsupervised Learning,Mon 03/17,Clustering,GMM Clustering,notebook,https://colab.research.google.com/drive/1tYH-ZkSDrRlJlPKxKsY89SSR01teZ0dr?usp=sharing
+Unsupervised Learning,Mon 03/17,Clustering,Hierarchical (StatQuest),video,https://youtu.be/7xHsRkOdVwo?si=f8UkfIYcaxpyEUVk
+Unsupervised Learning,Mon 03/17,Clustering,K-Means (StatQuest),video,https://youtu.be/4b5d3muPQmA?si=T2ow71QcEXdbKt7V
+Unsupervised Learning,Wed 03/19,Dimensionality Reduction,Slides,reading,https://drive.google.com/file/d/12k7Fo6H--pTopwEGCgSURhvqC4OrIjT6/view?usp=sharing
+Unsupervised Learning,Wed 03/19,Dimensionality Reduction,PML - Section 20.1,reading,https://probml.github.io/pml-book/book1.html
+Unsupervised Learning,Wed 03/19,Dimensionality Reduction,ISLP - Section 12.2,reading,https://www.statlearning.com/
+Unsupervised Learning,Wed 03/19,Dimensionality Reduction,UML - Chapter 23.1,reading,https://www.cs.huji.ac.il/~shais/UnderstandingMachineLearning/copy.html
+Unsupervised Learning,Wed 03/19,Dimensionality Reduction,PCA Visualization,notebook,https://colab.research.google.com/drive/1v1DV3oqt-XiMxsqTGyek6stAJ_S8LjeJ?usp=sharing
+Unsupervised Learning,Wed 03/19,Dimensionality Reduction,Covariance (StatQuest),video,https://youtu.be/qtaqvPAeEJY?si=bw-zWo3JmyX0PvGg
+Unsupervised Learning,Wed 03/19,Dimensionality Reduction,PCA (Short) - Statquest,video,https://youtu.be/HMOI_lkzW08?si=MkLlaC0hgAeh9009
+Unsupervised Learning,Wed 03/19,Dimensionality Reduction,PCA - Statquest,video,https://youtu.be/FgakZw6K1QQ?si=rvTJ67NAVVYZhoOh
+Unsupervised Learning,Wed 03/19,Dimensionality Reduction,t-SNE (StatQuest),video,https://youtu.be/NEaUSP4YerM?si=lME2kIla7hilnX4w
+Applied ML,Mon 03/24,Practicum - Exploratory Data Analysis,Slides,reading,https://drive.google.com/file/d/18-v8reGHy-6YXVObOnUGqyizC0zW7GYX/view?usp=sharing
+Applied ML,Mon 03/24,Practicum - Exploratory Data Analysis,Practicum,notebook,https://drive.google.com/file/d/1dWiGow2faAKcG3s0XDem1r0WpYJPn6Al/view?usp=sharing
+Applied ML,Mon 03/24,Practicum - Exploratory Data Analysis,Confusion Matrix (StatQuest),video,https://youtu.be/Kdsp6soqA7o?si=g3ssfI10Oqdms09K
+Applied ML,Mon 03/24,Practicum - Exploratory Data Analysis,ROC/AUC (StatQuest),video,https://youtu.be/4jRBRDbJemM?si=5sp5qUoMbHvygXYP
+ML to DL,Wed 03/26,Multi-Layer Perceptrons (FFNs),Slides,reading,https://drive.google.com/file/d/1UDZuhHbDqn7kjcZP4KIggRrfLBb_OQ64/view?usp=sharing
+ML to DL,Wed 03/26,Multi-Layer Perceptrons (FFNs),FCA - Section 8.1 (Until 8.1.1),reading,https://artint.info/3e/html/ArtInt3e.Ch8.html
+ML to DL,Wed 03/26,Multi-Layer Perceptrons (FFNs),PML - Section 13.2,reading,https://probml.github.io/pml-book/book1.html
+ML to DL,Wed 03/26,Multi-Layer Perceptrons (FFNs),"ISLP - Sections 10.1, 10.2",reading,https://www.statlearning.com/
+ML to DL,Wed 03/26,Multi-Layer Perceptrons (FFNs),D2L - Sections 5.1 and 5.2,reading,https://d2l.ai/chapter_multilayer-perceptrons/index.html
+ML to DL,Wed 03/26,Multi-Layer Perceptrons (FFNs),UML - Sections 20.1 - 20.5,reading,https://www.cs.huji.ac.il/~shais/UnderstandingMachineLearning/copy.html
+ML to DL,Wed 03/26,Multi-Layer Perceptrons (FFNs),Panopto,video,https://notredame.hosted.panopto.com/Panopto/Pages/Viewer.aspx?id=64dff764-0306-4caa-8e38-b2ac01594013
+ML to DL,Wed 03/26,Multi-Layer Perceptrons (FFNs),Harvard CS50 (0:00 - 16:00),video,https://www.youtube.com/watch?v=J1QD9hLDEDY
+ML to DL,Wed 03/26,Multi-Layer Perceptrons (FFNs),Stanford CS221,video,https://www.youtube.com/watch?v=pnKXgBHuN58&list=PLoROMvodv4rOca_Ovz1DvdtWuz8BfSWL2&index=11
+ML to DL,Wed 03/26,Multi-Layer Perceptrons (FFNs),MIT 6.034,video,https://www.youtube.com/watch?v=uXt8qF2Zzfo
+ML to DL,Wed 03/26,Multi-Layer Perceptrons (FFNs),Simple FFN Visualization,notebook,https://colab.research.google.com/drive/14S8IbQQ59TNdJAF0jqGVKjh4kpu3tT_L?usp=sharing
+ML to DL,Wed 03/26,Multi-Layer Perceptrons (FFNs),Neural Networks (StatQuest),video,https://youtu.be/CqOfi41LfDw?si=uc3frgwCzGIqxuQN
+ML to DL,Wed 03/26,Multi-Layer Perceptrons (FFNs),pytorch (StatQuest),video,https://youtu.be/FHdlXe1bSe4?si=jrQBr_XpoS7moqoO
+ML to DL,Wed 03/26,Multi-Layer Perceptrons (FFNs),Matrix Math (StatQuest),video,https://youtu.be/ZTt9gsGcdDo?si=WPN9Vxtbm_94C-nq
+ML to DL,Mon 03/31,Gradient Descent and Backpropagation,Slides,reading,https://drive.google.com/file/d/16-tRoAj_wEKP0-jMXBMLXsoZwM0chjAg/view?usp=sharing
+ML to DL,Mon 03/31,Gradient Descent and Backpropagation,FCA - Sections 8.1.1 and 8.2,reading,https://artint.info/3e/html/ArtInt3e.Ch8.S1.html
+ML to DL,Mon 03/31,Gradient Descent and Backpropagation,PML - Section 13.3,reading,https://probml.github.io/pml-book/book1.html
+ML to DL,Mon 03/31,Gradient Descent and Backpropagation,ISLP - Section 10.7,reading,https://www.statlearning.com/
+ML to DL,Mon 03/31,Gradient Descent and Backpropagation,D2L - Section 5.3,reading,https://d2l.ai/chapter_multilayer-perceptrons/backprop.html
+ML to DL,Mon 03/31,Gradient Descent and Backpropagation,UML - Section 20.6,reading,https://www.cs.huji.ac.il/~shais/UnderstandingMachineLearning/copy.html
+ML to DL,Mon 03/31,Gradient Descent and Backpropagation,Panopto,video,https://notredame.hosted.panopto.com/Panopto/Pages/Viewer.aspx?id=36c905b4-cbd9-4a0d-aa0c-b2b10162772b
+ML to DL,Mon 03/31,Gradient Descent and Backpropagation,Harvard CS50 (16:00 - 39:00),video,https://www.youtube.com/watch?v=J1QD9hLDEDY
+ML to DL,Mon 03/31,Gradient Descent and Backpropagation,Stanford CS221 - SGD,video,https://www.youtube.com/watch?v=bl2WgBLH0tI&list=PLoROMvodv4rOca_Ovz1DvdtWuz8BfSWL2&index=7
+ML to DL,Mon 03/31,Gradient Descent and Backpropagation,Stanford CS221 - Backprop,video,https://www.youtube.com/watch?v=OcAF-l2xB9Y&list=PLoROMvodv4rOca_Ovz1DvdtWuz8BfSWL2&index=12
+ML to DL,Mon 03/31,Gradient Descent and Backpropagation,MIT 6.034,video,https://www.youtube.com/watch?v=uXt8qF2Zzfo
+ML to DL,Mon 03/31,Gradient Descent and Backpropagation,Numpy Backprop,notebook,https://colab.research.google.com/drive/1ogAx_Bqe80PsFzloNR7W0Ijd1YePNGVU?usp=sharing
+ML to DL,Mon 03/31,Gradient Descent and Backpropagation,SGD (StatQuest),video,https://youtu.be/vMh0zPT0tLI?si=V4gwCG8HGbcQ6kX7
+ML to DL,Mon 03/31,Gradient Descent and Backpropagation,Chain Rule (StatQuest),video,https://youtu.be/wl1myxrtQHQ?si=npy0cR-pfY5RIT5t
+ML to DL,Mon 03/31,Gradient Descent and Backpropagation,Backprop (StatQuest),video,https://youtu.be/IN2XmBhILt4?si=9tYxD7DT3xvBuYGz
+ML to DL,Mon 03/31,Gradient Descent and Backpropagation,Building Micograd (Karpathy),video,https://www.youtube.com/watch?v=VMj-3S1tku0
+Midterm 02,Wed 04/02,Review,Panopto,video,https://notredame.hosted.panopto.com/Panopto/Pages/Viewer.aspx?id=6877fd1b-5dd1-4894-896e-b2b3016366a8
+Foundations of Deep Learning,Wed 04/09,Convolutional Neural Networks,Slides,reading,https://docs.google.com/presentation/d/1VwAqIQRYTw_fMUnEQesaB_Fyk44SJJqy/edit?usp=sharing&ouid=111601855049772661603&rtpof=true&sd=true
+Foundations of Deep Learning,Wed 04/09,Convolutional Neural Networks,FCA - Section 8.4,reading,https://artint.info/3e/html/ArtInt3e.Ch8.S4.html
+Foundations of Deep Learning,Wed 04/09,Convolutional Neural Networks,PML - Chapter 14,reading,https://probml.github.io/pml-book/book1.html
+Foundations of Deep Learning,Wed 04/09,Convolutional Neural Networks,ISLP - Section 10.3,reading,https://www.statlearning.com/
+Foundations of Deep Learning,Wed 04/09,Convolutional Neural Networks,D2L - Chapters 7 and 8,reading,https://d2l.ai/chapter_convolutional-neural-networks/index.html
+Foundations of Deep Learning,Wed 04/09,Convolutional Neural Networks,Panopto,video,
+Foundations of Deep Learning,Wed 04/09,Convolutional Neural Networks,Harvard CS50 (53:00 - 1:27:12),video,https://www.youtube.com/watch?v=J1QD9hLDEDY
+Foundations of Deep Learning,Wed 04/09,Convolutional Neural Networks,MNIST CNN,notebook,https://colab.research.google.com/drive/1yYw7SwTl5Q5F_gFLfjEWwW328v3SbPB0?usp=sharing
+Foundations of Deep Learning,Wed 04/09,Convolutional Neural Networks,CNNs (StatQuest),video,https://youtu.be/HGwBXDKFk9I?si=5k2GTtevGNxIMEXQ
+Foundations of Deep Learning,Wed 04/09,Convolutional Neural Networks,Convolution (3b1b),video,https://youtu.be/KuXjwB4LzSA?si=ulXCDjK3Qd2WZOc0
+Foundations of Deep Learning,Wed 04/09,Convolutional Neural Networks,Convolution 2 (3b1b),video,https://www.youtube.com/watch?v=8rrHTtUzyZA
+Foundations of Deep Learning,Wed 04/09,Convolutional Neural Networks,CNNs (HdM),reading,https://hannibunny.github.io/mlbook/neuralnetworks/03ConvolutionNeuralNetworks.html
+Foundations of Deep Learning,Mon 04/14,Recurrent Neural Networks,Slides,reading,https://docs.google.com/presentation/d/1PTVKf1WqOO8i0ERlykTnSDb-NdkctqqY/edit?usp=sharing&ouid=111601855049772661603&rtpof=true&sd=true
+Foundations of Deep Learning,Mon 04/14,Recurrent Neural Networks,FCA - Section 8.5 until 8.5.4,reading,https://artint.info/3e/html/ArtInt3e.Ch8.S5.html
+Foundations of Deep Learning,Mon 04/14,Recurrent Neural Networks,PML - Section 15.2,reading,https://probml.github.io/pml-book/book1.html
+Foundations of Deep Learning,Mon 04/14,Recurrent Neural Networks,ISLP - Section 10.5,reading,https://www.statlearning.com/
+Foundations of Deep Learning,Mon 04/14,Recurrent Neural Networks,D2L - Chapters 9 and 10,reading,https://d2l.ai/chapter_recurrent-neural-networks/index.html
+Foundations of Deep Learning,Mon 04/14,Recurrent Neural Networks,Harvard CS50 (1:27:00 - end),video,https://www.youtube.com/watch?v=J1QD9hLDEDY
+Foundations of Deep Learning,Mon 04/14,Recurrent Neural Networks,Character-Level LSTM,notebook,https://colab.research.google.com/drive/1soMewNR1oVJvznbfa6oI1PUnKeblZdRc?usp=sharing
+Foundations of Deep Learning,Mon 04/14,Recurrent Neural Networks,RNNs (StatQuest),video,https://youtu.be/AsNTP8Kwu80?si=Dm7SlTxtLYedMi7R
+Foundations of Deep Learning,Mon 04/14,Recurrent Neural Networks,LSTMs (StatQuest),video,https://youtu.be/YCzL96nL7j0?si=cy5A4boGNLkMu6os
+Modern Deep Learning,Wed 04/16,Self-Attention and Transformers,Slides,reading,https://docs.google.com/presentation/d/1VV1kUnmtvqS_oNtW5t7TWA7s5Hn6hiqU/edit?usp=sharing&ouid=111601855049772661603&rtpof=true&sd=true
+Modern Deep Learning,Wed 04/16,Self-Attention and Transformers,FCA - Section 8.5.4,reading,https://artint.info/3e/html/ArtInt3e.Ch8.S5.html
+Modern Deep Learning,Wed 04/16,Self-Attention and Transformers,PML - Section 15.4,reading,https://probml.github.io/pml-book/book1.html
+Modern Deep Learning,Wed 04/16,Self-Attention and Transformers,D2L - Sections 11.1 through 11.6,reading,https://d2l.ai/chapter_attention-mechanisms-and-transformers/index.html
+Modern Deep Learning,Wed 04/16,Self-Attention and Transformers,Panopto,video,
+Modern Deep Learning,Wed 04/16,Self-Attention and Transformers,Harvard CS50 (35:40 - 54:15),video,https://www.youtube.com/watch?v=QAZc9xsQNjQ
+Modern Deep Learning,Wed 04/16,Self-Attention and Transformers,3b1b,video,https://www.youtube.com/watch?v=eMlx5fFNoYc
+Modern Deep Learning,Wed 04/16,Self-Attention and Transformers,Simple Self-Attention,notebook,https://colab.research.google.com/drive/1zrnOd6wE57gefw9VJMFDD_9LTzeng9D8?usp=sharing
+Modern Deep Learning,Wed 04/16,Self-Attention and Transformers,Attention (StatQuest),video,https://youtu.be/PSs6nxngL6k?si=gfuV6LQqtS0jDxQc
+Modern Deep Learning,Wed 04/16,Self-Attention and Transformers,Matrix Math (StatQuest),video,https://youtu.be/KphmOJnLAdI?si=dkXEgyn5ImhMdDnD
+Modern Deep Learning,Wed 04/16,Self-Attention and Transformers,Attention (HdM),reading,https://hannibunny.github.io/mlbook/transformer/attention.html
+Modern Deep Learning,Wed 04/16,Self-Attention and Transformers,Attention (rasbt),notebook,https://github.com/rasbt/machine-learning-book/blob/main/ch16/ch16-part1-self-attention.ipynb
+Modern Deep Learning,Wed 04/23,LLMs and Agents,Slides,reading,
+Modern Deep Learning,Wed 04/23,LLMs and Agents,FCA - Section 8.5.5,reading,https://artint.info/3e/html/ArtInt3e.Ch8.S5.html
+Modern Deep Learning,Wed 04/23,LLMs and Agents,PML - Section 15.5,reading,https://probml.github.io/pml-book/book1.html
+Modern Deep Learning,Wed 04/23,LLMs and Agents,D2L - Section 11.7,reading,https://d2l.ai/chapter_attention-mechanisms-and-transformers/transformer.html
+Modern Deep Learning,Wed 04/23,LLMs and Agents,Panopto,video,
+Modern Deep Learning,Wed 04/23,LLMs and Agents,Harvard CS50 (54:15 - end),video,https://www.youtube.com/watch?v=QAZc9xsQNjQ
+Modern Deep Learning,Wed 04/23,LLMs and Agents,3b1b,video,https://www.youtube.com/watch?v=wjZofJX0v4M
+Modern Deep Learning,Wed 04/23,LLMs and Agents,Cornell CS4780,video,https://youtu.be/Nu7VZeW5TaE?si=VvFyOFVWecFkuuSX
+Modern Deep Learning,Wed 04/23,LLMs and Agents,Transformers (StatQuest),video,https://youtu.be/zxQyTK8quyY?si=TfF6rH36dN7WcZdN
+Modern Deep Learning,Mon 04/28,Diffusion Models,Slides,reading,
+Modern Deep Learning,Mon 04/28,Diffusion Models,FCA - Section 8.6.3,reading,https://artint.info/3e/html/ArtInt3e.Ch8.S6.html
+Modern Deep Learning,Mon 04/28,Diffusion Models,Diffusion Models,video,https://www.youtube.com/watch?v=1pgiu--4W3I
+Modern Deep Learning,Mon 04/28,Diffusion Models,Simple Diffusion Model,notebook,https://colab.research.google.com/drive/1H3ztaNIIsshhPQx3j5oTQ8lGwvgsWDGz?usp=sharing
+Modern Deep Learning,Wed 04/30,Reinforcement Learning,Slides,reading,
+Modern Deep Learning,Wed 04/30,Reinforcement Learning,FCA - Chapter 13,reading,https://artint.info/3e/html/ArtInt3e.Ch13.html
+Modern Deep Learning,Wed 04/30,Reinforcement Learning,D2L - Chapter 17,reading,https://d2l.ai/chapter_reinforcement-learning/index.html
+Modern Deep Learning,Wed 04/30,Reinforcement Learning,Panopto,video,
+Modern Deep Learning,Wed 04/30,Reinforcement Learning,Harvard CS50 (1:09:57 - 1:38:24),video,https://www.youtube.com/watch?v=-g0iJjnO2_w&t=4197s
+Modern Deep Learning,Wed 04/30,Reinforcement Learning,Stanford CS221,video,https://www.youtube.com/watch?v=HpaHTfY52RQ&list=PLoROMvodv4rOca_Ovz1DvdtWuz8BfSWL2&index=20
+Modern Deep Learning,Wed 04/30,Reinforcement Learning,RL Lunar Lander,notebook,https://colab.research.google.com/drive/1WtcWFv57EBsRTlk1_Zl0ammBHO1iG1LM?usp=sharing

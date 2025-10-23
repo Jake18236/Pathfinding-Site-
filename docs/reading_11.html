@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta name="description" content="">
+	<meta name="author" content="">
+
+	<title>Reading 11: Computer Vision and Convolutional Neural Networks</title>
+
+	<!-- Bootstrap core CSS -->
+	<link href="static/css/blugold.css" rel="stylesheet">
+	<script src="https://kit.fontawesome.com/9d2722956c.js" crossorigin="anonymous"></script>
+
+	<!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+	<!--[if lt IE 9]>
+	<script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+	<script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+	<![endif]-->
+
+	<style>
+	body {
+	    padding: 10px;
+	}
+	.resource-list {
+	    list-style: none;
+	    padding-left: 0;
+	    margin-bottom: 1.25em;
+	}
+	.resource-credit {
+	    margin-left: 0.5em;
+	    font-size: 0.85em;
+	    color: #777;
+	    font-style: italic;
+	}
+	.resource-credit::before {
+	    content: "\2014";
+	    margin-right: 0.35em;
+	}
+	</style>
+    </head>
+    <body>
+	<div class="container">
+
+	    <div class="row">
+		<div class="page-header">
+		    <ul class="nav nav-pills pull-right">
+			
+			<li><a href="index.html"><i class="fa fa-gavel"></i> <span class="visible-md-inline visible-lg-inline">Home</span></a></li>
+			
+		    </ul>
+		    <h1><i class="fa fa-book"></i> Reading 11: Computer Vision and Convolutional Neural Networks</h1>
+		</div>
+	    </div>
+
+		
+<h2 id="convolutional-neural-networks">Convolutional Neural Networks<a class="headerlink" href="#convolutional-neural-networks" title="Permanent link">&para;</a></h2>
+<table>
+    <tr>
+        <td colspan="3">
+            
+            <div class="row">
+    <div class="col-md-4">
+        <h4><i class="fa-solid fa-book"></i> Readings</h4>
+        <ul class="resource-list">
+        
+            
+                <li>
+                    
+                        <span style="display:inline-block; width: 1em;">&bull;</span>
+                    
+                    <a href="https://artint.info/3e/html/ArtInt3e.Ch8.S4.html">FCA - Section 8.4</a>
+                    
+                </li>
+            
+        
+            
+                <li>
+                    
+                        <span style="display:inline-block; width: 1em;">&bull;</span>
+                    
+                    <a href="https://probml.github.io/pml-book/book1.html">PML - Chapter 14</a>
+                    
+                </li>
+            
+        
+            
+                <li>
+                    
+                        <span style="display:inline-block; width: 1em;">&bull;</span>
+                    
+                    <a href="https://www.statlearning.com/">ISLP - Section 10.3</a>
+                    
+                </li>
+            
+        
+            
+                <li>
+                    
+                        <span style="display:inline-block; width: 1em;">&bull;</span>
+                    
+                    <a href="https://d2l.ai/chapter_convolutional-neural-networks/index.html">D2L - Chapters 7 and 8</a>
+                    
+                </li>
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+                <li>
+                    
+                        <span style="display:inline-block; width: 1em;">&bull;</span>
+                    
+                    <a href="https://hannibunny.github.io/mlbook/neuralnetworks/03ConvolutionNeuralNetworks.html">CNNs (HdM)</a>
+                    
+                </li>
+            
+        
+            
+                <li>
+                    
+                        <i class="fa-solid fa-star" style="color: #f0ad4e;"></i>
+                    
+                    <a href="https://hannibunny.github.io/mlbook/neuralnetworks/convolutionDemos.html">CNN Animations (HdM)</a>
+                    
+                </li>
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+        </ul>
+    </div>
+    <div class="col-md-4">
+        <h4><i class="fa-solid fa-video-camera"></i> Videos</h4>
+        <ul class="resource-list">
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+                <li>
+                    
+                        <span style="display:inline-block; width: 1em;">&bull;</span>
+                    
+                    <a href="https://notredame.hosted.panopto.com/Panopto/Pages/Viewer.aspx?id=b966a9da-a5cb-47fd-9c37-b2ba015b45b5">Panopto</a>
+                    
+                </li>
+            
+        
+            
+                <li>
+                    
+                        <span style="display:inline-block; width: 1em;">&bull;</span>
+                    
+                    <a href="https://www.youtube.com/watch?v=J1QD9hLDEDY">Harvard CS50 (53:00 - 1:27:12)</a>
+                    
+                </li>
+            
+        
+            
+        
+            
+                <li>
+                    
+                        <span style="display:inline-block; width: 1em;">&bull;</span>
+                    
+                    <a href="https://youtu.be/HGwBXDKFk9I?si=5k2GTtevGNxIMEXQ">CNNs (StatQuest)</a>
+                    
+                </li>
+            
+        
+            
+                <li>
+                    
+                        <span style="display:inline-block; width: 1em;">&bull;</span>
+                    
+                    <a href="https://youtu.be/KuXjwB4LzSA?si=ulXCDjK3Qd2WZOc0">Convolution (3b1b)</a>
+                    
+                </li>
+            
+        
+            
+                <li>
+                    
+                        <span style="display:inline-block; width: 1em;">&bull;</span>
+                    
+                    <a href="https://www.youtube.com/watch?v=8rrHTtUzyZA">Convolution 2 (3b1b)</a>
+                    
+                </li>
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+        </ul>
+    </div>
+    <div class="col-md-4">
+        <h4><i class="fa-brands fa-python"></i> Notebooks</h4>
+        <ul class="resource-list">
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+                <li>
+                    
+                        <span style="display:inline-block; width: 1em;">&bull;</span>
+                    
+                    <a href="https://colab.research.google.com/drive/1yYw7SwTl5Q5F_gFLfjEWwW328v3SbPB0?usp=sharing">MNIST CNN</a>
+                    
+                </li>
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+                <li>
+                    
+                        <span style="display:inline-block; width: 1em;">&bull;</span>
+                    
+                    <a href="https://github.com/rasbt/machine-learning-book/blob/main/ch14/ch14_part1.ipynb">CNN (rasbt)</a>
+                    
+                </li>
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+        </ul>
+    </div>
+</div>
+
+
+<div class="row">
+    
+        <div class="col-md-12">
+            <h4><i class="fa-solid fa-share-alt"></i> Blogposts</h4>
+            <ul class="resource-list">
+            
+                <li>
+                    
+                        <i class="fa-solid fa-star" style="color: #f0ad4e;"></i>
+                    
+                    <a href="https://victorzhou.com/blog/intro-to-cnns-part-1/">CNNs (Zhou)</a>
+                    
+                </li>
+            
+                <li>
+                    
+                        <span style="display:inline-block; width: 1em;">&bull;</span>
+                    
+                    <a href="https://colah.github.io/posts/2014-07-Understanding-Convolutions/">Convolutions (Olah)</a>
+                    
+                </li>
+            
+                <li>
+                    
+                        <span style="display:inline-block; width: 1em;">&bull;</span>
+                    
+                    <a href="https://colah.github.io/posts/2014-07-Conv-Nets-Modular/">CNNs (Olah)</a>
+                    
+                </li>
+            
+                <li>
+                    
+                        <span style="display:inline-block; width: 1em;">&bull;</span>
+                    
+                    <a href="https://medium.com/data-science/deep-learning-illustrated-part-3-convolutional-neural-networks-96b900b0b9e0">CNNs (Rao)</a>
+                    
+                </li>
+            
+            </ul>
+        </div>
+    
+</div>
+
+        </td>
+    </tr>
+</table>
+
+<h2 id="quiz">Quiz<a class="headerlink" href="#quiz" title="Permanent link">&para;</a></h2>
+
+
+	    <div class="row">
+		<hr/>
+
+		<footer class="text-center">
+		    <p class="text-muted">
+		    <small>
+		    Built using
+		    <a href="http://twitter.github.com/bootstrap/">Bootstrap</a>,
+		    <a href="http://fortawesome.github.com/Font-Awesome/">Font Awesome</a>, and
+		    <a href="http://www.python.org/">Python</a>.
+		    <br/>
+		    &copy; 2022 <a href="http://www.nd.edu">University of Notre Dame</a>
+		    </small>
+		    </p>
+		</footer>
+	    </div>
+
+	</div> <!-- /container -->
+
+	<!-- Bootstrap core JavaScript
+	================================================== -->
+	<!-- Placed at the end of the document so the pages load faster -->
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+	
+	
+    </body>
+</html>
+

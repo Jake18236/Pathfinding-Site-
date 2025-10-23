@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta name="description" content="">
+	<meta name="author" content="">
+
+	<title>Reading 09: Multilayer Perceptrons, Gradient Descent, and Backpropagation</title>
+
+	<!-- Bootstrap core CSS -->
+	<link href="static/css/blugold.css" rel="stylesheet">
+	<script src="https://kit.fontawesome.com/9d2722956c.js" crossorigin="anonymous"></script>
+
+	<!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+	<!--[if lt IE 9]>
+	<script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+	<script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+	<![endif]-->
+
+	<style>
+	body {
+	    padding: 10px;
+	}
+	.resource-list {
+	    list-style: none;
+	    padding-left: 0;
+	    margin-bottom: 1.25em;
+	}
+	.resource-credit {
+	    margin-left: 0.5em;
+	    font-size: 0.85em;
+	    color: #777;
+	    font-style: italic;
+	}
+	.resource-credit::before {
+	    content: "\2014";
+	    margin-right: 0.35em;
+	}
+	</style>
+    </head>
+    <body>
+	<div class="container">
+
+	    <div class="row">
+		<div class="page-header">
+		    <ul class="nav nav-pills pull-right">
+			
+			<li><a href="index.html"><i class="fa fa-gavel"></i> <span class="visible-md-inline visible-lg-inline">Home</span></a></li>
+			
+		    </ul>
+		    <h1><i class="fa fa-book"></i> Reading 09: Multilayer Perceptrons, Gradient Descent, and Backpropagation</h1>
+		</div>
+	    </div>
+
+		
+<h2 id="multi-layer-perceptrons-ffns">Multi-Layer Perceptrons (FFNs)<a class="headerlink" href="#multi-layer-perceptrons-ffns" title="Permanent link">&para;</a></h2>
+<table>
+    <tr>
+        <td colspan="3">
+            
+            <div class="row">
+    <div class="col-md-4">
+        <h4><i class="fa-solid fa-book"></i> Readings</h4>
+        <ul class="resource-list">
+        
+        </ul>
+    </div>
+    <div class="col-md-4">
+        <h4><i class="fa-solid fa-video-camera"></i> Videos</h4>
+        <ul class="resource-list">
+        
+        </ul>
+    </div>
+    <div class="col-md-4">
+        <h4><i class="fa-brands fa-python"></i> Notebooks</h4>
+        <ul class="resource-list">
+        
+        </ul>
+    </div>
+</div>
+
+
+<div class="row">
+    
+</div>
+
+        </td>
+    </tr>
+</table>
+
+<h2 id="gradient-descent-and-backpropagation">Gradient Descent and Backpropagation<a class="headerlink" href="#gradient-descent-and-backpropagation" title="Permanent link">&para;</a></h2>
+<table>
+    <tr>
+        <td colspan="3">
+            
+            <div class="row">
+    <div class="col-md-4">
+        <h4><i class="fa-solid fa-book"></i> Readings</h4>
+        <ul class="resource-list">
+        
+            
+                <li>
+                    
+                        <span style="display:inline-block; width: 1em;">&bull;</span>
+                    
+                    <a href="https://artint.info/3e/html/ArtInt3e.Ch8.S1.html">FCA - Sections 8.1.1 and 8.2</a>
+                    
+                </li>
+            
+        
+            
+                <li>
+                    
+                        <span style="display:inline-block; width: 1em;">&bull;</span>
+                    
+                    <a href="https://probml.github.io/pml-book/book1.html">PML - Section 13.3</a>
+                    
+                </li>
+            
+        
+            
+                <li>
+                    
+                        <span style="display:inline-block; width: 1em;">&bull;</span>
+                    
+                    <a href="https://www.statlearning.com/">ISLP - Section 10.7</a>
+                    
+                </li>
+            
+        
+            
+                <li>
+                    
+                        <span style="display:inline-block; width: 1em;">&bull;</span>
+                    
+                    <a href="https://d2l.ai/chapter_multilayer-perceptrons/backprop.html">D2L - Section 5.3</a>
+                    
+                </li>
+            
+        
+            
+                <li>
+                    
+                        <span style="display:inline-block; width: 1em;">&bull;</span>
+                    
+                    <a href="https://www.cs.huji.ac.il/~shais/UnderstandingMachineLearning/copy.html">UML - Section 20.6</a>
+                    
+                </li>
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+        </ul>
+    </div>
+    <div class="col-md-4">
+        <h4><i class="fa-solid fa-video-camera"></i> Videos</h4>
+        <ul class="resource-list">
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+                <li>
+                    
+                        <span style="display:inline-block; width: 1em;">&bull;</span>
+                    
+                    <a href="https://notredame.hosted.panopto.com/Panopto/Pages/Viewer.aspx?id=36c905b4-cbd9-4a0d-aa0c-b2b10162772b">Panopto</a>
+                    
+                </li>
+            
+        
+            
+                <li>
+                    
+                        <span style="display:inline-block; width: 1em;">&bull;</span>
+                    
+                    <a href="https://www.youtube.com/watch?v=J1QD9hLDEDY">Harvard CS50 (16:00 - 39:00)</a>
+                    
+                </li>
+            
+        
+            
+                <li>
+                    
+                        <span style="display:inline-block; width: 1em;">&bull;</span>
+                    
+                    <a href="https://www.youtube.com/watch?v=bl2WgBLH0tI&amp;list=PLoROMvodv4rOca_Ovz1DvdtWuz8BfSWL2&amp;index=7">Stanford CS221 - SGD</a>
+                    
+                </li>
+            
+        
+            
+                <li>
+                    
+                        <span style="display:inline-block; width: 1em;">&bull;</span>
+                    
+                    <a href="https://www.youtube.com/watch?v=OcAF-l2xB9Y&amp;list=PLoROMvodv4rOca_Ovz1DvdtWuz8BfSWL2&amp;index=12">Stanford CS221 - Backprop</a>
+                    
+                </li>
+            
+        
+            
+                <li>
+                    
+                        <span style="display:inline-block; width: 1em;">&bull;</span>
+                    
+                    <a href="https://www.youtube.com/watch?v=uXt8qF2Zzfo">MIT 6.034</a>
+                    
+                </li>
+            
+        
+            
+        
+            
+                <li>
+                    
+                        <span style="display:inline-block; width: 1em;">&bull;</span>
+                    
+                    <a href="https://youtu.be/vMh0zPT0tLI?si=V4gwCG8HGbcQ6kX7">SGD (StatQuest)</a>
+                    
+                </li>
+            
+        
+            
+                <li>
+                    
+                        <span style="display:inline-block; width: 1em;">&bull;</span>
+                    
+                    <a href="https://youtu.be/wl1myxrtQHQ?si=npy0cR-pfY5RIT5t">Chain Rule (StatQuest)</a>
+                    
+                </li>
+            
+        
+            
+                <li>
+                    
+                        <span style="display:inline-block; width: 1em;">&bull;</span>
+                    
+                    <a href="https://youtu.be/IN2XmBhILt4?si=9tYxD7DT3xvBuYGz">Backprop (StatQuest)</a>
+                    
+                </li>
+            
+        
+            
+                <li>
+                    
+                        <span style="display:inline-block; width: 1em;">&bull;</span>
+                    
+                    <a href="https://www.youtube.com/watch?v=VMj-3S1tku0">Building Micograd (Karpathy)</a>
+                    
+                </li>
+            
+        
+            
+        
+            
+        
+            
+        
+            
+                <li>
+                    
+                        <i class="fa-solid fa-star" style="color: #f0ad4e;"></i>
+                    
+                    <a href="https://www.youtube.com/watch?v=IHZwWFHWa-w">Gradient descent, how neural networks learn | Deep Learning Chapter 2</a>
+                    
+                </li>
+            
+        
+            
+                <li>
+                    
+                        <i class="fa-solid fa-star" style="color: #f0ad4e;"></i>
+                    
+                    <a href="https://www.youtube.com/watch?v=Ilg3gGewQ5U">Backpropagation, intuitively | Deep Learning Chapter 3</a>
+                    
+                </li>
+            
+        
+            
+                <li>
+                    
+                        <span style="display:inline-block; width: 1em;">&bull;</span>
+                    
+                    <a href="https://www.youtube.com/watch?v=tIeHLnjs5U8">Backpropagation calculus | Deep Learning Chapter 4</a>
+                    
+                </li>
+            
+        
+        </ul>
+    </div>
+    <div class="col-md-4">
+        <h4><i class="fa-brands fa-python"></i> Notebooks</h4>
+        <ul class="resource-list">
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+                <li>
+                    
+                        <span style="display:inline-block; width: 1em;">&bull;</span>
+                    
+                    <a href="https://colab.research.google.com/drive/1ogAx_Bqe80PsFzloNR7W0Ijd1YePNGVU?usp=sharing">Numpy Backprop</a>
+                    
+                </li>
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+                <li>
+                    
+                        <span style="display:inline-block; width: 1em;">&bull;</span>
+                    
+                    <a href="https://github.com/rasbt/machine-learning-book/blob/main/ch13/ch13_part1.ipynb">Pytorch Computation Graphs (rasbt)</a>
+                    
+                </li>
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+        </ul>
+    </div>
+</div>
+
+
+<div class="row">
+    
+        <div class="col-md-12">
+            <h4><i class="fa-solid fa-share-alt"></i> Blogposts</h4>
+            <ul class="resource-list">
+            
+                <li>
+                    
+                        <span style="display:inline-block; width: 1em;">&bull;</span>
+                    
+                    <a href="https://colah.github.io/posts/2015-08-Backprop/">Backprop (Olah)</a>
+                    
+                </li>
+            
+                <li>
+                    
+                        <span style="display:inline-block; width: 1em;">&bull;</span>
+                    
+                    <a href="https://karpathy.medium.com/yes-you-should-understand-backprop-e2f06eab496b">Backprop (Karpathy)</a>
+                    
+                </li>
+            
+            </ul>
+        </div>
+    
+</div>
+
+        </td>
+    </tr>
+</table>
+
+<h2 id="quiz">Quiz<a class="headerlink" href="#quiz" title="Permanent link">&para;</a></h2>
+
+
+	    <div class="row">
+		<hr/>
+
+		<footer class="text-center">
+		    <p class="text-muted">
+		    <small>
+		    Built using
+		    <a href="http://twitter.github.com/bootstrap/">Bootstrap</a>,
+		    <a href="http://fortawesome.github.com/Font-Awesome/">Font Awesome</a>, and
+		    <a href="http://www.python.org/">Python</a>.
+		    <br/>
+		    &copy; 2022 <a href="http://www.nd.edu">University of Notre Dame</a>
+		    </small>
+		    </p>
+		</footer>
+	    </div>
+
+	</div> <!-- /container -->
+
+	<!-- Bootstrap core JavaScript
+	================================================== -->
+	<!-- Placed at the end of the document so the pages load faster -->
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+	
+	
+    </body>
+</html>
+

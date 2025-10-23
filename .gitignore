@@ -1,0 +1,12 @@
+pages/*.html
+*.pyc
+*.swp
+*_solutions.ipynb
+.DS_Store
+alphabet
+MNIST
+*/solutions/*.png
+static/solutions
+scripts/yasb.py
+Makefile
+static/csv/*

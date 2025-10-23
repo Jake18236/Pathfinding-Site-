@@ -1,0 +1,23 @@
+title:      "Reading 11: Computer Vision and Convolutional Neural Networks"
+icon:       fa-book
+navigation:
+  - name: "Home"
+    link: "index.html"
+    icon: "fa-gavel"
+internal:
+external:
+    resources:  'csv:static/csv/resources.csv'
+body:       |
+
+    ## Convolutional Neural Networks
+
+    <table>
+        <tr>
+            <td colspan="3">
+                {% set resources =  page.external.get('resources', {}).get(lecture_id_for('Convolutional Neural Networks'), [])%}
+                {% include "resource_sections.tmpl" %}
+            </td>
+        </tr>
+    </table>
+
+    ## Quiz

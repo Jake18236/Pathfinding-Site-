@@ -1,0 +1,34 @@
+title:      "Reading 13: Reinforcement Learning and Agentic LLMs"
+icon:       fa-book
+navigation:
+  - name: "Home"
+    link: "index.html"
+    icon: "fa-gavel"
+internal:
+external:
+    resources:  'csv:static/csv/resources.csv'
+body:       |
+
+    ## Reinforcement Learning
+
+    <table>
+        <tr>
+            <td colspan="3">
+                {% set resources =  page.external.get('resources', {}).get(lecture_id_for('Reinforcement Learning'), [])%}
+                {% include "resource_sections.tmpl" %}
+            </td>
+        </tr>
+    </table>
+
+    ## LLMs and Agents (Guest Lecture)
+
+    <table>
+        <tr>
+            <td colspan="3">
+                {% set resources =  page.external.get('resources', {}).get(lecture_id_for('LLMs and Agents (Guest Lecture)'), [])%}
+                {% include "resource_sections.tmpl" %}
+            </td>
+        </tr>
+    </table>
+
+    ## Quiz

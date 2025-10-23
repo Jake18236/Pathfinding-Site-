@@ -1,0 +1,6 @@
+office_hours:
+- day: Monday
+  slots:
+  - name: Thomas Lohman
+    time: 6:30 - 7:30
+    location: CSE Commons

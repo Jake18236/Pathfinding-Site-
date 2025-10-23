@@ -1,0 +1,20 @@
+title:      "CIF Bribe (1 bonus pt.)"
+icon:       fa-book
+navigation:
+  - name: "Home"
+    link: "index.html"
+    icon: "fa-gavel"
+internal:
+external:
+body:       |
+
+    <div class="thumbnail">
+    <img src="static/img/bribe.png" class="img-responsive"/>
+    </div>
+
+    ## Task 1: Fill out your CIFs
+
+    <div class="alert alert-success" markdown="1">
+    For this bonus homework, if we get at least an <b>85%</b> response rate for the CIFS in this class,
+    everyone will get 1 bonus point.
+    </div>

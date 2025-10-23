@@ -1,0 +1,684 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta name="description" content="">
+	<meta name="author" content="">
+
+	<title>Reading 07: k-Nearest Neighbors, Support Vector Machines, and Clustering</title>
+
+	<!-- Bootstrap core CSS -->
+	<link href="static/css/blugold.css" rel="stylesheet">
+	<script src="https://kit.fontawesome.com/9d2722956c.js" crossorigin="anonymous"></script>
+
+	<!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+	<!--[if lt IE 9]>
+	<script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+	<script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+	<![endif]-->
+
+	<style>
+	body {
+	    padding: 10px;
+	}
+	.resource-list {
+	    list-style: none;
+	    padding-left: 0;
+	    margin-bottom: 1.25em;
+	}
+	.resource-credit {
+	    margin-left: 0.5em;
+	    font-size: 0.85em;
+	    color: #777;
+	    font-style: italic;
+	}
+	.resource-credit::before {
+	    content: "\2014";
+	    margin-right: 0.35em;
+	}
+	</style>
+    </head>
+    <body>
+	<div class="container">
+
+	    <div class="row">
+		<div class="page-header">
+		    <ul class="nav nav-pills pull-right">
+			
+			<li><a href="index.html"><i class="fa fa-gavel"></i> <span class="visible-md-inline visible-lg-inline">Home</span></a></li>
+			
+		    </ul>
+		    <h1><i class="fa fa-book"></i> Reading 07: k-Nearest Neighbors, Support Vector Machines, and Clustering</h1>
+		</div>
+	    </div>
+
+		
+<h2 id="svms-and-knns">SVMs and KNNs<a class="headerlink" href="#svms-and-knns" title="Permanent link">&para;</a></h2>
+<table>
+    <tr>
+        <td colspan="3">
+            
+            <div class="row">
+    <div class="col-md-4">
+        <h4><i class="fa-solid fa-book"></i> Readings</h4>
+        <ul class="resource-list">
+        
+            
+                <li>
+                    
+                        <span style="display:inline-block; width: 1em;">&bull;</span>
+                    
+                    <a href="https://docs.google.com/presentation/d/1CNwFmV8_jqi01e8kcy8k_Y6-3uRAG3Mq/edit?usp=sharing&amp;ouid=111601855049772661603&amp;rtpof=true&amp;sd=true">Slides</a>
+                    
+                </li>
+            
+        
+            
+        
+            
+                <li>
+                    
+                        <span style="display:inline-block; width: 1em;">&bull;</span>
+                    
+                    <a href="https://probml.github.io/pml-book/book1.html">PML - Sections 16.1, 17.3</a>
+                    
+                </li>
+            
+        
+            
+                <li>
+                    
+                        <span style="display:inline-block; width: 1em;">&bull;</span>
+                    
+                    <a href="https://www.statlearning.com/">ISLP - Sections 3.5, 4.7.6 and Chapter 9</a>
+                    
+                </li>
+            
+        
+            
+                <li>
+                    
+                        <span style="display:inline-block; width: 1em;">&bull;</span>
+                    
+                    <a href="https://www.cs.huji.ac.il/~shais/UnderstandingMachineLearning/copy.html">UML - Chapters 15, 19</a>
+                    
+                </li>
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+                <li>
+                    
+                        <span style="display:inline-block; width: 1em;">&bull;</span>
+                    
+                    <a href="https://hannibunny.github.io/mlbook/machinelearning/knn.html">KNN (HdM)</a>
+                    
+                </li>
+            
+        
+            
+                <li>
+                    
+                        <span style="display:inline-block; width: 1em;">&bull;</span>
+                    
+                    <a href="https://hannibunny.github.io/mlbook/machinelearning/svm.html">SVMs (HdM)</a>
+                    
+                </li>
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+                <li>
+                    
+                        <span style="display:inline-block; width: 1em;">&bull;</span>
+                    
+                    <a href="https://web.mit.edu/6.034/wwwbob/svm.pdf">An Idiot&#x27;s Guide to Support Vector Machines</a>
+                    
+                </li>
+            
+        
+            
+        
+            
+        
+        </ul>
+    </div>
+    <div class="col-md-4">
+        <h4><i class="fa-solid fa-video-camera"></i> Videos</h4>
+        <ul class="resource-list">
+        
+            
+        
+            
+                <li>
+                    
+                        <span style="display:inline-block; width: 1em;">&bull;</span>
+                    
+                    <a href="https://notredame.hosted.panopto.com/Panopto/Pages/Viewer.aspx?id=d19bd425-111d-4297-9a52-b375015995be">Pantopto</a>
+                    
+                </li>
+            
+        
+            
+        
+            
+        
+            
+        
+            
+                <li>
+                    
+                        <span style="display:inline-block; width: 1em;">&bull;</span>
+                    
+                    <a href="https://notredame.hosted.panopto.com/Panopto/Pages/Viewer.aspx?id=a38cd616-4164-463e-a3f1-b29701687382">sp25 Panopto</a>
+                    
+                </li>
+            
+        
+            
+                <li>
+                    
+                        <span style="display:inline-block; width: 1em;">&bull;</span>
+                    
+                    <a href="https://www.youtube.com/watch?v=-g0iJjnO2_w">Harvard CS50 (0:00 - 12:30 and 33:29 - 39:41)</a>
+                    
+                </li>
+            
+        
+            
+                <li>
+                    
+                        <span style="display:inline-block; width: 1em;">&bull;</span>
+                    
+                    <a href="https://www.youtube.com/watch?v=_PwhiWxHK8o">MIT 6.034 SVMs</a>
+                    
+                </li>
+            
+        
+            
+                <li>
+                    
+                        <span style="display:inline-block; width: 1em;">&bull;</span>
+                    
+                    <a href="https://www.youtube.com/watch?v=09mb78oiPkA">MIT 6.034 KNNs</a>
+                    
+                </li>
+            
+        
+            
+                <li>
+                    
+                        <span style="display:inline-block; width: 1em;">&bull;</span>
+                    
+                    <a href="https://youtu.be/oymtGlGdT-k?si=Lg6X6xXHV2BlrJsF">Cornell CS4780 KNNs</a>
+                    
+                </li>
+            
+        
+            
+                <li>
+                    
+                        <span style="display:inline-block; width: 1em;">&bull;</span>
+                    
+                    <a href="https://youtu.be/xpHQ6UhMlx4?si=o64fVVn6-FDP3Ar3">Cornell CS4780 SVMs 1</a>
+                    
+                </li>
+            
+        
+            
+                <li>
+                    
+                        <span style="display:inline-block; width: 1em;">&bull;</span>
+                    
+                    <a href="https://youtu.be/RwF1esLCG4U?si=780GX0R-c0qWDogU">Cornell CS4780 SVMs 2</a>
+                    
+                </li>
+            
+        
+            
+                <li>
+                    
+                        <i class="fa-solid fa-star" style="color: #f0ad4e;"></i>
+                    
+                    <a href="https://youtu.be/efR1C6CvhmE?si=i5q-s8QuxKEAQ3Az">SVMs (StatQuest)</a>
+                    
+                </li>
+            
+        
+            
+                <li>
+                    
+                        <i class="fa-solid fa-star" style="color: #f0ad4e;"></i>
+                    
+                    <a href="https://youtu.be/HVXime0nQeI?si=vUOtkw1Q6nxt9Aj3">KNN (StatQuest)</a>
+                    
+                </li>
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+        </ul>
+    </div>
+    <div class="col-md-4">
+        <h4><i class="fa-brands fa-python"></i> Notebooks</h4>
+        <ul class="resource-list">
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+        </ul>
+    </div>
+</div>
+
+
+<div class="row">
+    
+        <div class="col-md-4">
+            <h4><i class="fa-solid fa-share-alt"></i> Blogposts</h4>
+            <ul class="resource-list">
+            
+                <li>
+                    
+                        <span style="display:inline-block; width: 1em;">&bull;</span>
+                    
+                    <a href="https://sebastianraschka.com/Articles/2014_kernel_pca.html">Kernel Methods (Raschka)</a>
+                    
+                </li>
+            
+                <li>
+                    
+                        <span style="display:inline-block; width: 1em;">&bull;</span>
+                    
+                    <a href="https://www.stratascratch.com/blog/machine-learning-algorithms-explained-support-vector-machine/">Machine Learning Algorithms Explained: Support Vector Machine</a>
+                    
+                </li>
+            
+                <li>
+                    
+                        <span style="display:inline-block; width: 1em;">&bull;</span>
+                    
+                    <a href="https://www.pinecone.io/learn/k-nearest-neighbor/">K-Nearest Neighbor (KNN) Explained</a>
+                    
+                </li>
+            
+            </ul>
+        </div>
+        <div class="col-md-8">
+            <h4><i class="fa-solid fa-file-pdf"></i> Papers</h4>
+            <ul class="resource-list">
+            
+                <li>
+                    
+                        <span style="display:inline-block; width: 1em;">&bull;</span>
+                    
+                    <a href="https://www.semanticscholar.org/paper/A-note-one-class-of-perceptrons-Vapnik/4c2d9e61b7f406f2ca35e63cbbb23e7cf7a85c2a">(1963) A Note on One Class of Perceptrons (Vapnik and Chervonenkis)</a>
+                    
+                </li>
+            
+                <li>
+                    
+                        <span style="display:inline-block; width: 1em;">&bull;</span>
+                    
+                    <a href="https://dl.acm.org/doi/10.1145/130385.130401">(1992) A Training Algorithm for Optimal Margin Classifiers (Boser et al.)</a>
+                    
+                </li>
+            
+                <li>
+                    
+                        <span style="display:inline-block; width: 1em;">&bull;</span>
+                    
+                    <a href="https://link.springer.com/article/10.1007/BF00994018">(1995) Support-Vector Networks (Cortes and Vapnik)</a>
+                    
+                </li>
+            
+            </ul>
+        </div>
+    
+</div>
+
+        </td>
+    </tr>
+</table>
+
+<h2 id="clustering">Clustering<a class="headerlink" href="#clustering" title="Permanent link">&para;</a></h2>
+<table>
+    <tr>
+        <td colspan="3">
+            
+            <div class="row">
+    <div class="col-md-4">
+        <h4><i class="fa-solid fa-book"></i> Readings</h4>
+        <ul class="resource-list">
+        
+            
+                <li>
+                    
+                        <span style="display:inline-block; width: 1em;">&bull;</span>
+                    
+                    <a href="https://drive.google.com/file/d/1kN_yxJ8wi8fihyIGKKreMDGRSDDUhpUV/view?usp=sharing">Slides</a>
+                    
+                </li>
+            
+        
+            
+        
+            
+                <li>
+                    
+                        <span style="display:inline-block; width: 1em;">&bull;</span>
+                    
+                    <a href="https://artint.info/3e/html/ArtInt3e.Ch10.S3.html">FCA - Section 10.3</a>
+                    
+                </li>
+            
+        
+            
+                <li>
+                    
+                        <span style="display:inline-block; width: 1em;">&bull;</span>
+                    
+                    <a href="https://probml.github.io/pml-book/book1.html">PML - Chapter 21</a>
+                    
+                </li>
+            
+        
+            
+                <li>
+                    
+                        <span style="display:inline-block; width: 1em;">&bull;</span>
+                    
+                    <a href="https://www.statlearning.com/">ISLP - Section 12.4</a>
+                    
+                </li>
+            
+        
+            
+                <li>
+                    
+                        <span style="display:inline-block; width: 1em;">&bull;</span>
+                    
+                    <a href="https://www.cs.huji.ac.il/~shais/UnderstandingMachineLearning/copy.html">UML - Chapter 22</a>
+                    
+                </li>
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+        </ul>
+    </div>
+    <div class="col-md-4">
+        <h4><i class="fa-solid fa-video-camera"></i> Videos</h4>
+        <ul class="resource-list">
+        
+            
+        
+            
+                <li>
+                    
+                        <span style="display:inline-block; width: 1em;">&bull;</span>
+                    
+                    <a href="https://notredame.hosted.panopto.com/Panopto/Pages/Viewer.aspx?id=088ead92-85cd-4139-81cf-b377015d58fc">Pantopto</a>
+                    
+                </li>
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+                <li>
+                    
+                        <span style="display:inline-block; width: 1em;">&bull;</span>
+                    
+                    <a href="https://notredame.hosted.panopto.com/Panopto/Pages/Viewer.aspx?id=550c09db-9c29-4e62-8e91-b2a30158051d">sp25 Panopto</a>
+                    
+                </li>
+            
+        
+            
+        
+            
+        
+            
+                <li>
+                    
+                        <span style="display:inline-block; width: 1em;">&bull;</span>
+                    
+                    <a href="https://youtu.be/7xHsRkOdVwo?si=f8UkfIYcaxpyEUVk">Hierarchical (StatQuest)</a>
+                    
+                </li>
+            
+        
+            
+                <li>
+                    
+                        <span style="display:inline-block; width: 1em;">&bull;</span>
+                    
+                    <a href="https://youtu.be/4b5d3muPQmA?si=T2ow71QcEXdbKt7V">K-Means (StatQuest)</a>
+                    
+                </li>
+            
+        
+            
+        
+            
+        
+        </ul>
+    </div>
+    <div class="col-md-4">
+        <h4><i class="fa-brands fa-python"></i> Notebooks</h4>
+        <ul class="resource-list">
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+                <li>
+                    
+                        <span style="display:inline-block; width: 1em;">&bull;</span>
+                    
+                    <a href="https://colab.research.google.com/drive/1WWysdY8e08f9tEC_P_lxt0INBAzmx8yn?usp=sharing">Clustering Visualizations</a>
+                    
+                </li>
+            
+        
+            
+                <li>
+                    
+                        <span style="display:inline-block; width: 1em;">&bull;</span>
+                    
+                    <a href="https://colab.research.google.com/drive/1tYH-ZkSDrRlJlPKxKsY89SSR01teZ0dr?usp=sharing">GMM Clustering</a>
+                    
+                </li>
+            
+        
+            
+        
+            
+        
+            
+                <li>
+                    
+                        <span style="display:inline-block; width: 1em;">&bull;</span>
+                    
+                    <a href="https://github.com/rasbt/machine-learning-book/blob/main/ch10/ch10.ipynb">Clustering (rasbt)</a>
+                    
+                </li>
+            
+        
+            
+        
+        </ul>
+    </div>
+</div>
+
+
+<div class="row">
+    
+        <div class="col-md-12">
+            <h4><i class="fa-solid fa-share-alt"></i> Blogposts</h4>
+            <ul class="resource-list">
+            
+                <li>
+                    
+                        <i class="fa-solid fa-star" style="color: #f0ad4e;"></i>
+                    
+                    <a href="https://web.archive.org/web/20250115001509/https://blog.dataiku.com/clustering-how-it-works-in-plain-english#expand">Clustering: How It Works (In Plain English!)</a>
+                    
+                </li>
+            
+            </ul>
+        </div>
+    
+</div>
+
+        </td>
+    </tr>
+</table>
+
+<h2 id="quiz">Quiz<a class="headerlink" href="#quiz" title="Permanent link">&para;</a></h2>
+<iframe src="https://docs.google.com/forms/d/e/1FAIpQLSev20MlLa6m3noxEpDIRkawpOTprRoGERKQ3V1hcnbWFcjxEQ/viewform?embedded=true" width="640" height="3269" frameborder="0" marginheight="0" marginwidth="0">Loading…</iframe>
+
+
+	    <div class="row">
+		<hr/>
+
+		<footer class="text-center">
+		    <p class="text-muted">
+		    <small>
+		    Built using
+		    <a href="http://twitter.github.com/bootstrap/">Bootstrap</a>,
+		    <a href="http://fortawesome.github.com/Font-Awesome/">Font Awesome</a>, and
+		    <a href="http://www.python.org/">Python</a>.
+		    <br/>
+		    &copy; 2022 <a href="http://www.nd.edu">University of Notre Dame</a>
+		    </small>
+		    </p>
+		</footer>
+	    </div>
+
+	</div> <!-- /container -->
+
+	<!-- Bootstrap core JavaScript
+	================================================== -->
+	<!-- Placed at the end of the document so the pages load faster -->
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+	
+	
+    </body>
+</html>
+

@@ -1,0 +1,146 @@
+- name: Welcome
+  days:
+  - date: Mon 08/25
+    topics: Syllabus, History of AI
+- name: 'Unit 01: Good Old Fashioned AI (GOFAI)'
+- name: Search and Representations
+  days:
+  - date: Wed 08/27
+    topics: Search
+    assignments:
+    - Reading 01
+  - date: Mon 09/01
+    topics: A* Search
+  - date: Wed 09/03
+    topics: Constraint Satisfaction Problems
+    assignments:
+    - Reading 02
+  - date: Mon 09/08
+    topics: Adversarial Search
+  - date: Wed 09/10
+    topics: Knowledge Representation and Feature Engineering
+    assignments:
+    - Reading 03
+- name: 'Unit 02: Machine Learning'
+- name: Direct Fit Models
+  days:
+  - date: Mon 09/15
+    topics: Decision Trees
+    assignments:
+    - Homework 01
+  - date: Wed 09/17
+    topics: Markov Models
+    assignments:
+    - Reading 04
+  - date: Mon 09/22
+    topics: Bayesian Reasoning
+  - date: Wed 09/24
+    topics: Linear Regression
+    assignments:
+    - Reading 05
+- name: Supervised Learning I
+  days:
+  - date: Mon 09/29
+    topics: Perceptrons
+- name: Exam 01
+  days:
+  - date: Wed 10/01
+    topics: Review 01
+  - date: Mon 10/06
+    topics: Exam 01
+    assignments:
+    - Practice Packet 01
+    - Practice Packet 01 Solutions
+    - Exam 01
+- name: Supervised Learning II
+  days:
+  - date: Wed 10/08
+    topics: Logistic Regression and Gradient Descent
+    assignments:
+    - Reading 06
+  - date: Mon 10/13
+    topics: SVMs and KNNs
+    assignments:
+    - Reading 07
+- name: Unsupervised Learning I
+  days:
+  - date: Wed 10/15
+    topics: Clustering
+    assignments:
+    - Homework 02
+- name: Fall Break
+- name: Unsupervised Learning II
+  days:
+  - date: Mon 10/27
+    topics: Dimensionality Reduction
+    assignments:
+    - Reading 08
+- name: Applied ML
+  days:
+  - date: Wed 10/29
+    topics: Practicum - Exploratory Data Analysis
+- name: 'Unit 03: Deep Learning'
+- name: Foundations of Deep Learning
+  days:
+  - date: Mon 11/03
+    topics: Feedforward Neural Networks
+    assignments:
+    - Homework 03
+    - Reading 09
+  - date: Wed 11/05
+    topics: Gradient Descent and Backpropagation
+- name: Computer Vision
+  days:
+  - date: Mon 11/10
+    topics: Convolutional Neural Networks
+    assignments:
+    - Reading 11
+- name: Midterm 02
+  days:
+  - date: Wed 11/12
+    topics: Review
+    assignments:
+    - Reading 10
+  - date: Mon 11/17
+    topics: Exam 02
+    assignments:
+    - Exam 02 Practice Packet
+    - Exam 02
+- name: Natural Language Processing
+  days:
+  - date: Wed 11/19
+    topics: Recurrent Neural Networks
+    assignments:
+    - Reading 12
+- name: Modern Deep Learning
+  days:
+  - date: Mon 11/24
+    topics: Self-Attention and Transformers
+    assignments:
+    - Homework 04
+    - Reading 13
+  - date: Wed 11/26
+    topics: Cancelled (Thanksgiving Break)
+  - date: Mon 12/01
+    topics: Reinforcement Learning
+    assignments:
+    - Reading 14
+  - date: Wed 12/03
+    topics: LLMs and Agents
+  - date: Mon 12/08
+    topics: Diffusion Models
+    assignments:
+    - Reading 15
+  - date: Wed 12/10
+    topics: Review
+    assignments:
+    - Final Practice Packet
+    - Homework 05
+    - Bonus Homework
+    - CIF Bribe
+- name: Final
+  days:
+  - date: Tue 12/16
+    topics:  (TENTATIVELY) Final Exam (1:45 PM - 3:45 PM)
+    assignments:
+    - Final Exam

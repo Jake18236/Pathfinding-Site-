@@ -1,0 +1,27 @@
+{
+    "Term": "Spring",
+    "Year": "2025",
+    "Instructor": {
+        "name": "Bill Theisen",
+        "level": "Dr.",
+        "netid": "wtheisen",
+        "github": "wtheisen",
+        "office_hours": {
+            "Thursday": "1:00 - 4:00"
+        },
+        "oh_location": "356B Fitz"
+    },
+    "TAs": {
+        "tlohman": {
+            "name": "Thomas Lohman",
+            "level": "Graduate",
+            "netid": "tlohman",
+            "github": "Thomas-Lohman",
+            "office_hours": {
+                "Thursday": "5:00 - 6:45",
+                "Friday": "1:00 - 2:30"
+            },
+            "oh_location": "CSE Commons"
+        }
+    }
+}

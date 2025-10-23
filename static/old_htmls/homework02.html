@@ -1,0 +1,691 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>c88a0a2d6bbf43b3b644d67a9674674e</title>
+  <style>
+    html {
+      line-height: 1.5;
+      font-family: Georgia, serif;
+      font-size: 20px;
+      color: #1a1a1a;
+      background-color: #fdfdfd;
+    }
+    body {
+      margin: 0 auto;
+      max-width: 36em;
+      padding-left: 50px;
+      padding-right: 50px;
+      padding-top: 50px;
+      padding-bottom: 50px;
+      hyphens: auto;
+      overflow-wrap: break-word;
+      text-rendering: optimizeLegibility;
+      font-kerning: normal;
+    }
+    @media (max-width: 600px) {
+      body {
+        font-size: 0.9em;
+        padding: 1em;
+      }
+      h1 {
+        font-size: 1.8em;
+      }
+    }
+    @media print {
+      body {
+        background-color: transparent;
+        color: black;
+        font-size: 12pt;
+      }
+      p, h2, h3 {
+        orphans: 3;
+        widows: 3;
+      }
+      h2, h3, h4 {
+        page-break-after: avoid;
+      }
+    }
+    p {
+      margin: 1em 0;
+    }
+    a {
+      color: #1a1a1a;
+    }
+    a:visited {
+      color: #1a1a1a;
+    }
+    img {
+      max-width: 100%;
+    }
+    h1, h2, h3, h4, h5, h6 {
+      margin-top: 1.4em;
+    }
+    h5, h6 {
+      font-size: 1em;
+      font-style: italic;
+    }
+    h6 {
+      font-weight: normal;
+    }
+    ol, ul {
+      padding-left: 1.7em;
+      margin-top: 1em;
+    }
+    li > ol, li > ul {
+      margin-top: 0;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid #e6e6e6;
+      color: #606060;
+    }
+    code {
+      font-family: Menlo, Monaco, 'Lucida Console', Consolas, monospace;
+      font-size: 85%;
+      margin: 0;
+    }
+    pre {
+      margin: 1em 0;
+      overflow: auto;
+    }
+    pre code {
+      padding: 0;
+      overflow: visible;
+      overflow-wrap: normal;
+    }
+    .sourceCode {
+     background-color: transparent;
+     overflow: visible;
+    }
+    hr {
+      background-color: #1a1a1a;
+      border: none;
+      height: 1px;
+      margin: 1em 0;
+    }
+    table {
+      margin: 1em 0;
+      border-collapse: collapse;
+      width: 100%;
+      overflow-x: auto;
+      display: block;
+      font-variant-numeric: lining-nums tabular-nums;
+    }
+    table caption {
+      margin-bottom: 0.75em;
+    }
+    tbody {
+      margin-top: 0.5em;
+      border-top: 1px solid #1a1a1a;
+      border-bottom: 1px solid #1a1a1a;
+    }
+    th {
+      border-top: 1px solid #1a1a1a;
+      padding: 0.25em 0.5em 0.25em 0.5em;
+    }
+    td {
+      padding: 0.125em 0.5em 0.25em 0.5em;
+    }
+    header {
+      margin-bottom: 4em;
+      text-align: center;
+    }
+    #TOC li {
+      list-style: none;
+    }
+    #TOC ul {
+      padding-left: 1.3em;
+    }
+    #TOC > ul {
+      padding-left: 0;
+    }
+    #TOC a:not(:hover) {
+      text-decoration: none;
+    }
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    ul.task-list{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      {   }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+    code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+    code span.at { color: #7d9029; } /* Attribute */
+    code span.bn { color: #40a070; } /* BaseN */
+    code span.bu { color: #008000; } /* BuiltIn */
+    code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #4070a0; } /* Char */
+    code span.cn { color: #880000; } /* Constant */
+    code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+    code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+    code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+    code span.dt { color: #902000; } /* DataType */
+    code span.dv { color: #40a070; } /* DecVal */
+    code span.er { color: #ff0000; font-weight: bold; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #40a070; } /* Float */
+    code span.fu { color: #06287e; } /* Function */
+    code span.im { color: #008000; font-weight: bold; } /* Import */
+    code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+    code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+    code span.op { color: #666666; } /* Operator */
+    code span.ot { color: #007020; } /* Other */
+    code span.pp { color: #bc7a00; } /* Preprocessor */
+    code span.sc { color: #4070a0; } /* SpecialChar */
+    code span.ss { color: #bb6688; } /* SpecialString */
+    code span.st { color: #4070a0; } /* String */
+    code span.va { color: #19177c; } /* Variable */
+    code span.vs { color: #4070a0; } /* VerbatimString */
+    code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+  </style>
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+</head>
+<body>
+<div class="cell markdown">
+<h3
+id="homework-02-decision-trees-hidden-markov-models-and-bayesian-reasoning">Homework
+02: Decision Trees, Hidden Markov Models, and Bayesian Reasoning</h3>
+<ol>
+<li>Collect suspect statements from the 6 suspects</li>
+<li>Load in the data the police had about each suspect and combine it
+with the suspect statements</li>
+<li>Use a Decision Tree to try and match the suspects to an alias based
+on their alleged activities and time spent in each room</li>
+<li>Use an HMM to see how similar the suspect's alleged paths are to the
+witness statements and GPS data</li>
+<li>Combine the results of the HMM and Decision Tree using Bayesian
+reasoning to get a final alias matching</li>
+</ol>
+<h3 id="task-0-collecting-suspect-statements">Task 0: Collecting Suspect
+Statements</h3>
+<p>We need to gather more evidence if we're going to be able to figure
+out who's alibi doesn't hold up. Your next task is to visit each suspect
+and collect their statements. Only one team member needs to visit each
+suspect, so feel free to divy up the work. Please go to their offices
+during the office hours given below and ask them for their
+statement:</p>
+<pre><code>Professor Bui: 2:00 PM - 3:00 PM, Every Day - 326D Cushing
+
+Professor Dingler: 2:00 PM - 3:30 PM, Monday, Tuesday, Wednesday, Thursday - 350 Fitz
+
+Professor Rehberg: 10:30 AM - 12:00 PM, Tuesday and Thursday - 324 Cushing
+
+Professor Levis: 10:30 AM - 11:15 AM, Tuesday and Thursday - 264 Geddes
+
+Professor Chambers: Monday 1:00 PM - 3:00 PM and Thursday 2:00 PM - 3:00 PM - 180 Fitz
+
+Professor Kumar: 3:25 PM - 4:15 PM, Monday and Wednesday - 378 Fitz</code></pre>
+<p>Once you've collected them, add them to the suspect data json files.
+You may consider trying to find an LLM like ChatGPT-4o to allow you to
+turn a picture of the statement into the JSON you need.</p>
+</div>
+<section id="task-1-load-and-create-the-necessary-data"
+class="cell markdown">
+<h3>Task 1: Load and create the necessary data</h3>
+<p>The starting data is available at <a
+href="https://drive.google.com/drive/folders/1k9LND_mc5sTLemg77nAOHPq0qLYpEcJM?usp=sharing">Homework
+02 Data</a></p>
+<p>After getting in contact with the Theisen-Floyd Estate the police
+have collected data for past costume parties they've thrown. Turns out
+there's been a lot of them. They've gathered data on the movement and
+activity patterns of the aliases. Load those into a dictionary called
+"alias_data" with the format:</p>
+<pre><code>{
+    &quot;alias_name&quot;: [
+        {&quot;suspect_statement&quot;: [...]}
+    ]
+}</code></pre>
+<p>Then you should add the suspect statements to the suspect data json
+files.</p>
+<p>Thinking back to class you realize that if you have all of this alias
+data, you could probably structure this as a supervised learning
+problem, and a classification task! We could compare our suspect data
+against the alias data, treating it as the ground-truth, and see if any
+of the suspects line up against the aliases!</p>
+<p>Load the suspect data into a dictionary called "suspect_data" with
+the format:</p>
+<pre><code>{
+    &quot;suspect_name&quot;: [
+        {&quot;suspect_statement&quot;: [...], &quot;gps_data&quot;: [...], &quot;witness_statements&quot;: {...}}
+    ]
+}</code></pre>
+</section>
+<div class="cell code" data-execution_count="6">
+<div class="sourceCode" id="cb4"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Import necessary libraries</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> os</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> json</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> typing <span class="im">import</span> List, Dict, Any</span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> collections <span class="im">import</span> defaultdict</span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a><span class="co"># </span><span class="al">TODO</span><span class="co">: Load alias training files</span></span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>alias_data <span class="op">=</span> {}</span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a><span class="co"># </span><span class="al">TODO</span><span class="co">: Load suspect data</span></span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>suspect_data <span class="op">=</span> {}</span></code></pre></div>
+</div>
+<div class="cell markdown">
+<p>Looking through the data you have, you realize there's a lot of
+repeated, overlapping activities and this reminds you of categorical
+data. You wonder if you could somehow set up a decision tree with the
+classes being the aliases and then try and match the suspects statements
+against them!</p>
+<h3 id="task-2-decision-tree">Task 2: Decision Tree</h3>
+<p>Try training a decision tree classifier to match suspects to the
+aliases. You'll have to do some feature engineering to get the
+categorial data we have into a format that can be used by the decision
+tree.</p>
+</div>
+<section id="feature-extraction-function" class="cell markdown">
+<h5>Feature Extraction Function</h5>
+<p>We need to somehow turn all of the data we were given into a format
+that can be used by the decision tree. We can probably calculate how
+much of their time each suspect spends in each room and maybe we can use
+activities that suggest a weapon somehow as well!</p>
+</section>
+<div class="cell code" data-execution_count="7">
+<div class="sourceCode" id="cb5"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># </span><span class="al">TODO</span><span class="co">: Some of the activities seem related to the weapons found at the party, I wonder if we can use that to improve our decision tree.</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Note: My solution has three activities per weapon for a total of 18 pairings</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>activity_weapon_mapping <span class="op">=</span> {</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>    <span class="st">&#39;Ripping wippets&#39;</span>: <span class="st">&#39;Gas&#39;</span>, <span class="co"># Freebie as an example</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a><span class="co"># </span><span class="al">TODO</span><span class="co">: Write a function to convert the categorical data we have into numerical data for the decision tree</span></span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> extract_features(data, is_alias<span class="op">=</span><span class="va">True</span>):</span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>    rooms <span class="op">=</span> [<span class="st">&#39;Study&#39;</span>, <span class="st">&#39;Dining Room&#39;</span>, <span class="st">&#39;Kitchen&#39;</span>, <span class="st">&#39;Pantry&#39;</span>, <span class="st">&#39;Living Room&#39;</span>, <span class="st">&#39;Bathroom&#39;</span>]</span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>    weapons <span class="op">=</span> [<span class="st">&#39;Poison&#39;</span>, <span class="st">&#39;Knife&#39;</span>, <span class="st">&#39;Gas&#39;</span>, <span class="st">&#39;Rope&#39;</span>, <span class="st">&#39;Bag&#39;</span>, <span class="st">&#39;Firearm&#39;</span>]</span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>    features <span class="op">=</span> {}</span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a>    room_time <span class="op">=</span> {room: <span class="dv">0</span> <span class="cf">for</span> room <span class="kw">in</span> rooms}</span>
+<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a>    activities <span class="op">=</span> []</span>
+<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a>    total_time <span class="op">=</span> <span class="dv">0</span></span>
+<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a>    <span class="co"># </span><span class="al">TODO</span><span class="co">: Count the amount of times the suspect or alias visits each room and a list of activities they do</span></span>
+<span id="cb5-21"><a href="#cb5-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-22"><a href="#cb5-22" aria-hidden="true" tabindex="-1"></a>    <span class="co"># </span><span class="al">TODO</span><span class="co">: Calculate the percentage of time the suspect or alias spends in each room </span></span>
+<span id="cb5-23"><a href="#cb5-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-24"><a href="#cb5-24" aria-hidden="true" tabindex="-1"></a>    <span class="co"># </span><span class="al">TODO</span><span class="co">: Create features indicating if an activity they&#39;ve done suggests a weapon</span></span>
+<span id="cb5-25"><a href="#cb5-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-26"><a href="#cb5-26" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> features</span></code></pre></div>
+</div>
+<div class="cell code">
+<div class="sourceCode" id="cb6"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.tree <span class="im">import</span> DecisionTreeClassifier</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.tree <span class="im">import</span> export_text</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a><span class="co"># </span><span class="al">TODO</span><span class="co">: Prepare alias training data using the feature extraction function</span></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>alias_features_dict <span class="op">=</span> {}</span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a><span class="co"># </span><span class="al">TODO</span><span class="co">: Prepare suspect data using the feature extraction function</span></span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>suspect_features_dict <span class="op">=</span> {}</span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a><span class="co"># </span><span class="al">TODO</span><span class="co">: Train Decision Tree Classifier</span></span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a><span class="co"># I used the arguments criterion=&#39;entropy&#39;, random_state=42, max_depth=4, min_samples_split=4</span></span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a><span class="co"># Feel free to play around with different values for the arguments</span></span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a><span class="co"># </span><span class="al">TODO</span><span class="co">: Classify Suspects Probabilistically as each Alias</span></span>
+<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a><span class="co"># </span><span class="al">TODO</span><span class="co">: Print your results and store them for use in the final task</span></span>
+<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a>decision_tree_results <span class="op">=</span> {}</span></code></pre></div>
+</div>
+<div class="cell markdown">
+<p>Reference Output:</p>
+<pre><code>Probability of Each Suspect Matching Each Alias:
+
+            [&#39;Colonel Mustard&#39; &#39;Miss Scarlet&#39; &#39;Mr. Green&#39; &#39;Mrs. Peacock&#39; &#39;Mrs. White&#39;
+ &#39;Professor Plum&#39;]
+Professor Bui: [&#39;0.0000&#39;, &#39;0.0000&#39;, &#39;0.8636&#39;, &#39;0.0000&#39;, &#39;0.0455&#39;, &#39;0.0909&#39;]
+Professor Dingler: [&#39;0.0000&#39;, &#39;0.0000&#39;, &#39;0.0000&#39;, &#39;0.0000&#39;, &#39;0.0000&#39;, &#39;1.0000&#39;]
+Professor Rehberg: [&#39;0.5000&#39;, &#39;0.0000&#39;, &#39;0.0000&#39;, &#39;0.5000&#39;, &#39;0.0000&#39;, &#39;0.0000&#39;]
+Professor Levis: [&#39;0.0000&#39;, &#39;0.2000&#39;, &#39;0.0000&#39;, &#39;0.0000&#39;, &#39;0.8000&#39;, &#39;0.0000&#39;]
+Professor Chambers: [&#39;0.0000&#39;, &#39;0.9412&#39;, &#39;0.0000&#39;, &#39;0.0000&#39;, &#39;0.0000&#39;, &#39;0.0588&#39;]
+Professor Kumar: [&#39;0.0000&#39;, &#39;0.0000&#39;, &#39;0.0000&#39;, &#39;1.0000&#39;, &#39;0.0000&#39;, &#39;0.0000&#39;]</code></pre>
+<p>Nice! We've got a decision tree that can classify the suspects into
+the aliases! However lets try and get some more evidence before we make
+a final decision. The decision tree makes use of the time spent in
+rooms, but it doesn't consider the paths the suspects take between the
+rooms. Suddenly inspiration strikes! You recall learning about Hidden
+Markov Models in class and think that maybe you could use them to get
+some more evidence!</p>
+</div>
+<section id="task-3-hidden-markov-model" class="cell markdown">
+<h3>Task 3: Hidden Markov Model</h3>
+<p>The police have acquired a blueprint of the estate and based on
+visitor data the likelihood that a person moves between rooms.</p>
+<p><img src="https://raw.githubusercontent.com/nd-cse-30124-sp25/nd-cse-30124-sp25.github.io/refs/heads/main/static/img/estate.png" alt="Estate" style="width: 100%; max-width: 800px; height: auto;"></p>
+<p><strong>Note:</strong> I am not an artist don't laugh!</p>
+<p>The transition probabilities are given below:</p>
+<ul>
+<li>Study:
+<ul>
+<li>Dining Room: 0.3</li>
+<li>Living Room: 0.3</li>
+<li>Study: 0.4</li>
+</ul></li>
+<li>Dining Room:
+<ul>
+<li>Kitchen: 0.25</li>
+<li>Study: 0.25</li>
+<li>Living Room: 0.25</li>
+<li>Dining Room: 0.25</li>
+</ul></li>
+<li>Kitchen:
+<ul>
+<li>Dining Room: 0.4</li>
+<li>Pantry: 0.4</li>
+<li>Kitchen: 0.2</li>
+</ul></li>
+<li>Pantry:
+<ul>
+<li>Kitchen: 0.8</li>
+<li>Pantry: 0.2</li>
+</ul></li>
+<li>Living Room:
+<ul>
+<li>Study: 0.25</li>
+<li>Dining Room: 0.25</li>
+<li>Bathroom: 0.25</li>
+<li>Living Room: 0.25</li>
+</ul></li>
+<li>Bathroom:
+<ul>
+<li>Living Room: 0.7</li>
+<li>Bathroom: 0.3</li>
+</ul></li>
+</ul>
+<p>Using these, create a "blueprint" JSON structure containing:</p>
+<pre><code>&quot;locations&quot;: {
+    &quot;ROOM NAME&quot;: {&quot;id&quot;: &quot;ROOM ID&quot;, &quot;adjacent_to&quot;: [&quot;NEIGHBOR 1&quot;, &quot;NEIGHBOR 2&quot;]}
+    },
+&quot;transition_probabilities&quot;: {
+    &quot;ROOM ID&quot;: {
+        &quot;NEIGHBOR 1 ID&quot;: 0.4,
+        &quot;NEIGHBOR 2 ID&quot;: 0.4,
+        &quot;ROOM ID&quot;: 0.2
+    }
+}</code></pre>
+<p>Using a hidden markov model, find the most likely path for a suspect
+given the GPS data and witness statements. Then compare the suspect's
+alleged path from their statement you collected to the most likely path
+found by the HMM. How similar to the most likely path according to the
+data is the suspect's path in their statement?</p>
+</section>
+<div class="cell code">
+<div class="sourceCode" id="cb9"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> typing <span class="im">import</span> List, Dict, Tuple</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> collections <span class="im">import</span> defaultdict</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a><span class="co"># </span><span class="al">TODO</span><span class="co">: Create the blueprint dictionary structure</span></span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a><span class="co"># </span><span class="al">TODO</span><span class="co">: Initial state distribution (uniform)</span></span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a><span class="co"># </span><span class="al">TODO</span><span class="co">: Create the emission probability matrix using objective evidence (GPS and witnesses)</span></span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> weight_room_matrix(time: <span class="bu">str</span>, gps_data: List[Dict], witness_statements: Dict[<span class="bu">str</span>, Dict]) <span class="op">-&gt;</span> np.ndarray:</span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a>    <span class="co">&quot;&quot;&quot;</span></span>
+<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a><span class="co">    Create emission probability matrix using objective evidence (GPS and witnesses).</span></span>
+<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a><span class="co">    &quot;&quot;&quot;</span></span>
+<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Start with uniform distribution</span></span>
+<span id="cb9-16"><a href="#cb9-16" aria-hidden="true" tabindex="-1"></a>    emission <span class="op">=</span> np.ones(n_states) <span class="op">/</span> n_states</span>
+<span id="cb9-17"><a href="#cb9-17" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb9-18"><a href="#cb9-18" aria-hidden="true" tabindex="-1"></a>    <span class="co"># </span><span class="al">TODO</span><span class="co">: 1. Weight based on GPS evidence</span></span>
+<span id="cb9-19"><a href="#cb9-19" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb9-20"><a href="#cb9-20" aria-hidden="true" tabindex="-1"></a>    <span class="co"># </span><span class="al">TODO</span><span class="co">: 2. Weight based on witness evidence</span></span>
+<span id="cb9-21"><a href="#cb9-21" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb9-22"><a href="#cb9-22" aria-hidden="true" tabindex="-1"></a>    <span class="co"># </span><span class="al">TODO</span><span class="co">: Normalize Probabilities</span></span>
+<span id="cb9-23"><a href="#cb9-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-24"><a href="#cb9-24" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> emission</span>
+<span id="cb9-25"><a href="#cb9-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-26"><a href="#cb9-26" aria-hidden="true" tabindex="-1"></a><span class="co"># </span><span class="al">TODO</span><span class="co">: Use Viterbi algorithm to find most likely sequence of true locations based on GPS and witness data</span></span>
+<span id="cb9-27"><a href="#cb9-27" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> viterbi(suspect_data: Dict, timestamps: List[<span class="bu">str</span>]) <span class="op">-&gt;</span> Tuple[List[<span class="bu">str</span>], <span class="bu">float</span>]:</span>
+<span id="cb9-28"><a href="#cb9-28" aria-hidden="true" tabindex="-1"></a>    <span class="co">&quot;&quot;&quot;</span></span>
+<span id="cb9-29"><a href="#cb9-29" aria-hidden="true" tabindex="-1"></a><span class="co">    Use Viterbi algorithm to find most likely sequence of true locations.</span></span>
+<span id="cb9-30"><a href="#cb9-30" aria-hidden="true" tabindex="-1"></a><span class="co">    Also returns the probability of the sequence.</span></span>
+<span id="cb9-31"><a href="#cb9-31" aria-hidden="true" tabindex="-1"></a><span class="co">    &quot;&quot;&quot;</span></span>
+<span id="cb9-32"><a href="#cb9-32" aria-hidden="true" tabindex="-1"></a>    total_timesteps <span class="op">=</span> <span class="bu">len</span>(timestamps)</span>
+<span id="cb9-33"><a href="#cb9-33" aria-hidden="true" tabindex="-1"></a>    num_rooms <span class="op">=</span> <span class="bu">len</span>(blueprint[<span class="st">&quot;rooms&quot;</span>])</span>
+<span id="cb9-34"><a href="#cb9-34" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb9-35"><a href="#cb9-35" aria-hidden="true" tabindex="-1"></a>    <span class="co"># </span><span class="al">TODO</span><span class="co">: Initialize matrices</span></span>
+<span id="cb9-36"><a href="#cb9-36" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb9-37"><a href="#cb9-37" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb9-38"><a href="#cb9-38" aria-hidden="true" tabindex="-1"></a>    <span class="co"># </span><span class="al">TODO</span><span class="co">: Create emission matrices for all timestamps</span></span>
+<span id="cb9-39"><a href="#cb9-39" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb9-40"><a href="#cb9-40" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Initialize first timestep</span></span>
+<span id="cb9-41"><a href="#cb9-41" aria-hidden="true" tabindex="-1"></a>    V[<span class="dv">0</span>] <span class="op">=</span> np.log(initial) <span class="op">+</span> np.log(emissions[<span class="dv">0</span>])</span>
+<span id="cb9-42"><a href="#cb9-42" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb9-43"><a href="#cb9-43" aria-hidden="true" tabindex="-1"></a>    <span class="co"># </span><span class="al">TODO</span><span class="co">: Finish the Viterbi forward pass</span></span>
+<span id="cb9-44"><a href="#cb9-44" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> time_step <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">1</span>, total_timesteps):</span>
+<span id="cb9-45"><a href="#cb9-45" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> _, room_info <span class="kw">in</span> blueprint[<span class="st">&quot;rooms&quot;</span>].items():</span>
+<span id="cb9-46"><a href="#cb9-46" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-47"><a href="#cb9-47" aria-hidden="true" tabindex="-1"></a>            <span class="co"># Calculate probabilities of coming from each previous state</span></span>
+<span id="cb9-48"><a href="#cb9-48" aria-hidden="true" tabindex="-1"></a>            probs <span class="op">=</span> []</span>
+<span id="cb9-49"><a href="#cb9-49" aria-hidden="true" tabindex="-1"></a>            <span class="cf">for</span> neighbor_room <span class="kw">in</span> room_info[<span class="st">&quot;adjacent_to&quot;</span>]:</span>
+<span id="cb9-50"><a href="#cb9-50" aria-hidden="true" tabindex="-1"></a>                <span class="co"># </span><span class="al">TODO</span><span class="co">: Calculate probability of coming from this neighbor</span></span>
+<span id="cb9-51"><a href="#cb9-51" aria-hidden="true" tabindex="-1"></a>                <span class="co"># </span><span class="al">TODO</span><span class="co">: Add to probabilities</span></span>
+<span id="cb9-52"><a href="#cb9-52" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-53"><a href="#cb9-53" aria-hidden="true" tabindex="-1"></a>            <span class="co"># </span><span class="al">TODO</span><span class="co">: Find most likely previous state</span></span>
+<span id="cb9-54"><a href="#cb9-54" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-55"><a href="#cb9-55" aria-hidden="true" tabindex="-1"></a>    <span class="co"># </span><span class="al">TODO</span><span class="co">: Backtrack</span></span>
+<span id="cb9-56"><a href="#cb9-56" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb9-57"><a href="#cb9-57" aria-hidden="true" tabindex="-1"></a>    <span class="co"># </span><span class="al">TODO</span><span class="co">: Reverse path and convert to room names</span></span>
+<span id="cb9-58"><a href="#cb9-58" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb9-59"><a href="#cb9-59" aria-hidden="true" tabindex="-1"></a>    <span class="co"># </span><span class="al">TODO</span><span class="co">: Calculate sequence probability</span></span>
+<span id="cb9-60"><a href="#cb9-60" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb9-61"><a href="#cb9-61" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> room_path, sequence_prob</span>
+<span id="cb9-62"><a href="#cb9-62" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb9-63"><a href="#cb9-63" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-64"><a href="#cb9-64" aria-hidden="true" tabindex="-1"></a><span class="co"># </span><span class="al">TODO</span><span class="co">: Analyze each suspect&#39;s path to determine how well it matches the most likely path from the HMM</span></span>
+<span id="cb9-65"><a href="#cb9-65" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-66"><a href="#cb9-66" aria-hidden="true" tabindex="-1"></a>movement_results <span class="op">=</span> {}</span>
+<span id="cb9-67"><a href="#cb9-67" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-68"><a href="#cb9-68" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">&quot;</span><span class="ch">\n</span><span class="st">HMM Path Analysis:&quot;</span>)</span>
+<span id="cb9-69"><a href="#cb9-69" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">&quot;=&quot;</span> <span class="op">*</span> <span class="dv">50</span>)</span>
+<span id="cb9-70"><a href="#cb9-70" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-71"><a href="#cb9-71" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> suspect_name, suspect <span class="kw">in</span> suspect_data.items():</span>
+<span id="cb9-72"><a href="#cb9-72" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Get all timestamps in chronological order</span></span>
+<span id="cb9-73"><a href="#cb9-73" aria-hidden="true" tabindex="-1"></a>    timestamps <span class="op">=</span> []</span>
+<span id="cb9-74"><a href="#cb9-74" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> entry <span class="kw">in</span> suspect[<span class="st">&#39;suspect_statement&#39;</span>]:</span>
+<span id="cb9-75"><a href="#cb9-75" aria-hidden="true" tabindex="-1"></a>        timestamps.append(entry[<span class="st">&#39;time&#39;</span>])</span>
+<span id="cb9-76"><a href="#cb9-76" aria-hidden="true" tabindex="-1"></a>    timestamps.sort()</span>
+<span id="cb9-77"><a href="#cb9-77" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb9-78"><a href="#cb9-78" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Run Viterbi to get most likely true path using GPS data and witness statements</span></span>
+<span id="cb9-79"><a href="#cb9-79" aria-hidden="true" tabindex="-1"></a>    true_path, path_prob <span class="op">=</span> viterbi(</span>
+<span id="cb9-80"><a href="#cb9-80" aria-hidden="true" tabindex="-1"></a>        {</span>
+<span id="cb9-81"><a href="#cb9-81" aria-hidden="true" tabindex="-1"></a>            <span class="st">&#39;gps_data&#39;</span>: suspect[<span class="st">&#39;gps_data&#39;</span>],</span>
+<span id="cb9-82"><a href="#cb9-82" aria-hidden="true" tabindex="-1"></a>            <span class="st">&#39;witness_statements&#39;</span>: suspect[<span class="st">&#39;witness_statements&#39;</span>]</span>
+<span id="cb9-83"><a href="#cb9-83" aria-hidden="true" tabindex="-1"></a>        }, </span>
+<span id="cb9-84"><a href="#cb9-84" aria-hidden="true" tabindex="-1"></a>        timestamps</span>
+<span id="cb9-85"><a href="#cb9-85" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb9-86"><a href="#cb9-86" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb9-87"><a href="#cb9-87" aria-hidden="true" tabindex="-1"></a>    <span class="co"># </span><span class="al">TODO</span><span class="co">: Get suspect&#39;s stated path</span></span>
+<span id="cb9-88"><a href="#cb9-88" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb9-89"><a href="#cb9-89" aria-hidden="true" tabindex="-1"></a>    <span class="co"># </span><span class="al">TODO</span><span class="co">: Calculate matches between true and stated paths</span></span>
+<span id="cb9-90"><a href="#cb9-90" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb9-91"><a href="#cb9-91" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f&quot;</span><span class="ch">\n</span><span class="sc">{</span>suspect_name<span class="sc">}</span><span class="ss">:&quot;</span>)</span>
+<span id="cb9-92"><a href="#cb9-92" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f&#39;</span><span class="ch">\t</span><span class="ss">Agreement of Statement Path with HMM Path: </span><span class="sc">{</span>agreement<span class="sc">}</span><span class="ss">, Number of Contradictions: </span><span class="sc">{</span><span class="bu">len</span>(true_path) <span class="op">-</span> matches<span class="sc">}</span><span class="ss">&#39;</span>)</span>
+<span id="cb9-93"><a href="#cb9-93" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-94"><a href="#cb9-94" aria-hidden="true" tabindex="-1"></a>    path_agreement <span class="op">=</span> {</span>
+<span id="cb9-95"><a href="#cb9-95" aria-hidden="true" tabindex="-1"></a>        <span class="st">&#39;path_probability&#39;</span>: path_prob,</span>
+<span id="cb9-96"><a href="#cb9-96" aria-hidden="true" tabindex="-1"></a>        <span class="st">&#39;statement_agreement&#39;</span>: agreement,</span>
+<span id="cb9-97"><a href="#cb9-97" aria-hidden="true" tabindex="-1"></a>        <span class="st">&#39;num_contradictions&#39;</span>: <span class="bu">len</span>(true_path) <span class="op">-</span> matches</span>
+<span id="cb9-98"><a href="#cb9-98" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb9-99"><a href="#cb9-99" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb9-100"><a href="#cb9-100" aria-hidden="true" tabindex="-1"></a>    movement_results[suspect_name] <span class="op">=</span> path_agreement</span></code></pre></div>
+</div>
+<div class="cell markdown">
+<p>Reference Results:</p>
+<pre><code>HMM Path Analysis:
+==================================================
+
+Professor Bui:
+	Agreement of Statement Path with HMM Path: 0.0, Number of Contradictions: 20
+
+Professor Dingler:
+	Agreement of Statement Path with HMM Path: 0.6, Number of Contradictions: 8
+
+Professor Rehberg:
+	Agreement of Statement Path with HMM Path: 0.05, Number of Contradictions: 19
+
+Professor Levis:
+	Agreement of Statement Path with HMM Path: 0.1, Number of Contradictions: 18
+
+Professor Chambers:
+	Agreement of Statement Path with HMM Path: 0.4, Number of Contradictions: 12
+
+Professor Kumar:
+	Agreement of Statement Path with HMM Path: 0.1, Number of Contradictions: 18</code></pre>
+<p>Nice, now we have two pieces of evidence that we can use to match the
+suspects to the aliases! If only there were some way to combine them. As
+you finish your drink you think back to class and remember that you can
+use Bayesian reasoning to combine the evidence!</p>
+</div>
+<section id="task-5-final-bayesian-analysis" class="cell markdown">
+<h3>Task 5: Final Bayesian Analysis</h3>
+<p>Perform a final Bayesian analysis to combine the evidence from the
+decision tree and the Hidden Markov Model to get the likelihood of each
+suspect matching each alias. Hopefully this will help us figure out who
+was who!</p>
+</section>
+<div class="cell code">
+<div class="sourceCode" id="cb11"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> combine_evidence_bayesian(aliases, decision_tree_results, hmm_results) <span class="op">-&gt;</span> Dict[<span class="bu">str</span>, Dict]:</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>    <span class="co"># </span><span class="al">TODO</span><span class="co">: Combine all evidence, assuming that whomever is Mr. Green is lying!</span></span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>    <span class="co"># </span><span class="al">TODO</span><span class="co">: P(Alias|Evidence) ∝ P(Alias|Activities) * P(Alias|Truthfulness)</span></span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>    final_results <span class="op">=</span> {}</span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>    <span class="co"># We can assume that whomever is Mr. Green is lying</span></span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a>    <span class="co"># So low statement match with highest likelihood path → higher probability of being Mr. Green</span></span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> suspect_name <span class="kw">in</span> decision_tree_results.keys():</span>
+<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a>        <span class="co"># </span><span class="al">TODO</span><span class="co">: Get decision tree probabilities</span></span>
+<span id="cb11-12"><a href="#cb11-12" aria-hidden="true" tabindex="-1"></a>        dt_probs <span class="op">=</span> decision_tree_results[suspect_name]</span>
+<span id="cb11-13"><a href="#cb11-13" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb11-14"><a href="#cb11-14" aria-hidden="true" tabindex="-1"></a>        <span class="co"># </span><span class="al">TODO</span><span class="co">: Get path agreement from the HMM results </span></span>
+<span id="cb11-15"><a href="#cb11-15" aria-hidden="true" tabindex="-1"></a>        path_agreement <span class="op">=</span> hmm_results[suspect_name][<span class="st">&#39;statement_agreement&#39;</span>]</span>
+<span id="cb11-16"><a href="#cb11-16" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb11-17"><a href="#cb11-17" aria-hidden="true" tabindex="-1"></a>        <span class="co"># </span><span class="al">TODO</span><span class="co">: Calculate posterior probabilities</span></span>
+<span id="cb11-18"><a href="#cb11-18" aria-hidden="true" tabindex="-1"></a>        posterior <span class="op">=</span> {}</span>
+<span id="cb11-19"><a href="#cb11-19" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb11-20"><a href="#cb11-20" aria-hidden="true" tabindex="-1"></a>        <span class="co"># </span><span class="al">TODO</span><span class="co">: Normalize</span></span>
+<span id="cb11-21"><a href="#cb11-21" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb11-22"><a href="#cb11-22" aria-hidden="true" tabindex="-1"></a>        final_results[suspect_name] <span class="op">=</span> { alias: prob<span class="op">/</span>total <span class="cf">for</span> alias, prob <span class="kw">in</span> posterior.items() }</span>
+<span id="cb11-23"><a href="#cb11-23" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb11-24"><a href="#cb11-24" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> final_results</span>
+<span id="cb11-25"><a href="#cb11-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-26"><a href="#cb11-26" aria-hidden="true" tabindex="-1"></a><span class="co"># Combine evidence using Bayesian reasoning</span></span>
+<span id="cb11-27"><a href="#cb11-27" aria-hidden="true" tabindex="-1"></a>final_results <span class="op">=</span> combine_evidence_bayesian(aliases, decision_tree_results, movement_results)</span>
+<span id="cb11-28"><a href="#cb11-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-29"><a href="#cb11-29" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> suspect, results <span class="kw">in</span> final_results.items():</span>
+<span id="cb11-30"><a href="#cb11-30" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f&quot;</span><span class="sc">{</span>suspect<span class="sc">}</span><span class="ss">:&quot;</span>)</span>
+<span id="cb11-31"><a href="#cb11-31" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> alias, prob <span class="kw">in</span> results.items():</span>
+<span id="cb11-32"><a href="#cb11-32" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="ss">f&quot;  </span><span class="sc">{</span>alias<span class="sc">}</span><span class="ss">: </span><span class="sc">{</span>prob<span class="sc">:.3f}</span><span class="ss">&quot;</span>)</span></code></pre></div>
+</div>
+<div class="cell markdown">
+<p>Reference Results:</p>
+<pre><code>Professor Bui:
+  Colonel Mustard: 0.000
+  Miss Scarlet: 0.000
+  Mr. Green: 1.000
+  Mrs. Peacock: 0.000
+  Mrs. White: 0.000
+  Professor Plum: 0.000
+Professor Dingler:
+  Colonel Mustard: 0.000
+  Miss Scarlet: 0.000
+  Mr. Green: 0.000
+  Mrs. Peacock: 0.000
+  Mrs. White: 0.000
+  Professor Plum: 1.000
+Professor Rehberg:
+  Colonel Mustard: 0.500
+  Miss Scarlet: 0.000
+  Mr. Green: 0.000
+  Mrs. Peacock: 0.500
+  Mrs. White: 0.000
+  Professor Plum: 0.000
+Professor Levis:
+  Colonel Mustard: 0.000
+  Miss Scarlet: 0.200
+  Mr. Green: 0.000
+  Mrs. Peacock: 0.000
+  Mrs. White: 0.800
+  Professor Plum: 0.000
+Professor Chambers:
+  Colonel Mustard: 0.000
+  Miss Scarlet: 0.941
+  Mr. Green: 0.000
+  Mrs. Peacock: 0.000
+  Mrs. White: 0.000
+  Professor Plum: 0.059
+Professor Kumar:
+  Colonel Mustard: 0.000
+  Miss Scarlet: 0.000
+  Mr. Green: 0.000
+  Mrs. Peacock: 1.000
+  Mrs. White: 0.000
+  Professor Plum: 0.000</code></pre>
+<h3 id="success">Success!!</h3>
+<p>We did it, it seems extremely likely that Professor Bui is Mr. Green!
+You quickly call up Detective Caulfield and explain your findings. He
+laughs at you. It seems that a purely statistical analysis isn't going
+to be enough for the authorities to make a warrant. You pour yourself
+another drink and start brainstorming other ways to find more conclusive
+evidence.</p>
+</div>
+</body>
+</html>

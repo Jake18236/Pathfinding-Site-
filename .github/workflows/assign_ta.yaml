@@ -1,0 +1,32 @@
+name: Assign TA to PR
+
+on:
+  workflow_dispatch:
+    inputs:
+      repo:
+        description: 'Student repository name'
+        required: true
+      pr_number:
+        description: 'Pull request number'
+        required: true
+
+jobs:
+  assign-ta:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.x'
+
+      - name: Install Requirements
+        run: pip install requests pyyaml
+
+      - name: Run TA Assignment Script
+        env:
+          GITHUB_TOKEN: ${{ secrets.TA_ASSIGNMENT_TOKEN }}
+        run: |
+          python assign_ta.py --repo ${{ github.event.inputs.repo }} --pr ${{ github.event.inputs.pr_number }}

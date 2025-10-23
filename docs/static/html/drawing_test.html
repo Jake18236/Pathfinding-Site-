@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Touch and Mouse Drawing with Color Selection</title>
+    <style>
+        html,
+        body {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+        }
+
+        h1 {
+            margin-top: 0;
+            color: #ccc;
+            text-align: center;
+        }
+
+        #canvas1 {
+            background-image: url('../img/Lecture_10_Unsupervised_Learning_Clustering_1.png');
+            /* Updated path */
+        }
+
+        #canvas2 {
+            background-image: url('../img/Lecture_10_Unsupervised_Learning_Clustering_2.png');
+            /* Updated path */
+        }
+
+        .slideshow-container {
+            display: flex;
+            overflow: hidden;
+            position: relative;
+            width: 100vw;
+            /* Make it take full viewport width */
+            height: 100vh;
+            /* Make it take most of the viewport height */
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+        }
+
+        .slide {
+            min-width: 100%;
+            transition: transform 0.5s ease-in-out;
+            display: none;
+            /* Hide slides by default */
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            /* Ensure the slide takes up full height */
+        }
+
+        .slide.active {
+            display: flex;
+            /* Show only active slide */
+        }
+
+        .canvas-container {
+            position: relative;
+            overflow-y: auto;
+            border: 4px solid black;
+            transition: border-color 0.3s ease;
+            width: 80%; /* Make the container full width */
+            height: 80vh; /* Adjust height as needed */
+        }
+
+        canvas {
+            width: 100%; /* Make the canvas fill the container width */
+            height: auto; /* Allow height to be controlled by JS */
+            background-size: initial; /* Prevent background from resizing */
+            background-position: top;
+            background-repeat: no-repeat;
+        }
+
+        iframe {
+            width: 80vw;
+            height: 80vh;
+            border: none;
+        }
+
+        .color-buttons button {
+            padding: 10px;
+            font-size: 16px;
+            margin-right: 10px;
+        }
+
+        /* Previous and Next buttons */
+        .prev,
+        .next {
+            cursor: pointer;
+            font-size: 18px;
+            background-color: rgba(0, 0, 0, 0.5);
+            color: white;
+            border: none;
+            padding: 10px;
+            border-radius: 3px;
+        }
+
+        .prev {
+            left: 10px;
+        }
+
+        .next {
+            right: 10px;
+        }
+
+        .overlay {
+            position: absolute;
+            left: 0;
+            width: 100%;
+            height: 50px; /* Same as bufferZone */
+            background-color: rgba(255, 0, 0, 0.5); /* Red overlay */
+            pointer-events: none; /* Allow drawing through the overlay */
+            transition: background-color 0.3s ease; /* Smooth transition */
+        }
+
+        .header {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #f0f0f0; /* Background color for the header */
+            padding: 10px;
+            border-bottom: 2px solid #ccc; /* Line to delineate the header */
+        }
+
+        .color-buttons button,
+        .prev,
+        .next {
+            padding: 10px;
+            font-size: 16px;
+            margin: 0 5px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Global header menu bar -->
+    <div class="header">
+        <button class="prev" onclick="changeSlide(-1)">❮ Previous</button>
+        <div class="color-buttons">
+            <button onclick="setPenColor('red')">Red</button>
+            <button onclick="setPenColor('blue')">Blue</button>
+            <button onclick="setPenColor('green')">Green</button>
+            <button onclick="setPenColor('black')">Black</button>
+        </div>
+        <button class="next" onclick="changeSlide(1)">Next ❯</button>
+    </div>
+
+    <!-- Slideshow container -->
+    <div class="slideshow-container">
+        <!-- First slide -->
+        <div class="slide active" id="slide1">
+            <div class="canvas-container">
+                <canvas id="canvas1"></canvas>
+                <div class="overlay" id="overlay1"></div>
+            </div>
+        </div>
+
+        <!-- Second slide -->
+        <div class="slide" id="slide2">
+            <div class="canvas-container">
+                <canvas id="canvas2"></canvas>
+                <div class="overlay" id="overlay2"></div>
+            </div>
+        </div>
+
+        <!-- Third slide (iFrame REPL) -->
+        <div class="slide" id="slide3">
+            <iframe src="https://jupyterlite.github.io/demo/repl/index.html?kernel=python&toolbar=1"></iframe>
+        </div>
+    </div>
+
+    <script>
+        // Global pen color
+        let penColor = 'blue';
+
+        // Function to set the global pen color
+        function setPenColor(color) {
+            penColor = color;
+        }
+
+        // Function to get the correct mouse or touch position within the canvas
+        function getPos(canvas, event) {
+            const rect = canvas.getBoundingClientRect();
+            if (event.touches) {
+                return {
+                    x: (event.touches[0].clientX - rect.left) * (canvas.width / rect.width),
+                    y: (event.touches[0].clientY - rect.top) * (canvas.height / rect.height)
+                };
+            } else {
+                return {
+                    x: (event.clientX - rect.left) * (canvas.width / rect.width),
+                    y: (event.clientY - rect.top) * (canvas.height / rect.height)
+                };
+            }
+        }
+
+        // Automatically extend canvas when drawing near the bottom
+        function extendCanvas(canvas, ctx, currentY) {
+            const bufferZone = 50; // Distance from the bottom of the canvas to trigger extension
+            const currentHeight = canvas.height;
+            const extensionThreshold = currentHeight - bufferZone;
+            const overlay = document.getElementById(`overlay${canvas.id.charAt(canvas.id.length - 1)}`);
+            const container = canvas.parentElement;
+
+            if (currentY >= extensionThreshold) {
+                // Create a temporary canvas to store current content
+                const tempCanvas = document.createElement('canvas');
+                const tempCtx = tempCanvas.getContext('2d');
+                tempCanvas.width = canvas.width;
+                tempCanvas.height = canvas.height;
+
+                // Copy current canvas content to temporary canvas
+                tempCtx.drawImage(canvas, 0, 0);
+
+                // Save current scroll position
+                const scrollPosition = container.scrollTop;
+
+                // Extend the canvas height by 200px
+                const newHeight = currentHeight + 200;
+                canvas.height = newHeight; // Extend the canvas height
+                canvas.style.height = `${newHeight}px`; // Update the CSS height
+
+                // Redraw the previous content
+                ctx.drawImage(tempCanvas, 0, 0);
+
+                // Restore the scroll position and scroll down a bit
+                container.scrollTop = scrollPosition + 10;
+
+                // Update overlay position
+                overlay.style.top = `${newHeight - bufferZone}px`;
+
+                // Flash the scrollbar (container border) red
+                container.style.borderColor = 'red';
+                setTimeout(() => {
+                    container.style.borderColor = 'black';
+                }, 300);
+
+                console.log('Canvas extended to height:', newHeight);
+            }
+        }
+
+        // Initialize both canvases for freehand drawing
+        function setupCanvasForDrawing(canvas) {
+            const ctx = canvas.getContext('2d');
+
+            // Set initial canvas resolution to match the background image
+            const img = new Image();
+            img.src = canvas.style.backgroundImage.slice(5, -2); // Extract URL from style
+            img.onload = () => {
+                const originalWidth = img.width;
+                const originalHeight = img.height;
+
+                // Increase the resolution
+                const resolutionMultiplier = 1000; // Increase resolution by a factor of 3
+                canvas.width = originalWidth * resolutionMultiplier;
+                canvas.height = originalHeight * resolutionMultiplier;
+                canvas.style.width = `${originalWidth}px`; // Display size
+                canvas.style.height = `${originalHeight}px`; // Display size
+
+                // Scale the context
+                ctx.scale(resolutionMultiplier, resolutionMultiplier);
+
+                // Set initial overlay position
+                const overlay = document.getElementById(`overlay${canvas.id.charAt(canvas.id.length - 1)}`);
+                overlay.style.top = `${originalHeight - 50}px`; // Position at bottom
+            };
+
+            // Smooth out line caps and joins
+            ctx.lineCap = 'round';
+            ctx.lineJoin = 'round';
+            ctx.lineWidth = 0.5; // Decrease line width for finer lines
+
+            let drawing = false;
+
+            // Start drawing
+            function startDrawing(e) {
+                drawing = true;
+                const pos = getPos(canvas, e);
+                ctx.beginPath();
+                ctx.moveTo(pos.x, pos.y); // Move to the starting point
+            }
+
+            // Drawing function (mousemove or touchmove)
+            function draw(e) {
+                if (!drawing) return;
+                e.preventDefault();
+                const pos = getPos(canvas, e);
+                ctx.lineTo(pos.x, pos.y); // Draw a line to the current position
+                ctx.strokeStyle = penColor; // Use global pen color
+                ctx.stroke();
+
+                // Check if drawing near bottom, and extend canvas if necessary
+                extendCanvas(canvas, ctx, pos.y);
+
+                // Auto-scroll if near the bottom of the visible area
+                const container = canvas.parentElement;
+                if (pos.y > container.scrollTop + container.clientHeight - 100) {
+                    container.scrollTop += 10;
+                }
+            }
+
+            // Stop drawing
+            function stopDrawing() {
+                drawing = false;
+            }
+
+            // Mouse events
+            canvas.addEventListener('mousedown', startDrawing);
+            canvas.addEventListener('mousemove', draw);
+            canvas.addEventListener('mouseup', stopDrawing);
+            canvas.addEventListener('mouseout', stopDrawing);
+
+            // Touch events
+            canvas.addEventListener('touchstart', startDrawing);
+            canvas.addEventListener('touchmove', draw);
+            canvas.addEventListener('touchend', stopDrawing);
+            canvas.addEventListener('touchcancel', stopDrawing);
+        }
+
+        setupCanvasForDrawing(document.getElementById('canvas1'));
+        setupCanvasForDrawing(document.getElementById('canvas2'));
+
+        // Slideshow functionality
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.slide');
+
+        function changeSlide(n) {
+            slides[currentSlide].classList.remove('active');
+            currentSlide = (currentSlide + n + slides.length) % slides.length;
+            slides[currentSlide].classList.add('active');
+        }
+    </script>
+</body>
+
+</html>

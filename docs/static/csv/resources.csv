@@ -1,0 +1,393 @@
+id,name,type,link,is_primary,student,lecture_id
+slides,Slides,reading,https://drive.google.com/file/d/1yUot9T3myty2Tsx1KpXLxhyd77KbFlUl/view?usp=sharing,,,lec-introduction
+panopto,Panopto,video,https://notredame.hosted.panopto.com/Panopto/Pages/Viewer.aspx?id=a449561f-8558-4c15-9d9f-b34401576fc6,,,lec-introduction
+slides,Slides,reading,https://drive.google.com/file/d/1Rc5V0QSkbObr1hWjcuLyDZ0dnPDhd538/view?usp=sharing,,,lec-search
+fca-section-35,FCA - Section 3.5,reading,https://artint.info/3e/html/ArtInt3e.Ch3.S5.html,,,lec-search
+panopto,Panopto,video,https://notredame.hosted.panopto.com/Panopto/Pages/Viewer.aspx?id=61ec6c47-5064-4cf2-aab5-b34601597a14,,,lec-search
+harvard-cs50,Harvard CS50,video,https://www.youtube.com/watch?v=WbzNRTTrX0g,,,lec-search
+mit-6034,MIT 6.034,video,https://www.youtube.com/watch?v=j1H3jAAGlEA,,,lec-search
+search-algorithms-in-ai-uninformed-search-section,Search Algorithms in AI (Uninformed Search Section),reading,https://www.appliedaicourse.com/blog/search-algorithms-in-ai/,TRUE,,lec-search
+introduction-to-the-a-algorithm,Introduction to the A* Algorithm,reading,https://www.redblobgames.com/pathfinding/a-star/introduction.html,TRUE,,lec-a-search
+foundations-of-computation-agents-section-36,Foundations of Computation Agents - Section 3.6,reading,https://artint.info/3e/html/ArtInt3e.Ch3.S6.html,,,lec-a-search
+harvard-cs50,Harvard CS50,video,https://youtu.be/WbzNRTTrX0g?si=mqYHjM8hTRsed8h4&t=3269,,,lec-a-search
+stanford-cs221,Stanford CS221,video,https://www.youtube.com/watch?v=HEs1ZCvLH2s&list=PLoROMvodv4rOca_Ovz1DvdtWuz8BfSWL2&index=18,,,lec-a-search
+mit-6034,MIT 6.034,video,https://www.youtube.com/watch?v=gGQ-vAmdAOI,,,lec-a-search
+a-search,A* Search,blogpost,https://courses.grainger.illinois.edu/cs440/fa2024/lectures/astar.html,,,lec-a-search
+introduction-to-a-,Introduction to A* ,blogpost,https://theory.stanford.edu/~amitp/GameProgramming/AStarComparison.html,,,lec-a-search
+heuristics,Heuristics,blogpost,https://theory.stanford.edu/~amitp/GameProgramming/Heuristics.html,,,lec-a-search
+1968-a-formal-basis-for-the-heuristic-determination-of-minimum-cost-paths,(1968) A Formal Basis for the Heuristic Determination of Minimum Cost Paths,paper,https://ieeexplore.ieee.org/document/4082128,,,lec-a-search
+a-in-minecraft,A* in Minecraft,video,https://www.youtube.com/watch?v=Zg0Cxn8AVZA,,Grant Flesher '26,lec-a-search
+panopto,Panopto,video,https://notredame.hosted.panopto.com/Panopto/Pages/Viewer.aspx?id=17f3a92c-9d44-41a4-9027-b34b015993fd,FALSE,,lec-a-search
+slides,Slides,reading,https://drive.google.com/file/d/1Ir-99SJIcfGAtTDAZOF_werU4EbsA9Fh/view?usp=sharing,FALSE,,lec-a-search
+constraint-satisfaction-introduction,Constraint Satisfaction: introduction,video,https://www.youtube.com/watch?v=_e64FiDWvqs,TRUE,Jack Mangione '26,lec-constraint-satisfaction-problems
+constraint-satisfaction-the-ac3-algorithm,Constraint Satisfaction: the AC-3 algorithm,video,https://www.youtube.com/watch?v=4cCS8rrYT14,FALSE,,lec-constraint-satisfaction-problems
+foundations-of-computational-agents-sections-41-through-46,Foundations of Computational Agents - Sections 4.1 through 4.6,reading,https://artint.info/3e/html/ArtInt3e.Ch4.html,,,lec-constraint-satisfaction-problems
+harvard-cs50,Harvard CS50,video,https://youtu.be/qK46ET1xk2A?si=tSAHHe0Sp-OxWUpD&t=3033,,,lec-constraint-satisfaction-problems
+stanford-cs221,Stanford CS221,video,https://www.youtube.com/watch?v=-IO4fPO0rxk&list=PLoROMvodv4rOca_Ovz1DvdtWuz8BfSWL2&index=23,,,lec-constraint-satisfaction-problems
+mit-6034,MIT 6.034,video,https://www.youtube.com/watch?v=dARl_gGrS4o,,,lec-constraint-satisfaction-problems
+csps-for-sudoku-,CSPs for Sudoku ,blogpost,https://medium.com/my-udacity-ai-nanodegree-notes/solving-sudoku-think-constraint-satisfaction-problem-75763f0742c9,,,lec-constraint-satisfaction-problems
+1977-consistency-in-networks-of-relations-mackworth,(1977) Consistency in Networks of Relations (Mackworth),paper,https://www.sciencedirect.com/science/article/pii/0004370277900078,,,lec-constraint-satisfaction-problems
+1988-network-based-heuristics-for-constraint-satisfaction-problems-dechter-and-pearl,(1988) Network Based Heuristics for Constraint Satisfaction Problems (Dechter and Pearl),paper,https://www.sciencedirect.com/science/article/pii/000437028090051X,,,lec-constraint-satisfaction-problems
+cmu-15281,CMU 15-281,blogpost,https://www.cs.cmu.edu/~15281-s23/coursenotes/constraints/index.html,,,lec-constraint-satisfaction-problems
+1980-increasing-tree-search-efficiency-for-constraint-satisfaction-problems-haralick-and-elliot,(1980) Increasing Tree Search Efficiency for Constraint Satisfaction Problems (Haralick and Elliot),paper,https://www.sciencedirect.com/science/article/pii/000437028090051X,FALSE,,lec-constraint-satisfaction-problems
+sudoku-csp-python-code,Sudoku CSP python code,notebook,https://drive.google.com/file/d/18xHvWJXqeaI_CcPXUhRJVyXgjVHC9s-d/view?usp=sharing,FALSE,,lec-constraint-satisfaction-problems
+panopto,Panopto,video,https://notredame.hosted.panopto.com/Panopto/Pages/Viewer.aspx?id=e7127bc8-8355-4d55-8aba-b34d015921a9,FALSE,,lec-constraint-satisfaction-problems
+slides,Slides,reading,https://drive.google.com/file/d/1Zap5C2R7DehHFriGWHMQ6sRbLxEclROF/view?usp=sharing,FALSE,,lec-constraint-satisfaction-problems
+minimax-algorithm-and-alphabeta-pruning,Minimax Algorithm and Alpha-Beta Pruning,blogpost,https://mathspp.com/blog/minimax-algorithm-and-alpha-beta-pruning,TRUE,,lec-adversarial-search
+minimax-with-alpha-beta-pruning,Minimax with Alpha Beta Pruning,video,https://www.youtube.com/watch?v=zp3VMe0Jpf8,,,lec-adversarial-search
+foundations-of-computational-agents-sections-142-and-143,Foundations of Computational Agents - Sections 14.2 and 14.3,reading,https://artint.info/3e/html/ArtInt3e.Ch14.S2.html,,,lec-adversarial-search
+harvard-cs50,Harvard CS50,video,https://youtu.be/WbzNRTTrX0g?si=CAG9IhmN4MBSzHfi&t=4323,,,lec-adversarial-search
+stanford-cs221,Stanford CS221,video,https://www.youtube.com/watch?v=3pU-Hrz_xy4&list=PLoROMvodv4rOca_Ovz1DvdtWuz8BfSWL2&index=21,,,lec-adversarial-search
+mit-6034,MIT 6.034,video,https://www.youtube.com/watch?v=STjW3eH0Cik,,,lec-adversarial-search
+adversarial-search,Adversarial Search,video,https://stackabuse.com/minimax-and-alpha-beta-pruning-in-python/,,,lec-adversarial-search
+1928-zur-theorie-der-gesellschaftsspiele-von-neumann,(1928) Zur Theorie der Gesellschaftsspiele (von Neumann),paper,https://link.springer.com/article/10.1007/BF01448847,,,lec-adversarial-search
+1950-programming-a-computer-for-playing-chess-shannon,(1950) Programming a Computer for Playing Chess (Shannon),paper,https://link.springer.com/chapter/10.1007/978-1-4757-1968-0_1,,,lec-adversarial-search
+1975-an-analysis-of-alphabeta-pruning-knuth-and-moore,(1975) An Analysis of Alpha-Beta Pruning (Knuth and Moore),paper,https://www.sciencedirect.com/science/article/pii/0004370275900193,,,lec-adversarial-search
+minimax-algorithm-blog-post,Minimax Algorithm (Blog Post),blogpost,https://notes.bencuan.me/cs61b/algorithms/minimax/,,,lec-adversarial-search
+tictactoe-understanding-the-minimax-algorithm,Tic-Tac-Toe: Understanding the Minimax Algorithm,blogpost,https://www.neverstopbuilding.com/blog/minimax,,,lec-adversarial-search
+panopto,Panopto,video,https://notredame.hosted.panopto.com/Panopto/Pages/Viewer.aspx?id=a08df3ac-0172-4b89-b960-b352015c31e6,FALSE,,lec-adversarial-search
+slides,Slides,reading,https://drive.google.com/file/d/1DzF9yr3hcR3xoNJRnNVGskvEXTwh_YV5/view?usp=sharing,FALSE,,lec-adversarial-search
+logicalbased-artificial-intelligence-and-expert-systems,Logical-Based Artificial Intelligence and Expert Systems,blogpost,https://www.primaryobjects.com/2018/07/23/logical-based-artificial-intelligence-and-expert-systems/,TRUE,,lec-knowledge-representation-and-feature-engineering
+harvard-cs50,Harvard CS50,video,https://www.youtube.com/watch?v=HWQLez87vqM,,,lec-knowledge-representation-and-feature-engineering
+stanford-cs221,Stanford CS221,video,https://www.youtube.com/watch?v=RIk67yGMVv4&list=PLoROMvodv4rOca_Ovz1DvdtWuz8BfSWL2&index=44,,,lec-knowledge-representation-and-feature-engineering
+foundations-of-computational-agents-chapters-5-15-and-16,"Foundations of Computational Agents - Chapters 5, 15, and 16",reading,https://artint.info/3e/html/ArtInt3e.Ch5.html,,,lec-knowledge-representation-and-feature-engineering
+designing-an-artificial-intelligence-agent-to-navigate-a-world,Designing an Artificial Intelligence Agent to Navigate a World,blogpost,https://www.primaryobjects.com/2020/10/26/designing-an-artificial-intelligence-agent-to-navigate-a-world/,,,lec-knowledge-representation-and-feature-engineering
+slides,Slides,reading,https://drive.google.com/file/d/1lPO80o2cwPmuqaqvJTpTQWo4UkCBKJPI/view?usp=sharing,,,lec-knowledge-representation-and-feature-engineering
+fca-sections-72-and-731,FCA - Sections 7.2 and 7.3.1,reading,https://artint.info/3e/html/ArtInt3e.Ch7.S3.html,FALSE,,lec-decision-trees
+pml-chapter-18,PML - Chapter 18,reading,https://probml.github.io/pml-book/book1.html,FALSE,,lec-decision-trees
+islp-chapter-8,ISLP - Chapter 8,reading,https://www.statlearning.com/,FALSE,,lec-decision-trees
+uml-chapter-18,UML - Chapter 18,reading,https://www.cs.huji.ac.il/~shais/UnderstandingMachineLearning/copy.html,FALSE,,lec-decision-trees
+mit-6034,MIT 6.034,video,https://www.youtube.com/watch?v=SXBG3RGr_Rc,FALSE,,lec-decision-trees
+cornell-cs4780,Cornell CS4780,video,https://youtu.be/a3ioGSwfVpE?si=f0JevsrXU2q3LZw6,FALSE,,lec-decision-trees
+playing-tennis-decision-tree,Playing Tennis Decision Tree,notebook,https://colab.research.google.com/drive/1C8MwpktYioRquWU_tz98funLSbe8nM5x?usp=sharing,FALSE,,lec-decision-trees
+entropy-statquest,Entropy (StatQuest),video,https://youtu.be/YtebGVx-Fxw?si=zC-J1JrOOe64b8cM,FALSE,,lec-decision-trees
+decision-trees-statquest,Decision Trees (StatQuest),video,https://youtu.be/7VeUPuFGJHk?si=SO3AHNT9KX1vJdln,FALSE,,lec-decision-trees
+regression-trees-statquest,Regression Trees (StatQuest),video,https://youtu.be/g9c66TUylZ4?si=SpvGvKvq9DmjLXYi,FALSE,,lec-decision-trees
+information-theory-3b1b,Information Theory (3b1b),video,https://youtu.be/v68zYyaEmEA?si=0mkPXsH4BYhxzSCl,FALSE,,lec-decision-trees
+decision-trees-mlu,Decision Trees (MLU),blogpost,https://mlu-explain.github.io/decision-tree/,TRUE,,lec-decision-trees
+decision-trees-r2d3,Decision Trees (r2d3),blogpost,https://www.r2d3.us/visual-intro-to-machine-learning-part-1/,FALSE,,lec-decision-trees
+ig-and-entropy-zhou,IG and Entropy (Zhou),blogpost,https://victorzhou.com/blog/information-gain/,FALSE,,lec-decision-trees
+information-theory-olah,Information Theory (Olah),blogpost,https://colah.github.io/posts/2015-09-Visual-Information/,FALSE,,lec-decision-trees
+1966-experiments-in-induction-hunt-et-al,(1966) Experiments in Induction (Hunt et al.),paper,https://www.sciencedirect.com/science/article/pii/S0020737369800283,FALSE,,lec-decision-trees
+1986-induction-of-decision-trees-quinlan,(1986) Induction of Decision Trees (Quinlan),paper,https://link.springer.com/article/10.1007/BF00116251,FALSE,,lec-decision-trees
+1984-classification-and-regression-trees-brieman-et-al,(1984) Classification and Regression Trees (Brieman et al.),paper,https://www.taylorfrancis.com/books/mono/10.1201/9781315139470/classification-regression-trees-leo-breiman-jerome-friedman-olshen-charles-stone,FALSE,,lec-decision-trees
+slides,Slides,reading,https://drive.google.com/file/d/1M3NbjhXWsuPHZ1yJ9fC2J3Il5rAAbxtg/view?usp=sharing,FALSE,,lec-decision-trees
+panopto,Panopto,video,https://notredame.hosted.panopto.com/Panopto/Pages/Viewer.aspx?id=e50e76af-fe7a-4b11-94d0-b3590157a71f,FALSE,,lec-decision-trees
+fca-section-96,FCA - Section 9.6,reading,https://artint.info/3e/html/ArtInt3e.Ch9.html,FALSE,,lec-markov-models
+markov-babbler,Markov Babbler,notebook,https://colab.research.google.com/drive/1dthRebtlLdXYt9ZSYuCsC11896ovNkCV?usp=sharing,FALSE,,lec-markov-models
+pml-sections-3612,PML - Sections 3.6.1.2,reading,https://probml.github.io/pml-book/book1.html,FALSE,,lec-markov-models
+harvard-cs50,Harvard CS50,video,https://youtu.be/D8RRq3TbtHU?si=OHgr_CzMVECPEqdc&t=5578,FALSE,,lec-markov-models
+stanford-cs221,Stanford CS221,video,https://www.youtube.com/watch?v=neeaJb3wCYw&list=PLoROMvodv4rOca_Ovz1DvdtWuz8BfSWL2&index=30,FALSE,,lec-markov-models
+ngram-language-models,N-Gram Language Models,blogpost,https://web.stanford.edu/~jurafsky/slp3/3.pdf,FALSE,,lec-markov-models
+1906-extension-of-the-law-of-large-numbers-to-dependent-events-markov,(1906) Extension of the Law of Large Numbers to Dependent Events (Markov),paper,https://www.emis.de/journals/JEHPS/Novembre2006/Markov3pdf.pdf,FALSE,,lec-markov-models
+1966-statistical-inference-for-probabilistic-functions-of-finite-state-markove-chains-baum-and-petrie,(1966) Statistical Inference for Probabilistic Functions of Finite State Markove Chains (Baum and Petrie),paper,https://projecteuclid.org/journals/annals-of-mathematical-statistics/volume-37/issue-6/Statistical-Inference-for-Probabilistic-Functions-of-Finite-State-Markov-Chains/10.1214/aoms/1177699147.full,FALSE,,lec-markov-models
+1989-a-tutorial-on-hidden-markov-models-and-selected-applications-in-speech-recognition-rabiner,(1989) A Tutorial on Hidden Markov Models and Selected Applications in Speech Recognition (Rabiner),paper,https://ieeexplore.ieee.org/document/18626,FALSE,,lec-markov-models
+hidden-markov-models,Hidden Markov Models,reading,https://web.stanford.edu/~jurafsky/slp3/A.pdf,FALSE,,lec-markov-models
+markov-chains-clearly-explained,Markov Chains Clearly Explained!,video,https://www.youtube.com/watch?v=i3AkTO9HLXo,TRUE,,lec-markov-models
+hidden-markov-model-clearly-explained,Hidden Markov Model Clearly Explained!,video,https://www.youtube.com/watch?v=RWkHJnFj5rY,FALSE,,lec-markov-models
+hidden-markov-model-data-science-concept,Hidden Markov Model: Data Science Concept,video,https://www.youtube.com/watch?v=fX5bYmnHqqE,TRUE,,lec-markov-models
+the-viterbi-algorithm-natural-language-processing,The Viterbi Algorithm: Natural Language Processing,video,https://www.youtube.com/watch?v=IqXdjdOgXPM,FALSE,,lec-markov-models
+slides,Slides,reading,https://drive.google.com/file/d/1EATifwt6FITbeH2spLaqyIgj0KsYwgeX/view?usp=sharing,FALSE,,lec-markov-models
+king-james-programming,King James Programming,blogpost,https://www.tumblr.com/kingjamesprogramming,FALSE,,lec-markov-models
+markov-chains-are-the-original-language-models,Markov Chains are the Original Language Models,blogpost,https://elijahpotter.dev/articles/markov_chains_are_the_original_language_models,FALSE,,lec-markov-models
+the-strange-math-that-predicts-almost-anything,The Strange Math That Predicts (Almost) Anything,video,https://youtu.be/KZeIEiBrT_w,FALSE,,lec-markov-models
+fca-sections-91-through-94,FCA - Sections 9.1 through 9.4,reading,https://artint.info/3e/html/ArtInt3e.Ch9.html,FALSE,,lec-bayesian-reasoning
+pml-sections-23-361-46-51-93,"PML - Sections 2.3, 3.6.1, 4.6, 5.1, 9.3",reading,https://probml.github.io/pml-book/book1.html,FALSE,,lec-bayesian-reasoning
+islp-section-444,ISLP - Section 4.4.4,reading,https://www.statlearning.com/,FALSE,,lec-bayesian-reasoning
+uml-chapter-24,UML - Chapter 24,reading,https://www.cs.huji.ac.il/~shais/UnderstandingMachineLearning/copy.html,FALSE,,lec-bayesian-reasoning
+harvard-cs50,Harvard CS50,video,https://www.youtube.com/watch?v=D8RRq3TbtHU,FALSE,,lec-bayesian-reasoning
+stanford-cs221,Stanford CS221,video,https://www.youtube.com/watch?v=fA7zP6EcVdw&list=PLoROMvodv4rOca_Ovz1DvdtWuz8BfSWL2&index=32,FALSE,,lec-bayesian-reasoning
+mit-6034,MIT 6.034,video,https://www.youtube.com/watch?v=A6Ud6oUCRak,FALSE,,lec-bayesian-reasoning
+naive-bayes-for-iris-classification,Naive Bayes for Iris Classification,notebook,https://drive.google.com/file/d/1ucLp9MQWaBnmBXlaCNBuba8WYWLwl0pH/view?usp=sharing,FALSE,,lec-bayesian-reasoning
+naive-bayes-visualizer,Naive Bayes Visualizer,notebook,https://colab.research.google.com/drive/1irskT_qQ0EQOZIvf35u7RNbKZu3Sea3w?usp=sharing,FALSE,,lec-bayesian-reasoning
+cornell-cs4780,Cornell CS4780,video,https://youtu.be/pDHEX2usCS0?si=cPLXGP4n4A-FuNtI,FALSE,,lec-bayesian-reasoning
+conditional-probability-statquest,Conditional Probability (StatQuest),video,https://youtu.be/1ONDvW1UIJc?si=3mNParEk5_PjfnZN,FALSE,,lec-bayesian-reasoning
+bayes-theorem-statquest,Bayes' Theorem (StatQuest),video,https://youtu.be/9wCnvr7Xw4E?si=PEhYzKTasfIq1xOx,FALSE,,lec-bayesian-reasoning
+likelihood-statquest,Likelihood (StatQuest),video,https://youtu.be/pYxNSUDSFH4?si=zt0zdX9Kf8-Z58jR,FALSE,,lec-bayesian-reasoning
+pdfs-statquest,PDFs (StatQuest),video,https://youtu.be/oI3hZJqXJuc?si=z0mmgAYp_kQXztLu,FALSE,,lec-bayesian-reasoning
+mle-statquest,MLE (StatQuest),video,https://youtu.be/XepXtl9YKwc?si=eIiQ1SJeyVNEj_ey,FALSE,,lec-bayesian-reasoning
+naive-bayes-statquest,Naive Bayes (StatQuest),video,https://youtu.be/O2L2Uv9pdDA?si=rAU-89pPD7qt_U-l,FALSE,,lec-bayesian-reasoning
+gaussian-nb-statquest,Gaussian NB (StatQuest),video,https://youtu.be/H3EjCKtlVog?si=BlD029fjYUcvGMAq,FALSE,,lec-bayesian-reasoning
+bayesian-reasoning-hdm,Bayesian Reasoning (HdM),reading,https://hannibunny.github.io/mlbook/machinelearning/parametricClassification1D.html,FALSE,,lec-bayesian-reasoning
+naive-bayes-raschka,Naive Bayes (Raschka),blogpost,https://sebastianraschka.com/Articles/2014_naive_bayes_1.html,FALSE,,lec-bayesian-reasoning
+1763-an-essay-towards-solving-a-problem-in-the-doctrine-of-chances-bayes,(1763) An Essay towards Solving a Problem in the Doctrine of Chances (Bayes),paper,https://royalsocietypublishing.org/doi/10.1098/rstl.1763.0053,FALSE,,lec-bayesian-reasoning
+1812-thxe9orie-analytique-des-probabilitxe9s-laplace,"""(1812) Th\xE9orie Analytique des Probabilit\xE9s (Laplace)""",paper,https://archive.org/details/thorieanalytiqu01laplgoog,FALSE,,lec-bayesian-reasoning
+1985-bayesian-networks-a-model-of-selfactivated-memory-for-evidential-reasoning-pearl,(1985) Bayesian Networks - A Model of Self-Activated Memory for Evidential Reasoning (Pearl),paper,https://ftp.cs.ucla.edu/tech-report/198_-reports/850017.pdf,FALSE,,lec-bayesian-reasoning
+1988-probabilistic-reasoning-in-intelligent-systems-networks-of-plausible-inference-pearl,(1988) Probabilistic Reasoning in Intelligent Systems - Networks of Plausible Inference (Pearl),paper,https://www.sciencedirect.com/book/9780080514895/probabilistic-reasoning-in-intelligent-systems,FALSE,,lec-bayesian-reasoning
+1998-a-comparison-of-event-models-for-naive-bayes-text-classification-mccallum-and-nigam,(1998) A Comparison of Event Models for Naive Bayes Text Classification (McCallum and Nigam),paper,https://cdn.aaai.org/Workshops/1998/WS-98-05/WS98-05-007.pdf,FALSE,,lec-bayesian-reasoning
+bayesian-networks-an-introduction,Bayesian networks - an introduction,reading,https://www.bayesserver.com/docs/introduction/bayesian-networks/,FALSE,,lec-bayesian-reasoning
+bayes-rule-explained-for-beginners,Bayes' Rule - Explained for Beginners,blogpost,https://www.freecodecamp.org/news/bayes-rule-explained/,TRUE,,lec-bayesian-reasoning
+slides,Slides,reading,https://drive.google.com/file/d/1nxDdZ8CzZMQlwrP2puTnCKZVUcNzON5V/view?usp=sharing,FALSE,,lec-bayesian-reasoning
+probability-vs-likelihood,Probability vs. Likelihood,blogpost,https://medium.com/@wl8380/probability-vs-likelihood-the-most-misunderstood-duo-in-data-science-759fc4dcb730,FALSE,,lec-bayesian-reasoning
+panopto,Panopto,video,https://notredame.hosted.panopto.com/Panopto/Pages/Viewer.aspx?id=fcd2e1b6-c4f4-45a5-a961-b360015db604,FALSE,,lec-bayesian-reasoning
+slides,Slides,reading,https://drive.google.com/file/d/1w1-FYKkQ2WvjHC6ptI7VqxxcIyrU2Mfe/view?usp=sharing,FALSE,,lec-linear-regression
+sp25-panopto,sp25 Panopto,video,https://notredame.hosted.panopto.com/Panopto/Pages/Viewer.aspx?id=f05aae98-bacc-46cd-86a0-b287016e7805,FALSE,,lec-linear-regression
+fca-sections-732-first-few-paragraphs-and-742,FCA - Sections 7.3.2 (First few paragraphs) and 7.4.2,reading,https://artint.info/3e/html/ArtInt3e.Ch7.S3.html,FALSE,,lec-linear-regression
+pml-sections-75-813-chapter-11,"PML - Sections 7.5, 8.1.3, Chapter 11",reading,https://probml.github.io/pml-book/book1.html,FALSE,,lec-linear-regression
+islp-chapter-3,ISLP - Chapter 3,reading,https://www.statlearning.com/,FALSE,,lec-linear-regression
+-d2l-chapter-31, D2L - Chapter 3.1,reading,https://d2l.ai/chapter_linear-regression/linear-regression.html,FALSE,,lec-linear-regression
+uml-chapter-92,UML - Chapter 9.2,reading,https://www.cs.huji.ac.il/~shais/UnderstandingMachineLearning/copy.html,FALSE,,lec-linear-regression
+stanford-cs221,Stanford CS221,reading,https://www.youtube.com/watch?v=nEWNNt2KmfQ&list=PLoROMvodv4rOca_Ovz1DvdtWuz8BfSWL2&index=5,FALSE,,lec-linear-regression
+harvard-cs50,Harvard CS50,reading,https://youtu.be/-g0iJjnO2_w?si=jNuQG0o83uKw0qbR&t=2371,FALSE,,lec-linear-regression
+cornell-cs4780,Cornell CS4780,reading,https://youtu.be/_21o_ylL0q4?si=ee6JJ2WxAvA9hfyr,FALSE,,lec-linear-regression
+-singular-value-decomposition, Singular Value Decomposition,notebook,https://colab.research.google.com/drive/1aCfC28VxUD-V5lKOZseAkCbWNrqyg1zn?usp=sharing,FALSE,,lec-linear-regression
+linear-regression-and-regularization,Linear Regression and Regularization,notebook,https://colab.research.google.com/drive/12I7itMdgphH0ByQPgIIcDlCaYFeCRO0e?usp=sharing,FALSE,,lec-linear-regression
+polynomial-regression,Polynomial Regression,notebook,https://colab.research.google.com/drive/1-cJATF_fPmO8CyFtjqDM04RRnhCMRfNg?usp=sharing,FALSE,,lec-linear-regression
+-linear-regression-statquest, Linear Regression (StatQuest),video,https://youtu.be/nk2CQITm_eo?si=LtdQNRlau17NbjjF,FALSE,,lec-linear-regression
+multiple-regression-statquest,Multiple Regression (StatQuest),video, https://youtu.be/zITIFTsivN8?si=f0YbEmnZ6_XFMpY5,FALSE,,lec-linear-regression
+bias-and-variance-statquest,Bias and Variance (StatQuest),video,https://youtu.be/EuBBz3bI-aA?si=WYsqtbrIZ6ICrYGP,FALSE,,lec-linear-regression
+l2-regularization-statquest,L2 Regularization (StatQuest),video,https://youtu.be/Q81RR3yKn30?si=tMvAc1m9RHe7WYgH,TRUE,,lec-linear-regression
+l1-regularization-statquest,L1 Regularization (StatQuest),video,https://youtu.be/NGf0voTMlcs?si=QACQkO-8Msm95saj,TRUE,,lec-linear-regression
+l1-vs-l2-visualization-statquest,L1 vs. L2 Visualization (StatQuest),video,https://youtu.be/Xm2C_gTAl8c?si=MovbjzS6Cf-PN70-,FALSE,,lec-linear-regression
+linear-regression-mlu,Linear Regression (MLU),blogpost,https://mlu-explain.github.io/linear-regression/,TRUE,,lec-linear-regression
+linear-regression-rasbt,Linear Regression (rasbt),notebook, https://github.com/rasbt/machine-learning-book/blob/main/ch09/ch09.ipynb,FALSE,,lec-linear-regression
+linear-regression-hdm,Linear Regression (HdM),reading,https://hannibunny.github.io/mlbook/machinelearning/LinReg.html,FALSE,,lec-linear-regression
+1805-nouvelles-mxe9thodes-pour-la-dxe9termination-des-orbites-des-comxe8tes-legendre,"(1805) Nouvelles M\xE9thodes Pour la D\xE9termination des Orbites des\
+        \ Com\xE8tes (Legendre)",paper,https://books.google.com/books/about/Nouvelles_m%C3%A9thodes_pour_la_d%C3%A9terminati.html?id=FRcOAAAAQAAJ,FALSE,,lec-linear-regression
+1809-theoria-motus-corporum-coelestium-in-sectionibus-conicis-solem-ambientium-gauss,(1809) Theoria Motus Corporum Coelestium in Sectionibus Conicis Solem Ambientium (Gauss),paper,https://archive.org/details/bub_gb_ORUOAAAAQAAJ,FALSE,,lec-linear-regression
+1970-ridge-regression-biased-estimation-for-nonorthogonal-problems-hoerl-and-kennard,(1970) Ridge Regression - Biased Estimation for Nonorthogonal Problems (Hoerl and Kennard),paper,https://homepages.math.uic.edu/~lreyzin/papers/ridge.pdf,FALSE,,lec-linear-regression
+1996-regression-shrinkage-and-selection-via-the-lasso-tibshirani,(1996) Regression Shrinkage and Selection via the Lasso (Tibshirani),paper,https://www.jstor.org/stable/2346178?seq=1,FALSE,,lec-linear-regression
+panopto,Panopto,video,https://notredame.hosted.panopto.com/Panopto/Pages/Viewer.aspx?id=fcd2e1b6-c4f4-45a5-a961-b360015db604,FALSE,,lec-linear-regression
+slides,Slides,reading,https://drive.google.com/file/d/15waj2uQkXLuol_MGcQ9x7p4otdmddXpx/view?usp=sharing,FALSE,,lec-perceptrons
+pml-section-1025,PML - Section 10.2.5,reading,https://probml.github.io/pml-book/book1.html,FALSE,,lec-perceptrons
+uml-section-912,UML - Section 9.1.2,reading,https://www.cs.huji.ac.il/~shais/UnderstandingMachineLearning/copy.html,FALSE,,lec-perceptrons
+panopto,Panopto,video,https://notredame.hosted.panopto.com/Panopto/Pages/Viewer.aspx?id=ed8b2037-1683-41ad-af60-b290016968af,FALSE,,lec-perceptrons
+harvard-cs50,Harvard CS50,video,https://youtu.be/-g0iJjnO2_w?si=rsqf3IhYQV_PKjkc&t=751,FALSE,,lec-perceptrons
+cornell-cs4780,Cornell CS4780,video,https://youtu.be/wl7gVvI-HuY?si=25ULeFrFpBytCOTn,FALSE,,lec-perceptrons
+perceptrons,Perceptrons,video,https://youtu.be/l-9ALe3U-Fg?si=tS0U8QDoRylnSHnZ,TRUE, Anthony Tsiantis '26,lec-perceptrons
+perceptron,Perceptron,notebook,https://drive.google.com/file/d/1iX-UsNbA9hPjXkK2xUWrKpGQ-YyQtqcT/view?usp=sharing,FALSE,,lec-perceptrons
+perceptrons-raschka,Perceptrons (Raschka),blogpost,https://sebastianraschka.com/Articles/2015_singlelayer_neurons.html,FALSE,,lec-perceptrons
+1958-the-perceptron-a-probabilistic-model-for-information-storage-and-organization-in-the-brain-rosenblatt,(1958) The Perceptron - A Probabilistic Model for Information Storage and Organization in the Brain (Rosenblatt),paper,https://www.ling.upenn.edu/courses/cogs501/Rosenblatt1958.pdf,FALSE,,lec-perceptrons
+1960-adaptive-switching-circuits-widrow-and-hoff,(1960) Adaptive Switching Circuits (Widrow and Hoff),paper,https://isl.stanford.edu/~widrow/papers/c1960adaptiveswitching.pdf,FALSE,,lec-perceptrons
+1969-perceptrons-an-introduction-to-computational-geometry-minsky-and-papert,(1969) Perceptrons - An Introduction to Computational Geometry (Minsky and Papert,paper,https://direct.mit.edu/books/monograph/3132/PerceptronsAn-Introduction-to-Computational,FALSE,,lec-perceptrons
+slides,Slides,reading,https://drive.google.com/file/d/1XJwJ_E783V5DEHsiN-Tv8Aga05ei_czg/view?usp=sharing,FALSE,,lec-review-01
+panopto,Panopto,video,https://notredame.hosted.panopto.com/Panopto/Pages/Viewer.aspx?id=3dd9db6b-22c5-4f96-8404-b369015fc155,FALSE,,lec-review-01
+supplementary-review-material,Supplementary Review Material,reading,https://drive.google.com/file/d/1DBBNjQWo0S-oFf9i_UMxjRHD76fxn5Bg/view?usp=sharing,FALSE,,lec-review-01
+practice-packet-01,Practice Packet 01,assignment,https://docs.google.com/document/d/1TmptiHTret5FSFLSDB-IdbjZzGZDWPJ4MBuxtjnjZ3M/edit?usp=sharing,FALSE,,lec-exam-01
+practice-packet-01-solutions,Practice Packet 01 Solutions,assignment,https://drive.google.com/file/d/1dJkVsdXi2sO9TvZXiwR_9jUy7FIgCwho/view?usp=sharing,FALSE,,lec-exam-01
+slides,Slides,reading,https://drive.google.com/file/d/1XTi6NKyN8mpW_gdk5M8BbOoZlBphvxu4/view?usp=sharing,FALSE,,lec-logistic-regression-and-gradient-descent
+pantopto,Pantopto,video,,FALSE,,lec-logistic-regression-and-gradient-descent
+fca-section-732,FCA - Section 7.3.2,reading,https://artint.info/3e/html/ArtInt3e.Ch7.S3.html,FALSE,,lec-logistic-regression-and-gradient-descent
+pml-chapter-10,PML - Chapter 10,reading,https://probml.github.io/pml-book/book1.html,FALSE,,lec-logistic-regression-and-gradient-descent
+islp-chapter-43,ISLP - Chapter 4.3,reading,https://www.statlearning.com/,FALSE,,lec-logistic-regression-and-gradient-descent
+uml-section-93,UML - Section 9.3,reading,https://www.cs.huji.ac.il/~shais/UnderstandingMachineLearning/copy.html,FALSE,,lec-logistic-regression-and-gradient-descent
+sp25-panopto,sp25 Panopto,video,https://notredame.hosted.panopto.com/Panopto/Pages/Viewer.aspx?id=ce3f234d-f8c8-463f-b7f0-b2950169e996,FALSE,,lec-logistic-regression-and-gradient-descent
+numpy-lr-and-gd,Numpy LR and GD,notebook,https://colab.research.google.com/drive/1Td14eL3FLIjn5WxUlmdIT1A2nyYZ-Oms?usp=sharing,FALSE,,lec-logistic-regression-and-gradient-descent
+cornell-cs4780,Cornell CS4780,video,https://youtu.be/GnkDzIOxfzI?si=zeTur4eTkD7uHHiv,FALSE,,lec-logistic-regression-and-gradient-descent
+logistic-regression-statquest,Logistic Regression (StatQuest),video,https://youtu.be/yIYKR4sgzI8?si=1HhaymUgRNNAMEy3,FALSE,,lec-logistic-regression-and-gradient-descent
+gradient-descent-statquest,Gradient Descent (StatQuest),video,https://youtu.be/sDv4f4s2SB8?si=TrI_ge8kywlfgmrv,TRUE,,lec-logistic-regression-and-gradient-descent
+gradient-descent-3b1b,Gradient Descent (3b1b),video,https://youtu.be/IHZwWFHWa-w?si=Kn21ycaonExUo5Br,FALSE,,lec-logistic-regression-and-gradient-descent
+visualizing-gradient-descent,Visualizing Gradient Descent,notebook,https://www.kaggle.com/code/christianwittmann/visualizing-gradient-descent-in-3d,FALSE,,lec-logistic-regression-and-gradient-descent
+logistic-regression-mlu,Logistic Regression (MLU),blogpost,https://mlu-explain.github.io/logistic-regression/,TRUE,,lec-logistic-regression-and-gradient-descent
+logistic-regression-visualization,Logistic Regression Visualization,notebook,https://colab.research.google.com/drive/1EEsiC4noy6ncQdm9wxLnPwO82R9zncWQ?usp=sharing,FALSE,,lec-logistic-regression-and-gradient-descent
+logistic-regression-hdm,Logistic Regression (HdM),reading,https://hannibunny.github.io/mlbook/machinelearning/LinearClassification.html,FALSE,,lec-logistic-regression-and-gradient-descent
+1838-notice-sur-la-loi-que-la-population-poursuit-dans-son-accroissement-verhulst,(1838) Notice sur la loi que la population poursuit dans son accroissement (Verhulst),paper,https://www.neo-classical-physics.info/uploads/3/4/3/6/34363841/verhulst_-_law_of_population.pdf,FALSE,,lec-logistic-regression-and-gradient-descent
+1847-mxe9thode-gxe9nxe9rale-pour-la-rxe9solution-des-systxe8mes-du2019xe9quations-simultanxe9es-cauchy,"(1847) M\xE9thode g\xE9n\xE9rale pour la r\xE9solution des syst\xE8mes\
+        \ d\u2019\xE9quations simultan\xE9es (Cauchy)",paper,https://cs.uwaterloo.ca/~y328yu/classics/cauchy-en.pdf,FALSE,,lec-logistic-regression-and-gradient-descent
+1958-the-regression-analysis-of-binary-sequences-cox,(1958) The Regression Analysis of Binary Sequences (Cox),paper,https://www.jstor.org/stable/2983890?seq=1,FALSE,,lec-logistic-regression-and-gradient-descent
+a-gentle-introduction-to-crossentropy-for-machine-learning,A Gentle Introduction to Cross-Entropy for Machine Learning,blogpost,https://machinelearningmastery.com/cross-entropy-for-machine-learning/,FALSE,,lec-logistic-regression-and-gradient-descent
+slides,Slides,reading,https://docs.google.com/presentation/d/1CNwFmV8_jqi01e8kcy8k_Y6-3uRAG3Mq/edit?usp=sharing&ouid=111601855049772661603&rtpof=true&sd=true,FALSE,,lec-svms-and-knns
+pantopto,Pantopto,video,https://notredame.hosted.panopto.com/Panopto/Pages/Viewer.aspx?id=d19bd425-111d-4297-9a52-b375015995be,FALSE,,lec-svms-and-knns
+pml-sections-161-173,"PML - Sections 16.1, 17.3",reading,https://probml.github.io/pml-book/book1.html,FALSE,,lec-svms-and-knns
+-islp-sections-35-476-and-chapter-9," ISLP - Sections 3.5, 4.7.6 and Chapter 9",reading,https://www.statlearning.com/,FALSE,,lec-svms-and-knns
+uml-chapters-15-19,"UML - Chapters 15, 19",reading,https://www.cs.huji.ac.il/~shais/UnderstandingMachineLearning/copy.html,FALSE,,lec-svms-and-knns
+sp25-panopto,sp25 Panopto,video,https://notredame.hosted.panopto.com/Panopto/Pages/Viewer.aspx?id=a38cd616-4164-463e-a3f1-b29701687382,FALSE,,lec-svms-and-knns
+harvard-cs50-000-1230-and-3329-3941,Harvard CS50 (0:00 - 12:30 and 33:29 - 39:41),video,https://www.youtube.com/watch?v=-g0iJjnO2_w,FALSE,,lec-svms-and-knns
+mit-6034-svms,MIT 6.034 SVMs,video,https://www.youtube.com/watch?v=_PwhiWxHK8o,FALSE,,lec-svms-and-knns
+mit-6034-knns,MIT 6.034 KNNs,video,https://www.youtube.com/watch?v=09mb78oiPkA,FALSE,,lec-svms-and-knns
+cornell-cs4780-knns,Cornell CS4780 KNNs,video,https://youtu.be/oymtGlGdT-k?si=Lg6X6xXHV2BlrJsF,FALSE,,lec-svms-and-knns
+cornell-cs4780-svms-1,Cornell CS4780 SVMs 1,video,https://youtu.be/xpHQ6UhMlx4?si=o64fVVn6-FDP3Ar3,FALSE,,lec-svms-and-knns
+cornell-cs4780-svms-2,Cornell CS4780 SVMs 2,video,https://youtu.be/RwF1esLCG4U?si=780GX0R-c0qWDogU,FALSE,,lec-svms-and-knns
+svms-statquest,SVMs (StatQuest),video,https://youtu.be/efR1C6CvhmE?si=i5q-s8QuxKEAQ3Az,TRUE,,lec-svms-and-knns
+knn-statquest,KNN (StatQuest),video, https://youtu.be/HVXime0nQeI?si=vUOtkw1Q6nxt9Aj3,TRUE,,lec-svms-and-knns
+knn-hdm,KNN (HdM),reading,https://hannibunny.github.io/mlbook/machinelearning/knn.html,FALSE,,lec-svms-and-knns
+svms-hdm,SVMs (HdM),reading,https://hannibunny.github.io/mlbook/machinelearning/svm.html,FALSE,,lec-svms-and-knns
+kernel-methods-raschka,Kernel Methods (Raschka),blogpost,https://sebastianraschka.com/Articles/2014_kernel_pca.html,FALSE,,lec-svms-and-knns
+1963-a-note-on-one-class-of-perceptrons-vapnik-and-chervonenkis,(1963) A Note on One Class of Perceptrons (Vapnik and Chervonenkis),paper,https://www.semanticscholar.org/paper/A-note-one-class-of-perceptrons-Vapnik/4c2d9e61b7f406f2ca35e63cbbb23e7cf7a85c2a,FALSE,,lec-svms-and-knns
+1992-a-training-algorithm-for-optimal-margin-classifiers-boser-et-al,(1992) A Training Algorithm for Optimal Margin Classifiers (Boser et al.),paper,https://dl.acm.org/doi/10.1145/130385.130401,FALSE,,lec-svms-and-knns
+1995-supportvector-networks-cortes-and-vapnik,(1995) Support-Vector Networks (Cortes and Vapnik),paper, https://link.springer.com/article/10.1007/BF00994018,FALSE,,lec-svms-and-knns
+an-idiots-guide-to-support-vector-machines,An Idiot's Guide to Support Vector Machines,reading,https://web.mit.edu/6.034/wwwbob/svm.pdf,FALSE,,lec-svms-and-knns
+machine-learning-algorithms-explained-support-vector-machine,Machine Learning Algorithms Explained: Support Vector Machine,blogpost,https://www.stratascratch.com/blog/machine-learning-algorithms-explained-support-vector-machine/,FALSE,,lec-svms-and-knns
+knearest-neighbor-knn-explained,K-Nearest Neighbor (KNN) Explained,blogpost,https://www.pinecone.io/learn/k-nearest-neighbor/,FALSE,,lec-svms-and-knns
+slides,Slides,reading,https://drive.google.com/file/d/1kN_yxJ8wi8fihyIGKKreMDGRSDDUhpUV/view?usp=sharing,FALSE,,lec-clustering
+pantopto,Pantopto,video,https://notredame.hosted.panopto.com/Panopto/Pages/Viewer.aspx?id=088ead92-85cd-4139-81cf-b377015d58fc,FALSE,,lec-clustering
+fca-section-103,FCA - Section 10.3,reading,https://artint.info/3e/html/ArtInt3e.Ch10.S3.html,FALSE,,lec-clustering
+pml-chapter-21,PML - Chapter 21,reading,https://probml.github.io/pml-book/book1.html,FALSE,,lec-clustering
+islp-section-124,ISLP - Section 12.4,reading,https://www.statlearning.com/,FALSE,,lec-clustering
+uml-chapter-22,UML - Chapter 22,reading,https://www.cs.huji.ac.il/~shais/UnderstandingMachineLearning/copy.html,FALSE,,lec-clustering
+sp25-panopto,sp25 Panopto,video,https://notredame.hosted.panopto.com/Panopto/Pages/Viewer.aspx?id=550c09db-9c29-4e62-8e91-b2a30158051d,FALSE,,lec-clustering
+clustering-visualizations,Clustering Visualizations,notebook,https://colab.research.google.com/drive/1WWysdY8e08f9tEC_P_lxt0INBAzmx8yn?usp=sharing,FALSE,,lec-clustering
+gmm-clustering,GMM Clustering,notebook,https://colab.research.google.com/drive/1tYH-ZkSDrRlJlPKxKsY89SSR01teZ0dr?usp=sharing,FALSE,,lec-clustering
+hierarchical-statquest,Hierarchical (StatQuest),video,https://youtu.be/7xHsRkOdVwo?si=f8UkfIYcaxpyEUVk,FALSE,,lec-clustering
+kmeans-statquest,K-Means (StatQuest),video,https://youtu.be/4b5d3muPQmA?si=T2ow71QcEXdbKt7V,FALSE,,lec-clustering
+clustering-rasbt,Clustering (rasbt),notebook,https://github.com/rasbt/machine-learning-book/blob/main/ch10/ch10.ipynb,FALSE,,lec-clustering
+clustering-how-it-works-in-plain-english,Clustering: How It Works (In Plain English!),blogpost,https://web.archive.org/web/20250115001509/https://blog.dataiku.com/clustering-how-it-works-in-plain-english#expand,TRUE,,lec-clustering
+slides,Slides,reading,,FALSE,,lec-dimensionality-reduction
+pantopto,Pantopto,video,,FALSE,,lec-dimensionality-reduction
+pml-section-201,PML - Section 20.1,reading,https://probml.github.io/pml-book/book1.html,FALSE,,lec-dimensionality-reduction
+islp-section-122,ISLP - Section 12.2,reading,https://www.statlearning.com/,FALSE,,lec-dimensionality-reduction
+uml-chapter-231,UML - Chapter 23.1,reading,https://www.cs.huji.ac.il/~shais/UnderstandingMachineLearning/copy.html,FALSE,,lec-dimensionality-reduction
+pca-visualization,PCA Visualization,notebook,https://colab.research.google.com/drive/1v1DV3oqt-XiMxsqTGyek6stAJ_S8LjeJ?usp=sharing,FALSE,,lec-dimensionality-reduction
+covariance-statquest,Covariance (StatQuest),video,https://youtu.be/qtaqvPAeEJY?si=bw-zWo3JmyX0PvGg,FALSE,,lec-dimensionality-reduction
+pca-short-statquest,PCA (Short) (StatQuest),video,https://youtu.be/HMOI_lkzW08?si=MkLlaC0hgAeh9009,FALSE,,lec-dimensionality-reduction
+pca-statquest,PCA (StatQuest),video,https://youtu.be/FgakZw6K1QQ?si=rvTJ67NAVVYZhoOh,TRUE,,lec-dimensionality-reduction
+tsne-statquest,t-SNE (StatQuest),video,https://youtu.be/NEaUSP4YerM?si=lME2kIla7hilnX4w,FALSE,,lec-dimensionality-reduction
+pca-rasbt,PCA (rasbt),notebook,https://github.com/rasbt/machine-learning-book/blob/main/ch05/ch05.ipynb,FALSE,,lec-dimensionality-reduction
+mnist-olah,MNIST (Olah),blogpost,https://colah.github.io/posts/2014-10-Visualizing-MNIST/,FALSE,,lec-dimensionality-reduction
+pca-raschka,PCA (Raschka),blogpost,https://sebastianraschka.com/Articles/2015_pca_in_3_steps.html,FALSE,,lec-dimensionality-reduction
+pca-from-scratch-raschka,PCA from scratch (Raschka),blogpost,https://sebastianraschka.com/Articles/2014_pca_step_by_step.html,FALSE,,lec-dimensionality-reduction
+standardization-raschka,Standardization (Raschka),blogpost,https://sebastianraschka.com/Articles/2014_about_feature_scaling.html,FALSE,,lec-dimensionality-reduction
+lda-raschka,LDA (Raschka),blogpost,https://sebastianraschka.com/Articles/2014_python_lda.html,FALSE,,lec-dimensionality-reduction
+slides,Slides,reading,,FALSE,,lec-practicum-exploratory-data-analysis
+pantopto,Pantopto,video,,FALSE,,lec-practicum-exploratory-data-analysis
+practicum,Practicum,notebook,https://drive.google.com/file/d/1dWiGow2faAKcG3s0XDem1r0WpYJPn6Al/view?usp=sharing,FALSE,,lec-practicum-exploratory-data-analysis
+confusion-matrix-statquest,Confusion Matrix (StatQuest),video,https://youtu.be/Kdsp6soqA7o?si=g3ssfI10Oqdms09K,TRUE,,lec-practicum-exploratory-data-analysis
+rocauc-statquest,ROC/AUC (StatQuest),video,https://youtu.be/4jRBRDbJemM?si=5sp5qUoMbHvygXYP,TRUE,,lec-practicum-exploratory-data-analysis
+model-evaluation-rasbt,Model Evaluation (rasbt),notebook,https://github.com/rasbt/machine-learning-book/blob/main/ch06/ch06.ipynb,FALSE,,lec-practicum-exploratory-data-analysis
+ensemble-learning-rasbt,Ensemble Learning (rasbt),notebook,https://github.com/rasbt/machine-learning-book/blob/main/ch07/ch07.ipynb,FALSE,,lec-practicum-exploratory-data-analysis
+model-evaluation-raschka,Model Evaluation (Raschka),paper,https://arxiv.org/pdf/1811.12808,FALSE,,lec-practicum-exploratory-data-analysis
+model-evaluation-raschka,Model Evaluation (Raschka),blogpost,https://sebastianraschka.com/blog/2016/model-evaluation-selection-part3.html,FALSE,,lec-practicum-exploratory-data-analysis
+ensemble-classifier-raschka,Ensemble Classifier (Raschka),blogpost,https://sebastianraschka.com/Articles/2014_ensemble_classifier.html,FALSE,,lec-practicum-exploratory-data-analysis
+precision-vs-recall,Precision vs. Recall,video,https://www.youtube.com/watch?v=qWfzIYCvBqo,TRUE,Catherine Healy '26,lec-practicum-exploratory-data-analysis
+slides,Slides,reading,,FALSE,,lec-multi-layer-perceptrons-ffns-
+fca-section-81-until-811,FCA - Section 8.1 (Until 8.1.1),reading,https://artint.info/3e/html/ArtInt3e.Ch8.html,FALSE,,lec-multi-layer-perceptrons-ffns-
+pml-section-132,PML - Section 13.2,reading,https://probml.github.io/pml-book/book1.html,FALSE,,lec-multi-layer-perceptrons-ffns-
+islp-sections-101-102,"ISLP - Sections 10.1, 10.2",reading,https://www.statlearning.com/,FALSE,,lec-multi-layer-perceptrons-ffns-
+d2l-sections-51-and-52,D2L - Sections 5.1 and 5.2,reading,https://d2l.ai/chapter_multilayer-perceptrons/index.html,FALSE,,lec-multi-layer-perceptrons-ffns-
+uml-sections-201-205,UML - Sections 20.1 - 20.5,reading,https://www.cs.huji.ac.il/~shais/UnderstandingMachineLearning/copy.html,FALSE,,lec-multi-layer-perceptrons-ffns-
+panopto,Panopto,video,https://notredame.hosted.panopto.com/Panopto/Pages/Viewer.aspx?id=64dff764-0306-4caa-8e38-b2ac01594013,FALSE,,lec-multi-layer-perceptrons-ffns-
+harvard-cs50-000-1600,Harvard CS50 (0:00 - 16:00),video,https://www.youtube.com/watch?v=J1QD9hLDEDY,FALSE,,lec-multi-layer-perceptrons-ffns-
+stanford-cs221,Stanford CS221,video,https://www.youtube.com/watch?v=pnKXgBHuN58&list=PLoROMvodv4rOca_Ovz1DvdtWuz8BfSWL2&index=11,FALSE,,lec-multi-layer-perceptrons-ffns-
+mit-6034,MIT 6.034,video,https://www.youtube.com/watch?v=uXt8qF2Zzfo,FALSE,,lec-multi-layer-perceptrons-ffns-
+simple-ffn-visualization,Simple FFN Visualization,notebook,https://colab.research.google.com/drive/14S8IbQQ59TNdJAF0jqGVKjh4kpu3tT_L?usp=sharing,FALSE,,lec-multi-layer-perceptrons-ffns-
+neural-networks-statquest,Neural Networks (StatQuest),video,https://youtu.be/CqOfi41LfDw?si=uc3frgwCzGIqxuQN,FALSE,,lec-multi-layer-perceptrons-ffns-
+pytorch-statquest,pytorch (StatQuest),video,https://youtu.be/FHdlXe1bSe4?si=jrQBr_XpoS7moqoO,FALSE,,lec-multi-layer-perceptrons-ffns-
+matrix-math-statquest,Matrix Math (StatQuest),video,https://youtu.be/ZTt9gsGcdDo?si=WPN9Vxtbm_94C-nq,FALSE,,lec-multi-layer-perceptrons-ffns-
+mlp-from-scratch-rasbt,MLP from scratch (rasbt),notebook,https://github.com/rasbt/machine-learning-book/blob/main/ch11/ch11.ipynb,FALSE,,lec-multi-layer-perceptrons-ffns-
+neural-networks-hdm,Neural Networks (HdM),reading,https://hannibunny.github.io/mlbook/neuralnetworks/01NeuralNets.html,FALSE,,lec-multi-layer-perceptrons-ffns-
+neural-networks-zhou,Neural Networks (Zhou),blogpost,https://victorzhou.com/blog/intro-to-neural-networks/,FALSE,,lec-multi-layer-perceptrons-ffns-
+softmax-zhou,Softmax (Zhou),blogpost,https://victorzhou.com/blog/softmax/,FALSE,,lec-multi-layer-perceptrons-ffns-
+onehot-zhou,One-hot (Zhou),blogpost,https://victorzhou.com/blog/one-hot/,FALSE,,lec-multi-layer-perceptrons-ffns-
+loss-functions-raschka,Loss Functions (Raschka),blogpost,https://sebastianraschka.com/blog/2022/losses-learned-part1.html,FALSE,,lec-multi-layer-perceptrons-ffns-
+but-what-is-a-neural-network-deep-learning-chapter-1,But what is a neural network? | Deep learning chapter 1,video,https://www.youtube.com/watch?v=aircAruvnKk,TRUE,,lec-multi-layer-perceptrons-ffns-
+slides,Slides,reading,,FALSE,,lec-gradient-descent-and-backpropagation
+fca-sections-811-and-82,FCA - Sections 8.1.1 and 8.2,reading,https://artint.info/3e/html/ArtInt3e.Ch8.S1.html,FALSE,,lec-gradient-descent-and-backpropagation
+pml-section-133,PML - Section 13.3,reading,https://probml.github.io/pml-book/book1.html,FALSE,,lec-gradient-descent-and-backpropagation
+islp-section-107,ISLP - Section 10.7,reading,https://www.statlearning.com/,FALSE,,lec-gradient-descent-and-backpropagation
+d2l-section-53,D2L - Section 5.3,reading,https://d2l.ai/chapter_multilayer-perceptrons/backprop.html,FALSE,,lec-gradient-descent-and-backpropagation
+uml-section-206,UML - Section 20.6,reading,https://www.cs.huji.ac.il/~shais/UnderstandingMachineLearning/copy.html,FALSE,,lec-gradient-descent-and-backpropagation
+panopto,Panopto,video,https://notredame.hosted.panopto.com/Panopto/Pages/Viewer.aspx?id=36c905b4-cbd9-4a0d-aa0c-b2b10162772b,FALSE,,lec-gradient-descent-and-backpropagation
+harvard-cs50-1600-3900,Harvard CS50 (16:00 - 39:00),video,https://www.youtube.com/watch?v=J1QD9hLDEDY,FALSE,,lec-gradient-descent-and-backpropagation
+stanford-cs221-sgd,Stanford CS221 - SGD,video,https://www.youtube.com/watch?v=bl2WgBLH0tI&list=PLoROMvodv4rOca_Ovz1DvdtWuz8BfSWL2&index=7,FALSE,,lec-gradient-descent-and-backpropagation
+stanford-cs221-backprop,Stanford CS221 - Backprop,video,https://www.youtube.com/watch?v=OcAF-l2xB9Y&list=PLoROMvodv4rOca_Ovz1DvdtWuz8BfSWL2&index=12,FALSE,,lec-gradient-descent-and-backpropagation
+mit-6034,MIT 6.034,video,https://www.youtube.com/watch?v=uXt8qF2Zzfo,FALSE,,lec-gradient-descent-and-backpropagation
+numpy-backprop,Numpy Backprop,notebook,https://colab.research.google.com/drive/1ogAx_Bqe80PsFzloNR7W0Ijd1YePNGVU?usp=sharing,FALSE,,lec-gradient-descent-and-backpropagation
+sgd-statquest,SGD (StatQuest),video,https://youtu.be/vMh0zPT0tLI?si=V4gwCG8HGbcQ6kX7,FALSE,,lec-gradient-descent-and-backpropagation
+chain-rule-statquest,Chain Rule (StatQuest),video,https://youtu.be/wl1myxrtQHQ?si=npy0cR-pfY5RIT5t,FALSE,,lec-gradient-descent-and-backpropagation
+backprop-statquest,Backprop (StatQuest),video,https://youtu.be/IN2XmBhILt4?si=9tYxD7DT3xvBuYGz,FALSE,,lec-gradient-descent-and-backpropagation
+building-micograd-karpathy,Building Micograd (Karpathy),video,https://www.youtube.com/watch?v=VMj-3S1tku0,FALSE,,lec-gradient-descent-and-backpropagation
+pytorch-computation-graphs-rasbt,Pytorch Computation Graphs (rasbt),notebook,https://github.com/rasbt/machine-learning-book/blob/main/ch13/ch13_part1.ipynb,FALSE,,lec-gradient-descent-and-backpropagation
+backprop-olah,Backprop (Olah),blogpost,https://colah.github.io/posts/2015-08-Backprop/,FALSE,,lec-gradient-descent-and-backpropagation
+backprop-karpathy,Backprop (Karpathy),blogpost,https://karpathy.medium.com/yes-you-should-understand-backprop-e2f06eab496b,FALSE,,lec-gradient-descent-and-backpropagation
+gradient-descent-how-neural-networks-learn-deep-learning-chapter-2,"Gradient descent, how neural networks learn | Deep Learning Chapter 2",video,https://www.youtube.com/watch?v=IHZwWFHWa-w,TRUE,,lec-gradient-descent-and-backpropagation
+backpropagation-intuitively-deep-learning-chapter-3,"Backpropagation, intuitively | Deep Learning Chapter 3",video,https://www.youtube.com/watch?v=Ilg3gGewQ5U,TRUE,,lec-gradient-descent-and-backpropagation
+backpropagation-calculus-deep-learning-chapter-4,Backpropagation calculus | Deep Learning Chapter 4,video,https://www.youtube.com/watch?v=tIeHLnjs5U8,FALSE,,lec-gradient-descent-and-backpropagation
+slides,Slides,reading,,FALSE,,lec-convolutional-neural-networks
+fca-section-84,FCA - Section 8.4,reading,https://artint.info/3e/html/ArtInt3e.Ch8.S4.html,FALSE,,lec-convolutional-neural-networks
+pml-chapter-14,PML - Chapter 14,reading,https://probml.github.io/pml-book/book1.html,FALSE,,lec-convolutional-neural-networks
+islp-section-103,ISLP - Section 10.3,reading,https://www.statlearning.com/,FALSE,,lec-convolutional-neural-networks
+d2l-chapters-7-and-8,D2L - Chapters 7 and 8,reading,https://d2l.ai/chapter_convolutional-neural-networks/index.html,FALSE,,lec-convolutional-neural-networks
+panopto,Panopto,video,https://notredame.hosted.panopto.com/Panopto/Pages/Viewer.aspx?id=b966a9da-a5cb-47fd-9c37-b2ba015b45b5,FALSE,,lec-convolutional-neural-networks
+harvard-cs50-5300-12712,Harvard CS50 (53:00 - 1:27:12),video,https://www.youtube.com/watch?v=J1QD9hLDEDY,FALSE,,lec-convolutional-neural-networks
+mnist-cnn,MNIST CNN,notebook,https://colab.research.google.com/drive/1yYw7SwTl5Q5F_gFLfjEWwW328v3SbPB0?usp=sharing,FALSE,,lec-convolutional-neural-networks
+cnns-statquest,CNNs (StatQuest),video,https://youtu.be/HGwBXDKFk9I?si=5k2GTtevGNxIMEXQ,FALSE,,lec-convolutional-neural-networks
+convolution-3b1b,Convolution (3b1b),video,https://youtu.be/KuXjwB4LzSA?si=ulXCDjK3Qd2WZOc0,FALSE,,lec-convolutional-neural-networks
+convolution-2-3b1b,Convolution 2 (3b1b),video,https://www.youtube.com/watch?v=8rrHTtUzyZA,FALSE,,lec-convolutional-neural-networks
+cnns-hdm,CNNs (HdM),reading,https://hannibunny.github.io/mlbook/neuralnetworks/03ConvolutionNeuralNetworks.html,FALSE,,lec-convolutional-neural-networks
+cnn-animations-hdm,CNN Animations (HdM),reading,https://hannibunny.github.io/mlbook/neuralnetworks/convolutionDemos.html,TRUE,,lec-convolutional-neural-networks
+cnn-rasbt,CNN (rasbt),notebook,https://github.com/rasbt/machine-learning-book/blob/main/ch14/ch14_part1.ipynb,FALSE,,lec-convolutional-neural-networks
+cnns-zhou,CNNs (Zhou),blogpost,https://victorzhou.com/blog/intro-to-cnns-part-1/,TRUE,,lec-convolutional-neural-networks
+convolutions-olah,Convolutions (Olah),blogpost,https://colah.github.io/posts/2014-07-Understanding-Convolutions/,FALSE,,lec-convolutional-neural-networks
+cnns-olah,CNNs (Olah),blogpost,https://colah.github.io/posts/2014-07-Conv-Nets-Modular/,FALSE,,lec-convolutional-neural-networks
+cnns-rao,CNNs (Rao),blogpost,https://medium.com/data-science/deep-learning-illustrated-part-3-convolutional-neural-networks-96b900b0b9e0,FALSE,,lec-convolutional-neural-networks
+#N/A,#N/A,#N/A,#N/A,#N/A,#N/A,#N/A
+slides,Slides,reading,,FALSE,,lec-recurrent-neural-networks
+fca-section-85-until-854,FCA - Section 8.5 until 8.5.4,reading,https://artint.info/3e/html/ArtInt3e.Ch8.S5.html,FALSE,,lec-recurrent-neural-networks
+pml-section-152,PML - Section 15.2,reading,https://probml.github.io/pml-book/book1.html,FALSE,,lec-recurrent-neural-networks
+islp-section-105,ISLP - Section 10.5,reading,https://www.statlearning.com/,FALSE,,lec-recurrent-neural-networks
+d2l-chapters-9-and-10,D2L - Chapters 9 and 10,reading,https://d2l.ai/chapter_recurrent-neural-networks/index.html,FALSE,,lec-recurrent-neural-networks
+harvard-cs50-12700-end,Harvard CS50 (1:27:00 - end),video,https://www.youtube.com/watch?v=J1QD9hLDEDY,FALSE,,lec-recurrent-neural-networks
+characterlevel-lstm,Character-Level LSTM,notebook,https://colab.research.google.com/drive/1soMewNR1oVJvznbfa6oI1PUnKeblZdRc?usp=sharing,FALSE,,lec-recurrent-neural-networks
+rnns-statquest,RNNs (StatQuest),video,https://youtu.be/AsNTP8Kwu80?si=Dm7SlTxtLYedMi7R,FALSE,,lec-recurrent-neural-networks
+lstms-statquest,LSTMs (StatQuest),video,https://youtu.be/YCzL96nL7j0?si=cy5A4boGNLkMu6os,FALSE,,lec-recurrent-neural-networks
+rnn-part-1-rasbt,RNN Part 1 (rasbt),notebook,https://github.com/rasbt/machine-learning-book/blob/main/ch15/ch15_part1.ipynb,FALSE,,lec-recurrent-neural-networks
+rnn-part-2-rasbt,RNN Part 2 (rasbt),notebook,https://github.com/rasbt/machine-learning-book/blob/main/ch15/ch15_part2.ipynb,FALSE,,lec-recurrent-neural-networks
+rnn-hdm,RNN (HdM),reading,https://hannibunny.github.io/mlbook/neuralnetworks/02RecurrentNeuralNetworks.html,FALSE,,lec-recurrent-neural-networks
+rnn-cheatsheet-stanford,RNN Cheatsheet (Stanford),reading,https://stanford.edu/~shervine/teaching/cs-230/cheatsheet-recurrent-neural-networks,FALSE,,lec-recurrent-neural-networks
+word-embeddings-lilian,Word Embeddings (Lilian),blogpost,https://lilianweng.github.io/posts/2017-10-15-word-embedding/,FALSE,,lec-recurrent-neural-networks
+rnn-stock-prices-lilian,RNN Stock Prices (Lilian),blogpost,https://lilianweng.github.io/posts/2017-07-08-stock-rnn-part-1/,FALSE,,lec-recurrent-neural-networks
+rnns-zhou,RNNs (Zhou),blogpost,https://victorzhou.com/blog/intro-to-rnns/,TRUE,,lec-recurrent-neural-networks
+bow-zhou,BoW (Zhou),blogpost,https://victorzhou.com/blog/bag-of-words/,FALSE,,lec-recurrent-neural-networks
+word-embeddings-olah,Word Embeddings (Olah),blogpost,https://colah.github.io/posts/2014-07-NLP-RNNs-Representations/,FALSE,,lec-recurrent-neural-networks
+lstms-olah,LSTMs (Olah),blogpost,https://colah.github.io/posts/2015-08-Understanding-LSTMs/,FALSE,,lec-recurrent-neural-networks
+neural-machine-translation-by-jointly-learning-to-align-and-translate-bahdanau-et-al,Neural Machine Translation by Jointly Learning to Align and Translate (Bahdanau et al.),paper,https://arxiv.org/pdf/1409.0473,FALSE,,lec-recurrent-neural-networks
+rnns-karpathy,RNNs (Karpathy),blogpost,https://karpathy.github.io/2015/05/21/rnn-effectiveness/,FALSE,,lec-recurrent-neural-networks
+sp25-panopto,sp25 Panopto,video,https://notredame.hosted.panopto.com/Panopto/Pages/Viewer.aspx?id=cb9b155b-1306-414b-b059-b2bf0156d398,FALSE,,lec-recurrent-neural-networks
+yes-you-should-understand-backprop,Yes you should understand backprop,blogpost,https://karpathy.medium.com/yes-you-should-understand-backprop-e2f06eab496b,TRUE,,lec-recurrent-neural-networks
+slides,Slides,reading,,FALSE,,lec-self-attention-and-transformers
+fca-section-854,FCA - Section 8.5.4,reading,https://artint.info/3e/html/ArtInt3e.Ch8.S5.html,FALSE,,lec-self-attention-and-transformers
+pml-section-154,PML - Section 15.4,reading,https://probml.github.io/pml-book/book1.html,FALSE,,lec-self-attention-and-transformers
+d2l-sections-111-through-116,D2L - Sections 11.1 through 11.6,reading,https://d2l.ai/chapter_attention-mechanisms-and-transformers/index.html,FALSE,,lec-self-attention-and-transformers
+panopto,Panopto,video,,FALSE,,lec-self-attention-and-transformers
+harvard-cs50-3540-5415,Harvard CS50 (35:40 - 54:15),video,https://www.youtube.com/watch?v=QAZc9xsQNjQ,FALSE,,lec-self-attention-and-transformers
+3b1b,3b1b,video,https://www.youtube.com/watch?v=eMlx5fFNoYc,TRUE,,lec-self-attention-and-transformers
+simple-selfattention,Simple Self-Attention,notebook,https://colab.research.google.com/drive/1zrnOd6wE57gefw9VJMFDD_9LTzeng9D8?usp=sharing,FALSE,,lec-self-attention-and-transformers
+attention-statquest,Attention (StatQuest),video,https://youtu.be/PSs6nxngL6k?si=gfuV6LQqtS0jDxQc,FALSE,,lec-self-attention-and-transformers
+matrix-math-statquest,Matrix Math (StatQuest),video,https://youtu.be/KphmOJnLAdI?si=dkXEgyn5ImhMdDnD,FALSE,,lec-self-attention-and-transformers
+attention-hdm,Attention (HdM),reading,https://hannibunny.github.io/mlbook/transformer/attention.html,FALSE,,lec-self-attention-and-transformers
+attention-rasbt,Attention (rasbt),notebook,https://github.com/rasbt/machine-learning-book/blob/main/ch16/ch16-part1-self-attention.ipynb,FALSE,,lec-self-attention-and-transformers
+attention-lilian,Attention (Lilian),blogpost,https://lilianweng.github.io/posts/2018-06-24-attention/,FALSE,,lec-self-attention-and-transformers
+annotated-transformer-harvard,Annotated Transformer (Harvard),blogpost,http://nlp.seas.harvard.edu/annotated-transformer/,FALSE,,lec-self-attention-and-transformers
+attention-is-all-you-need-vaswani-et-al,Attention is All You Need (Vaswani et al.),paper,https://arxiv.org/abs/1706.03762,FALSE,,lec-self-attention-and-transformers
+illustrated-transformer-alammar,Illustrated Transformer (Alammar),blogpost,https://jalammar.github.io/illustrated-transformer/,TRUE,,lec-self-attention-and-transformers
+transformers-lilian,Transformers (Lilian),blogpost,https://lilianweng.github.io/posts/2023-01-27-the-transformer-family-v2/,FALSE,,lec-self-attention-and-transformers
+transformer-family-tree-amatriain-et-al,Transformer Family Tree (Amatriain et al.),paper,https://arxiv.org/pdf/2302.07730,FALSE,,lec-self-attention-and-transformers
+bert-pretraining-of-deep-bidirectional-transformers-for-language-understanding-devlin-et-al,BERT Pre-training of Deep Bidirectional Transformers for Language Understanding (Devlin et al.),paper,https://arxiv.org/pdf/1810.04805,FALSE,,lec-self-attention-and-transformers
+improving-language-understanding-by-generative-pretraining-radford-et-al,Improving Language Understanding by Generative Pre-Training (Radford et al.),paper,https://gwern.net/doc/www/s3-us-west-2.amazonaws.com/d73fdc5ffa8627bce44dcda2fc012da638ffb158.pdf,FALSE,,lec-self-attention-and-transformers
+programming-selfattention-raschka,Programming Self-Attention (Raschka),blogpost,https://sebastianraschka.com/blog/2023/self-attention-from-scratch.html,FALSE,,lec-self-attention-and-transformers
+slides,Slides,reading,,FALSE,,lec-reinforcement-learning
+fca-chapter-13,FCA - Chapter 13,reading,https://artint.info/3e/html/ArtInt3e.Ch13.html,FALSE,,lec-reinforcement-learning
+d2l-chapter-17,D2L - Chapter 17,reading,https://d2l.ai/chapter_reinforcement-learning/index.html,FALSE,,lec-reinforcement-learning
+panopto,Panopto,video,https://notredame.hosted.panopto.com/Panopto/Pages/Viewer.aspx?id=8f436438-4d36-4efd-a213-b2c8015975d5,FALSE,,lec-reinforcement-learning
+harvard-cs50-10957-13824,Harvard CS50 (1:09:57 - 1:38:24),video,https://www.youtube.com/watch?v=-g0iJjnO2_w&t=4197s,FALSE,,lec-reinforcement-learning
+stanford-cs221,Stanford CS221,video,https://www.youtube.com/watch?v=HpaHTfY52RQ&list=PLoROMvodv4rOca_Ovz1DvdtWuz8BfSWL2&index=20,FALSE,,lec-reinforcement-learning
+rl-lunar-lander,RL Lunar Lander,notebook,https://colab.research.google.com/drive/1WtcWFv57EBsRTlk1_Zl0ammBHO1iG1LM?usp=sharing,FALSE,,lec-reinforcement-learning
+rl-rasbt,RL (rasbt),notebook,https://github.com/rasbt/machine-learning-book/blob/main/ch19/ch19.ipynb,FALSE,,lec-reinforcement-learning
+rl-hdm,RL (HdM),reading,https://hannibunny.github.io/mlbook/rl/reinforcement.html,FALSE,,lec-reinforcement-learning
+deep-rl-hdm,Deep RL (HdM),reading,https://hannibunny.github.io/mlbook/rl/DQN.html,FALSE,,lec-reinforcement-learning
+multiarmed-bandit-lilian,Multi-Armed Bandit (Lilian),blogpost,https://lilianweng.github.io/posts/2018-01-23-multi-armed-bandit/,FALSE,,lec-reinforcement-learning
+rl-lilian,RL (Lilian),blogpost,https://lilianweng.github.io/posts/2018-02-19-rl-overview/,FALSE,,lec-reinforcement-learning
+deep-rl-lilian,Deep RL (Lilian),blogpost,https://lilianweng.github.io/posts/2018-05-05-drl-implementation/,FALSE,,lec-reinforcement-learning
+alphago-karpathy,AlphaGo (Karpathy),blogpost,https://karpathy.medium.com/alphago-in-context-c47718cb95a5,FALSE,,lec-reinforcement-learning
+slides,Slides,reading,,FALSE,,lec-llms-and-agents
+fca-section-855,FCA - Section 8.5.5,reading,https://artint.info/3e/html/ArtInt3e.Ch8.S5.html,FALSE,,lec-llms-and-agents
+pml-section-155,PML - Section 15.5,reading,https://probml.github.io/pml-book/book1.html,FALSE,,lec-llms-and-agents
+d2l-section-117,D2L - Section 11.7,reading,https://d2l.ai/chapter_attention-mechanisms-and-transformers/transformer.html,FALSE,,lec-llms-and-agents
+panopto,Panopto,video,,FALSE,,lec-llms-and-agents
+harvard-cs50-5415-end,Harvard CS50 (54:15 - end),video,https://www.youtube.com/watch?v=QAZc9xsQNjQ,FALSE,,lec-llms-and-agents
+3b1b,3b1b,video,https://www.youtube.com/watch?v=wjZofJX0v4M,FALSE,,lec-llms-and-agents
+cornell-cs4780,Cornell CS4780,video,https://youtu.be/Nu7VZeW5TaE?si=VvFyOFVWecFkuuSX,FALSE,,lec-llms-and-agents
+transformers-statquest,Transformers (StatQuest),video,https://youtu.be/zxQyTK8quyY?si=TfF6rH36dN7WcZdN,FALSE,,lec-llms-and-agents
+gpt3-alammar,GPT3 (Alammar),blogpost,https://jalammar.github.io/how-gpt3-works-visualizations-animations/,FALSE,,lec-llms-and-agents
+moe-maarten,MoE (Maarten),blogpost,https://newsletter.maartengrootendorst.com/p/a-visual-guide-to-mixture-of-experts,FALSE,,lec-llms-and-agents
+llm-reasoning-maarten,LLM Reasoning (Maarten),blogpost,https://newsletter.maartengrootendorst.com/p/a-visual-guide-to-reasoning-llms,FALSE,,lec-llms-and-agents
+deepseek-alammar,Deepseek (Alammar),blogpost,https://newsletter.languagemodels.co/p/the-illustrated-deepseek-r1,FALSE,,lec-llms-and-agents
+llm-agents-lilian,LLM Agents (Lilian),blogpost,https://lilianweng.github.io/posts/2023-06-23-agent/,FALSE,,lec-llms-and-agents
+a-history-of-large-language-models,A History of Large Language Models,blogpost,https://gregorygundersen.com/blog/2025/10/01/large-language-models/,FALSE,,lec-llms-and-agents
+slides,Slides,reading,,FALSE,,lec-diffusion-models
+fca-section-863,FCA - Section 8.6.3,reading,https://artint.info/3e/html/ArtInt3e.Ch8.S6.html,FALSE,,lec-diffusion-models
+diffusion-models,Diffusion Models,video,https://www.youtube.com/watch?v=1pgiu--4W3I,FALSE,,lec-diffusion-models
+simple-diffusion-model,Simple Diffusion Model,notebook,https://colab.research.google.com/drive/1H3ztaNIIsshhPQx3j5oTQ8lGwvgsWDGz?usp=sharing,FALSE,,lec-diffusion-models
+diffusion-models-lilian,Diffusion Models (Lilian),blogpost,https://lilianweng.github.io/posts/2021-07-11-diffusion-models/,FALSE,,lec-diffusion-models
+video-diffusion-lilian,Video Diffusion (Lilian),blogpost,https://lilianweng.github.io/posts/2024-04-12-diffusion-video/,FALSE,,lec-diffusion-models
+sp25-panopto,sp25 Panopto,video,https://notredame.hosted.panopto.com/Panopto/Pages/Viewer.aspx?id=234a27fe-5c95-4d40-bffe-b2cf014e66a5,FALSE,,lec-diffusion-models

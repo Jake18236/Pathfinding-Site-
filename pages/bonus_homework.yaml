@@ -1,0 +1,139 @@
+title:      "Bonus Homework: ChatGPT2 (2 bonus pts.)"
+icon:       fa-book
+navigation:
+  - name: "Home"
+    link: "index.html"
+    icon: "fa-gavel"
+internal:
+external:
+body:       |
+
+    <div class="thumbnail">
+    <img src="static/img/meme.jpg" class="img-responsive"/>
+    </div>
+
+    ## Task 1: Blog Post
+
+    For this bonus homework, just follow and implement the instructions in this blog post:
+
+    <a href="https://jaykmody.com/blog/gpt-from-scratch/">GPT in 60 Lines of NumPy</a>
+
+    Then either bring in your working model to demonstrate to me or a TA, or send a video of
+    it working on your machine, and submit your own version of the code.
+
+    To submit your answers, you will need add your `bonus_homework.ipynb` file
+    in the `bonus_homework` folder of your **assignments** repository:
+
+    Answer the questions in your notebook file using the method of your choice and
+    once you are finished, follow the instructions below to submit your notebook.
+
+    1. For this class, you must use a **separate [git] branch for each
+    assignment**.  This means that the work for each reading and challenge must
+    be done in a separate branch.  To create and checkout a new branch, you can
+    do the following:
+
+            :::bash
+            $ git checkout main         # Make sure we are in master branch
+            $ git pull --rebase           # Make sure we are up-to-date with github repository
+
+            $ git checkout -b bonus_homework   # Create bonus_homework branch and check it out
+
+        Once you do the above, you should see the following output for the
+        [git-branch] command:
+
+            :::bash
+            $ git branch
+              main
+              homework00
+              homework01
+              homework02
+              homework03
+              homework04
+              homework05
+              bonus_homework
+
+        The `*` indicates that we are currently on the `bonus_homework` branch.
+
+    2. Once you have your notebook filled out, you need to add, commit the file, and
+    push your commits to [GitHub]:
+
+            :::bash
+            $ git add bonus_homework.ipynb                # Add answers.json to staging area
+            $ git commit -m "Bonus Homework: Done"    # Commit work
+
+            $ git push -u origin bonus_homework        # Push branch to GitHub
+
+        <div class="alert alert-success" markdown="1">
+        **Note**: You may edit and commit changes to your branch as many times
+        as you wish.  Just make sure all of your work goes in the appropriate
+        branch and then perform a `git push` when you are done.
+        </div>
+
+    3. When you are ready for your final submission, you need to create a
+    **pull request** via the [GitHub] interface:
+
+        - First, go to your repository's **Branches** page and then press the
+        **New pull request** button for the appropriate branch:
+
+            <div class="thumbnail">
+            <img src="static/img/pr_step_1.png" class="img-responsive"/>
+            </div>
+
+        - Next, edit the **pull request** title to "Bonus Homework", write a
+          comment if necessary and then press the "Create pull request" button.
+
+            <div class="thumbnail">
+            <img src="static/img/pr_step_2.png" class="img-responsive"/>
+            </div>
+
+        - Finally, assign the **pull request** to the **teaching assistant**
+          assigned to you for the given week. 
+
+            <div class="thumbnail">
+            <img src="static/img/pr_step_3.png" class="img-responsive"/>
+            </div>
+
+    <div class="alert alert-info" markdown="1">
+    #### <i class="fa fa-gavel"></i> Graders
+
+    Please refer to the [Homework 09 TA List](reading09_tas.html) to determine
+    who your grader is for this week.
+
+    </div>
+
+    Once you have made the **pull request**, the instructor or teaching
+    assistant can verify your work and provide feedback via the discussion form
+    inside the **pull request**.  If necessary, you can update your submission
+    by simply committing and pushing to the appropriate branch; the **pull
+    request** will automatically be updated to match your latest work.
+
+    When all work is graded, the grader will merge your branch and close the
+    **pull request**.
+
+    <div class="alert alert-danger" markdown="1">
+    **Note**: Please **do not merge** your own **pull request**.  This makes it
+    more difficult for the graders to keep track of what needs to be graded.
+    </div>
+
+    <div class="alert alert-success" markdown="1">
+
+    #### <i class="fa fa-thumbs-up"></i> Qualitative Feedback
+
+    The purpose of this workflow is to provide you with better feedback.
+    Instead of simply determining if your work is correct, the instructor will
+    attempt to provide you with more **qualitative feedback** such as whether
+    or not you used good programming practices or if your code could be
+    improved or organized better.
+
+    The hope is that this will help you grow as programmers and develop some
+    **taste** :).
+
+    </div>
+
+    [CSE 30124 Introduction to Artificial Intelligence]:     index.html
+    [GitHub]:                               https://github.com
+    [Zoom]:                                 https://notredame.zoom.us/
+    [Slack]:                                https://nd-cse.slack.com/
+    [SSH Keys]:                             https://help.github.com/en/github/authenticating-to-github/connecting-to-github-with-ssh
+    [nd-cse-30124-fa24]:                    https://github.com/nd-cse-30124-fa24
+    [git-branch]:                           https://git-scm.com/docs/git-branch

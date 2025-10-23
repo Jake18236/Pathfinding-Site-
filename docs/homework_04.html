@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta name="description" content="">
+	<meta name="author" content="">
+
+	<title>Homework 04: Detective Work (20 pts.)</title>
+
+	<!-- Bootstrap core CSS -->
+	<link href="static/css/blugold.css" rel="stylesheet">
+	<script src="https://kit.fontawesome.com/9d2722956c.js" crossorigin="anonymous"></script>
+
+	<!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+	<!--[if lt IE 9]>
+	<script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+	<script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+	<![endif]-->
+
+	<style>
+	body {
+	    padding: 10px;
+	}
+	.resource-list {
+	    list-style: none;
+	    padding-left: 0;
+	    margin-bottom: 1.25em;
+	}
+	.resource-credit {
+	    margin-left: 0.5em;
+	    font-size: 0.85em;
+	    color: #777;
+	    font-style: italic;
+	}
+	.resource-credit::before {
+	    content: "\2014";
+	    margin-right: 0.35em;
+	}
+	</style>
+    </head>
+    <body>
+	<div class="container">
+
+	    <div class="row">
+		<div class="page-header">
+		    <ul class="nav nav-pills pull-right">
+			
+			<li><a href="index.html"><i class="fa fa-gavel"></i> <span class="visible-md-inline visible-lg-inline">Home</span></a></li>
+			
+		    </ul>
+		    <h1><i class="fa fa-book"></i> Homework 04: Detective Work (20 pts.)</h1>
+		</div>
+	    </div>
+
+		
+<h2 id="task-1-notebook">Task 1: Notebook<a class="headerlink" href="#task-1-notebook" title="Permanent link">&para;</a></h2>
+<p>Run the following notebook and answer the included questions using the method of your choosing:</p>
+<div class="alert alert-success">
+<p><a href="https://github.com/nd-cse-30124-fa25/cse-30124-homeworks/blob/main/homework04/homework04.ipynb">DOWNLOAD NOTEBOOK</a></p>
+</div>
+<p>For your convenience the notebook is displayed below as HTML but you will likely
+find it easier to download the notebook file from the homework repo linked above.</p>
+<iframe src="https://ai.williamtheisen.com/cse-30124-homeworks/homework04/homework04.html" width="100%" height="800"></iframe>
+
+<pre style="display: none;" id="dr-container" class="codehilite"><code id="dredd-response"></code></pre>
+
+<p>To submit your answers, you will need add your <code>homework04.ipynb</code> file
+in the <code>homework04</code> folder of your <strong>assignments</strong> repository:</p>
+<p>Answer the questions in your notebook file using the method of your choice and
+once you are finished, submit your notebook using the workflow outlined below.</p>
+<h2 id="task-2-homework-submission-instructions">Task 2: Homework Submission Instructions<a class="headerlink" href="#task-2-homework-submission-instructions" title="Permanent link">&para;</a></h2>
+<p>To submit your homework answers, you will need add your <code>homework04.ipynb</code> file
+in the <code>homework04</code> folder of your <strong>assignments</strong> repository:</p>
+<p>Answer the questions in your notebook file using the method of your choice and
+once you are finished, follow the instructions below to submit your notebook.</p>
+<ol>
+<li>
+<p>For this class, you must use a <strong>separate [git] branch for each
+assignment</strong>.  This means that the work for each reading and challenge must
+be done in a separate branch.  To create and checkout a new branch, you can
+do the following:</p>
+<div class="codehilite" style="background: #f8f8f8"><pre style="line-height: 125%;"><span></span><code>$<span style="color: #BBB"> </span>git<span style="color: #BBB"> </span>checkout<span style="color: #BBB"> </span>main<span style="color: #BBB">         </span><span style="color: #3D7B7B; font-style: italic"># Make sure we are in master branch</span>
+$<span style="color: #BBB"> </span>git<span style="color: #BBB"> </span>pull<span style="color: #BBB"> </span>--rebase<span style="color: #BBB">           </span><span style="color: #3D7B7B; font-style: italic"># Make sure we are up-to-date with github repository</span>
+
+$<span style="color: #BBB"> </span>git<span style="color: #BBB"> </span>checkout<span style="color: #BBB"> </span>-b<span style="color: #BBB"> </span>homework04<span style="color: #BBB">   </span><span style="color: #3D7B7B; font-style: italic"># Create homework00 branch and check it out</span>
+</code></pre></div>
+
+<p>Once you do the above, you should see the following output for the
+<a href="https://git-scm.com/docs/git-branch">git-branch</a> command:</p>
+<div class="codehilite" style="background: #f8f8f8"><pre style="line-height: 125%;"><span></span><code>$<span style="color: #BBB"> </span>git<span style="color: #BBB"> </span>branch
+<span style="color: #BBB">  </span>main
+<span style="color: #BBB">  </span>homework01
+<span style="color: #BBB">  </span>homework02
+<span style="color: #BBB">  </span>homework03
+*<span style="color: #BBB"> </span>homework04
+</code></pre></div>
+
+<p>The <code>*</code> indicates that we are currently on the <code>homework04</code> branch.</p>
+</li>
+<li>
+<p>Once you have your notebook filled out, you need to add, commit the file, and
+push your commits to <a href="https://github.com">GitHub</a>:</p>
+<div class="codehilite" style="background: #f8f8f8"><pre style="line-height: 125%;"><span></span><code>$<span style="color: #BBB"> </span>git<span style="color: #BBB"> </span>add<span style="color: #BBB"> </span>homework04.ipynb<span style="color: #BBB">                </span><span style="color: #3D7B7B; font-style: italic"># Add answers.json to staging area</span>
+$<span style="color: #BBB"> </span>git<span style="color: #BBB"> </span>commit<span style="color: #BBB"> </span>-m<span style="color: #BBB"> </span><span style="color: #BA2121">&quot;Homework 02: Done&quot;</span><span style="color: #BBB">    </span><span style="color: #3D7B7B; font-style: italic"># Commit work</span>
+
+$<span style="color: #BBB"> </span>git<span style="color: #BBB"> </span>push<span style="color: #BBB"> </span>-u<span style="color: #BBB"> </span>origin<span style="color: #BBB"> </span>homework04<span style="color: #BBB">        </span><span style="color: #3D7B7B; font-style: italic"># Push branch to GitHub</span>
+</code></pre></div>
+
+<p><div class="alert alert-success" markdown="1">
+<strong>Note</strong>: You may edit and commit changes to your branch as many times
+as you wish.  Just make sure all of your work goes in the appropriate
+branch and then perform a <code>git push</code> when you are done.
+</div></p>
+</li>
+<li>
+<p>When you are ready for your final submission, you need to create a
+<strong>pull request</strong> via the <a href="https://github.com">GitHub</a> interface:</p>
+<ul>
+<li>
+<p>First, go to your repository's <strong>Branches</strong> page and then press the
+<strong>New pull request</strong> button for the appropriate branch:</p>
+<p><div class="thumbnail">
+<img src="static/img/pr_step_1.png" class="img-responsive"/>
+</div></p>
+</li>
+<li>
+<p>Next, edit the <strong>pull request</strong> title to "Homework 02", write a
+  comment if necessary and then press the "Create pull request" button.</p>
+<p><div class="thumbnail">
+<img src="static/img/pr_step_2.png" class="img-responsive"/>
+</div></p>
+</li>
+<li>
+<p>Finally, assign the <strong>pull request</strong> to the <strong>teaching assistant</strong>
+  assigned to you for the given week. </p>
+<p><div class="thumbnail">
+<img src="static/img/pr_step_3.png" class="img-responsive"/>
+</div></p>
+</li>
+</ul>
+</li>
+</ol>
+<div class="alert alert-info">
+<h4 id="graders"><i class="fa fa-gavel"></i> Graders<a class="headerlink" href="#graders" title="Permanent link">&para;</a></h4>
+<p>Please refer to the <a href="homework04_tas.html">Homework 04 TA List</a> to determine
+who your grader is for the assignment is.</p>
+</div>
+<p>Once you have made the <strong>pull request</strong>, the instructor or teaching
+assistant can verify your work and provide feedback via the discussion form
+inside the <strong>pull request</strong>.  If necessary, you can update your submission
+by simply committing and pushing to the appropriate branch; the <strong>pull
+request</strong> will automatically be updated to match your latest work.</p>
+<p>When all work is graded, the grader will merge your branch and close the
+<strong>pull request</strong>.</p>
+<div class="alert alert-danger">
+<p><strong>Note</strong>: Please <strong>do not merge</strong> your own <strong>pull request</strong>.  This makes it
+more difficult for the graders to keep track of what needs to be graded.</p>
+</div>
+
+
+	    <div class="row">
+		<hr/>
+
+		<footer class="text-center">
+		    <p class="text-muted">
+		    <small>
+		    Built using
+		    <a href="http://twitter.github.com/bootstrap/">Bootstrap</a>,
+		    <a href="http://fortawesome.github.com/Font-Awesome/">Font Awesome</a>, and
+		    <a href="http://www.python.org/">Python</a>.
+		    <br/>
+		    &copy; 2022 <a href="http://www.nd.edu">University of Notre Dame</a>
+		    </small>
+		    </p>
+		</footer>
+	    </div>
+
+	</div> <!-- /container -->
+
+	<!-- Bootstrap core JavaScript
+	================================================== -->
+	<!-- Placed at the end of the document so the pages load faster -->
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+	
+	
+    </body>
+</html>
+

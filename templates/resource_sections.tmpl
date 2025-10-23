@@ -1,0 +1,142 @@
+<div class="row">
+    <div class="col-md-4">
+        <h4><i class="fa-solid fa-book"></i> Readings</h4>
+        <ul class="resource-list">
+        {% for r in resources %}
+            {% if r['type'] == 'reading' %}
+                <li>
+                    {% if r.get('primary') %}
+                        <i class="fa-solid fa-star" style="color: #f0ad4e;"></i>
+                    {% else %}
+                        <span style="display:inline-block; width: 1em;">&bull;</span>
+                    {% end %}
+                    <a href="{{ r['link'] }}">{{ r['name'] }}</a>
+                    {% if r.get('student') %}
+                        <span class="resource-credit">{{ r['student'] }}</span>
+                    {% end %}
+                </li>
+            {% end %}
+        {% end %}
+        </ul>
+    </div>
+    <div class="col-md-4">
+        <h4><i class="fa-solid fa-video-camera"></i> Videos</h4>
+        <ul class="resource-list">
+        {% for r in resources %}
+            {% if r['type'] == 'video' %}
+                <li>
+                    {% if r.get('primary') %}
+                        <i class="fa-solid fa-star" style="color: #f0ad4e;"></i>
+                    {% else %}
+                        <span style="display:inline-block; width: 1em;">&bull;</span>
+                    {% end %}
+                    <a href="{{ r['link'] }}">{{ r['name'] }}</a>
+                    {% if r.get('student') %}
+                        <span class="resource-credit">{{ r['student'] }}</span>
+                    {% end %}
+                </li>
+            {% end %}
+        {% end %}
+        </ul>
+    </div>
+    <div class="col-md-4">
+        <h4><i class="fa-brands fa-python"></i> Notebooks</h4>
+        <ul class="resource-list">
+        {% for r in resources %}
+            {% if r['type'] == 'notebook' %}
+                <li>
+                    {% if r.get('primary') %}
+                        <i class="fa-solid fa-star" style="color: #f0ad4e;"></i>
+                    {% else %}
+                        <span style="display:inline-block; width: 1em;">&bull;</span>
+                    {% end %}
+                    <a href="{{ r['link'] }}">{{ r['name'] }}</a>
+                    {% if r.get('student') %}
+                        <span class="resource-credit">{{ r['student'] }}</span>
+                    {% end %}
+                </li>
+            {% end %}
+        {% end %}
+        </ul>
+    </div>
+</div>
+{% set blogposts = [r for r in resources if r['type'] == 'blogpost'] %}
+{% set papers = [r for r in resources if r['type'] == 'paper'] %}
+<div class="row">
+    {% if blogposts and papers %}
+        <div class="col-md-4">
+            <h4><i class="fa-solid fa-share-alt"></i> Blogposts</h4>
+            <ul class="resource-list">
+            {% for r in blogposts %}
+                <li>
+                    {% if r.get('primary') %}
+                        <i class="fa-solid fa-star" style="color: #f0ad4e;"></i>
+                    {% else %}
+                        <span style="display:inline-block; width: 1em;">&bull;</span>
+                    {% end %}
+                    <a href="{{ r['link'] }}">{{ r['name'] }}</a>
+                    {% if r.get('student') %}
+                        <span class="resource-credit">{{ r['student'] }}</span>
+                    {% end %}
+                </li>
+            {% end %}
+            </ul>
+        </div>
+        <div class="col-md-8">
+            <h4><i class="fa-solid fa-file-pdf"></i> Papers</h4>
+            <ul class="resource-list">
+            {% for r in papers %}
+                <li>
+                    {% if r.get('primary') %}
+                        <i class="fa-solid fa-star" style="color: #f0ad4e;"></i>
+                    {% else %}
+                        <span style="display:inline-block; width: 1em;">&bull;</span>
+                    {% end %}
+                    <a href="{{ r['link'] }}">{{ r['name'] }}</a>
+                    {% if r.get('student') %}
+                        <span class="resource-credit">{{ r['student'] }}</span>
+                    {% end %}
+                </li>
+            {% end %}
+            </ul>
+        </div>
+    {% elif blogposts %}
+        <div class="col-md-12">
+            <h4><i class="fa-solid fa-share-alt"></i> Blogposts</h4>
+            <ul class="resource-list">
+            {% for r in blogposts %}
+                <li>
+                    {% if r.get('primary') %}
+                        <i class="fa-solid fa-star" style="color: #f0ad4e;"></i>
+                    {% else %}
+                        <span style="display:inline-block; width: 1em;">&bull;</span>
+                    {% end %}
+                    <a href="{{ r['link'] }}">{{ r['name'] }}</a>
+                    {% if r.get('student') %}
+                        <span class="resource-credit">{{ r['student'] }}</span>
+                    {% end %}
+                </li>
+            {% end %}
+            </ul>
+        </div>
+    {% elif papers %}
+        <div class="col-md-12">
+            <h4><i class="fa-solid fa-file-pdf"></i> Papers</h4>
+            <ul class="resource-list">
+            {% for r in papers %}
+                <li>
+                    {% if r.get('primary') %}
+                        <i class="fa-solid fa-star" style="color: #f0ad4e;"></i>
+                    {% else %}
+                        <span style="display:inline-block; width: 1em;">&bull;</span>
+                    {% end %}
+                    <a href="{{ r['link'] }}">{{ r['name'] }}</a>
+                    {% if r.get('student') %}
+                        <span class="resource-credit">{{ r['student'] }}</span>
+                    {% end %}
+                </li>
+            {% end %}
+            </ul>
+        </div>
+    {% end %}
+</div>
