@@ -23,21 +23,6 @@
 	body {
 	    padding: 10px;
 	}
-	.resource-list {
-	    list-style: none;
-	    padding-left: 0;
-	    margin-bottom: 1.25em;
-	}
-	.resource-credit {
-	    margin-left: 0.5em;
-	    font-size: 0.85em;
-	    color: #777;
-	    font-style: italic;
-	}
-	.resource-credit::before {
-	    content: "\2014";
-	    margin-right: 0.35em;
-	}
 	</style>
     </head>
     <body>
@@ -55,602 +40,78 @@
 	    </div>
 
 		
-<h2 id="svms-and-knns">SVMs and KNNs<a class="headerlink" href="#svms-and-knns" title="Permanent link">&para;</a></h2>
-<table>
-    <tr>
-        <td colspan="3">
-            
-            <div class="row">
-    <div class="col-md-4">
-        <h4><i class="fa-solid fa-book"></i> Readings</h4>
-        <ul class="resource-list">
-        
-            
-                <li>
-                    
-                        <span style="display:inline-block; width: 1em;">&bull;</span>
-                    
-                    <a href="https://docs.google.com/presentation/d/1CNwFmV8_jqi01e8kcy8k_Y6-3uRAG3Mq/edit?usp=sharing&amp;ouid=111601855049772661603&amp;rtpof=true&amp;sd=true">Slides</a>
-                    
-                </li>
-            
-        
-            
-        
-            
-                <li>
-                    
-                        <span style="display:inline-block; width: 1em;">&bull;</span>
-                    
-                    <a href="https://probml.github.io/pml-book/book1.html">PML - Sections 16.1, 17.3</a>
-                    
-                </li>
-            
-        
-            
-                <li>
-                    
-                        <span style="display:inline-block; width: 1em;">&bull;</span>
-                    
-                    <a href="https://www.statlearning.com/">ISLP - Sections 3.5, 4.7.6 and Chapter 9</a>
-                    
-                </li>
-            
-        
-            
-                <li>
-                    
-                        <span style="display:inline-block; width: 1em;">&bull;</span>
-                    
-                    <a href="https://www.cs.huji.ac.il/~shais/UnderstandingMachineLearning/copy.html">UML - Chapters 15, 19</a>
-                    
-                </li>
-            
-        
-            
-        
-            
-        
-            
-        
-            
-        
-            
-        
-            
-        
-            
-        
-            
-        
-            
-        
-            
-                <li>
-                    
-                        <span style="display:inline-block; width: 1em;">&bull;</span>
-                    
-                    <a href="https://hannibunny.github.io/mlbook/machinelearning/knn.html">KNN (HdM)</a>
-                    
-                </li>
-            
-        
-            
-                <li>
-                    
-                        <span style="display:inline-block; width: 1em;">&bull;</span>
-                    
-                    <a href="https://hannibunny.github.io/mlbook/machinelearning/svm.html">SVMs (HdM)</a>
-                    
-                </li>
-            
-        
-            
-        
-            
-        
-            
-        
-            
-        
-            
-                <li>
-                    
-                        <span style="display:inline-block; width: 1em;">&bull;</span>
-                    
-                    <a href="https://web.mit.edu/6.034/wwwbob/svm.pdf">An Idiot&#x27;s Guide to Support Vector Machines</a>
-                    
-                </li>
-            
-        
-            
-        
-            
-        
-        </ul>
-    </div>
-    <div class="col-md-4">
-        <h4><i class="fa-solid fa-video-camera"></i> Videos</h4>
-        <ul class="resource-list">
-        
-            
-        
-            
-                <li>
-                    
-                        <span style="display:inline-block; width: 1em;">&bull;</span>
-                    
-                    <a href="https://notredame.hosted.panopto.com/Panopto/Pages/Viewer.aspx?id=d19bd425-111d-4297-9a52-b375015995be">Pantopto</a>
-                    
-                </li>
-            
-        
-            
-        
-            
-        
-            
-        
-            
-                <li>
-                    
-                        <span style="display:inline-block; width: 1em;">&bull;</span>
-                    
-                    <a href="https://notredame.hosted.panopto.com/Panopto/Pages/Viewer.aspx?id=a38cd616-4164-463e-a3f1-b29701687382">sp25 Panopto</a>
-                    
-                </li>
-            
-        
-            
-                <li>
-                    
-                        <span style="display:inline-block; width: 1em;">&bull;</span>
-                    
-                    <a href="https://www.youtube.com/watch?v=-g0iJjnO2_w">Harvard CS50 (0:00 - 12:30 and 33:29 - 39:41)</a>
-                    
-                </li>
-            
-        
-            
-                <li>
-                    
-                        <span style="display:inline-block; width: 1em;">&bull;</span>
-                    
-                    <a href="https://www.youtube.com/watch?v=_PwhiWxHK8o">MIT 6.034 SVMs</a>
-                    
-                </li>
-            
-        
-            
-                <li>
-                    
-                        <span style="display:inline-block; width: 1em;">&bull;</span>
-                    
-                    <a href="https://www.youtube.com/watch?v=09mb78oiPkA">MIT 6.034 KNNs</a>
-                    
-                </li>
-            
-        
-            
-                <li>
-                    
-                        <span style="display:inline-block; width: 1em;">&bull;</span>
-                    
-                    <a href="https://youtu.be/oymtGlGdT-k?si=Lg6X6xXHV2BlrJsF">Cornell CS4780 KNNs</a>
-                    
-                </li>
-            
-        
-            
-                <li>
-                    
-                        <span style="display:inline-block; width: 1em;">&bull;</span>
-                    
-                    <a href="https://youtu.be/xpHQ6UhMlx4?si=o64fVVn6-FDP3Ar3">Cornell CS4780 SVMs 1</a>
-                    
-                </li>
-            
-        
-            
-                <li>
-                    
-                        <span style="display:inline-block; width: 1em;">&bull;</span>
-                    
-                    <a href="https://youtu.be/RwF1esLCG4U?si=780GX0R-c0qWDogU">Cornell CS4780 SVMs 2</a>
-                    
-                </li>
-            
-        
-            
-                <li>
-                    
-                        <i class="fa-solid fa-star" style="color: #f0ad4e;"></i>
-                    
-                    <a href="https://youtu.be/efR1C6CvhmE?si=i5q-s8QuxKEAQ3Az">SVMs (StatQuest)</a>
-                    
-                </li>
-            
-        
-            
-                <li>
-                    
-                        <i class="fa-solid fa-star" style="color: #f0ad4e;"></i>
-                    
-                    <a href="https://youtu.be/HVXime0nQeI?si=vUOtkw1Q6nxt9Aj3">KNN (StatQuest)</a>
-                    
-                </li>
-            
-        
-            
-        
-            
-        
-            
-        
-            
-        
-            
-        
-            
-        
-            
-        
-            
-        
-            
-        
-        </ul>
-    </div>
-    <div class="col-md-4">
-        <h4><i class="fa-brands fa-python"></i> Notebooks</h4>
-        <ul class="resource-list">
-        
-            
-        
-            
-        
-            
-        
-            
-        
-            
-        
-            
-        
-            
-        
-            
-        
-            
-        
-            
-        
-            
-        
-            
-        
-            
-        
-            
-        
-            
-        
-            
-        
-            
-        
-            
-        
-            
-        
-            
-        
-            
-        
-            
-        
-            
-        
-        </ul>
-    </div>
-</div>
-
-
-<div class="row">
-    
-        <div class="col-md-4">
-            <h4><i class="fa-solid fa-share-alt"></i> Blogposts</h4>
-            <ul class="resource-list">
-            
-                <li>
-                    
-                        <span style="display:inline-block; width: 1em;">&bull;</span>
-                    
-                    <a href="https://sebastianraschka.com/Articles/2014_kernel_pca.html">Kernel Methods (Raschka)</a>
-                    
-                </li>
-            
-                <li>
-                    
-                        <span style="display:inline-block; width: 1em;">&bull;</span>
-                    
-                    <a href="https://www.stratascratch.com/blog/machine-learning-algorithms-explained-support-vector-machine/">Machine Learning Algorithms Explained: Support Vector Machine</a>
-                    
-                </li>
-            
-                <li>
-                    
-                        <span style="display:inline-block; width: 1em;">&bull;</span>
-                    
-                    <a href="https://www.pinecone.io/learn/k-nearest-neighbor/">K-Nearest Neighbor (KNN) Explained</a>
-                    
-                </li>
-            
-            </ul>
-        </div>
-        <div class="col-md-8">
-            <h4><i class="fa-solid fa-file-pdf"></i> Papers</h4>
-            <ul class="resource-list">
-            
-                <li>
-                    
-                        <span style="display:inline-block; width: 1em;">&bull;</span>
-                    
-                    <a href="https://www.semanticscholar.org/paper/A-note-one-class-of-perceptrons-Vapnik/4c2d9e61b7f406f2ca35e63cbbb23e7cf7a85c2a">(1963) A Note on One Class of Perceptrons (Vapnik and Chervonenkis)</a>
-                    
-                </li>
-            
-                <li>
-                    
-                        <span style="display:inline-block; width: 1em;">&bull;</span>
-                    
-                    <a href="https://dl.acm.org/doi/10.1145/130385.130401">(1992) A Training Algorithm for Optimal Margin Classifiers (Boser et al.)</a>
-                    
-                </li>
-            
-                <li>
-                    
-                        <span style="display:inline-block; width: 1em;">&bull;</span>
-                    
-                    <a href="https://link.springer.com/article/10.1007/BF00994018">(1995) Support-Vector Networks (Cortes and Vapnik)</a>
-                    
-                </li>
-            
-            </ul>
-        </div>
-    
-</div>
-
-        </td>
-    </tr>
-</table>
-
-<h2 id="clustering">Clustering<a class="headerlink" href="#clustering" title="Permanent link">&para;</a></h2>
-<table>
-    <tr>
-        <td colspan="3">
-            
-            <div class="row">
-    <div class="col-md-4">
-        <h4><i class="fa-solid fa-book"></i> Readings</h4>
-        <ul class="resource-list">
-        
-            
-                <li>
-                    
-                        <span style="display:inline-block; width: 1em;">&bull;</span>
-                    
-                    <a href="https://drive.google.com/file/d/1kN_yxJ8wi8fihyIGKKreMDGRSDDUhpUV/view?usp=sharing">Slides</a>
-                    
-                </li>
-            
-        
-            
-        
-            
-                <li>
-                    
-                        <span style="display:inline-block; width: 1em;">&bull;</span>
-                    
-                    <a href="https://artint.info/3e/html/ArtInt3e.Ch10.S3.html">FCA - Section 10.3</a>
-                    
-                </li>
-            
-        
-            
-                <li>
-                    
-                        <span style="display:inline-block; width: 1em;">&bull;</span>
-                    
-                    <a href="https://probml.github.io/pml-book/book1.html">PML - Chapter 21</a>
-                    
-                </li>
-            
-        
-            
-                <li>
-                    
-                        <span style="display:inline-block; width: 1em;">&bull;</span>
-                    
-                    <a href="https://www.statlearning.com/">ISLP - Section 12.4</a>
-                    
-                </li>
-            
-        
-            
-                <li>
-                    
-                        <span style="display:inline-block; width: 1em;">&bull;</span>
-                    
-                    <a href="https://www.cs.huji.ac.il/~shais/UnderstandingMachineLearning/copy.html">UML - Chapter 22</a>
-                    
-                </li>
-            
-        
-            
-        
-            
-        
-            
-        
-            
-        
-            
-        
-            
-        
-            
-        
-        </ul>
-    </div>
-    <div class="col-md-4">
-        <h4><i class="fa-solid fa-video-camera"></i> Videos</h4>
-        <ul class="resource-list">
-        
-            
-        
-            
-                <li>
-                    
-                        <span style="display:inline-block; width: 1em;">&bull;</span>
-                    
-                    <a href="https://notredame.hosted.panopto.com/Panopto/Pages/Viewer.aspx?id=088ead92-85cd-4139-81cf-b377015d58fc">Pantopto</a>
-                    
-                </li>
-            
-        
-            
-        
-            
-        
-            
-        
-            
-        
-            
-                <li>
-                    
-                        <span style="display:inline-block; width: 1em;">&bull;</span>
-                    
-                    <a href="https://notredame.hosted.panopto.com/Panopto/Pages/Viewer.aspx?id=550c09db-9c29-4e62-8e91-b2a30158051d">sp25 Panopto</a>
-                    
-                </li>
-            
-        
-            
-        
-            
-        
-            
-                <li>
-                    
-                        <span style="display:inline-block; width: 1em;">&bull;</span>
-                    
-                    <a href="https://youtu.be/7xHsRkOdVwo?si=f8UkfIYcaxpyEUVk">Hierarchical (StatQuest)</a>
-                    
-                </li>
-            
-        
-            
-                <li>
-                    
-                        <span style="display:inline-block; width: 1em;">&bull;</span>
-                    
-                    <a href="https://youtu.be/4b5d3muPQmA?si=T2ow71QcEXdbKt7V">K-Means (StatQuest)</a>
-                    
-                </li>
-            
-        
-            
-        
-            
-        
-        </ul>
-    </div>
-    <div class="col-md-4">
-        <h4><i class="fa-brands fa-python"></i> Notebooks</h4>
-        <ul class="resource-list">
-        
-            
-        
-            
-        
-            
-        
-            
-        
-            
-        
-            
-        
-            
-        
-            
-                <li>
-                    
-                        <span style="display:inline-block; width: 1em;">&bull;</span>
-                    
-                    <a href="https://colab.research.google.com/drive/1WWysdY8e08f9tEC_P_lxt0INBAzmx8yn?usp=sharing">Clustering Visualizations</a>
-                    
-                </li>
-            
-        
-            
-                <li>
-                    
-                        <span style="display:inline-block; width: 1em;">&bull;</span>
-                    
-                    <a href="https://colab.research.google.com/drive/1tYH-ZkSDrRlJlPKxKsY89SSR01teZ0dr?usp=sharing">GMM Clustering</a>
-                    
-                </li>
-            
-        
-            
-        
-            
-        
-            
-                <li>
-                    
-                        <span style="display:inline-block; width: 1em;">&bull;</span>
-                    
-                    <a href="https://github.com/rasbt/machine-learning-book/blob/main/ch10/ch10.ipynb">Clustering (rasbt)</a>
-                    
-                </li>
-            
-        
-            
-        
-        </ul>
-    </div>
-</div>
-
-
-<div class="row">
-    
-        <div class="col-md-12">
-            <h4><i class="fa-solid fa-share-alt"></i> Blogposts</h4>
-            <ul class="resource-list">
-            
-                <li>
-                    
-                        <i class="fa-solid fa-star" style="color: #f0ad4e;"></i>
-                    
-                    <a href="https://web.archive.org/web/20250115001509/https://blog.dataiku.com/clustering-how-it-works-in-plain-english#expand">Clustering: How It Works (In Plain English!)</a>
-                    
-                </li>
-            
-            </ul>
-        </div>
-    
-</div>
-
-        </td>
-    </tr>
-</table>
-
+<p><strong>Everyone</strong>:</p>
+<h2 id="materials">Materials<a class="headerlink" href="#materials" title="Permanent link">&para;</a></h2>
+<h3 id="perceptrons">Perceptrons<a class="headerlink" href="#perceptrons" title="Permanent link">&para;</a></h3>
+<ol>
+<li>
+<p><a href="https://probml.github.io/pml-book/book1.html">Probabilistic Machine Learning</a></p>
+<ul>
+<li><a href="https://probml.github.io/pml-book/book1.html">Sections 10.2.5 (Reading)</a></li>
+</ul>
+</li>
+<li>
+<p>Additional Resources</p>
+</li>
+</ol>
+<h3 id="logistic-regression">Logistic Regression<a class="headerlink" href="#logistic-regression" title="Permanent link">&para;</a></h3>
+<ol>
+<li>
+<p><a href="https://artint.info/3e/html/ArtInt3e.html">Foundations of Computational Agents</a></p>
+<ul>
+<li><a href="https://artint.info/3e/html/ArtInt3e.Ch7.S3.html">Section 7.3.2 (Reading)</a></li>
+</ul>
+</li>
+<li>
+<p>Additional Resources</p>
+</li>
+</ol>
+<h3 id="gradient-descent">Gradient Descent<a class="headerlink" href="#gradient-descent" title="Permanent link">&para;</a></h3>
 <h2 id="quiz">Quiz<a class="headerlink" href="#quiz" title="Permanent link">&para;</a></h2>
-<iframe src="https://docs.google.com/forms/d/e/1FAIpQLSev20MlLa6m3noxEpDIRkawpOTprRoGERKQ3V1hcnbWFcjxEQ/viewform?embedded=true" width="640" height="3269" frameborder="0" marginheight="0" marginwidth="0">Loading…</iframe>
+<p>Once you have done the readings, answer the following <a href="static/json/reading02.json">Reading 02 Quiz</a>
+questions:</p>
+<div id="quiz-questions"></div>
+
+<div id="quiz-responses"></div>
+
+<script src="static/js/dredd-quiz.js"></script>
+<script>
+loadQuiz('static/json/reading02.json');
+</script>
+
+<pre style="display: none;" id="dr-container" class="codehilite"><code id="dredd-response"></code></pre>
+
+<h2 id="submission">Submission<a class="headerlink" href="#submission" title="Permanent link">&para;</a></h2>
+<p>To submit you work, follow the same process outlined in <a href="reading00.html">Reading 00</a>:</p>
+<div class="codehilite" style="background: #f8f8f8"><pre style="line-height: 125%;"><span></span><code>$<span style="color: #BBB"> </span>git<span style="color: #BBB"> </span>checkout<span style="color: #BBB"> </span>master<span style="color: #BBB">                 </span><span style="color: #3D7B7B; font-style: italic"># Make sure we are in master branch</span>
+$<span style="color: #BBB"> </span>git<span style="color: #BBB"> </span>pull<span style="color: #BBB"> </span>--rebase<span style="color: #BBB">                   </span><span style="color: #3D7B7B; font-style: italic"># Make sure we are up-to-date with GitHub</span>
+
+$<span style="color: #BBB"> </span>git<span style="color: #BBB"> </span>checkout<span style="color: #BBB"> </span>-b<span style="color: #BBB"> </span>reading02<span style="color: #BBB">           </span><span style="color: #3D7B7B; font-style: italic"># Create reading02 branch and check it out</span>
+
+$<span style="color: #BBB"> </span><span style="color: #008000">cd</span><span style="color: #BBB"> </span>reading02<span style="color: #BBB">                        </span><span style="color: #3D7B7B; font-style: italic"># Go into reading02 folder</span>
+$<span style="color: #BBB"> </span><span style="color: #19177C">$EDITOR</span><span style="color: #BBB"> </span>answers.json<span style="color: #BBB">                </span><span style="color: #3D7B7B; font-style: italic"># Edit your answers.json file</span>
+
+$<span style="color: #BBB"> </span>../.scripts/check.py<span style="color: #BBB">                </span><span style="color: #3D7B7B; font-style: italic"># Check reading02 quiz</span>
+Checking<span style="color: #BBB"> </span>reading02<span style="color: #BBB"> </span>quiz<span style="color: #BBB"> </span>...
+<span style="color: #BBB">      </span>Q1<span style="color: #BBB"> </span><span style="color: #666">0</span>.60
+<span style="color: #BBB">      </span>Q2<span style="color: #BBB"> </span><span style="color: #666">0</span>.60
+<span style="color: #BBB">      </span>Q3<span style="color: #BBB"> </span><span style="color: #666">0</span>.90
+<span style="color: #BBB">      </span>Q4<span style="color: #BBB"> </span><span style="color: #666">0</span>.90
+<span style="color: #BBB">   </span>Score<span style="color: #BBB"> </span><span style="color: #666">3</span>.00<span style="color: #BBB"> </span>/<span style="color: #BBB"> </span><span style="color: #666">3</span>.00
+<span style="color: #BBB">  </span>Status<span style="color: #BBB"> </span>Success
+
+$<span style="color: #BBB"> </span>git<span style="color: #BBB"> </span>add<span style="color: #BBB"> </span>answers.json<span style="color: #BBB">                </span><span style="color: #3D7B7B; font-style: italic"># Add answers.json to staging area</span>
+$<span style="color: #BBB"> </span>git<span style="color: #BBB"> </span>commit<span style="color: #BBB"> </span>-m<span style="color: #BBB"> </span><span style="color: #BA2121">&quot;Reading 02: Done&quot;</span><span style="color: #BBB">    </span><span style="color: #3D7B7B; font-style: italic"># Commit work</span>
+
+$<span style="color: #BBB"> </span>git<span style="color: #BBB"> </span>push<span style="color: #BBB"> </span>-u<span style="color: #BBB"> </span>origin<span style="color: #BBB"> </span>reading02<span style="color: #BBB">        </span><span style="color: #3D7B7B; font-style: italic"># Push branch to GitHub</span>
+</code></pre></div>
+
+<div class="alert alert-success">
+<h4 id="pull-request"><i class="fa fa-github"></i> Pull Request<a class="headerlink" href="#pull-request" title="Permanent link">&para;</a></h4>
+<p>Once you have committed your work and pushed it to <a href="https://github.com">GitHub</a>, remember to
+create a <strong>pull request</strong> and assign it to the appropriate <strong>teaching
+assistant</strong> from the <a href="reading02_tas.html">Reading 02 TA List</a>.</p>
+</div>
 
 
 	    <div class="row">

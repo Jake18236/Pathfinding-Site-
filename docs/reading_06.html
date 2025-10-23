@@ -7,7 +7,7 @@
 	<meta name="description" content="">
 	<meta name="author" content="">
 
-	<title>Reading 06: Logistic Regression and Gradient Descent</title>
+	<title>Reading 06: Perceptrons, Logistic Regression, and Gradient Descent</title>
 
 	<!-- Bootstrap core CSS -->
 	<link href="static/css/blugold.css" rel="stylesheet">
@@ -23,21 +23,6 @@
 	body {
 	    padding: 10px;
 	}
-	.resource-list {
-	    list-style: none;
-	    padding-left: 0;
-	    margin-bottom: 1.25em;
-	}
-	.resource-credit {
-	    margin-left: 0.5em;
-	    font-size: 0.85em;
-	    color: #777;
-	    font-style: italic;
-	}
-	.resource-credit::before {
-	    content: "\2014";
-	    margin-right: 0.35em;
-	}
 	</style>
     </head>
     <body>
@@ -50,328 +35,83 @@
 			<li><a href="index.html"><i class="fa fa-gavel"></i> <span class="visible-md-inline visible-lg-inline">Home</span></a></li>
 			
 		    </ul>
-		    <h1><i class="fa fa-book"></i> Reading 06: Logistic Regression and Gradient Descent</h1>
+		    <h1><i class="fa fa-book"></i> Reading 06: Perceptrons, Logistic Regression, and Gradient Descent</h1>
 		</div>
 	    </div>
 
 		
-<h2 id="logistic-regression-and-gradient-descent">Logistic Regression and Gradient Descent<a class="headerlink" href="#logistic-regression-and-gradient-descent" title="Permanent link">&para;</a></h2>
-<table>
-    <tr>
-        <td colspan="3">
-            
-            <div class="row">
-    <div class="col-md-4">
-        <h4><i class="fa-solid fa-book"></i> Readings</h4>
-        <ul class="resource-list">
-        
-            
-                <li>
-                    
-                        <span style="display:inline-block; width: 1em;">&bull;</span>
-                    
-                    <a href="https://drive.google.com/file/d/1XTi6NKyN8mpW_gdk5M8BbOoZlBphvxu4/view?usp=sharing">Slides</a>
-                    
-                </li>
-            
-        
-            
-                <li>
-                    
-                        <span style="display:inline-block; width: 1em;">&bull;</span>
-                    
-                    <a href="https://artint.info/3e/html/ArtInt3e.Ch7.S3.html">FCA - Section 7.3.2</a>
-                    
-                </li>
-            
-        
-            
-                <li>
-                    
-                        <span style="display:inline-block; width: 1em;">&bull;</span>
-                    
-                    <a href="https://probml.github.io/pml-book/book1.html">PML - Chapter 10</a>
-                    
-                </li>
-            
-        
-            
-                <li>
-                    
-                        <span style="display:inline-block; width: 1em;">&bull;</span>
-                    
-                    <a href="https://www.statlearning.com/">ISLP - Chapter 4.3</a>
-                    
-                </li>
-            
-        
-            
-                <li>
-                    
-                        <span style="display:inline-block; width: 1em;">&bull;</span>
-                    
-                    <a href="https://www.cs.huji.ac.il/~shais/UnderstandingMachineLearning/copy.html">UML - Section 9.3</a>
-                    
-                </li>
-            
-        
-            
-        
-            
-        
-            
-        
-            
-        
-            
-        
-            
-        
-            
-        
-            
-        
-            
-        
-            
-                <li>
-                    
-                        <span style="display:inline-block; width: 1em;">&bull;</span>
-                    
-                    <a href="https://hannibunny.github.io/mlbook/machinelearning/LinearClassification.html">Logistic Regression (HdM)</a>
-                    
-                </li>
-            
-        
-            
-        
-            
-        
-            
-        
-            
-        
-        </ul>
-    </div>
-    <div class="col-md-4">
-        <h4><i class="fa-solid fa-video-camera"></i> Videos</h4>
-        <ul class="resource-list">
-        
-            
-        
-            
-        
-            
-        
-            
-        
-            
-        
-            
-                <li>
-                    
-                        <span style="display:inline-block; width: 1em;">&bull;</span>
-                    
-                    <a href="https://notredame.hosted.panopto.com/Panopto/Pages/Viewer.aspx?id=ce3f234d-f8c8-463f-b7f0-b2950169e996">sp25 Panopto</a>
-                    
-                </li>
-            
-        
-            
-        
-            
-                <li>
-                    
-                        <span style="display:inline-block; width: 1em;">&bull;</span>
-                    
-                    <a href="https://youtu.be/GnkDzIOxfzI?si=zeTur4eTkD7uHHiv">Cornell CS4780</a>
-                    
-                </li>
-            
-        
-            
-                <li>
-                    
-                        <span style="display:inline-block; width: 1em;">&bull;</span>
-                    
-                    <a href="https://youtu.be/yIYKR4sgzI8?si=1HhaymUgRNNAMEy3">Logistic Regression (StatQuest)</a>
-                    
-                </li>
-            
-        
-            
-                <li>
-                    
-                        <i class="fa-solid fa-star" style="color: #f0ad4e;"></i>
-                    
-                    <a href="https://youtu.be/sDv4f4s2SB8?si=TrI_ge8kywlfgmrv">Gradient Descent (StatQuest)</a>
-                    
-                </li>
-            
-        
-            
-                <li>
-                    
-                        <span style="display:inline-block; width: 1em;">&bull;</span>
-                    
-                    <a href="https://youtu.be/IHZwWFHWa-w?si=Kn21ycaonExUo5Br">Gradient Descent (3b1b)</a>
-                    
-                </li>
-            
-        
-            
-        
-            
-        
-            
-        
-            
-        
-            
-        
-            
-        
-            
-        
-            
-        
-        </ul>
-    </div>
-    <div class="col-md-4">
-        <h4><i class="fa-brands fa-python"></i> Notebooks</h4>
-        <ul class="resource-list">
-        
-            
-        
-            
-        
-            
-        
-            
-        
-            
-        
-            
-        
-            
-                <li>
-                    
-                        <span style="display:inline-block; width: 1em;">&bull;</span>
-                    
-                    <a href="https://colab.research.google.com/drive/1Td14eL3FLIjn5WxUlmdIT1A2nyYZ-Oms?usp=sharing">Numpy LR and GD</a>
-                    
-                </li>
-            
-        
-            
-        
-            
-        
-            
-        
-            
-        
-            
-                <li>
-                    
-                        <span style="display:inline-block; width: 1em;">&bull;</span>
-                    
-                    <a href="https://www.kaggle.com/code/christianwittmann/visualizing-gradient-descent-in-3d">Visualizing Gradient Descent</a>
-                    
-                </li>
-            
-        
-            
-        
-            
-                <li>
-                    
-                        <span style="display:inline-block; width: 1em;">&bull;</span>
-                    
-                    <a href="https://colab.research.google.com/drive/1EEsiC4noy6ncQdm9wxLnPwO82R9zncWQ?usp=sharing">Logistic Regression Visualization</a>
-                    
-                </li>
-            
-        
-            
-        
-            
-        
-            
-        
-            
-        
-            
-        
-        </ul>
-    </div>
-</div>
-
-
-<div class="row">
-    
-        <div class="col-md-4">
-            <h4><i class="fa-solid fa-share-alt"></i> Blogposts</h4>
-            <ul class="resource-list">
-            
-                <li>
-                    
-                        <i class="fa-solid fa-star" style="color: #f0ad4e;"></i>
-                    
-                    <a href="https://mlu-explain.github.io/logistic-regression/">Logistic Regression (MLU)</a>
-                    
-                </li>
-            
-                <li>
-                    
-                        <span style="display:inline-block; width: 1em;">&bull;</span>
-                    
-                    <a href="https://machinelearningmastery.com/cross-entropy-for-machine-learning/">A Gentle Introduction to Cross-Entropy for Machine Learning</a>
-                    
-                </li>
-            
-            </ul>
-        </div>
-        <div class="col-md-8">
-            <h4><i class="fa-solid fa-file-pdf"></i> Papers</h4>
-            <ul class="resource-list">
-            
-                <li>
-                    
-                        <span style="display:inline-block; width: 1em;">&bull;</span>
-                    
-                    <a href="https://www.neo-classical-physics.info/uploads/3/4/3/6/34363841/verhulst_-_law_of_population.pdf">(1838) Notice sur la loi que la population poursuit dans son accroissement (Verhulst)</a>
-                    
-                </li>
-            
-                <li>
-                    
-                        <span style="display:inline-block; width: 1em;">&bull;</span>
-                    
-                    <a href="https://cs.uwaterloo.ca/~y328yu/classics/cauchy-en.pdf">(1847) M\xE9thode g\xE9n\xE9rale pour la r\xE9solution des syst\xE8mes\
-        \ d\u2019\xE9quations simultan\xE9es (Cauchy)</a>
-                    
-                </li>
-            
-                <li>
-                    
-                        <span style="display:inline-block; width: 1em;">&bull;</span>
-                    
-                    <a href="https://www.jstor.org/stable/2983890?seq=1">(1958) The Regression Analysis of Binary Sequences (Cox)</a>
-                    
-                </li>
-            
-            </ul>
-        </div>
-    
-</div>
-
-        </td>
-    </tr>
-</table>
-
+<p><strong>Everyone</strong>:</p>
+<h2 id="materials">Materials<a class="headerlink" href="#materials" title="Permanent link">&para;</a></h2>
+<h3 id="perceptrons">Perceptrons<a class="headerlink" href="#perceptrons" title="Permanent link">&para;</a></h3>
+<ol>
+<li>
+<p><a href="https://probml.github.io/pml-book/book1.html">Probabilistic Machine Learning</a></p>
+<ul>
+<li><a href="https://probml.github.io/pml-book/book1.html">Sections 10.2.5 (Reading)</a></li>
+</ul>
+</li>
+<li>
+<p>Additional Resources</p>
+</li>
+</ol>
+<h3 id="logistic-regression">Logistic Regression<a class="headerlink" href="#logistic-regression" title="Permanent link">&para;</a></h3>
+<ol>
+<li>
+<p><a href="https://artint.info/3e/html/ArtInt3e.html">Foundations of Computational Agents</a></p>
+<ul>
+<li><a href="https://artint.info/3e/html/ArtInt3e.Ch7.S3.html">Section 7.3.2 (Reading)</a></li>
+</ul>
+</li>
+<li>
+<p>Additional Resources</p>
+</li>
+</ol>
+<h3 id="gradient-descent">Gradient Descent<a class="headerlink" href="#gradient-descent" title="Permanent link">&para;</a></h3>
 <h2 id="quiz">Quiz<a class="headerlink" href="#quiz" title="Permanent link">&para;</a></h2>
-<iframe src="https://docs.google.com/forms/d/e/1FAIpQLSczAG2SilHGfFZea0weB10cEOhXuUZtGeCCarug5tz9XXPu-Q/viewform?embedded=true" width="640" height="3164" frameborder="0" marginheight="0" marginwidth="0">Loading…</iframe>
+<p>Once you have done the readings, answer the following <a href="static/json/reading02.json">Reading 02 Quiz</a>
+questions:</p>
+<div id="quiz-questions"></div>
+
+<div id="quiz-responses"></div>
+
+<script src="static/js/dredd-quiz.js"></script>
+<script>
+loadQuiz('static/json/reading02.json');
+</script>
+
+<pre style="display: none;" id="dr-container" class="codehilite"><code id="dredd-response"></code></pre>
+
+<h2 id="submission">Submission<a class="headerlink" href="#submission" title="Permanent link">&para;</a></h2>
+<p>To submit you work, follow the same process outlined in <a href="reading00.html">Reading 00</a>:</p>
+<div class="codehilite" style="background: #f8f8f8"><pre style="line-height: 125%;"><span></span><code>$<span style="color: #BBB"> </span>git<span style="color: #BBB"> </span>checkout<span style="color: #BBB"> </span>master<span style="color: #BBB">                 </span><span style="color: #3D7B7B; font-style: italic"># Make sure we are in master branch</span>
+$<span style="color: #BBB"> </span>git<span style="color: #BBB"> </span>pull<span style="color: #BBB"> </span>--rebase<span style="color: #BBB">                   </span><span style="color: #3D7B7B; font-style: italic"># Make sure we are up-to-date with GitHub</span>
+
+$<span style="color: #BBB"> </span>git<span style="color: #BBB"> </span>checkout<span style="color: #BBB"> </span>-b<span style="color: #BBB"> </span>reading02<span style="color: #BBB">           </span><span style="color: #3D7B7B; font-style: italic"># Create reading02 branch and check it out</span>
+
+$<span style="color: #BBB"> </span><span style="color: #008000">cd</span><span style="color: #BBB"> </span>reading02<span style="color: #BBB">                        </span><span style="color: #3D7B7B; font-style: italic"># Go into reading02 folder</span>
+$<span style="color: #BBB"> </span><span style="color: #19177C">$EDITOR</span><span style="color: #BBB"> </span>answers.json<span style="color: #BBB">                </span><span style="color: #3D7B7B; font-style: italic"># Edit your answers.json file</span>
+
+$<span style="color: #BBB"> </span>../.scripts/check.py<span style="color: #BBB">                </span><span style="color: #3D7B7B; font-style: italic"># Check reading02 quiz</span>
+Checking<span style="color: #BBB"> </span>reading02<span style="color: #BBB"> </span>quiz<span style="color: #BBB"> </span>...
+<span style="color: #BBB">      </span>Q1<span style="color: #BBB"> </span><span style="color: #666">0</span>.60
+<span style="color: #BBB">      </span>Q2<span style="color: #BBB"> </span><span style="color: #666">0</span>.60
+<span style="color: #BBB">      </span>Q3<span style="color: #BBB"> </span><span style="color: #666">0</span>.90
+<span style="color: #BBB">      </span>Q4<span style="color: #BBB"> </span><span style="color: #666">0</span>.90
+<span style="color: #BBB">   </span>Score<span style="color: #BBB"> </span><span style="color: #666">3</span>.00<span style="color: #BBB"> </span>/<span style="color: #BBB"> </span><span style="color: #666">3</span>.00
+<span style="color: #BBB">  </span>Status<span style="color: #BBB"> </span>Success
+
+$<span style="color: #BBB"> </span>git<span style="color: #BBB"> </span>add<span style="color: #BBB"> </span>answers.json<span style="color: #BBB">                </span><span style="color: #3D7B7B; font-style: italic"># Add answers.json to staging area</span>
+$<span style="color: #BBB"> </span>git<span style="color: #BBB"> </span>commit<span style="color: #BBB"> </span>-m<span style="color: #BBB"> </span><span style="color: #BA2121">&quot;Reading 02: Done&quot;</span><span style="color: #BBB">    </span><span style="color: #3D7B7B; font-style: italic"># Commit work</span>
+
+$<span style="color: #BBB"> </span>git<span style="color: #BBB"> </span>push<span style="color: #BBB"> </span>-u<span style="color: #BBB"> </span>origin<span style="color: #BBB"> </span>reading02<span style="color: #BBB">        </span><span style="color: #3D7B7B; font-style: italic"># Push branch to GitHub</span>
+</code></pre></div>
+
+<div class="alert alert-success">
+<h4 id="pull-request"><i class="fa fa-github"></i> Pull Request<a class="headerlink" href="#pull-request" title="Permanent link">&para;</a></h4>
+<p>Once you have committed your work and pushed it to <a href="https://github.com">GitHub</a>, remember to
+create a <strong>pull request</strong> and assign it to the appropriate <strong>teaching
+assistant</strong> from the <a href="reading02_tas.html">Reading 02 TA List</a>.</p>
+</div>
 
 
 	    <div class="row">

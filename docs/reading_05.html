@@ -7,7 +7,7 @@
 	<meta name="description" content="">
 	<meta name="author" content="">
 
-	<title>Reading 05: Linear Regression and Perceptrons</title>
+	<title>Reading 05: Linear Regression and Review</title>
 
 	<!-- Bootstrap core CSS -->
 	<link href="static/css/blugold.css" rel="stylesheet">
@@ -23,21 +23,6 @@
 	body {
 	    padding: 10px;
 	}
-	.resource-list {
-	    list-style: none;
-	    padding-left: 0;
-	    margin-bottom: 1.25em;
-	}
-	.resource-credit {
-	    margin-left: 0.5em;
-	    font-size: 0.85em;
-	    color: #777;
-	    font-style: italic;
-	}
-	.resource-credit::before {
-	    content: "\2014";
-	    margin-right: 0.35em;
-	}
 	</style>
     </head>
     <body>
@@ -50,659 +35,95 @@
 			<li><a href="index.html"><i class="fa fa-gavel"></i> <span class="visible-md-inline visible-lg-inline">Home</span></a></li>
 			
 		    </ul>
-		    <h1><i class="fa fa-book"></i> Reading 05: Linear Regression and Perceptrons</h1>
+		    <h1><i class="fa fa-book"></i> Reading 05: Linear Regression and Review</h1>
 		</div>
 	    </div>
 
 		
-<h2 id="linear-regression">Linear Regression<a class="headerlink" href="#linear-regression" title="Permanent link">&para;</a></h2>
-<table>
-    <tr>
-        <td colspan="3">
-            
-            <div class="row">
-    <div class="col-md-4">
-        <h4><i class="fa-solid fa-book"></i> Readings</h4>
-        <ul class="resource-list">
-        
-            
-                <li>
-                    
-                        <span style="display:inline-block; width: 1em;">&bull;</span>
-                    
-                    <a href="https://drive.google.com/file/d/1w1-FYKkQ2WvjHC6ptI7VqxxcIyrU2Mfe/view?usp=sharing">Slides</a>
-                    
-                </li>
-            
-        
-            
-        
-            
-                <li>
-                    
-                        <span style="display:inline-block; width: 1em;">&bull;</span>
-                    
-                    <a href="https://artint.info/3e/html/ArtInt3e.Ch7.S3.html">FCA - Sections 7.3.2 (First few paragraphs) and 7.4.2</a>
-                    
-                </li>
-            
-        
-            
-                <li>
-                    
-                        <span style="display:inline-block; width: 1em;">&bull;</span>
-                    
-                    <a href="https://probml.github.io/pml-book/book1.html">PML - Sections 7.5, 8.1.3, Chapter 11</a>
-                    
-                </li>
-            
-        
-            
-                <li>
-                    
-                        <span style="display:inline-block; width: 1em;">&bull;</span>
-                    
-                    <a href="https://www.statlearning.com/">ISLP - Chapter 3</a>
-                    
-                </li>
-            
-        
-            
-                <li>
-                    
-                        <span style="display:inline-block; width: 1em;">&bull;</span>
-                    
-                    <a href="https://d2l.ai/chapter_linear-regression/linear-regression.html">D2L - Chapter 3.1</a>
-                    
-                </li>
-            
-        
-            
-                <li>
-                    
-                        <span style="display:inline-block; width: 1em;">&bull;</span>
-                    
-                    <a href="https://www.cs.huji.ac.il/~shais/UnderstandingMachineLearning/copy.html">UML - Chapter 9.2</a>
-                    
-                </li>
-            
-        
-            
-                <li>
-                    
-                        <span style="display:inline-block; width: 1em;">&bull;</span>
-                    
-                    <a href="https://www.youtube.com/watch?v=nEWNNt2KmfQ&amp;list=PLoROMvodv4rOca_Ovz1DvdtWuz8BfSWL2&amp;index=5">Stanford CS221</a>
-                    
-                </li>
-            
-        
-            
-                <li>
-                    
-                        <span style="display:inline-block; width: 1em;">&bull;</span>
-                    
-                    <a href="https://youtu.be/-g0iJjnO2_w?si=jNuQG0o83uKw0qbR&amp;t=2371">Harvard CS50</a>
-                    
-                </li>
-            
-        
-            
-                <li>
-                    
-                        <span style="display:inline-block; width: 1em;">&bull;</span>
-                    
-                    <a href="https://youtu.be/_21o_ylL0q4?si=ee6JJ2WxAvA9hfyr">Cornell CS4780</a>
-                    
-                </li>
-            
-        
-            
-        
-            
-        
-            
-        
-            
-        
-            
-        
-            
-        
-            
-        
-            
-        
-            
-        
-            
-        
-            
-        
-            
-                <li>
-                    
-                        <span style="display:inline-block; width: 1em;">&bull;</span>
-                    
-                    <a href="https://hannibunny.github.io/mlbook/machinelearning/LinReg.html">Linear Regression (HdM)</a>
-                    
-                </li>
-            
-        
-            
-        
-            
-        
-            
-        
-            
-        
-            
-        
-        </ul>
-    </div>
-    <div class="col-md-4">
-        <h4><i class="fa-solid fa-video-camera"></i> Videos</h4>
-        <ul class="resource-list">
-        
-            
-        
-            
-                <li>
-                    
-                        <span style="display:inline-block; width: 1em;">&bull;</span>
-                    
-                    <a href="https://notredame.hosted.panopto.com/Panopto/Pages/Viewer.aspx?id=f05aae98-bacc-46cd-86a0-b287016e7805">sp25 Panopto</a>
-                    
-                </li>
-            
-        
-            
-        
-            
-        
-            
-        
-            
-        
-            
-        
-            
-        
-            
-        
-            
-        
-            
-        
-            
-        
-            
-        
-            
-                <li>
-                    
-                        <span style="display:inline-block; width: 1em;">&bull;</span>
-                    
-                    <a href="https://youtu.be/nk2CQITm_eo?si=LtdQNRlau17NbjjF">Linear Regression (StatQuest)</a>
-                    
-                </li>
-            
-        
-            
-                <li>
-                    
-                        <span style="display:inline-block; width: 1em;">&bull;</span>
-                    
-                    <a href="https://youtu.be/zITIFTsivN8?si=f0YbEmnZ6_XFMpY5">Multiple Regression (StatQuest)</a>
-                    
-                </li>
-            
-        
-            
-                <li>
-                    
-                        <span style="display:inline-block; width: 1em;">&bull;</span>
-                    
-                    <a href="https://youtu.be/EuBBz3bI-aA?si=WYsqtbrIZ6ICrYGP">Bias and Variance (StatQuest)</a>
-                    
-                </li>
-            
-        
-            
-                <li>
-                    
-                        <i class="fa-solid fa-star" style="color: #f0ad4e;"></i>
-                    
-                    <a href="https://youtu.be/Q81RR3yKn30?si=tMvAc1m9RHe7WYgH">L2 Regularization (StatQuest)</a>
-                    
-                </li>
-            
-        
-            
-                <li>
-                    
-                        <i class="fa-solid fa-star" style="color: #f0ad4e;"></i>
-                    
-                    <a href="https://youtu.be/NGf0voTMlcs?si=QACQkO-8Msm95saj">L1 Regularization (StatQuest)</a>
-                    
-                </li>
-            
-        
-            
-                <li>
-                    
-                        <span style="display:inline-block; width: 1em;">&bull;</span>
-                    
-                    <a href="https://youtu.be/Xm2C_gTAl8c?si=MovbjzS6Cf-PN70-">L1 vs. L2 Visualization (StatQuest)</a>
-                    
-                </li>
-            
-        
-            
-        
-            
-        
-            
-        
-            
-        
-            
-        
-            
-        
-            
-        
-            
-                <li>
-                    
-                        <span style="display:inline-block; width: 1em;">&bull;</span>
-                    
-                    <a href="https://notredame.hosted.panopto.com/Panopto/Pages/Viewer.aspx?id=fcd2e1b6-c4f4-45a5-a961-b360015db604">Panopto</a>
-                    
-                </li>
-            
-        
-        </ul>
-    </div>
-    <div class="col-md-4">
-        <h4><i class="fa-brands fa-python"></i> Notebooks</h4>
-        <ul class="resource-list">
-        
-            
-        
-            
-        
-            
-        
-            
-        
-            
-        
-            
-        
-            
-        
-            
-        
-            
-        
-            
-        
-            
-                <li>
-                    
-                        <span style="display:inline-block; width: 1em;">&bull;</span>
-                    
-                    <a href="https://colab.research.google.com/drive/1aCfC28VxUD-V5lKOZseAkCbWNrqyg1zn?usp=sharing">Singular Value Decomposition</a>
-                    
-                </li>
-            
-        
-            
-                <li>
-                    
-                        <span style="display:inline-block; width: 1em;">&bull;</span>
-                    
-                    <a href="https://colab.research.google.com/drive/12I7itMdgphH0ByQPgIIcDlCaYFeCRO0e?usp=sharing">Linear Regression and Regularization</a>
-                    
-                </li>
-            
-        
-            
-                <li>
-                    
-                        <span style="display:inline-block; width: 1em;">&bull;</span>
-                    
-                    <a href="https://colab.research.google.com/drive/1-cJATF_fPmO8CyFtjqDM04RRnhCMRfNg?usp=sharing">Polynomial Regression</a>
-                    
-                </li>
-            
-        
-            
-        
-            
-        
-            
-        
-            
-        
-            
-        
-            
-        
-            
-        
-            
-                <li>
-                    
-                        <span style="display:inline-block; width: 1em;">&bull;</span>
-                    
-                    <a href="https://github.com/rasbt/machine-learning-book/blob/main/ch09/ch09.ipynb">Linear Regression (rasbt)</a>
-                    
-                </li>
-            
-        
-            
-        
-            
-        
-            
-        
-            
-        
-            
-        
-            
-        
-        </ul>
-    </div>
+<p><strong>Everyone</strong>:</p>
+<h2 id="materials">Materials<a class="headerlink" href="#materials" title="Permanent link">&para;</a></h2>
+<h3 id="linear-regression">Linear Regression<a class="headerlink" href="#linear-regression" title="Permanent link">&para;</a></h3>
+<ol>
+<li>
+<p><a href="https://artint.info/3e/html/ArtInt3e.html">Foundations of Computational Agents</a></p>
+<ul>
+<li><a href="https://artint.info/3e/html/ArtInt3e.Ch7.S3.html">Sections 7.3.2 (First few paragraphs) and 7.4.2 (Reading)</a></li>
+</ul>
+</li>
+<li>
+<p>Additional Resources</p>
+<ul>
+<li><a href="https://probml.github.io/pml-book/book1.html">Probabilistic Machine Learning - Sections 7.5, 8.1.3, Chapter 11 (Reading)</a></li>
+<li><a href="https://www.statlearning.com/">Introduction to Statistical Learning - Chapter 3 (Reading)</a></li>
+<li><a href="https://www.cs.huji.ac.il/~shais/UnderstandingMachineLearning/copy.html">Understanding Machine Learning - Chapter 9.2 (Reading)</a></li>
+<li><a href="https://youtu.be/-g0iJjnO2_w?si=jNuQG0o83uKw0qbR&amp;t=2371">Harvard CS50 (Video)</a></li>
+<li><a href="https://www.youtube.com/watch?v=nEWNNt2KmfQ&amp;list=PLoROMvodv4rOca_Ovz1DvdtWuz8BfSWL2&amp;index=5">Stanford CS221 (Video)</a></li>
+<li><a href="https://youtu.be/_21o_ylL0q4?si=ee6JJ2WxAvA9hfyr">Cornell CS4780 (Video)</a></li>
+<li><a href="https://youtu.be/nk2CQITm_eo?si=LtdQNRlau17NbjjF">Linear Regression (StatQuest) (Video)</a></li>
+<li><a href="https://youtu.be/zITIFTsivN8?si=f0YbEmnZ6_XFMpY5">Multiple Regression (StatQuest) (Video)</a></li>
+<li><a href="https://youtu.be/EuBBz3bI-aA?si=WYsqtbrIZ6ICrYGP">Bias and Variance (StatQuest) (Video)</a></li>
+<li><a href="https://youtu.be/Q81RR3yKn30?si=tMvAc1m9RHe7WYgH">L2 Regularization (StatQuest) (Video)</a></li>
+<li><a href="https://youtu.be/NGf0voTMlcs?si=QACQkO-8Msm95saj">L1 Regularization (StatQuest) (Video)</a></li>
+<li><a href="https://youtu.be/Xm2C_gTAl8c?si=MovbjzS6Cf-PN70-">L1 vs. L2 Visualization (StatQuest) (Video)</a></li>
+<li><a href="https://mlu-explain.github.io/linear-regression/">Linear Regression (MLU) (Blog Post)</a></li>
+<li><a href="https://github.com/rasbt/machine-learning-book/blob/main/ch09/ch09.ipynb">Linear Regression (rasbt) (Notebook)</a></li>
+<li><a href="https://hannibunny.github.io/mlbook/machinelearning/linearRegression.html">Linear Regression (HdM) (Blog Post)</a></li>
+<li>[(1805) Nouvelles M\xE9thodes Pour la D\xE9termination des Orbites des\
+    \ Com\xE8tes (Legendre)"</li>
+<li>[(1809) Theoria Motus Corporum Coelestium in Sectionibus Conicis Solem
+    Ambientium (Gauss)</li>
+<li>[(1970) Ridge Regression - Biased Estimation for Nonorthogonal Problems
+    (Hoerl and Kennard)</li>
+<li>[(1996) Regression Shrinkage and Selection via the Lasso (Tibshirani)</li>
+</ul>
+</li>
+</ol>
+<h3 id="review">Review<a class="headerlink" href="#review" title="Permanent link">&para;</a></h3>
+<h2 id="quiz">Quiz<a class="headerlink" href="#quiz" title="Permanent link">&para;</a></h2>
+<p>Once you have done the readings, answer the following <a href="static/json/reading02.json">Reading 02 Quiz</a>
+questions:</p>
+<div id="quiz-questions"></div>
+
+<div id="quiz-responses"></div>
+
+<script src="static/js/dredd-quiz.js"></script>
+<script>
+loadQuiz('static/json/reading02.json');
+</script>
+
+<pre style="display: none;" id="dr-container" class="codehilite"><code id="dredd-response"></code></pre>
+
+<h2 id="submission">Submission<a class="headerlink" href="#submission" title="Permanent link">&para;</a></h2>
+<p>To submit you work, follow the same process outlined in <a href="reading00.html">Reading 00</a>:</p>
+<div class="codehilite" style="background: #f8f8f8"><pre style="line-height: 125%;"><span></span><code>$<span style="color: #BBB"> </span>git<span style="color: #BBB"> </span>checkout<span style="color: #BBB"> </span>master<span style="color: #BBB">                 </span><span style="color: #3D7B7B; font-style: italic"># Make sure we are in master branch</span>
+$<span style="color: #BBB"> </span>git<span style="color: #BBB"> </span>pull<span style="color: #BBB"> </span>--rebase<span style="color: #BBB">                   </span><span style="color: #3D7B7B; font-style: italic"># Make sure we are up-to-date with GitHub</span>
+
+$<span style="color: #BBB"> </span>git<span style="color: #BBB"> </span>checkout<span style="color: #BBB"> </span>-b<span style="color: #BBB"> </span>reading02<span style="color: #BBB">           </span><span style="color: #3D7B7B; font-style: italic"># Create reading02 branch and check it out</span>
+
+$<span style="color: #BBB"> </span><span style="color: #008000">cd</span><span style="color: #BBB"> </span>reading02<span style="color: #BBB">                        </span><span style="color: #3D7B7B; font-style: italic"># Go into reading02 folder</span>
+$<span style="color: #BBB"> </span><span style="color: #19177C">$EDITOR</span><span style="color: #BBB"> </span>answers.json<span style="color: #BBB">                </span><span style="color: #3D7B7B; font-style: italic"># Edit your answers.json file</span>
+
+$<span style="color: #BBB"> </span>../.scripts/check.py<span style="color: #BBB">                </span><span style="color: #3D7B7B; font-style: italic"># Check reading02 quiz</span>
+Checking<span style="color: #BBB"> </span>reading02<span style="color: #BBB"> </span>quiz<span style="color: #BBB"> </span>...
+<span style="color: #BBB">      </span>Q1<span style="color: #BBB"> </span><span style="color: #666">0</span>.60
+<span style="color: #BBB">      </span>Q2<span style="color: #BBB"> </span><span style="color: #666">0</span>.60
+<span style="color: #BBB">      </span>Q3<span style="color: #BBB"> </span><span style="color: #666">0</span>.90
+<span style="color: #BBB">      </span>Q4<span style="color: #BBB"> </span><span style="color: #666">0</span>.90
+<span style="color: #BBB">   </span>Score<span style="color: #BBB"> </span><span style="color: #666">3</span>.00<span style="color: #BBB"> </span>/<span style="color: #BBB"> </span><span style="color: #666">3</span>.00
+<span style="color: #BBB">  </span>Status<span style="color: #BBB"> </span>Success
+
+$<span style="color: #BBB"> </span>git<span style="color: #BBB"> </span>add<span style="color: #BBB"> </span>answers.json<span style="color: #BBB">                </span><span style="color: #3D7B7B; font-style: italic"># Add answers.json to staging area</span>
+$<span style="color: #BBB"> </span>git<span style="color: #BBB"> </span>commit<span style="color: #BBB"> </span>-m<span style="color: #BBB"> </span><span style="color: #BA2121">&quot;Reading 02: Done&quot;</span><span style="color: #BBB">    </span><span style="color: #3D7B7B; font-style: italic"># Commit work</span>
+
+$<span style="color: #BBB"> </span>git<span style="color: #BBB"> </span>push<span style="color: #BBB"> </span>-u<span style="color: #BBB"> </span>origin<span style="color: #BBB"> </span>reading02<span style="color: #BBB">        </span><span style="color: #3D7B7B; font-style: italic"># Push branch to GitHub</span>
+</code></pre></div>
+
+<div class="alert alert-success">
+<h4 id="pull-request"><i class="fa fa-github"></i> Pull Request<a class="headerlink" href="#pull-request" title="Permanent link">&para;</a></h4>
+<p>Once you have committed your work and pushed it to <a href="https://github.com">GitHub</a>, remember to
+create a <strong>pull request</strong> and assign it to the appropriate <strong>teaching
+assistant</strong> from the <a href="reading02_tas.html">Reading 02 TA List</a>.</p>
 </div>
-
-
-<div class="row">
-    
-        <div class="col-md-4">
-            <h4><i class="fa-solid fa-share-alt"></i> Blogposts</h4>
-            <ul class="resource-list">
-            
-                <li>
-                    
-                        <i class="fa-solid fa-star" style="color: #f0ad4e;"></i>
-                    
-                    <a href="https://mlu-explain.github.io/linear-regression/">Linear Regression (MLU)</a>
-                    
-                </li>
-            
-            </ul>
-        </div>
-        <div class="col-md-8">
-            <h4><i class="fa-solid fa-file-pdf"></i> Papers</h4>
-            <ul class="resource-list">
-            
-                <li>
-                    
-                        <span style="display:inline-block; width: 1em;">&bull;</span>
-                    
-                    <a href="https://books.google.com/books/about/Nouvelles_m%C3%A9thodes_pour_la_d%C3%A9terminati.html?id=FRcOAAAAQAAJ">(1805) Nouvelles M\xE9thodes Pour la D\xE9termination des Orbites des\
-        \ Com\xE8tes (Legendre)</a>
-                    
-                </li>
-            
-                <li>
-                    
-                        <span style="display:inline-block; width: 1em;">&bull;</span>
-                    
-                    <a href="https://archive.org/details/bub_gb_ORUOAAAAQAAJ">(1809) Theoria Motus Corporum Coelestium in Sectionibus Conicis Solem Ambientium (Gauss)</a>
-                    
-                </li>
-            
-                <li>
-                    
-                        <span style="display:inline-block; width: 1em;">&bull;</span>
-                    
-                    <a href="https://homepages.math.uic.edu/~lreyzin/papers/ridge.pdf">(1970) Ridge Regression - Biased Estimation for Nonorthogonal Problems (Hoerl and Kennard)</a>
-                    
-                </li>
-            
-                <li>
-                    
-                        <span style="display:inline-block; width: 1em;">&bull;</span>
-                    
-                    <a href="https://www.jstor.org/stable/2346178?seq=1">(1996) Regression Shrinkage and Selection via the Lasso (Tibshirani)</a>
-                    
-                </li>
-            
-            </ul>
-        </div>
-    
-</div>
-
-        </td>
-    </tr>
-</table>
-
-<h2 id="perceptrons">Perceptrons<a class="headerlink" href="#perceptrons" title="Permanent link">&para;</a></h2>
-<table>
-    <tr>
-        <td colspan="3">
-            
-            <div class="row">
-    <div class="col-md-4">
-        <h4><i class="fa-solid fa-book"></i> Readings</h4>
-        <ul class="resource-list">
-        
-            
-                <li>
-                    
-                        <span style="display:inline-block; width: 1em;">&bull;</span>
-                    
-                    <a href="https://drive.google.com/file/d/15waj2uQkXLuol_MGcQ9x7p4otdmddXpx/view?usp=sharing">Slides</a>
-                    
-                </li>
-            
-        
-            
-                <li>
-                    
-                        <span style="display:inline-block; width: 1em;">&bull;</span>
-                    
-                    <a href="https://probml.github.io/pml-book/book1.html">PML - Section 10.2.5</a>
-                    
-                </li>
-            
-        
-            
-                <li>
-                    
-                        <span style="display:inline-block; width: 1em;">&bull;</span>
-                    
-                    <a href="https://www.cs.huji.ac.il/~shais/UnderstandingMachineLearning/copy.html">UML - Section 9.1.2</a>
-                    
-                </li>
-            
-        
-            
-        
-            
-        
-            
-        
-            
-        
-            
-        
-            
-        
-            
-        
-            
-        
-            
-        
-        </ul>
-    </div>
-    <div class="col-md-4">
-        <h4><i class="fa-solid fa-video-camera"></i> Videos</h4>
-        <ul class="resource-list">
-        
-            
-        
-            
-        
-            
-        
-            
-                <li>
-                    
-                        <span style="display:inline-block; width: 1em;">&bull;</span>
-                    
-                    <a href="https://notredame.hosted.panopto.com/Panopto/Pages/Viewer.aspx?id=ed8b2037-1683-41ad-af60-b290016968af">Panopto</a>
-                    
-                </li>
-            
-        
-            
-                <li>
-                    
-                        <span style="display:inline-block; width: 1em;">&bull;</span>
-                    
-                    <a href="https://youtu.be/-g0iJjnO2_w?si=rsqf3IhYQV_PKjkc&amp;t=751">Harvard CS50</a>
-                    
-                </li>
-            
-        
-            
-                <li>
-                    
-                        <span style="display:inline-block; width: 1em;">&bull;</span>
-                    
-                    <a href="https://youtu.be/wl7gVvI-HuY?si=25ULeFrFpBytCOTn">Cornell CS4780</a>
-                    
-                </li>
-            
-        
-            
-                <li>
-                    
-                        <i class="fa-solid fa-star" style="color: #f0ad4e;"></i>
-                    
-                    <a href="https://youtu.be/l-9ALe3U-Fg?si=tS0U8QDoRylnSHnZ">Perceptrons</a>
-                    
-                        <span class="resource-credit">Anthony Tsiantis &#x27;26</span>
-                    
-                </li>
-            
-        
-            
-        
-            
-        
-            
-        
-            
-        
-            
-        
-        </ul>
-    </div>
-    <div class="col-md-4">
-        <h4><i class="fa-brands fa-python"></i> Notebooks</h4>
-        <ul class="resource-list">
-        
-            
-        
-            
-        
-            
-        
-            
-        
-            
-        
-            
-        
-            
-        
-            
-                <li>
-                    
-                        <span style="display:inline-block; width: 1em;">&bull;</span>
-                    
-                    <a href="https://drive.google.com/file/d/1iX-UsNbA9hPjXkK2xUWrKpGQ-YyQtqcT/view?usp=sharing">Perceptron</a>
-                    
-                </li>
-            
-        
-            
-        
-            
-        
-            
-        
-            
-        
-        </ul>
-    </div>
-</div>
-
-
-<div class="row">
-    
-        <div class="col-md-4">
-            <h4><i class="fa-solid fa-share-alt"></i> Blogposts</h4>
-            <ul class="resource-list">
-            
-                <li>
-                    
-                        <span style="display:inline-block; width: 1em;">&bull;</span>
-                    
-                    <a href="https://sebastianraschka.com/Articles/2015_singlelayer_neurons.html">Perceptrons (Raschka)</a>
-                    
-                </li>
-            
-            </ul>
-        </div>
-        <div class="col-md-8">
-            <h4><i class="fa-solid fa-file-pdf"></i> Papers</h4>
-            <ul class="resource-list">
-            
-                <li>
-                    
-                        <span style="display:inline-block; width: 1em;">&bull;</span>
-                    
-                    <a href="https://www.ling.upenn.edu/courses/cogs501/Rosenblatt1958.pdf">(1958) The Perceptron - A Probabilistic Model for Information Storage and Organization in the Brain (Rosenblatt)</a>
-                    
-                </li>
-            
-                <li>
-                    
-                        <span style="display:inline-block; width: 1em;">&bull;</span>
-                    
-                    <a href="https://isl.stanford.edu/~widrow/papers/c1960adaptiveswitching.pdf">(1960) Adaptive Switching Circuits (Widrow and Hoff)</a>
-                    
-                </li>
-            
-                <li>
-                    
-                        <span style="display:inline-block; width: 1em;">&bull;</span>
-                    
-                    <a href="https://direct.mit.edu/books/monograph/3132/PerceptronsAn-Introduction-to-Computational">(1969) Perceptrons - An Introduction to Computational Geometry (Minsky and Papert</a>
-                    
-                </li>
-            
-            </ul>
-        </div>
-    
-</div>
-
-        </td>
-    </tr>
-</table>
-
-<h2 id="reading-quiz-05">Reading Quiz 05<a class="headerlink" href="#reading-quiz-05" title="Permanent link">&para;</a></h2>
-<p>Please respond to the quiz below, you will need to be signed into your ND email in order to respond. You may edit your responses after each submission, so there's really no reason you shouldn't get full credit on these!</p>
-<iframe src="https://docs.google.com/forms/d/e/1FAIpQLSccwTPBDJTNMC4N0ufHSuqybMQLfvVOAPhmaxBGJc-1qAOlFQ/viewform?embedded=true" width="640" height="3096" frameborder="0" marginheight="0" marginwidth="0">Loading…</iframe>
 
 
 	    <div class="row">
