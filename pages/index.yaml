@@ -200,7 +200,7 @@ body:       |
                 {% set year_key = item.get('date_added_year') or 'Other' %}
                 {% set _ = grouped_learning.setdefault(year_key, []).append(item) %}
             {% end %}
-            {% set numeric_years = [y for y in grouped_learning.keys() if y != 'Other' and y != current_year] %}
+            {% set numeric_years = [y for y in grouped_learning.keys() if y != 'Other'] %}
             {% set ordered_numeric_years = sorted(numeric_years, reverse=True) %}
             {% set ordered_years = ordered_numeric_years + (['Other'] if 'Other' in grouped_learning else []) %}
             <div class="row" style="margin-top: 15px;">
@@ -208,6 +208,14 @@ body:       |
                     <div class="panel-group" id="learning-archive" role="tablist">
                     {% for year in ordered_years %}
                         {% set year_slug = 'learning-year-' + slugify('%s' % year) %}
+                        {% set year_entries = grouped_learning.get(year, []) %}
+                        {% if year == current_year %}
+                            {% set preview_list = current_year_entries[:5] %}
+                            {% set collapse_class = 'in' %}
+                        {% else %}
+                            {% set preview_list = year_entries[:5] %}
+                            {% set collapse_class = '' %}
+                        {% end %}
                         <div class="panel panel-default" style="border-radius: 4px; overflow: hidden; margin-bottom: 10px;">
                             <div class="panel-heading" role="tab" id="{{ year_slug }}-heading" style="padding: 0;">
                                 <button class="btn btn-link btn-block" type="button" data-toggle="collapse" data-target="#{{ year_slug }}" aria-expanded="false" aria-controls="{{ year_slug }}" style="text-align: left; padding: 12px 15px;">
@@ -215,9 +223,9 @@ body:       |
                                     <i class="fa fa-caret-down pull-right"></i>
                                 </button>
                             </div>
-                            <div id="{{ year_slug }}" class="panel-collapse collapse" role="tabpanel" aria-labelledby="{{ year_slug }}-heading">
+                            <div id="{{ year_slug }}" class="panel-collapse collapse {{ collapse_class }}" role="tabpanel" aria-labelledby="{{ year_slug }}-heading">
                                 <ul class="list-group" style="margin-bottom: 0;">
-                                {% for item in grouped_learning.get(year, []) %}
+                                {% for item in preview_list %}
                                     {% set display_name = (item.get('name', '') or '').strip() %}
                                     {% set type_key = (item.get('type', '') or '').lower() %}
                                     {% set icon_class = type_icons.get(type_key, 'fa-solid fa-paperclip') %}
@@ -248,7 +256,51 @@ body:       |
                                         </div>
                                     </li>
                                 {% end %}
+                                {% if not preview_list %}
+                                    <li class="list-group-item text-muted">No learning resources recorded for {{ year }}.</li>
+                                {% end %}
                                 </ul>
+                                {% if year_entries and len(year_entries) > len(preview_list) %}
+                                    <button class="btn btn-link btn-sm" type="button" data-toggle="collapse" data-target="#{{ year_slug }}-full" aria-expanded="false" aria-controls="{{ year_slug }}-full" style="margin-top: 10px;">
+                                        Show all {{ year }} learning resources
+                                        <i class="fa fa-caret-down"></i>
+                                    </button>
+                                    <div class="collapse" id="{{ year_slug }}-full" style="margin-top: 10px;">
+                                        <ul class="list-group" style="margin-bottom: 0;">
+                                        {% for item in year_entries %}
+                                            {% set display_name = (item.get('name', '') or '').strip() %}
+                                            {% set type_key = (item.get('type', '') or '').lower() %}
+                                            {% set icon_class = type_icons.get(type_key, 'fa-solid fa-paperclip') %}
+                                            <li class="list-group-item" style="display: flex; align-items: center; justify-content: space-between;">
+                                                <div style="display: flex; align-items: center;">
+                                                    <i class="{{ icon_class }}" style="margin-right: 10px; color: #4e73df;"></i>
+                                                    <div>
+                                                        {% if item.get('link') %}
+                                                            <a href="{{ item['link'] }}">{{ display_name }}</a>
+                                                        {% else %}
+                                                            {{ display_name }}
+                                                        {% end %}
+                                                        {% if item.get('author') or item.get('student') %}
+                                                            <div class="text-muted" style="font-size: 0.85em;">
+                                                                {% if item.get('author') %}
+                                                                    {{ (item['author'] or '').strip() }}
+                                                                {% else %}
+                                                                    {{ (item['student'] or '').strip() }}
+                                                                {% end %}
+                                                            </div>
+                                                        {% end %}
+                                                    </div>
+                                                </div>
+                                                <div class="text-muted" style="font-size: 0.85em;">
+                                                    {% if item.get('date_added_display') %}
+                                                        {{ item['date_added_display'] }}
+                                                    {% end %}
+                                                </div>
+                                            </li>
+                                        {% end %}
+                                        </ul>
+                                    </div>
+                                {% end %}
                             </div>
                         </div>
                     {% end %}
