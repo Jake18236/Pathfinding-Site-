@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="gruvbox">
+<html lang="en" data-theme="gruvbox-dark">
     <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -10,7 +10,7 @@
 	<title>{{ page.title }}</title>
 
 	<!-- Theme CSS (toggleable) -->
-	<link id="theme-style" href="{{ page.prefix }}static/css/gruvbox.css" rel="stylesheet">
+	<link id="theme-style" href="{{ page.prefix }}static/css/gruvbox-dark.css" rel="stylesheet">
 	<script src="https://kit.fontawesome.com/9d2722956c.js" crossorigin="anonymous"></script>
 
 	<!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
@@ -104,33 +104,33 @@
         transition: transform 0.25s ease, background-color 0.25s ease;
         z-index: 1;
     }
-    [data-theme="blugold"] .theme-toggle-btn {
+    [data-theme="gruvbox-light"] .theme-toggle-btn {
         background-color: #f2f6ff;
         border-color: rgba(15, 23, 42, 0.18);
     }
-    [data-theme="blugold"] .theme-toggle-btn .theme-toggle-handle {
+    [data-theme="gruvbox-light"] .theme-toggle-btn .theme-toggle-handle {
         transform: translateX(0);
         background-color: #ffffff;
     }
-    [data-theme="blugold"] .theme-toggle-btn .theme-icon--sun {
+    [data-theme="gruvbox-light"] .theme-toggle-btn .theme-icon--sun {
         opacity: 1;
     }
-    [data-theme="blugold"] .theme-toggle-btn .theme-icon--moon {
+    [data-theme="gruvbox-light"] .theme-toggle-btn .theme-icon--moon {
         opacity: 0.35;
     }
-    [data-theme="gruvbox"] .theme-toggle-btn {
+    [data-theme="gruvbox-dark"] .theme-toggle-btn {
         background-color: #3c3836;
         border-color: #665c54;
         color: #ebdbb2;
     }
-    [data-theme="gruvbox"] .theme-toggle-btn .theme-toggle-handle {
+    [data-theme="gruvbox-dark"] .theme-toggle-btn .theme-toggle-handle {
         transform: translateX(26px);
         background-color: #1d2021;
     }
-    [data-theme="gruvbox"] .theme-toggle-btn .theme-icon--sun {
+    [data-theme="gruvbox-dark"] .theme-toggle-btn .theme-icon--sun {
         opacity: 0.35;
     }
-    [data-theme="gruvbox"] .theme-toggle-btn .theme-icon--moon {
+    [data-theme="gruvbox-dark"] .theme-toggle-btn .theme-icon--moon {
         opacity: 1;
     }
 	.library-card {
@@ -183,23 +183,23 @@
 	    justify-content: space-between;
 	    font-size: 0.78em;
 	}
-	[data-theme="gruvbox"] .library-card {
+	[data-theme="gruvbox-dark"] .library-card {
 	    border-color: #504945;
 	    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.45);
 	    background-color: #282828;
 	    color: #ebdbb2;
 	}
-	[data-theme="gruvbox"] .library-card-cover {
+	[data-theme="gruvbox-dark"] .library-card-cover {
 	    background-color: #32302f;
 	}
-	[data-theme="gruvbox"] .library-card-body {
+	[data-theme="gruvbox-dark"] .library-card-body {
 	    color: #ebdbb2;
 	}
-	[data-theme="gruvbox"] .library-card-footer {
+	[data-theme="gruvbox-dark"] .library-card-footer {
 	    color: #d5c4a1;
 	}
-	[data-theme="gruvbox"] .library-card-title,
-	[data-theme="gruvbox"] .library-card-meta {
+	[data-theme="gruvbox-dark"] .library-card-title,
+	[data-theme="gruvbox-dark"] .library-card-meta {
 	    color: #d5c4a1;
 	}
 	.embed-responsive {
@@ -212,12 +212,12 @@
 	.course-embed {
 	    background-color: #ffffff;
 	}
-	[data-theme="gruvbox"] .embed-responsive {
+	[data-theme="gruvbox-dark"] .embed-responsive {
 	    border-color: #665c54;
 	    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.25);
 	    background-color: rgba(40, 40, 40, 0.9);
 	}
-	[data-theme="gruvbox"] .course-embed {
+	[data-theme="gruvbox-dark"] .course-embed {
 	    background-color: rgba(40, 40, 40, 0.9);
 	}
 	</style>
@@ -275,8 +275,8 @@
 	    var STORAGE_KEY = 'ai-landing-theme';
 	    var prefix = '{{ page.prefix }}';
 	    var themes = {
-	        blugold: prefix + 'static/css/blugold.css',
-	        gruvbox: prefix + 'static/css/gruvbox.css'
+	        'gruvbox-dark': prefix + 'static/css/gruvbox-dark.css',
+	        'gruvbox-light': prefix + 'static/css/gruvbox-light.css'
 	    };
 	    var linkEl = document.getElementById('theme-style');
 	    var toggleBtn = document.getElementById('theme-toggle');
@@ -284,14 +284,14 @@
 	        return;
 	    }
 	    function updateButton(theme) {
-	        var isDark = theme === 'gruvbox';
+	        var isDark = theme === 'gruvbox-dark';
 	        var label = isDark ? 'Switch to light theme' : 'Switch to dark theme';
 	        toggleBtn.setAttribute('aria-label', label);
 	        toggleBtn.setAttribute('title', label);
 	        toggleBtn.setAttribute('aria-checked', isDark ? 'true' : 'false');
 	    }
 	    function applyTheme(theme) {
-	        var name = themes[theme] ? theme : 'gruvbox';
+	        var name = themes[theme] ? theme : 'gruvbox-dark';
 	        linkEl.setAttribute('href', themes[name]);
 	        document.documentElement.setAttribute('data-theme', name);
 	        updateButton(name);
@@ -306,7 +306,7 @@
 	    })();
 	    var currentTheme = applyTheme(savedTheme);
 	    toggleBtn.addEventListener('click', function() {
-	        var nextTheme = currentTheme === 'gruvbox' ? 'blugold' : 'gruvbox';
+	        var nextTheme = currentTheme === 'gruvbox-dark' ? 'gruvbox-light' : 'gruvbox-dark';
 	        currentTheme = applyTheme(nextTheme);
 	        try {
 	            localStorage.setItem(STORAGE_KEY, currentTheme);
