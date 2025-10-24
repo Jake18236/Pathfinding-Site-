@@ -13,9 +13,11 @@ navigation:
 internal:
 external:
     resources:  'csv:static/csv/resources.csv'
+    course_changelog: 'json:static/json/course_changelog.json'
 body:       |
 
     {% set resources_map = page.external.get('resources', {}) or {} %}
+    {% set course_logs = page.external.get('course_changelog', {}) or {} %}
 
     <div class="row" style="margin-bottom: 30px;">
         <div class="col-md-7 col-sm-12">
@@ -54,11 +56,29 @@ body:       |
                     allowfullscreen>
                 </iframe>
             </div>
+            {% set cse10124_log = (course_logs.get('cse10124', {}).get('entries') or []) %}
+            {% set cse10124_error = course_logs.get('cse10124', {}).get('error') %}
             <div style="color: #9a9a9a; font-size: 0.8em; margin-top: 10px;">
                 <strong>Changelog</strong>
                 <ul style="margin: 6px 0 0 18px;">
-                    <li>Updated weekly announcements feed (Feb 2024).</li>
-                    <li>Refreshed assessment rubric documentation.</li>
+                {% if cse10124_log %}
+                    {% for entry in cse10124_log[:4] %}
+                        <li>
+                            {% if entry.get('url') %}
+                                <a href="{{ entry['url'] }}">{{ entry.get('message') or 'Update' }}</a>
+                            {% else %}
+                                {{ entry.get('message') or 'Update' }}
+                            {% end %}
+                            {% if entry.get('date_display') %}
+                                <span class="text-muted" style="margin-left: 6px;">{{ entry['date_display'] }}</span>
+                            {% endif %}
+                        </li>
+                    {% end %}
+                {% elif cse10124_error %}
+                    <li class="text-muted">Could not fetch updates ({{ cse10124_error }}).</li>
+                {% else %}
+                    <li class="text-muted">No recent updates.</li>
+                {% endif %}
                 </ul>
             </div>
         </div>
@@ -73,11 +93,29 @@ body:       |
                     allowfullscreen>
                 </iframe>
             </div>
+            {% set cse30124_log = (course_logs.get('cse30124', {}).get('entries') or []) %}
+            {% set cse30124_error = course_logs.get('cse30124', {}).get('error') %}
             <div style="color: #9a9a9a; font-size: 0.8em; margin-top: 10px;">
                 <strong>Changelog</strong>
                 <ul style="margin: 6px 0 0 18px;">
-                    <li>Published new capstone project briefs (Feb 2024).</li>
-                    <li>Improved lecture notes navigation.</li>
+                {% if cse30124_log %}
+                    {% for entry in cse30124_log[:4] %}
+                        <li>
+                            {% if entry.get('url') %}
+                                <a href="{{ entry['url'] }}">{{ entry.get('message') or 'Update' }}</a>
+                            {% else %}
+                                {{ entry.get('message') or 'Update' }}
+                            {% end %}
+                            {% if entry.get('date_display') %}
+                                <span class="text-muted" style="margin-left: 6px;">{{ entry['date_display'] }}</span>
+                            {% endif %}
+                        </li>
+                    {% end %}
+                {% elif cse30124_error %}
+                    <li class="text-muted">Could not fetch updates ({{ cse30124_error }}).</li>
+                {% else %}
+                    <li class="text-muted">No recent updates.</li>
+                {% endif %}
                 </ul>
             </div>
         </div>

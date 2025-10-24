@@ -62,6 +62,11 @@ jobs:
             --dest static/img/book_cover_thumbnails \
             --size L \
             --pause 0.05
+          mkdir -p static/json
+          python3 scripts/fetch_course_changelog.py \
+            --config config/course_changelog.yaml \
+            --out static/json/course_changelog.json \
+            --limit 5
           make clean && make build
 
       - name: Sync built docs to gh-pages/docs

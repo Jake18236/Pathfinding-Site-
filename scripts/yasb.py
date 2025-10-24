@@ -21,6 +21,7 @@ import csv
 import io
 import os
 import itertools
+import json
 import pathlib
 import sys
 import datetime as pydatetime
@@ -252,6 +253,10 @@ def load_page_from_yaml(path):
         if isinstance(v, str) and v.startswith('csv:'):
             src = v[len('csv:'):]
             data['external'][k] = _load_csv_to_resources_map(src)
+        elif isinstance(v, str) and v.startswith('json:'):
+            src = v[len('json:'):]
+            with open(src, 'r', encoding='utf-8') as handle:
+                data['external'][k] = json.load(handle)
         else:
             data['external'][k] = yaml.safe_load(open(v))
 
