@@ -239,7 +239,7 @@ body:       |
                 </div>
             </div>
         </div>
-        <div class="row" id="library-card-container">
+        <div id="library-card-container">
         {% for item in library_sorted %}
             {% set display_title = (item.get('name', '') or '').strip() %}
             {% if not display_title %}
@@ -261,24 +261,24 @@ body:       |
             {% set cover_image = item.get('cover') or item.get('image') or '' %}
             {% set notes = (item.get('notes') or '').strip() %}
             {% set search_blob = (display_title + ' ' + display_author + ' ' + display_type + ' ' + notes).lower() %}
-            <div class="col-sm-6 col-md-4 col-lg-3 library-card-wrapper" data-haystack="{{ search_blob }}">
-                <div class="panel panel-default library-card" style="height: 100%; display: flex; flex-direction: column;">
-                    <div class="library-card-cover" style="height: 160px; background-color: #f2f2f2; display: flex; align-items: center; justify-content: center; overflow: hidden;">
+            <div class="library-card-wrapper" data-haystack="{{ search_blob }}">
+                <div class="panel panel-default library-card">
+                    <div class="library-card-cover">
                         {% if cover_image %}
-                            <img src="{{ cover_image }}" alt="Cover for {{ display_title }}" style="width: 100%; height: 100%; object-fit: cover;">
+                            <img src="{{ cover_image }}" alt="Cover for {{ display_title }}">
                         {% else %}
                             <i class="fa fa-book" style="font-size: 3em; color: #bbb;"></i>
                         {% end %}
                     </div>
-                    <div class="panel-body" style="flex: 1 1 auto; display: flex; flex-direction: column;">
-                        <h4 class="library-card-title" style="margin-top: 0;">
+                    <div class="panel-body library-card-body">
+                        <h4 class="library-card-title">
                             {% if item.get('link') %}
                                 <a href="{{ item['link'] }}">{{ display_title }}</a>
                             {% else %}
                                 {{ display_title }}
                             {% end %}
                         </h4>
-                        <div class="library-card-meta" style="font-size: 0.9em; color: #555; margin-bottom: 8px;">
+                        <div class="library-card-meta">
                             <div><i class="fa fa-user" style="margin-right: 6px;"></i>{{ display_author if display_author else 'Author unavailable' }}</div>
                             <div><i class="fa fa-tag" style="margin-right: 6px;"></i>{{ display_type if display_type else 'Type unavailable' }}</div>
                         </div>
@@ -289,13 +289,13 @@ body:       |
                             <span class="label label-info" style="margin-top: auto; align-self: flex-start;">Rated {{ item['rating'] }}</span>
                         {% end %}
                     </div>
-                    <div class="panel-footer" style="display: flex; align-items: center; justify-content: space-between;">
+                    <div class="panel-footer library-card-footer">
                         <span class="label {{ status_class }}"
                               data-toggle="tooltip"
                               data-placement="top"
                               title="{{ tooltip_text if tooltip_text else status_text }}"
                         >{{ status_text }}</span>
-                        <span class="library-card-date" style="font-size: 0.85em; color: #777;">
+                        <span class="library-card-date" style="color: #777;">
                             <i class="fa fa-clock-o" style="margin-right: 6px;"></i>{{ date_added if date_added else 'Date not recorded' }}
                         </span>
                     </div>
