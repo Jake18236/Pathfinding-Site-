@@ -71,14 +71,14 @@ body:       |
                             {% end %}
                             {% if entry.get('date_display') %}
                                 <span class="text-muted" style="margin-left: 6px;">{{ entry['date_display'] }}</span>
-                            {% endif %}
+                            {% end %}
                         </li>
                     {% end %}
                 {% elif cse10124_error %}
                     <li class="text-muted">Could not fetch updates ({{ cse10124_error }}).</li>
                 {% else %}
                     <li class="text-muted">No recent updates.</li>
-                {% endif %}
+                {% end %}
                 </ul>
             </div>
         </div>
@@ -108,14 +108,14 @@ body:       |
                             {% end %}
                             {% if entry.get('date_display') %}
                                 <span class="text-muted" style="margin-left: 6px;">{{ entry['date_display'] }}</span>
-                            {% endif %}
+                            {% end %}
                         </li>
                     {% end %}
                 {% elif cse30124_error %}
                     <li class="text-muted">Could not fetch updates ({{ cse30124_error }}).</li>
                 {% else %}
                     <li class="text-muted">No recent updates.</li>
-                {% endif %}
+                {% end %}
                 </ul>
             </div>
         </div>
