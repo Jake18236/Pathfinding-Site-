@@ -39,7 +39,7 @@ jobs:
       - name: Run archiver (process_bookmarks.py)
         env:
           SHEETS_WEBHOOK_URL: ${{ secrets.SHEETS_WEBHOOK_URL }}
-          TWARC_BEARER_TOKEN: ${{ secrets.TWITTER_BEARER_TOKEN }}
+          TWITTER_BEARER_TOKEN: ${{ secrets.TWITTER_BEARER_TOKEN }}
         run: |
           python scripts/process_bookmarks.py
 
