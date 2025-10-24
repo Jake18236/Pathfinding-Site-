@@ -7,7 +7,7 @@ import sys
 import urllib.request
 
 ROOT = pathlib.Path(__file__).resolve().parents[1]
-ARCHIVER = ROOT / "scripts" / "sns_archive_tweet.py"
+ARCHIVER = ROOT / "scripts" / "archive_tweet.py"
 
 WEBHOOK_URL = os.environ.get("SHEETS_WEBHOOK_URL")
 SHARED_SECRET = os.environ.get("QUEUE_SHARED_SECRET", "")
