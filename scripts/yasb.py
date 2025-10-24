@@ -208,13 +208,17 @@ def _load_csv_to_resources_map(src: str):
             if lecture_id and lecture_id not in candidate_ids:
                 candidate_ids.append(lecture_id)
             for cid in candidate_ids:
-                thumb_path = COVER_THUMBNAILS_DIR / f"{cid}.jpg"
-                if thumb_path.exists():
+                for ext in ('.jpg', '.jpeg', '.png'):
+                    thumb_path = COVER_THUMBNAILS_DIR / f"{cid}{ext}"
+                    if not thumb_path.exists():
+                        continue
                     try:
                         rel_path = thumb_path.relative_to(ROOT_DIR)
                         entry['cover'] = rel_path.as_posix()
                     except ValueError:
                         entry['cover'] = thumb_path.as_posix()
+                    break
+                if entry.get('cover'):
                     break
 
         out.setdefault(lecture_id, []).append(entry)

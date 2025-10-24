@@ -36,6 +36,20 @@ jobs:
           python -m pip install --upgrade pip
           pip install tornado markdown PyYAML python-dateutil requests nbconvert
 
+      - name: Checkout gh-pages (publish)
+        uses: actions/checkout@v4
+        with:
+          ref: gh-pages
+          path: publish
+          fetch-depth: 0
+
+      - name: Prime cover cache
+        run: |
+          if [ -d publish/docs/static/img/book_cover_thumbnails ]; then
+            mkdir -p source/static/img/book_cover_thumbnails
+            rsync -a publish/docs/static/img/book_cover_thumbnails/ source/static/img/book_cover_thumbnails/
+          fi
+
       - name: Build site
         working-directory: source
         env:
@@ -46,16 +60,9 @@ jobs:
           python3 scripts/fetch_book_covers.py \
             --resources static/csv/resources.csv \
             --dest static/img/book_cover_thumbnails \
-            --size S \
+            --size L \
             --pause 0.05
           make clean && make build
-
-      - name: Checkout gh-pages (publish)
-        uses: actions/checkout@v4
-        with:
-          ref: gh-pages
-          path: publish
-          fetch-depth: 0
 
       - name: Sync built docs to gh-pages/docs
         run: |

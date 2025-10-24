@@ -335,12 +335,17 @@ def main() -> None:
             missing += 1
             continue
 
-        filename = f"{item.book_id}.jpg"
-        out_path = args.dest / filename
+        candidate_paths = [
+            args.dest / f"{item.book_id}{ext}"
+            for ext in (".jpg", ".jpeg", ".png")
+        ]
+        existing_path = next((p for p in candidate_paths if p.exists()), None)
 
-        if not args.force and out_path.exists() and out_path.stat().st_size > 0:
+        if existing_path and not args.force and existing_path.stat().st_size > 0:
             skipped_existing += 1
             continue
+
+        out_path = existing_path if existing_path else candidate_paths[0]
 
         url, content = fetch_cover_bytes(item, args.size, args.timeout, args.pause)
         if not content:
