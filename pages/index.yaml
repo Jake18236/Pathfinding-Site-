@@ -193,7 +193,7 @@ body:       |
                     </div>
                 </div>
             </div>
-        {% endif %}
+        {% end %}
         {% if len(sorted_learning) > 5 %}
             {% set grouped_learning = {} %}
             {% for item in sorted_learning %}
