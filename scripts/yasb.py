@@ -114,6 +114,7 @@ def _load_csv_to_resources_map(src: str):
         author = best_of(row, 'author', 'creator', 'speaker', 'presenter')
         notes = best_of(row, 'notes', 'note', 'description', 'summary')
         rating = best_of(row, 'rating', 'score', 'stars')
+        date_added_raw = best_of(row, 'date_added', 'date added', 'date', 'added_on', 'added')
         checked_out_raw = best_of(row, 'checked_out', 'checked out', 'status')
         read_flag = best_of(row, 'read', 'completed')
         student = best_of(
@@ -164,6 +165,17 @@ def _load_csv_to_resources_map(src: str):
             entry['notes'] = notes
         if rating:
             entry['rating'] = rating
+        if date_added_raw:
+            try:
+                date_obj = dateutil.parser.parse(date_added_raw)
+                entry['date_added'] = date_obj
+                entry['date_added_display'] = date_obj.strftime('%b %d, %Y')
+                entry['date_added_year'] = date_obj.year
+                entry['date_added_sort_key'] = date_obj.isoformat()
+            except Exception:
+                entry['date_added_raw'] = date_added_raw
+                entry['date_added_display'] = date_added_raw
+                entry['date_added_sort_key'] = date_added_raw
         if checked_out_raw:
             entry['checked_out'] = to_bool(checked_out_raw)
         if read_flag:
@@ -320,6 +332,7 @@ def render_page(page):
         'lecture_id_for': lecture_id_for,
         'resources_for': resources_for,
         'find_assignment_resource': find_assignment_resource,
+        'sort_by_key': lambda entries, key, reverse=False: sorted(entries, key=lambda e: (e.get(key) or ''), reverse=reverse),
     }
     print(template.generate(**settings).decode())
 
