@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="blugold">
+<html lang="en" data-theme="gruvbox">
     <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -10,7 +10,7 @@
 	<title>{{ page.title }}</title>
 
 	<!-- Theme CSS (toggleable) -->
-	<link id="theme-style" href="{{ page.prefix }}static/css/blugold.css" rel="stylesheet">
+	<link id="theme-style" href="{{ page.prefix }}static/css/gruvbox.css" rel="stylesheet">
 	<script src="https://kit.fontawesome.com/9d2722956c.js" crossorigin="anonymous"></script>
 
 	<!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
@@ -207,7 +207,7 @@
 
 	    <div class="row">
 		<div class="page-header">
-		    <button type="button" class="theme-toggle-btn pull-right" id="theme-toggle" role="switch" aria-checked="false" aria-label="Switch to dark theme">
+		    <button type="button" class="theme-toggle-btn pull-right" id="theme-toggle" role="switch" aria-checked="true" aria-label="Switch to light theme">
 			<span class="theme-icon theme-icon--sun"><i class="fa-solid fa-sun"></i></span>
 			<span class="theme-icon theme-icon--moon"><i class="fa-solid fa-moon"></i></span>
 			<span class="theme-toggle-handle"></span>
@@ -271,7 +271,7 @@
 	        toggleBtn.setAttribute('aria-checked', isDark ? 'true' : 'false');
 	    }
 	    function applyTheme(theme) {
-	        var name = themes[theme] ? theme : 'blugold';
+	        var name = themes[theme] ? theme : 'gruvbox';
 	        linkEl.setAttribute('href', themes[name]);
 	        document.documentElement.setAttribute('data-theme', name);
 	        updateButton(name);
