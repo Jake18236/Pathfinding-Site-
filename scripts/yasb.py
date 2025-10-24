@@ -102,10 +102,20 @@ def _load_csv_to_resources_map(src: str):
         total_rows += 1
         row = {k: (v or '').strip() for k, v in raw.items()}
 
+        export_id = best_of(row, 'export_id', 'section_id', 'section', 'group_id', 'group')
         lecture_id = best_of(row, 'lecture_id', 'lecture', 'lecture id', 'topic_id')
+        if export_id:
+            lecture_id = export_id
+        if not lecture_id:
+            lecture_id = best_of(row, 'id', 'identifier', 'key')
         name = best_of(row, 'name', 'title', 'resource', 'resource_name')
         link = best_of(row, 'link', 'url', 'href')
         rtype = best_of(row, 'type', 'category', 'format') or 'reading'
+        author = best_of(row, 'author', 'creator', 'speaker', 'presenter')
+        notes = best_of(row, 'notes', 'note', 'description', 'summary')
+        rating = best_of(row, 'rating', 'score', 'stars')
+        checked_out_raw = best_of(row, 'checked_out', 'checked out', 'status')
+        read_flag = best_of(row, 'read', 'completed')
         student = best_of(
             row,
             'student',
@@ -137,14 +147,31 @@ def _load_csv_to_resources_map(src: str):
             s = s.strip().lower()
             return s in ('1', 'true', 'yes', 'y', 'required')
 
-        if not lecture_id or not name or not link:
+        allow_missing_link = bool(lecture_id) and (lecture_id.startswith('lib-') or 'library' in lecture_id)
+        if not lecture_id or not name or (not link and not allow_missing_link):
             continue
 
-        entry = {'name': name, 'type': rtype, 'link': link}
+        entry = {'name': name, 'type': rtype}
+        if link:
+            entry['link'] = link
         if student:
             entry['student'] = student
         if to_bool(is_primary_raw):
             entry['primary'] = True
+        if author:
+            entry['author'] = author
+        if notes:
+            entry['notes'] = notes
+        if rating:
+            entry['rating'] = rating
+        if checked_out_raw:
+            entry['checked_out'] = to_bool(checked_out_raw)
+        if read_flag:
+            entry['read'] = to_bool(read_flag)
+        if export_id:
+            entry['export_id'] = export_id
+        if row.get('id'):
+            entry['id'] = row['id']
 
         out.setdefault(lecture_id, []).append(entry)
         kept_rows += 1

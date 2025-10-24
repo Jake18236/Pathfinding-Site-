@@ -15,7 +15,7 @@ external:
     resources:  'csv:static/csv/resources.csv'
 body:       |
 
-    {% set resources = page.external.get('resources', []) %}
+    {% set resources_map = page.external.get('resources', {}) or {} %}
 
     <div class="row" markdown="1">
 
@@ -83,7 +83,7 @@ body:       |
             <h2 id="learning"><i class="fa fa-clock"></i> Learning</h2>
         </div>
     </div>
-    {% set learning_resources = [r for r in resources if 'learning' in (r.get('export_id', '') or '').lower()] %}
+    <div markdown="0">
     {% set learning_type_groups = [
         ('reading', 'fa-solid fa-book', 'Readings'),
         ('video', 'fa-solid fa-video-camera', 'Videos'),
@@ -93,10 +93,22 @@ body:       |
         ('blogpost', 'fa-solid fa-share-alt', 'Blogposts'),
         ('paper', 'fa-solid fa-file-pdf', 'Papers')
     ] %}
-    {% if learning_resources %}
+    {% set learning_by_type = {} %}
+    {% for rid, entries in resources_map.items() %}
+        {% if 'learning' in rid %}
+            {% for entry in entries %}
+                {% set type_key = (entry.get('type', '') or '').lower() %}
+                {% if not type_key %}
+                    {% set type_key = 'other' %}
+                {% end %}
+                {% set _ = learning_by_type.setdefault(type_key, []).append(entry) %}
+            {% end %}
+        {% end %}
+    {% end %}
+    {% if learning_by_type %}
         <div class="row">
         {% for type_id, icon_class, label in learning_type_groups %}
-            {% set items = [r for r in learning_resources if (r.get('type', '') or '').lower() == type_id] %}
+            {% set items = learning_by_type.get(type_id, []) %}
             {% if items %}
                 <div class="col-sm-6 col-lg-4">
                     <h3 style="margin-top: 0.5em;">
@@ -105,7 +117,7 @@ body:       |
                     </h3>
                     <ul class="resource-list">
                     {% for item in items %}
-                        {% set display_name = (item.get('name', '') or '')|trim %}
+                        {% set display_name = (item.get('name', '') or '').strip() %}
                         <li>
                             {% if item.get('link') %}
                                 <a href="{{ item['link'] }}">{{ display_name }}</a>
@@ -113,9 +125,9 @@ body:       |
                                 {{ display_name }}
                             {% end %}
                             {% if item.get('author') %}
-                                <span class="resource-credit">{{ item['author']|trim }}</span>
+                                <span class="resource-credit">{{ (item['author'] or '').strip() }}</span>
                             {% elif item.get('student') %}
-                                <span class="resource-credit">{{ item['student']|trim }}</span>
+                                <span class="resource-credit">{{ (item['student'] or '').strip() }}</span>
                             {% end %}
                         </li>
                     {% end %}
@@ -124,50 +136,30 @@ body:       |
             {% end %}
         {% end %}
         </div>
-        {% set handled_learning_types = [group[0] for group in learning_type_groups] %}
-        {% set additional_learning = [r for r in learning_resources if (r.get('type', '') or '').lower() not in handled_learning_types] %}
-        {% if additional_learning %}
-            <div class="row">
-                <div class="col-sm-12">
-                    <h3 style="margin-top: 0.5em;">
-                        <i class="fa-solid fa-layer-group"></i>
-                        Additional Learning Resources
-                    </h3>
-                    <ul class="resource-list">
-                    {% for item in additional_learning %}
-                        {% set display_name = (item.get('name', '') or '')|trim %}
-                        <li>
-                            {% if item.get('link') %}
-                                <a href="{{ item['link'] }}">{{ display_name }}</a>
-                            {% else %}
-                                {{ display_name }}
-                            {% end %}
-                            {% if item.get('author') %}
-                                <span class="resource-credit">{{ item['author']|trim }}</span>
-                            {% elif item.get('student') %}
-                                <span class="resource-credit">{{ item['student']|trim }}</span>
-                            {% end %}
-                        </li>
-                    {% end %}
-                    </ul>
-                </div>
-            </div>
-        {% end %}
     {% else %}
         <div class="row">
             <div class="col-sm-12">
-                <p class="text-muted">Learning resources will appear here once they are added to <code>static/csv/resources.csv</code>.</p>
+                <p class="text-muted">Learning resources will appear here once they are added to <code>static/csv/resources.csv</code> with an <code>export_id</code> containing “learning”.</p>
             </div>
         </div>
     {% end %}
+    </div>
 
     <div class="row">
         <div class="page-header">
             <h2 id="library"><i class="fa fa-balance-scale"></i> Library</h2>
         </div>
     </div>
-    {% set library_resources = [r for r in resources if ((r.get('export_id', '') or '').lower().startswith('lib-') or 'library' in (r.get('export_id', '') or '').lower())] %}
-    {% if library_resources %}
+    <div markdown="0">
+    {% set library_entries = [] %}
+    {% for rid, entries in resources_map.items() %}
+        {% if rid.startswith('lib-') or 'library' in rid %}
+            {% for entry in entries %}
+                {% set _ = library_entries.append(entry) %}
+            {% end %}
+        {% end %}
+    {% end %}
+    {% if library_entries %}
         <div class="row">
             <div class="col-sm-12">
                 <div class="table-responsive">
@@ -181,16 +173,15 @@ body:       |
                             </tr>
                         </thead>
                         <tbody>
-                        {% for item in library_resources %}
-                            {% set display_title = (item.get('name', '') or '')|trim %}
+                        {% for item in library_entries %}
+                            {% set display_title = (item.get('name', '') or '').strip() %}
                             {% if not display_title %}
-                                {% set display_title = (item.get('id', '') or '')|trim %}
+                                {% set display_title = (item.get('id', '') or '').strip() %}
                             {% end %}
-                            {% set display_author = (item.get('author', '') or '')|trim %}
-                            {% set raw_type = (item.get('type', '') or '')|trim %}
-                            {% set display_type = raw_type|replace('_', ' ')|title %}
-                            {% set checked_out_raw = (item.get('checked out') or '')|lower %}
-                            {% set checked_out = checked_out_raw in ['true', 'yes', '1'] %}
+                            {% set display_author = (item.get('author', '') or '').strip() %}
+                            {% set raw_type = (item.get('type', '') or '').strip() %}
+                            {% set display_type = raw_type.replace('_', ' ').title() if raw_type else '' %}
+                            {% set checked_out = bool(item.get('checked_out')) %}
                             {% set status_class = 'label-warning' if checked_out else 'label-success' %}
                             {% set status_text = 'Checked out' if checked_out else 'Available' %}
                             <tr>
@@ -201,7 +192,7 @@ body:       |
                                         {{ display_title }}
                                     {% end %}
                                     {% if item.get('notes') %}
-                                        <div class="text-muted" style="font-size: 0.85em; margin-top: 4px;">{{ item['notes']|trim }}</div>
+                                        <div class="text-muted" style="font-size: 0.85em; margin-top: 4px;">{{ (item['notes'] or '').strip() }}</div>
                                     {% end %}
                                     {% if item.get('rating') %}
                                         <span class="label label-info" style="margin-top: 4px; display: inline-block;">Rated {{ item['rating'] }}</span>
@@ -222,10 +213,11 @@ body:       |
     {% else %}
         <div class="row">
             <div class="col-sm-12">
-                <p class="text-muted">Library inventory is maintained in <code>static/csv/resources.csv</code>; add entries tagged for the library to populate this table.</p>
+                <p class="text-muted">Library inventory is maintained in <code>static/csv/resources.csv</code>; tag entries with an <code>export_id</code> beginning with <code>lib-</code> or containing “library” to surface them here.</p>
             </div>
         </div>
     {% end %}
+    </div>
 
     <script>
         function toggleResources(id, unit) {
