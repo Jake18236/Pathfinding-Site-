@@ -22,6 +22,7 @@ import io
 import os
 import itertools
 import sys
+import datetime as pydatetime
 
 import dateutil.parser
 import tornado.template
@@ -333,6 +334,7 @@ def render_page(page):
         'resources_for': resources_for,
         'find_assignment_resource': find_assignment_resource,
         'sort_by_key': lambda entries, key, reverse=False: sorted(entries, key=lambda e: (e.get(key) or ''), reverse=reverse),
+        'datetime'  : pydatetime,
     }
     print(template.generate(**settings).decode())
 
