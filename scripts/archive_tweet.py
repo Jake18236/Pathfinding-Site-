@@ -31,25 +31,40 @@ def extract_author(obj):
     return f"@{obj.get('author_id','unknown')}"
 
 def fetch_thread(url: str, workdir: pathlib.Path):
-    raw_json  = workdir / "thread.json"
-    flat_json = workdir / "thread.jsonl"
-    run(["twarc2", "conversation", url, str(raw_json)])
-    run(["twarc2", "flatten", str(raw_json), str(flat_json)])
+    raw_json  = workdir / "thread.jsonl"   # conversation outputs JSONL
+    flat_json = workdir / "thread.jsonl"   # we'll re-use JSONL after flatten
 
+    tid = tweet_id_from_url(url) or url.strip()
+    if not re.fullmatch(r"\d+", tid):
+        raise RuntimeError(f"Could not extract tweet ID from URL: {url}")
+
+    # Prefer full conversation; fallback to single tweet if that fails
+    try:
+        # either of these forms is fine; we use positional output file
+        run(["twarc2", "conversation", tid, str(raw_json)])
+    except RuntimeError as e:
+        print(f"[warn] conversation fetch failed, falling back to single tweet: {e}")
+        run(["twarc2", "tweet", tid, str(raw_json)])
+
+    # Flatten into one “simple” line per tweet
+    flat_out = workdir / "thread_flat.jsonl"
+    run(["twarc2", "flatten", str(raw_json), str(flat_out)])
+
+    # Download media referenced in raw_json
     tmp_media = workdir / "media"; tmp_media.mkdir(exist_ok=True)
     run(["twarc2", "media", str(raw_json), "--download-dir", str(tmp_media)])
 
     moved = []
     for f in tmp_media.rglob("*"):
-        if not f.is_file(): 
+        if not f.is_file():
             continue
         ext = f.suffix.lower()
-        if ext in (".jpg",".jpeg",".png",".gif",".webp"):
+        if ext in (".jpg", ".jpeg", ".png", ".gif", ".webp"):
             dest_dir = IMG_DIR
-        elif ext in (".mp4",".mov",".m4v"):
+        elif ext in (".mp4", ".mov", ".m4v"):
             dest_dir = VID_DIR
         else:
-            dest_dir = IMG_DIR  # default bucket
+            dest_dir = IMG_DIR
         target = dest_dir / f.name
         i = 2
         while target.exists():
@@ -57,7 +72,8 @@ def fetch_thread(url: str, workdir: pathlib.Path):
             i += 1
         shutil.move(str(f), str(target))
         moved.append(target.name)
-    return raw_json, flat_json, moved
+
+    return raw_json, flat_out, moved
 
 def read_jsonl(path):
     objs = []
