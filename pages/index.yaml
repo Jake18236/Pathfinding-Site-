@@ -150,25 +150,21 @@ body:       |
             {% set numeric_years = [y for y in grouped_learning.keys() if y != 'Other'] %}
             {% set ordered_numeric_years = sorted(numeric_years, reverse=True) %}
             {% set ordered_years = ordered_numeric_years + (['Other'] if 'Other' in grouped_learning else []) %}
-            {% set year_meta = [] %}
-            {% for year in ordered_years %}
-                {% set year_slug = 'learning-year-' + slugify('%s' % year) %}
-                {% set _ = year_meta.append({'year': year, 'slug': year_slug}) %}
-            {% end %}
             <div class="row" style="margin-top: 15px;">
                 <div class="col-sm-12">
                     <div class="panel-group" id="learning-archive" role="tablist">
-                    {% for ym in year_meta %}
+                    {% for year in ordered_years %}
+                        {% set year_slug = 'learning-year-' + slugify('%s' % year) %}
                         <div class="panel panel-default" style="border-radius: 4px; overflow: hidden; margin-bottom: 10px;">
-                            <div class="panel-heading" role="tab" id="{{ ym['slug'] }}-heading" style="padding: 0;">
-                                <button class="btn btn-link btn-block" type="button" data-toggle="collapse" data-target="#{{ ym['slug'] }}" aria-expanded="false" aria-controls="{{ ym['slug'] }}" style="text-align: left; padding: 12px 15px;">
-                                    {{ ym['year'] }}
+                            <div class="panel-heading" role="tab" id="{{ year_slug }}-heading" style="padding: 0;">
+                                <button class="btn btn-link btn-block" type="button" data-toggle="collapse" data-target="#{{ year_slug }}" aria-expanded="false" aria-controls="{{ year_slug }}" style="text-align: left; padding: 12px 15px;">
+                                    {{ year }}
                                     <i class="fa fa-caret-down pull-right"></i>
                                 </button>
                             </div>
-                            <div id="{{ ym['slug'] }}" class="panel-collapse collapse" role="tabpanel" aria-labelledby="{{ ym['slug'] }}-heading">
+                            <div id="{{ year_slug }}" class="panel-collapse collapse" role="tabpanel" aria-labelledby="{{ year_slug }}-heading">
                                 <ul class="list-group" style="margin-bottom: 0;">
-                                {% for item in grouped_learning.get(ym['year'], []) %}
+                                {% for item in grouped_learning.get(year, []) %}
                                     {% set display_name = (item.get('name', '') or '').strip() %}
                                     {% set type_key = (item.get('type', '') or '').lower() %}
                                     {% set icon_class = type_icons.get(type_key, 'fa-solid fa-paperclip') %}
@@ -231,55 +227,81 @@ body:       |
         {% end %}
     {% end %}
     {% if library_entries %}
+        {% set library_sorted = sort_by_key(library_entries, 'date_added_sort_key', True) %}
         <div class="row">
             <div class="col-sm-12">
-                <div class="table-responsive">
-                    <table class="table table-condensed table-striped">
-                        <thead>
-                            <tr>
-                                <th>Title</th>
-                                <th>Author</th>
-                                <th>Type</th>
-                                <th>Status</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                        {% for item in library_entries %}
-                            {% set display_title = (item.get('name', '') or '').strip() %}
-                            {% if not display_title %}
-                                {% set display_title = (item.get('id', '') or '').strip() %}
-                            {% end %}
-                            {% set display_author = (item.get('author', '') or '').strip() %}
-                            {% set raw_type = (item.get('type', '') or '').strip() %}
-                            {% set display_type = raw_type.replace('_', ' ').title() if raw_type else '' %}
-                            {% set checked_out = bool(item.get('checked_out')) %}
-                            {% set status_class = 'label-warning' if checked_out else 'label-success' %}
-                            {% set status_text = 'Checked out' if checked_out else 'Available' %}
-                            <tr>
-                                <td>
-                                    {% if item.get('link') %}
-                                        <a href="{{ item['link'] }}">{{ display_title }}</a>
-                                    {% else %}
-                                        {{ display_title }}
-                                    {% end %}
-                                    {% if item.get('notes') %}
-                                        <div class="text-muted" style="font-size: 0.85em; margin-top: 4px;">{{ (item['notes'] or '').strip() }}</div>
-                                    {% end %}
-                                    {% if item.get('rating') %}
-                                        <span class="label label-info" style="margin-top: 4px; display: inline-block;">Rated {{ item['rating'] }}</span>
-                                    {% end %}
-                                </td>
-                                <td>{{ display_author if display_author else 'N/A' }}</td>
-                                <td>{{ display_type if display_type else 'N/A' }}</td>
-                                <td>
-                                    <span class="label {{ status_class }}">{{ status_text }}</span>
-                                </td>
-                            </tr>
-                        {% end %}
-                        </tbody>
-                    </table>
+                <div class="form-group" style="margin-bottom: 20px;">
+                    <label for="library-search" class="sr-only">Search library</label>
+                    <div class="input-group">
+                        <span class="input-group-addon"><i class="fa fa-search"></i></span>
+                        <input type="text" id="library-search" class="form-control" placeholder="Search library by title, author, type, or notes&hellip;">
+                    </div>
                 </div>
             </div>
+        </div>
+        <div class="row" id="library-card-container">
+        {% for item in library_sorted %}
+            {% set display_title = (item.get('name', '') or '').strip() %}
+            {% if not display_title %}
+                {% set display_title = (item.get('id', '') or '').strip() %}
+            {% end %}
+            {% set display_author = (item.get('author', '') or '').strip() %}
+            {% set raw_type = (item.get('type', '') or '').strip() %}
+            {% set display_type = raw_type.replace('_', ' ').title() if raw_type else '' %}
+            {% set checked_out = bool(item.get('checked_out')) %}
+            {% set status_class = 'label-warning' if checked_out else 'label-success' %}
+            {% set status_text = 'Checked out' if checked_out else 'Available' %}
+            {% set date_added = item.get('date_added_display') or item.get('date_added_raw') or '' %}
+            {% set tooltip_text = '' %}
+            {% if checked_out and (item.get('student') or '').strip() %}
+                {% set tooltip_text = 'Checked out by ' + (item.get('student') or '').strip() %}
+            {% elif checked_out %}
+                {% set tooltip_text = 'Checked out' %}
+            {% end %}
+            {% set cover_image = item.get('cover') or item.get('image') or '' %}
+            {% set notes = (item.get('notes') or '').strip() %}
+            {% set search_blob = (display_title + ' ' + display_author + ' ' + display_type + ' ' + notes).lower() %}
+            <div class="col-sm-6 col-md-4 col-lg-3 library-card-wrapper" data-haystack="{{ search_blob }}">
+                <div class="panel panel-default library-card" style="height: 100%; display: flex; flex-direction: column;">
+                    <div class="library-card-cover" style="height: 160px; background-color: #f2f2f2; display: flex; align-items: center; justify-content: center; overflow: hidden;">
+                        {% if cover_image %}
+                            <img src="{{ cover_image }}" alt="Cover for {{ display_title }}" style="width: 100%; height: 100%; object-fit: cover;">
+                        {% else %}
+                            <i class="fa fa-book" style="font-size: 3em; color: #bbb;"></i>
+                        {% end %}
+                    </div>
+                    <div class="panel-body" style="flex: 1 1 auto; display: flex; flex-direction: column;">
+                        <h4 class="library-card-title" style="margin-top: 0;">
+                            {% if item.get('link') %}
+                                <a href="{{ item['link'] }}">{{ display_title }}</a>
+                            {% else %}
+                                {{ display_title }}
+                            {% end %}
+                        </h4>
+                        <div class="library-card-meta" style="font-size: 0.9em; color: #555; margin-bottom: 8px;">
+                            <div><i class="fa fa-user" style="margin-right: 6px;"></i>{{ display_author if display_author else 'Author unavailable' }}</div>
+                            <div><i class="fa fa-tag" style="margin-right: 6px;"></i>{{ display_type if display_type else 'Type unavailable' }}</div>
+                        </div>
+                        {% if notes %}
+                            <p class="text-muted" style="font-size: 0.85em;">{{ notes }}</p>
+                        {% end %}
+                        {% if item.get('rating') %}
+                            <span class="label label-info" style="margin-top: auto; align-self: flex-start;">Rated {{ item['rating'] }}</span>
+                        {% end %}
+                    </div>
+                    <div class="panel-footer" style="display: flex; align-items: center; justify-content: space-between;">
+                        <span class="label {{ status_class }}"
+                              data-toggle="tooltip"
+                              data-placement="top"
+                              title="{{ tooltip_text if tooltip_text else status_text }}"
+                        >{{ status_text }}</span>
+                        <span class="library-card-date" style="font-size: 0.85em; color: #777;">
+                            <i class="fa fa-clock-o" style="margin-right: 6px;"></i>{{ date_added if date_added else 'Date not recorded' }}
+                        </span>
+                    </div>
+                </div>
+            </div>
+        {% end %}
         </div>
     {% else %}
         <div class="row">
@@ -344,4 +366,21 @@ body:       |
                 icon.classList.add('fa-caret-right');
             }
         }
+
+        window.addEventListener("load", function() {
+            if (window.jQuery && typeof window.jQuery.fn.tooltip === 'function') {
+                window.jQuery('[data-toggle="tooltip"]').tooltip();
+                const $libraryCards = window.jQuery('.library-card-wrapper');
+                window.jQuery('#library-search').on('input', function() {
+                    const term = window.jQuery(this).val().toLowerCase().trim();
+                    $libraryCards.each(function() {
+                        const $card = window.jQuery(this);
+                        const haystack = ($card.data('haystack') || '').toString();
+                        const fallback = $card.text().toLowerCase();
+                        const matches = term === '' || haystack.indexOf(term) !== -1 || fallback.indexOf(term) !== -1;
+                        $card.toggle(matches);
+                    });
+                });
+            }
+        });
     </script>
