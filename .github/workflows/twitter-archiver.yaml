@@ -28,7 +28,7 @@ jobs:
       - name: Install archiver deps
         run: |
           python -m pip install --upgrade pip
-          pip install snscrape twarc requests python-slugify
+          pip install twarc requests python-slugify
 
       - name: Twarc smoke test (token check)
         env:
