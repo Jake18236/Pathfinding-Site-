@@ -38,19 +38,23 @@
 	    content: "\2014";
 	    margin-right: 0.35em;
 	}
-	#library-card-container {
-	    display: flex;
-	    flex-wrap: wrap;
-	    gap: 20px;
-	    margin-top: 10px;
-	}
-	.library-card-wrapper {
-	    flex: 1 1 260px;
-	    max-width: 320px;
-	    min-width: 260px;
-	    display: flex;
-	}
-	.library-card {
+#library-card-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    margin-top: 10px;
+    max-height: 540px;
+    overflow-y: auto;
+    padding-right: 8px;
+}
+.library-card-wrapper {
+    flex: 1 1 260px;
+    max-width: 320px;
+    min-width: 260px;
+    display: flex;
+    max-height: 100%;
+}
+.library-card {
 	    display: flex;
 	    flex-direction: column;
 	    width: 100%;
@@ -117,16 +121,25 @@
 
 		
 <p></p>
-<div class="row">
-<p>I am an assistant teaching professor at the University of Notre Dame.
-I teach primarily courses on artificial intelligence. This landing
-page is intended to both serve as a collection of my courses, and a
-list materials that I myself am learning from. In addition to this
-ever lengthening list, I also maintain a modest library books related
-to the topic, and encourage students to browse the library and come 
-borrow books from me if they're interested.</p>
+<div class="row" style="margin-bottom: 30px;">
+    <div class="col-md-7 col-sm-12">
+        <div markdown="1">
+
+        I am an assistant teaching professor at the University of Notre Dame.
+        I teach primarily courses on artificial intelligence. This landing
+        page is intended to serve both as a collection of my courses, and a
+        list of materials that I myself am learning from. In addition to this
+        ever lengthening list, I also maintain a modest library of books related
+        to the topic, and encourage students to browse the library and come 
+        borrow books from me if they're interested.
+
+        </div>
+    </div>
+    <div class="col-md-5 col-sm-12">
+        <img src="static/img/teaser.png" alt="Neural network illustration" style="width: 100%; max-width: 380px; display: block; margin: 0 auto;" />
+    </div>
 </div>
-<p><img src="static/img/teaser.png" class="pull-right" style="margin-left: 10px; width: 40%"/></p>
+
 <div class="row">
     <div class="page-header">
         <h2 id="courses"><i class="fa fa-cogs"></i> Courses</h2>
