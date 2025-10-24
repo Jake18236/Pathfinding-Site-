@@ -9,8 +9,8 @@
 
 	<title>{{ page.title }}</title>
 
-	<!-- Bootstrap core CSS -->
-	<link href="{{ page.prefix }}static/css/gruvbox.css" rel="stylesheet">
+	<!-- Theme CSS (toggleable) -->
+	<link id="theme-style" href="{{ page.prefix }}static/css/blugold.css" rel="stylesheet">
 	<script src="https://kit.fontawesome.com/9d2722956c.js" crossorigin="anonymous"></script>
 
 	<!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
@@ -54,7 +54,11 @@
     display: flex;
     max-height: 100%;
 }
-.library-card {
+	.theme-toggle-btn {
+	    margin-top: 8px;
+	    margin-left: 12px;
+	}
+	.library-card {
 	    display: flex;
 	    flex-direction: column;
 	    width: 100%;
@@ -63,6 +67,7 @@
 	    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
 	    overflow: hidden;
 	    background-color: #fff;
+	    color: #333;
 	}
 	.library-card-cover {
 	    height: 240px;
@@ -77,7 +82,7 @@
 	    width: 100%;
 	    height: 100%;
 	    object-fit: contain;
-	    background-color: #fff;
+	    background-color: transparent;
 	}
 	.library-card-body {
 	    flex: 1 1 auto;
@@ -101,6 +106,25 @@
 	    justify-content: space-between;
 	    font-size: 0.85em;
 	}
+	[data-theme="gruvbox"] .library-card {
+	    border-color: #504945;
+	    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.45);
+	    background-color: #282828;
+	    color: #ebdbb2;
+	}
+	[data-theme="gruvbox"] .library-card-cover {
+	    background-color: #32302f;
+	}
+	[data-theme="gruvbox"] .library-card-body {
+	    color: #ebdbb2;
+	}
+	[data-theme="gruvbox"] .library-card-footer {
+	    color: #d5c4a1;
+	}
+	[data-theme="gruvbox"] .library-card-title,
+	[data-theme="gruvbox"] .library-card-meta {
+	    color: #d5c4a1;
+	}
 	</style>
     </head>
     <body>
@@ -108,6 +132,9 @@
 
 	    <div class="row">
 		<div class="page-header">
+		    <button type="button" class="btn btn-default btn-xs pull-right theme-toggle-btn" id="theme-toggle">
+			Switch to Gruvbox
+		    </button>
 		    <ul class="nav nav-pills pull-right">
 			{% for item in page.navigation %}
 			<li><a href="{{ item['link'] }}"><i class="fa {{ item['icon'] }}"></i> <span class="visible-md-inline visible-lg-inline">{{ item['name'] }}</span></a></li>
@@ -146,5 +173,51 @@
 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 	{% block script %}
 	{% end %}
+	<script>
+	(function() {
+	    var STORAGE_KEY = 'ai-landing-theme';
+	    var prefix = '{{ page.prefix }}';
+	    var themes = {
+	        blugold: prefix + 'static/css/blugold.css',
+	        gruvbox: prefix + 'static/css/gruvbox.css'
+	    };
+	    var linkEl = document.getElementById('theme-style');
+	    var toggleBtn = document.getElementById('theme-toggle');
+	    if (!linkEl || !toggleBtn) {
+	        return;
+	    }
+	    function updateButton(theme) {
+	        if (theme === 'gruvbox') {
+	            toggleBtn.textContent = 'Switch to Blugold';
+	        } else {
+	            toggleBtn.textContent = 'Switch to Gruvbox';
+	        }
+	    }
+	    function applyTheme(theme) {
+	        var name = themes[theme] ? theme : 'blugold';
+	        linkEl.setAttribute('href', themes[name]);
+	        document.documentElement.setAttribute('data-theme', name);
+	        updateButton(name);
+	        return name;
+	    }
+	    var savedTheme = (function() {
+	        try {
+	            return localStorage.getItem(STORAGE_KEY);
+	        } catch (err) {
+	            return null;
+	        }
+	    })();
+	    var currentTheme = applyTheme(savedTheme);
+	    toggleBtn.addEventListener('click', function() {
+	        var nextTheme = currentTheme === 'gruvbox' ? 'blugold' : 'gruvbox';
+	        currentTheme = applyTheme(nextTheme);
+	        try {
+	            localStorage.setItem(STORAGE_KEY, currentTheme);
+	        } catch (err) {
+	            /* ignore write errors */
+	        }
+	    });
+	})();
+	</script>
     </body>
 </html>
