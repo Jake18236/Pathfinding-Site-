@@ -35,7 +35,6 @@ jobs:
           TWARC_BEARER_TOKEN: ${{ secrets.TWITTER_BEARER_TOKEN }}
         run: |
           test -n "$TWARC_BEARER_TOKEN" || (echo "TOKEN MISSING" && exit 1)
-          twarc2 version
 
       - name: Run archiver (process_bookmarks.py)
         env:
