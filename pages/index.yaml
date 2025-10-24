@@ -174,10 +174,12 @@ body:       |
                                 {% end %}
                                 </ul>
                                 {% if remaining_list %}
-                                    <button class="btn btn-link btn-sm" type="button" data-toggle="collapse" data-target="#{{ year_slug }}-full" aria-expanded="false" aria-controls="{{ year_slug }}-full" style="margin-top: 10px;">
-                                        Show all {{ year }} learning resources
-                                        <i class="fa fa-caret-down"></i>
-                                    </button>
+                                    <div style="display: flex; justify-content: center; margin-top: 10px;">
+                                        <button class="btn btn-link btn-sm" type="button" data-toggle="collapse" data-target="#{{ year_slug }}-full" aria-expanded="false" aria-controls="{{ year_slug }}-full">
+                                            Show all {{ year }} learning resources
+                                            <i class="fa fa-caret-down"></i>
+                                        </button>
+                                    </div>
                                     <div class="collapse" id="{{ year_slug }}-full" style="margin-top: 10px;">
                                         <ul class="list-group" style="margin-bottom: 0;">
                                         {% for item in remaining_list %}
