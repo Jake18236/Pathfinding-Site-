@@ -38,6 +38,62 @@
 	    content: "\2014";
 	    margin-right: 0.35em;
 	}
+	#library-card-container {
+	    display: flex;
+	    flex-wrap: wrap;
+	    gap: 20px;
+	    margin-top: 10px;
+	}
+	.library-card-wrapper {
+	    flex: 1 1 260px;
+	    max-width: 320px;
+	    display: flex;
+	}
+	.library-card {
+	    display: flex;
+	    flex-direction: column;
+	    width: 100%;
+	    border-radius: 6px;
+	    border: 1px solid #ddd;
+	    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+	    overflow: hidden;
+	    background-color: #fff;
+	}
+	.library-card-cover {
+	    height: 180px;
+	    background-color: #f7f7f7;
+	    display: flex;
+	    align-items: center;
+	    justify-content: center;
+	    overflow: hidden;
+	}
+	.library-card-cover img {
+	    width: 100%;
+	    height: 100%;
+	    object-fit: cover;
+	}
+	.library-card-body {
+	    flex: 1 1 auto;
+	    display: flex;
+	    flex-direction: column;
+	}
+	.library-card-title {
+	    margin-top: 0;
+	    font-size: 1.05em;
+	    line-height: 1.35;
+	    min-height: 3.1em;
+	}
+	.library-card-meta {
+	    font-size: 0.9em;
+	    color: #555;
+	    margin-bottom: 8px;
+	}
+	.library-card-footer {
+	    display: flex;
+	    align-items: center;
+	    justify-content: space-between;
+	    font-size: 0.85em;
+	}
 	</style>
     </head>
     <body>
@@ -1028,7 +1084,7 @@ borrow books from me if they're interested.</p>
             </div>
         </div>
     </div>
-    <div class="row" id="library-card-container">
+    <div id="library-card-container">
     
         
         
@@ -1044,33 +1100,33 @@ borrow books from me if they're interested.</p>
         
         
         
-        <div class="col-sm-6 col-md-4 col-lg-3 library-card-wrapper" data-haystack="the scaling era: an oral history of ai, 2019–2025 dwarkesh patel physical ">
-            <div class="panel panel-default library-card" style="height: 100%; display: flex; flex-direction: column;">
-                <div class="library-card-cover" style="height: 160px; background-color: #f2f2f2; display: flex; align-items: center; justify-content: center; overflow: hidden;">
+        <div class="library-card-wrapper" data-haystack="the scaling era: an oral history of ai, 2019–2025 dwarkesh patel physical ">
+            <div class="panel panel-default library-card">
+                <div class="library-card-cover">
                     
                         <i class="fa fa-book" style="font-size: 3em; color: #bbb;"></i>
                     
                 </div>
-                <div class="panel-body" style="flex: 1 1 auto; display: flex; flex-direction: column;">
-                    <h4 class="library-card-title" style="margin-top: 0;">
+                <div class="panel-body library-card-body">
+                    <h4 class="library-card-title">
                         
                             <a href="https://www.amazon.com/Scaling-Era-Oral-History-2019-2025/dp/1953953557">The Scaling Era: An Oral History of AI, 2019–2025</a>
                         
                     </h4>
-                    <div class="library-card-meta" style="font-size: 0.9em; color: #555; margin-bottom: 8px;">
+                    <div class="library-card-meta">
                         <div><i class="fa fa-user" style="margin-right: 6px;"></i>Dwarkesh Patel</div>
                         <div><i class="fa fa-tag" style="margin-right: 6px;"></i>Physical</div>
                     </div>
                     
                     
                 </div>
-                <div class="panel-footer" style="display: flex; align-items: center; justify-content: space-between;">
+                <div class="panel-footer library-card-footer">
                     <span class="label label-success"
                           data-toggle="tooltip"
                           data-placement="top"
                           title="Available"
                     >Available</span>
-                    <span class="library-card-date" style="font-size: 0.85em; color: #777;">
+                    <span class="library-card-date" style="color: #777;">
                         <i class="fa fa-clock-o" style="margin-right: 6px;"></i>Oct 15, 2025
                     </span>
                 </div>
@@ -1091,33 +1147,33 @@ borrow books from me if they're interested.</p>
         
         
         
-        <div class="col-sm-6 col-md-4 col-lg-3 library-card-wrapper" data-haystack="prompt engineering for generative ai: future-proof inputs for reliable ai outputs  physical ">
-            <div class="panel panel-default library-card" style="height: 100%; display: flex; flex-direction: column;">
-                <div class="library-card-cover" style="height: 160px; background-color: #f2f2f2; display: flex; align-items: center; justify-content: center; overflow: hidden;">
+        <div class="library-card-wrapper" data-haystack="prompt engineering for generative ai: future-proof inputs for reliable ai outputs  physical ">
+            <div class="panel panel-default library-card">
+                <div class="library-card-cover">
                     
                         <i class="fa fa-book" style="font-size: 3em; color: #bbb;"></i>
                     
                 </div>
-                <div class="panel-body" style="flex: 1 1 auto; display: flex; flex-direction: column;">
-                    <h4 class="library-card-title" style="margin-top: 0;">
+                <div class="panel-body library-card-body">
+                    <h4 class="library-card-title">
                         
                             <a href="https://www.amazon.com/Prompt-Engineering-Generative-AI-Future-Proof/dp/109815343X/">Prompt Engineering for Generative AI: Future-Proof Inputs for Reliable AI Outputs</a>
                         
                     </h4>
-                    <div class="library-card-meta" style="font-size: 0.9em; color: #555; margin-bottom: 8px;">
+                    <div class="library-card-meta">
                         <div><i class="fa fa-user" style="margin-right: 6px;"></i>Author unavailable</div>
                         <div><i class="fa fa-tag" style="margin-right: 6px;"></i>Physical</div>
                     </div>
                     
                     
                 </div>
-                <div class="panel-footer" style="display: flex; align-items: center; justify-content: space-between;">
+                <div class="panel-footer library-card-footer">
                     <span class="label label-success"
                           data-toggle="tooltip"
                           data-placement="top"
                           title="Available"
                     >Available</span>
-                    <span class="library-card-date" style="font-size: 0.85em; color: #777;">
+                    <span class="library-card-date" style="color: #777;">
                         <i class="fa fa-clock-o" style="margin-right: 6px;"></i>Date not recorded
                     </span>
                 </div>
@@ -1138,33 +1194,33 @@ borrow books from me if they're interested.</p>
         
         
         
-        <div class="col-sm-6 col-md-4 col-lg-3 library-card-wrapper" data-haystack="artificial intelligence for babies (baby university)  physical ">
-            <div class="panel panel-default library-card" style="height: 100%; display: flex; flex-direction: column;">
-                <div class="library-card-cover" style="height: 160px; background-color: #f2f2f2; display: flex; align-items: center; justify-content: center; overflow: hidden;">
+        <div class="library-card-wrapper" data-haystack="artificial intelligence for babies (baby university)  physical ">
+            <div class="panel panel-default library-card">
+                <div class="library-card-cover">
                     
                         <i class="fa fa-book" style="font-size: 3em; color: #bbb;"></i>
                     
                 </div>
-                <div class="panel-body" style="flex: 1 1 auto; display: flex; flex-direction: column;">
-                    <h4 class="library-card-title" style="margin-top: 0;">
+                <div class="panel-body library-card-body">
+                    <h4 class="library-card-title">
                         
                             <a href="https://www.amazon.com/dp/1464221456?ref=ppx_yo2ov_dt_b_fed_asin_title">Artificial Intelligence for Babies (Baby University)</a>
                         
                     </h4>
-                    <div class="library-card-meta" style="font-size: 0.9em; color: #555; margin-bottom: 8px;">
+                    <div class="library-card-meta">
                         <div><i class="fa fa-user" style="margin-right: 6px;"></i>Author unavailable</div>
                         <div><i class="fa fa-tag" style="margin-right: 6px;"></i>Physical</div>
                     </div>
                     
                     
                 </div>
-                <div class="panel-footer" style="display: flex; align-items: center; justify-content: space-between;">
+                <div class="panel-footer library-card-footer">
                     <span class="label label-success"
                           data-toggle="tooltip"
                           data-placement="top"
                           title="Available"
                     >Available</span>
-                    <span class="library-card-date" style="font-size: 0.85em; color: #777;">
+                    <span class="library-card-date" style="color: #777;">
                         <i class="fa fa-clock-o" style="margin-right: 6px;"></i>Date not recorded
                     </span>
                 </div>
@@ -1185,33 +1241,33 @@ borrow books from me if they're interested.</p>
         
         
         
-        <div class="col-sm-6 col-md-4 col-lg-3 library-card-wrapper" data-haystack="abcs of artificial intelligence (baby university)  physical ">
-            <div class="panel panel-default library-card" style="height: 100%; display: flex; flex-direction: column;">
-                <div class="library-card-cover" style="height: 160px; background-color: #f2f2f2; display: flex; align-items: center; justify-content: center; overflow: hidden;">
+        <div class="library-card-wrapper" data-haystack="abcs of artificial intelligence (baby university)  physical ">
+            <div class="panel panel-default library-card">
+                <div class="library-card-cover">
                     
                         <i class="fa fa-book" style="font-size: 3em; color: #bbb;"></i>
                     
                 </div>
-                <div class="panel-body" style="flex: 1 1 auto; display: flex; flex-direction: column;">
-                    <h4 class="library-card-title" style="margin-top: 0;">
+                <div class="panel-body library-card-body">
+                    <h4 class="library-card-title">
                         
                             <a href="https://www.amazon.com/dp/1464221480?ref=ppx_yo2ov_dt_b_fed_asin_title">ABCs of Artificial Intelligence (Baby University)</a>
                         
                     </h4>
-                    <div class="library-card-meta" style="font-size: 0.9em; color: #555; margin-bottom: 8px;">
+                    <div class="library-card-meta">
                         <div><i class="fa fa-user" style="margin-right: 6px;"></i>Author unavailable</div>
                         <div><i class="fa fa-tag" style="margin-right: 6px;"></i>Physical</div>
                     </div>
                     
                     
                 </div>
-                <div class="panel-footer" style="display: flex; align-items: center; justify-content: space-between;">
+                <div class="panel-footer library-card-footer">
                     <span class="label label-success"
                           data-toggle="tooltip"
                           data-placement="top"
                           title="Available"
                     >Available</span>
-                    <span class="library-card-date" style="font-size: 0.85em; color: #777;">
+                    <span class="library-card-date" style="color: #777;">
                         <i class="fa fa-clock-o" style="margin-right: 6px;"></i>Date not recorded
                     </span>
                 </div>
@@ -1232,33 +1288,33 @@ borrow books from me if they're interested.</p>
         
         
         
-        <div class="col-sm-6 col-md-4 col-lg-3 library-card-wrapper" data-haystack="neural networks for babies  physical ">
-            <div class="panel panel-default library-card" style="height: 100%; display: flex; flex-direction: column;">
-                <div class="library-card-cover" style="height: 160px; background-color: #f2f2f2; display: flex; align-items: center; justify-content: center; overflow: hidden;">
+        <div class="library-card-wrapper" data-haystack="neural networks for babies  physical ">
+            <div class="panel panel-default library-card">
+                <div class="library-card-cover">
                     
                         <i class="fa fa-book" style="font-size: 3em; color: #bbb;"></i>
                     
                 </div>
-                <div class="panel-body" style="flex: 1 1 auto; display: flex; flex-direction: column;">
-                    <h4 class="library-card-title" style="margin-top: 0;">
+                <div class="panel-body library-card-body">
+                    <h4 class="library-card-title">
                         
                             <a href="https://www.amazon.com/dp/1492671207?ref=ppx_yo2ov_dt_b_fed_asin_title">Neural Networks for Babies</a>
                         
                     </h4>
-                    <div class="library-card-meta" style="font-size: 0.9em; color: #555; margin-bottom: 8px;">
+                    <div class="library-card-meta">
                         <div><i class="fa fa-user" style="margin-right: 6px;"></i>Author unavailable</div>
                         <div><i class="fa fa-tag" style="margin-right: 6px;"></i>Physical</div>
                     </div>
                     
                     
                 </div>
-                <div class="panel-footer" style="display: flex; align-items: center; justify-content: space-between;">
+                <div class="panel-footer library-card-footer">
                     <span class="label label-success"
                           data-toggle="tooltip"
                           data-placement="top"
                           title="Available"
                     >Available</span>
-                    <span class="library-card-date" style="font-size: 0.85em; color: #777;">
+                    <span class="library-card-date" style="color: #777;">
                         <i class="fa fa-clock-o" style="margin-right: 6px;"></i>Date not recorded
                     </span>
                 </div>
@@ -1279,33 +1335,33 @@ borrow books from me if they're interested.</p>
         
         
         
-        <div class="col-sm-6 col-md-4 col-lg-3 library-card-wrapper" data-haystack="a mind at play: how claude shannon invented the information age  physical ">
-            <div class="panel panel-default library-card" style="height: 100%; display: flex; flex-direction: column;">
-                <div class="library-card-cover" style="height: 160px; background-color: #f2f2f2; display: flex; align-items: center; justify-content: center; overflow: hidden;">
+        <div class="library-card-wrapper" data-haystack="a mind at play: how claude shannon invented the information age  physical ">
+            <div class="panel panel-default library-card">
+                <div class="library-card-cover">
                     
                         <i class="fa fa-book" style="font-size: 3em; color: #bbb;"></i>
                     
                 </div>
-                <div class="panel-body" style="flex: 1 1 auto; display: flex; flex-direction: column;">
-                    <h4 class="library-card-title" style="margin-top: 0;">
+                <div class="panel-body library-card-body">
+                    <h4 class="library-card-title">
                         
                             <a href="https://www.amazon.com/dp/147676669X?ref=ppx_yo2ov_dt_b_fed_asin_title">A Mind at Play: How Claude Shannon Invented the Information Age</a>
                         
                     </h4>
-                    <div class="library-card-meta" style="font-size: 0.9em; color: #555; margin-bottom: 8px;">
+                    <div class="library-card-meta">
                         <div><i class="fa fa-user" style="margin-right: 6px;"></i>Author unavailable</div>
                         <div><i class="fa fa-tag" style="margin-right: 6px;"></i>Physical</div>
                     </div>
                     
                     
                 </div>
-                <div class="panel-footer" style="display: flex; align-items: center; justify-content: space-between;">
+                <div class="panel-footer library-card-footer">
                     <span class="label label-success"
                           data-toggle="tooltip"
                           data-placement="top"
                           title="Available"
                     >Available</span>
-                    <span class="library-card-date" style="font-size: 0.85em; color: #777;">
+                    <span class="library-card-date" style="color: #777;">
                         <i class="fa fa-clock-o" style="margin-right: 6px;"></i>Date not recorded
                     </span>
                 </div>
@@ -1326,33 +1382,33 @@ borrow books from me if they're interested.</p>
         
         
         
-        <div class="col-sm-6 col-md-4 col-lg-3 library-card-wrapper" data-haystack="norbert wiener-a life in cybernetics: ex-prodigy: my childhood and youth and i am a mathematician: the later life of a prodigy (mit press)  physical ">
-            <div class="panel panel-default library-card" style="height: 100%; display: flex; flex-direction: column;">
-                <div class="library-card-cover" style="height: 160px; background-color: #f2f2f2; display: flex; align-items: center; justify-content: center; overflow: hidden;">
+        <div class="library-card-wrapper" data-haystack="norbert wiener-a life in cybernetics: ex-prodigy: my childhood and youth and i am a mathematician: the later life of a prodigy (mit press)  physical ">
+            <div class="panel panel-default library-card">
+                <div class="library-card-cover">
                     
                         <i class="fa fa-book" style="font-size: 3em; color: #bbb;"></i>
                     
                 </div>
-                <div class="panel-body" style="flex: 1 1 auto; display: flex; flex-direction: column;">
-                    <h4 class="library-card-title" style="margin-top: 0;">
+                <div class="panel-body library-card-body">
+                    <h4 class="library-card-title">
                         
                             <a href="https://www.amazon.com/dp/0262535440?ref=ppx_yo2ov_dt_b_fed_asin_title">Norbert Wiener-A Life in Cybernetics: Ex-Prodigy: My Childhood and Youth and I Am a Mathematician: The Later Life of a Prodigy (Mit Press)</a>
                         
                     </h4>
-                    <div class="library-card-meta" style="font-size: 0.9em; color: #555; margin-bottom: 8px;">
+                    <div class="library-card-meta">
                         <div><i class="fa fa-user" style="margin-right: 6px;"></i>Author unavailable</div>
                         <div><i class="fa fa-tag" style="margin-right: 6px;"></i>Physical</div>
                     </div>
                     
                     
                 </div>
-                <div class="panel-footer" style="display: flex; align-items: center; justify-content: space-between;">
+                <div class="panel-footer library-card-footer">
                     <span class="label label-success"
                           data-toggle="tooltip"
                           data-placement="top"
                           title="Available"
                     >Available</span>
-                    <span class="library-card-date" style="font-size: 0.85em; color: #777;">
+                    <span class="library-card-date" style="color: #777;">
                         <i class="fa fa-clock-o" style="margin-right: 6px;"></i>Date not recorded
                     </span>
                 </div>
@@ -1373,33 +1429,33 @@ borrow books from me if they're interested.</p>
         
         
         
-        <div class="col-sm-6 col-md-4 col-lg-3 library-card-wrapper" data-haystack="machines who think: a personal inquiry into the history and prospects of artificial intelligence pamela mccorduck physical ">
-            <div class="panel panel-default library-card" style="height: 100%; display: flex; flex-direction: column;">
-                <div class="library-card-cover" style="height: 160px; background-color: #f2f2f2; display: flex; align-items: center; justify-content: center; overflow: hidden;">
+        <div class="library-card-wrapper" data-haystack="machines who think: a personal inquiry into the history and prospects of artificial intelligence pamela mccorduck physical ">
+            <div class="panel panel-default library-card">
+                <div class="library-card-cover">
                     
                         <i class="fa fa-book" style="font-size: 3em; color: #bbb;"></i>
                     
                 </div>
-                <div class="panel-body" style="flex: 1 1 auto; display: flex; flex-direction: column;">
-                    <h4 class="library-card-title" style="margin-top: 0;">
+                <div class="panel-body library-card-body">
+                    <h4 class="library-card-title">
                         
                             <a href="https://www.amazon.com/dp/1568812051?ref=ppx_yo2ov_dt_b_fed_asin_title">Machines Who Think: A Personal Inquiry into the History and Prospects of Artificial Intelligence</a>
                         
                     </h4>
-                    <div class="library-card-meta" style="font-size: 0.9em; color: #555; margin-bottom: 8px;">
+                    <div class="library-card-meta">
                         <div><i class="fa fa-user" style="margin-right: 6px;"></i>Pamela McCorduck</div>
                         <div><i class="fa fa-tag" style="margin-right: 6px;"></i>Physical</div>
                     </div>
                     
                     
                 </div>
-                <div class="panel-footer" style="display: flex; align-items: center; justify-content: space-between;">
+                <div class="panel-footer library-card-footer">
                     <span class="label label-success"
                           data-toggle="tooltip"
                           data-placement="top"
                           title="Available"
                     >Available</span>
-                    <span class="library-card-date" style="font-size: 0.85em; color: #777;">
+                    <span class="library-card-date" style="color: #777;">
                         <i class="fa fa-clock-o" style="margin-right: 6px;"></i>Date not recorded
                     </span>
                 </div>
@@ -1420,33 +1476,33 @@ borrow books from me if they're interested.</p>
         
         
         
-        <div class="col-sm-6 col-md-4 col-lg-3 library-card-wrapper" data-haystack="bayesian probability for babies  physical ">
-            <div class="panel panel-default library-card" style="height: 100%; display: flex; flex-direction: column;">
-                <div class="library-card-cover" style="height: 160px; background-color: #f2f2f2; display: flex; align-items: center; justify-content: center; overflow: hidden;">
+        <div class="library-card-wrapper" data-haystack="bayesian probability for babies  physical ">
+            <div class="panel panel-default library-card">
+                <div class="library-card-cover">
                     
                         <i class="fa fa-book" style="font-size: 3em; color: #bbb;"></i>
                     
                 </div>
-                <div class="panel-body" style="flex: 1 1 auto; display: flex; flex-direction: column;">
-                    <h4 class="library-card-title" style="margin-top: 0;">
+                <div class="panel-body library-card-body">
+                    <h4 class="library-card-title">
                         
                             <a href="https://www.amazon.com/dp/1492680796?ref=ppx_yo2ov_dt_b_fed_asin_title">Bayesian Probability for Babies</a>
                         
                     </h4>
-                    <div class="library-card-meta" style="font-size: 0.9em; color: #555; margin-bottom: 8px;">
+                    <div class="library-card-meta">
                         <div><i class="fa fa-user" style="margin-right: 6px;"></i>Author unavailable</div>
                         <div><i class="fa fa-tag" style="margin-right: 6px;"></i>Physical</div>
                     </div>
                     
                     
                 </div>
-                <div class="panel-footer" style="display: flex; align-items: center; justify-content: space-between;">
+                <div class="panel-footer library-card-footer">
                     <span class="label label-success"
                           data-toggle="tooltip"
                           data-placement="top"
                           title="Available"
                     >Available</span>
-                    <span class="library-card-date" style="font-size: 0.85em; color: #777;">
+                    <span class="library-card-date" style="color: #777;">
                         <i class="fa fa-clock-o" style="margin-right: 6px;"></i>Date not recorded
                     </span>
                 </div>
@@ -1469,33 +1525,33 @@ borrow books from me if they're interested.</p>
         
         
         
-        <div class="col-sm-6 col-md-4 col-lg-3 library-card-wrapper" data-haystack="the costs of connection: how data is colonizing human life and appropriating it for capitalism (culture and economic life)  physical ">
-            <div class="panel panel-default library-card" style="height: 100%; display: flex; flex-direction: column;">
-                <div class="library-card-cover" style="height: 160px; background-color: #f2f2f2; display: flex; align-items: center; justify-content: center; overflow: hidden;">
+        <div class="library-card-wrapper" data-haystack="the costs of connection: how data is colonizing human life and appropriating it for capitalism (culture and economic life)  physical ">
+            <div class="panel panel-default library-card">
+                <div class="library-card-cover">
                     
                         <i class="fa fa-book" style="font-size: 3em; color: #bbb;"></i>
                     
                 </div>
-                <div class="panel-body" style="flex: 1 1 auto; display: flex; flex-direction: column;">
-                    <h4 class="library-card-title" style="margin-top: 0;">
+                <div class="panel-body library-card-body">
+                    <h4 class="library-card-title">
                         
                             <a href="https://www.amazon.com/dp/150360974X?ref=ppx_yo2ov_dt_b_fed_asin_title">The Costs of Connection: How Data Is Colonizing Human Life and Appropriating It for Capitalism (Culture and Economic Life)</a>
                         
                     </h4>
-                    <div class="library-card-meta" style="font-size: 0.9em; color: #555; margin-bottom: 8px;">
+                    <div class="library-card-meta">
                         <div><i class="fa fa-user" style="margin-right: 6px;"></i>Author unavailable</div>
                         <div><i class="fa fa-tag" style="margin-right: 6px;"></i>Physical</div>
                     </div>
                     
                     
                 </div>
-                <div class="panel-footer" style="display: flex; align-items: center; justify-content: space-between;">
+                <div class="panel-footer library-card-footer">
                     <span class="label label-warning"
                           data-toggle="tooltip"
                           data-placement="top"
                           title="Checked out by Frazier Dougherty"
                     >Checked out</span>
-                    <span class="library-card-date" style="font-size: 0.85em; color: #777;">
+                    <span class="library-card-date" style="color: #777;">
                         <i class="fa fa-clock-o" style="margin-right: 6px;"></i>Date not recorded
                     </span>
                 </div>
@@ -1516,33 +1572,33 @@ borrow books from me if they're interested.</p>
         
         
         
-        <div class="col-sm-6 col-md-4 col-lg-3 library-card-wrapper" data-haystack="the hundred-page machine learning book  physical ">
-            <div class="panel panel-default library-card" style="height: 100%; display: flex; flex-direction: column;">
-                <div class="library-card-cover" style="height: 160px; background-color: #f2f2f2; display: flex; align-items: center; justify-content: center; overflow: hidden;">
+        <div class="library-card-wrapper" data-haystack="the hundred-page machine learning book  physical ">
+            <div class="panel panel-default library-card">
+                <div class="library-card-cover">
                     
                         <i class="fa fa-book" style="font-size: 3em; color: #bbb;"></i>
                     
                 </div>
-                <div class="panel-body" style="flex: 1 1 auto; display: flex; flex-direction: column;">
-                    <h4 class="library-card-title" style="margin-top: 0;">
+                <div class="panel-body library-card-body">
+                    <h4 class="library-card-title">
                         
                             <a href="https://www.amazon.com/dp/1777005477?ref=ppx_yo2ov_dt_b_fed_asin_title">The Hundred-Page Machine Learning Book</a>
                         
                     </h4>
-                    <div class="library-card-meta" style="font-size: 0.9em; color: #555; margin-bottom: 8px;">
+                    <div class="library-card-meta">
                         <div><i class="fa fa-user" style="margin-right: 6px;"></i>Author unavailable</div>
                         <div><i class="fa fa-tag" style="margin-right: 6px;"></i>Physical</div>
                     </div>
                     
                     
                 </div>
-                <div class="panel-footer" style="display: flex; align-items: center; justify-content: space-between;">
+                <div class="panel-footer library-card-footer">
                     <span class="label label-success"
                           data-toggle="tooltip"
                           data-placement="top"
                           title="Available"
                     >Available</span>
-                    <span class="library-card-date" style="font-size: 0.85em; color: #777;">
+                    <span class="library-card-date" style="color: #777;">
                         <i class="fa fa-clock-o" style="margin-right: 6px;"></i>Date not recorded
                     </span>
                 </div>
@@ -1563,33 +1619,33 @@ borrow books from me if they're interested.</p>
         
         
         
-        <div class="col-sm-6 col-md-4 col-lg-3 library-card-wrapper" data-haystack="the statquest illustrated guide to machine learning josh starmer physical ">
-            <div class="panel panel-default library-card" style="height: 100%; display: flex; flex-direction: column;">
-                <div class="library-card-cover" style="height: 160px; background-color: #f2f2f2; display: flex; align-items: center; justify-content: center; overflow: hidden;">
+        <div class="library-card-wrapper" data-haystack="the statquest illustrated guide to machine learning josh starmer physical ">
+            <div class="panel panel-default library-card">
+                <div class="library-card-cover">
                     
                         <i class="fa fa-book" style="font-size: 3em; color: #bbb;"></i>
                     
                 </div>
-                <div class="panel-body" style="flex: 1 1 auto; display: flex; flex-direction: column;">
-                    <h4 class="library-card-title" style="margin-top: 0;">
+                <div class="panel-body library-card-body">
+                    <h4 class="library-card-title">
                         
                             <a href="https://www.amazon.com/dp/B0BLM4TLPY?ref=ppx_yo2ov_dt_b_fed_asin_title">The StatQuest Illustrated Guide To Machine Learning</a>
                         
                     </h4>
-                    <div class="library-card-meta" style="font-size: 0.9em; color: #555; margin-bottom: 8px;">
+                    <div class="library-card-meta">
                         <div><i class="fa fa-user" style="margin-right: 6px;"></i>Josh Starmer</div>
                         <div><i class="fa fa-tag" style="margin-right: 6px;"></i>Physical</div>
                     </div>
                     
                     
                 </div>
-                <div class="panel-footer" style="display: flex; align-items: center; justify-content: space-between;">
+                <div class="panel-footer library-card-footer">
                     <span class="label label-success"
                           data-toggle="tooltip"
                           data-placement="top"
                           title="Available"
                     >Available</span>
-                    <span class="library-card-date" style="font-size: 0.85em; color: #777;">
+                    <span class="library-card-date" style="color: #777;">
                         <i class="fa fa-clock-o" style="margin-right: 6px;"></i>Date not recorded
                     </span>
                 </div>
@@ -1610,33 +1666,33 @@ borrow books from me if they're interested.</p>
         
         
         
-        <div class="col-sm-6 col-md-4 col-lg-3 library-card-wrapper" data-haystack="digital signal processing for complete idiots (electrical engineering for complete idiots)  physical ">
-            <div class="panel panel-default library-card" style="height: 100%; display: flex; flex-direction: column;">
-                <div class="library-card-cover" style="height: 160px; background-color: #f2f2f2; display: flex; align-items: center; justify-content: center; overflow: hidden;">
+        <div class="library-card-wrapper" data-haystack="digital signal processing for complete idiots (electrical engineering for complete idiots)  physical ">
+            <div class="panel panel-default library-card">
+                <div class="library-card-cover">
                     
                         <i class="fa fa-book" style="font-size: 3em; color: #bbb;"></i>
                     
                 </div>
-                <div class="panel-body" style="flex: 1 1 auto; display: flex; flex-direction: column;">
-                    <h4 class="library-card-title" style="margin-top: 0;">
+                <div class="panel-body library-card-body">
+                    <h4 class="library-card-title">
                         
                             <a href="https://www.amazon.com/dp/1086340353?ref=ppx_yo2ov_dt_b_fed_asin_title">Digital Signal Processing for Complete Idiots (Electrical Engineering for Complete Idiots)</a>
                         
                     </h4>
-                    <div class="library-card-meta" style="font-size: 0.9em; color: #555; margin-bottom: 8px;">
+                    <div class="library-card-meta">
                         <div><i class="fa fa-user" style="margin-right: 6px;"></i>Author unavailable</div>
                         <div><i class="fa fa-tag" style="margin-right: 6px;"></i>Physical</div>
                     </div>
                     
                     
                 </div>
-                <div class="panel-footer" style="display: flex; align-items: center; justify-content: space-between;">
+                <div class="panel-footer library-card-footer">
                     <span class="label label-success"
                           data-toggle="tooltip"
                           data-placement="top"
                           title="Available"
                     >Available</span>
-                    <span class="library-card-date" style="font-size: 0.85em; color: #777;">
+                    <span class="library-card-date" style="color: #777;">
                         <i class="fa fa-clock-o" style="margin-right: 6px;"></i>Date not recorded
                     </span>
                 </div>
@@ -1657,33 +1713,33 @@ borrow books from me if they're interested.</p>
         
         
         
-        <div class="col-sm-6 col-md-4 col-lg-3 library-card-wrapper" data-haystack="matrices and linear transformations: second edition  physical ">
-            <div class="panel panel-default library-card" style="height: 100%; display: flex; flex-direction: column;">
-                <div class="library-card-cover" style="height: 160px; background-color: #f2f2f2; display: flex; align-items: center; justify-content: center; overflow: hidden;">
+        <div class="library-card-wrapper" data-haystack="matrices and linear transformations: second edition  physical ">
+            <div class="panel panel-default library-card">
+                <div class="library-card-cover">
                     
                         <i class="fa fa-book" style="font-size: 3em; color: #bbb;"></i>
                     
                 </div>
-                <div class="panel-body" style="flex: 1 1 auto; display: flex; flex-direction: column;">
-                    <h4 class="library-card-title" style="margin-top: 0;">
+                <div class="panel-body library-card-body">
+                    <h4 class="library-card-title">
                         
                             <a href="https://www.amazon.com/dp/0486663280?ref=ppx_yo2ov_dt_b_fed_asin_title">Matrices and Linear Transformations: Second Edition</a>
                         
                     </h4>
-                    <div class="library-card-meta" style="font-size: 0.9em; color: #555; margin-bottom: 8px;">
+                    <div class="library-card-meta">
                         <div><i class="fa fa-user" style="margin-right: 6px;"></i>Author unavailable</div>
                         <div><i class="fa fa-tag" style="margin-right: 6px;"></i>Physical</div>
                     </div>
                     
                     
                 </div>
-                <div class="panel-footer" style="display: flex; align-items: center; justify-content: space-between;">
+                <div class="panel-footer library-card-footer">
                     <span class="label label-success"
                           data-toggle="tooltip"
                           data-placement="top"
                           title="Available"
                     >Available</span>
-                    <span class="library-card-date" style="font-size: 0.85em; color: #777;">
+                    <span class="library-card-date" style="color: #777;">
                         <i class="fa fa-clock-o" style="margin-right: 6px;"></i>Date not recorded
                     </span>
                 </div>
@@ -1704,33 +1760,33 @@ borrow books from me if they're interested.</p>
         
         
         
-        <div class="col-sm-6 col-md-4 col-lg-3 library-card-wrapper" data-haystack="vector: a surprising story of space, time, and mathematical transformation  physical ">
-            <div class="panel panel-default library-card" style="height: 100%; display: flex; flex-direction: column;">
-                <div class="library-card-cover" style="height: 160px; background-color: #f2f2f2; display: flex; align-items: center; justify-content: center; overflow: hidden;">
+        <div class="library-card-wrapper" data-haystack="vector: a surprising story of space, time, and mathematical transformation  physical ">
+            <div class="panel panel-default library-card">
+                <div class="library-card-cover">
                     
                         <i class="fa fa-book" style="font-size: 3em; color: #bbb;"></i>
                     
                 </div>
-                <div class="panel-body" style="flex: 1 1 auto; display: flex; flex-direction: column;">
-                    <h4 class="library-card-title" style="margin-top: 0;">
+                <div class="panel-body library-card-body">
+                    <h4 class="library-card-title">
                         
                             <a href="https://www.amazon.com/dp/0226821102?ref=ppx_yo2ov_dt_b_fed_asin_title">Vector: A Surprising Story of Space, Time, and Mathematical Transformation</a>
                         
                     </h4>
-                    <div class="library-card-meta" style="font-size: 0.9em; color: #555; margin-bottom: 8px;">
+                    <div class="library-card-meta">
                         <div><i class="fa fa-user" style="margin-right: 6px;"></i>Author unavailable</div>
                         <div><i class="fa fa-tag" style="margin-right: 6px;"></i>Physical</div>
                     </div>
                     
                     
                 </div>
-                <div class="panel-footer" style="display: flex; align-items: center; justify-content: space-between;">
+                <div class="panel-footer library-card-footer">
                     <span class="label label-success"
                           data-toggle="tooltip"
                           data-placement="top"
                           title="Available"
                     >Available</span>
-                    <span class="library-card-date" style="font-size: 0.85em; color: #777;">
+                    <span class="library-card-date" style="color: #777;">
                         <i class="fa fa-clock-o" style="margin-right: 6px;"></i>Date not recorded
                     </span>
                 </div>
@@ -1751,33 +1807,33 @@ borrow books from me if they're interested.</p>
         
         
         
-        <div class="col-sm-6 col-md-4 col-lg-3 library-card-wrapper" data-haystack="the master algorithm: how the quest for the ultimate learning machine will remake our world  physical ">
-            <div class="panel panel-default library-card" style="height: 100%; display: flex; flex-direction: column;">
-                <div class="library-card-cover" style="height: 160px; background-color: #f2f2f2; display: flex; align-items: center; justify-content: center; overflow: hidden;">
+        <div class="library-card-wrapper" data-haystack="the master algorithm: how the quest for the ultimate learning machine will remake our world  physical ">
+            <div class="panel panel-default library-card">
+                <div class="library-card-cover">
                     
                         <i class="fa fa-book" style="font-size: 3em; color: #bbb;"></i>
                     
                 </div>
-                <div class="panel-body" style="flex: 1 1 auto; display: flex; flex-direction: column;">
-                    <h4 class="library-card-title" style="margin-top: 0;">
+                <div class="panel-body library-card-body">
+                    <h4 class="library-card-title">
                         
                             <a href="https://www.amazon.com/dp/0465094279?ref=ppx_yo2ov_dt_b_fed_asin_title">The Master Algorithm: How the Quest for the Ultimate Learning Machine Will Remake Our World</a>
                         
                     </h4>
-                    <div class="library-card-meta" style="font-size: 0.9em; color: #555; margin-bottom: 8px;">
+                    <div class="library-card-meta">
                         <div><i class="fa fa-user" style="margin-right: 6px;"></i>Author unavailable</div>
                         <div><i class="fa fa-tag" style="margin-right: 6px;"></i>Physical</div>
                     </div>
                     
                     
                 </div>
-                <div class="panel-footer" style="display: flex; align-items: center; justify-content: space-between;">
+                <div class="panel-footer library-card-footer">
                     <span class="label label-success"
                           data-toggle="tooltip"
                           data-placement="top"
                           title="Available"
                     >Available</span>
-                    <span class="library-card-date" style="font-size: 0.85em; color: #777;">
+                    <span class="library-card-date" style="color: #777;">
                         <i class="fa fa-clock-o" style="margin-right: 6px;"></i>Date not recorded
                     </span>
                 </div>
@@ -1798,33 +1854,33 @@ borrow books from me if they're interested.</p>
         
         
         
-        <div class="col-sm-6 col-md-4 col-lg-3 library-card-wrapper" data-haystack="artificial intelligence: the very idea  physical ">
-            <div class="panel panel-default library-card" style="height: 100%; display: flex; flex-direction: column;">
-                <div class="library-card-cover" style="height: 160px; background-color: #f2f2f2; display: flex; align-items: center; justify-content: center; overflow: hidden;">
+        <div class="library-card-wrapper" data-haystack="artificial intelligence: the very idea  physical ">
+            <div class="panel panel-default library-card">
+                <div class="library-card-cover">
                     
                         <i class="fa fa-book" style="font-size: 3em; color: #bbb;"></i>
                     
                 </div>
-                <div class="panel-body" style="flex: 1 1 auto; display: flex; flex-direction: column;">
-                    <h4 class="library-card-title" style="margin-top: 0;">
+                <div class="panel-body library-card-body">
+                    <h4 class="library-card-title">
                         
                             <a href="https://www.amazon.com/dp/0262081539?ref=ppx_yo2ov_dt_b_fed_asin_title">Artificial Intelligence: The Very Idea</a>
                         
                     </h4>
-                    <div class="library-card-meta" style="font-size: 0.9em; color: #555; margin-bottom: 8px;">
+                    <div class="library-card-meta">
                         <div><i class="fa fa-user" style="margin-right: 6px;"></i>Author unavailable</div>
                         <div><i class="fa fa-tag" style="margin-right: 6px;"></i>Physical</div>
                     </div>
                     
                     
                 </div>
-                <div class="panel-footer" style="display: flex; align-items: center; justify-content: space-between;">
+                <div class="panel-footer library-card-footer">
                     <span class="label label-success"
                           data-toggle="tooltip"
                           data-placement="top"
                           title="Available"
                     >Available</span>
-                    <span class="library-card-date" style="font-size: 0.85em; color: #777;">
+                    <span class="library-card-date" style="color: #777;">
                         <i class="fa fa-clock-o" style="margin-right: 6px;"></i>Date not recorded
                     </span>
                 </div>
@@ -1845,33 +1901,33 @@ borrow books from me if they're interested.</p>
         
         
         
-        <div class="col-sm-6 col-md-4 col-lg-3 library-card-wrapper" data-haystack="superintelligence: paths, dangers, strategies nick bostrom physical ">
-            <div class="panel panel-default library-card" style="height: 100%; display: flex; flex-direction: column;">
-                <div class="library-card-cover" style="height: 160px; background-color: #f2f2f2; display: flex; align-items: center; justify-content: center; overflow: hidden;">
+        <div class="library-card-wrapper" data-haystack="superintelligence: paths, dangers, strategies nick bostrom physical ">
+            <div class="panel panel-default library-card">
+                <div class="library-card-cover">
                     
                         <i class="fa fa-book" style="font-size: 3em; color: #bbb;"></i>
                     
                 </div>
-                <div class="panel-body" style="flex: 1 1 auto; display: flex; flex-direction: column;">
-                    <h4 class="library-card-title" style="margin-top: 0;">
+                <div class="panel-body library-card-body">
+                    <h4 class="library-card-title">
                         
                             <a href="https://www.amazon.com/dp/0198739834?ref=ppx_yo2ov_dt_b_fed_asin_title">Superintelligence: Paths, Dangers, Strategies</a>
                         
                     </h4>
-                    <div class="library-card-meta" style="font-size: 0.9em; color: #555; margin-bottom: 8px;">
+                    <div class="library-card-meta">
                         <div><i class="fa fa-user" style="margin-right: 6px;"></i>Nick Bostrom</div>
                         <div><i class="fa fa-tag" style="margin-right: 6px;"></i>Physical</div>
                     </div>
                     
                     
                 </div>
-                <div class="panel-footer" style="display: flex; align-items: center; justify-content: space-between;">
+                <div class="panel-footer library-card-footer">
                     <span class="label label-success"
                           data-toggle="tooltip"
                           data-placement="top"
                           title="Available"
                     >Available</span>
-                    <span class="library-card-date" style="font-size: 0.85em; color: #777;">
+                    <span class="library-card-date" style="color: #777;">
                         <i class="fa fa-clock-o" style="margin-right: 6px;"></i>Date not recorded
                     </span>
                 </div>
@@ -1892,33 +1948,33 @@ borrow books from me if they're interested.</p>
         
         
         
-        <div class="col-sm-6 col-md-4 col-lg-3 library-card-wrapper" data-haystack="linear algebra done right (undergraduate texts in mathematics)  physical ">
-            <div class="panel panel-default library-card" style="height: 100%; display: flex; flex-direction: column;">
-                <div class="library-card-cover" style="height: 160px; background-color: #f2f2f2; display: flex; align-items: center; justify-content: center; overflow: hidden;">
+        <div class="library-card-wrapper" data-haystack="linear algebra done right (undergraduate texts in mathematics)  physical ">
+            <div class="panel panel-default library-card">
+                <div class="library-card-cover">
                     
                         <i class="fa fa-book" style="font-size: 3em; color: #bbb;"></i>
                     
                 </div>
-                <div class="panel-body" style="flex: 1 1 auto; display: flex; flex-direction: column;">
-                    <h4 class="library-card-title" style="margin-top: 0;">
+                <div class="panel-body library-card-body">
+                    <h4 class="library-card-title">
                         
                             <a href="https://www.amazon.com/dp/3031410254?ref=ppx_yo2ov_dt_b_fed_asin_title">Linear Algebra Done Right (Undergraduate Texts in Mathematics)</a>
                         
                     </h4>
-                    <div class="library-card-meta" style="font-size: 0.9em; color: #555; margin-bottom: 8px;">
+                    <div class="library-card-meta">
                         <div><i class="fa fa-user" style="margin-right: 6px;"></i>Author unavailable</div>
                         <div><i class="fa fa-tag" style="margin-right: 6px;"></i>Physical</div>
                     </div>
                     
                     
                 </div>
-                <div class="panel-footer" style="display: flex; align-items: center; justify-content: space-between;">
+                <div class="panel-footer library-card-footer">
                     <span class="label label-success"
                           data-toggle="tooltip"
                           data-placement="top"
                           title="Available"
                     >Available</span>
-                    <span class="library-card-date" style="font-size: 0.85em; color: #777;">
+                    <span class="library-card-date" style="color: #777;">
                         <i class="fa fa-clock-o" style="margin-right: 6px;"></i>Date not recorded
                     </span>
                 </div>
@@ -1939,33 +1995,33 @@ borrow books from me if they're interested.</p>
         
         
         
-        <div class="col-sm-6 col-md-4 col-lg-3 library-card-wrapper" data-haystack="gödel, escher, bach: an eternal golden braid  physical ">
-            <div class="panel panel-default library-card" style="height: 100%; display: flex; flex-direction: column;">
-                <div class="library-card-cover" style="height: 160px; background-color: #f2f2f2; display: flex; align-items: center; justify-content: center; overflow: hidden;">
+        <div class="library-card-wrapper" data-haystack="gödel, escher, bach: an eternal golden braid  physical ">
+            <div class="panel panel-default library-card">
+                <div class="library-card-cover">
                     
                         <i class="fa fa-book" style="font-size: 3em; color: #bbb;"></i>
                     
                 </div>
-                <div class="panel-body" style="flex: 1 1 auto; display: flex; flex-direction: column;">
-                    <h4 class="library-card-title" style="margin-top: 0;">
+                <div class="panel-body library-card-body">
+                    <h4 class="library-card-title">
                         
                             <a href="https://www.amazon.com/dp/0465026567?ref=ppx_yo2ov_dt_b_fed_asin_title">Gödel, Escher, Bach: An Eternal Golden Braid</a>
                         
                     </h4>
-                    <div class="library-card-meta" style="font-size: 0.9em; color: #555; margin-bottom: 8px;">
+                    <div class="library-card-meta">
                         <div><i class="fa fa-user" style="margin-right: 6px;"></i>Author unavailable</div>
                         <div><i class="fa fa-tag" style="margin-right: 6px;"></i>Physical</div>
                     </div>
                     
                     
                 </div>
-                <div class="panel-footer" style="display: flex; align-items: center; justify-content: space-between;">
+                <div class="panel-footer library-card-footer">
                     <span class="label label-success"
                           data-toggle="tooltip"
                           data-placement="top"
                           title="Available"
                     >Available</span>
-                    <span class="library-card-date" style="font-size: 0.85em; color: #777;">
+                    <span class="library-card-date" style="color: #777;">
                         <i class="fa fa-clock-o" style="margin-right: 6px;"></i>Date not recorded
                     </span>
                 </div>
@@ -1986,33 +2042,33 @@ borrow books from me if they're interested.</p>
         
         
         
-        <div class="col-sm-6 col-md-4 col-lg-3 library-card-wrapper" data-haystack="perceptrons, reissue of the 1988 expanded edition with a new foreword by léon bottou: an introduction to computational geometry (mit press) marvin minsky, simon papert physical ">
-            <div class="panel panel-default library-card" style="height: 100%; display: flex; flex-direction: column;">
-                <div class="library-card-cover" style="height: 160px; background-color: #f2f2f2; display: flex; align-items: center; justify-content: center; overflow: hidden;">
+        <div class="library-card-wrapper" data-haystack="perceptrons, reissue of the 1988 expanded edition with a new foreword by léon bottou: an introduction to computational geometry (mit press) marvin minsky, simon papert physical ">
+            <div class="panel panel-default library-card">
+                <div class="library-card-cover">
                     
                         <i class="fa fa-book" style="font-size: 3em; color: #bbb;"></i>
                     
                 </div>
-                <div class="panel-body" style="flex: 1 1 auto; display: flex; flex-direction: column;">
-                    <h4 class="library-card-title" style="margin-top: 0;">
+                <div class="panel-body library-card-body">
+                    <h4 class="library-card-title">
                         
                             <a href="https://www.amazon.com/dp/0262534770?ref=ppx_yo2ov_dt_b_fed_asin_title">Perceptrons, Reissue of the 1988 Expanded Edition with a new foreword by Léon Bottou: An Introduction to Computational Geometry (Mit Press)</a>
                         
                     </h4>
-                    <div class="library-card-meta" style="font-size: 0.9em; color: #555; margin-bottom: 8px;">
+                    <div class="library-card-meta">
                         <div><i class="fa fa-user" style="margin-right: 6px;"></i>Marvin Minsky, Simon Papert</div>
                         <div><i class="fa fa-tag" style="margin-right: 6px;"></i>Physical</div>
                     </div>
                     
                     
                 </div>
-                <div class="panel-footer" style="display: flex; align-items: center; justify-content: space-between;">
+                <div class="panel-footer library-card-footer">
                     <span class="label label-success"
                           data-toggle="tooltip"
                           data-placement="top"
                           title="Available"
                     >Available</span>
-                    <span class="library-card-date" style="font-size: 0.85em; color: #777;">
+                    <span class="library-card-date" style="color: #777;">
                         <i class="fa fa-clock-o" style="margin-right: 6px;"></i>Date not recorded
                     </span>
                 </div>
@@ -2033,33 +2089,33 @@ borrow books from me if they're interested.</p>
         
         
         
-        <div class="col-sm-6 col-md-4 col-lg-3 library-card-wrapper" data-haystack="constraint processing (the morgan kaufmann series in artificial intelligence)  physical ">
-            <div class="panel panel-default library-card" style="height: 100%; display: flex; flex-direction: column;">
-                <div class="library-card-cover" style="height: 160px; background-color: #f2f2f2; display: flex; align-items: center; justify-content: center; overflow: hidden;">
+        <div class="library-card-wrapper" data-haystack="constraint processing (the morgan kaufmann series in artificial intelligence)  physical ">
+            <div class="panel panel-default library-card">
+                <div class="library-card-cover">
                     
                         <i class="fa fa-book" style="font-size: 3em; color: #bbb;"></i>
                     
                 </div>
-                <div class="panel-body" style="flex: 1 1 auto; display: flex; flex-direction: column;">
-                    <h4 class="library-card-title" style="margin-top: 0;">
+                <div class="panel-body library-card-body">
+                    <h4 class="library-card-title">
                         
                             <a href="https://www.amazon.com/dp/1558608907?ref=ppx_yo2ov_dt_b_fed_asin_title">Constraint Processing (The Morgan Kaufmann Series in Artificial Intelligence)</a>
                         
                     </h4>
-                    <div class="library-card-meta" style="font-size: 0.9em; color: #555; margin-bottom: 8px;">
+                    <div class="library-card-meta">
                         <div><i class="fa fa-user" style="margin-right: 6px;"></i>Author unavailable</div>
                         <div><i class="fa fa-tag" style="margin-right: 6px;"></i>Physical</div>
                     </div>
                     
                     
                 </div>
-                <div class="panel-footer" style="display: flex; align-items: center; justify-content: space-between;">
+                <div class="panel-footer library-card-footer">
                     <span class="label label-success"
                           data-toggle="tooltip"
                           data-placement="top"
                           title="Available"
                     >Available</span>
-                    <span class="library-card-date" style="font-size: 0.85em; color: #777;">
+                    <span class="library-card-date" style="color: #777;">
                         <i class="fa fa-clock-o" style="margin-right: 6px;"></i>Date not recorded
                     </span>
                 </div>
@@ -2080,33 +2136,33 @@ borrow books from me if they're interested.</p>
         
         
         
-        <div class="col-sm-6 col-md-4 col-lg-3 library-card-wrapper" data-haystack="an introduction to the approximation of functions (dover books on mathematics)  physical ">
-            <div class="panel panel-default library-card" style="height: 100%; display: flex; flex-direction: column;">
-                <div class="library-card-cover" style="height: 160px; background-color: #f2f2f2; display: flex; align-items: center; justify-content: center; overflow: hidden;">
+        <div class="library-card-wrapper" data-haystack="an introduction to the approximation of functions (dover books on mathematics)  physical ">
+            <div class="panel panel-default library-card">
+                <div class="library-card-cover">
                     
                         <i class="fa fa-book" style="font-size: 3em; color: #bbb;"></i>
                     
                 </div>
-                <div class="panel-body" style="flex: 1 1 auto; display: flex; flex-direction: column;">
-                    <h4 class="library-card-title" style="margin-top: 0;">
+                <div class="panel-body library-card-body">
+                    <h4 class="library-card-title">
                         
                             <a href="https://www.amazon.com/dp/0486640698?ref=ppx_yo2ov_dt_b_fed_asin_title">An Introduction to the Approximation of Functions (Dover Books on Mathematics)</a>
                         
                     </h4>
-                    <div class="library-card-meta" style="font-size: 0.9em; color: #555; margin-bottom: 8px;">
+                    <div class="library-card-meta">
                         <div><i class="fa fa-user" style="margin-right: 6px;"></i>Author unavailable</div>
                         <div><i class="fa fa-tag" style="margin-right: 6px;"></i>Physical</div>
                     </div>
                     
                     
                 </div>
-                <div class="panel-footer" style="display: flex; align-items: center; justify-content: space-between;">
+                <div class="panel-footer library-card-footer">
                     <span class="label label-success"
                           data-toggle="tooltip"
                           data-placement="top"
                           title="Available"
                     >Available</span>
-                    <span class="library-card-date" style="font-size: 0.85em; color: #777;">
+                    <span class="library-card-date" style="color: #777;">
                         <i class="fa fa-clock-o" style="margin-right: 6px;"></i>Date not recorded
                     </span>
                 </div>
@@ -2127,33 +2183,33 @@ borrow books from me if they're interested.</p>
         
         
         
-        <div class="col-sm-6 col-md-4 col-lg-3 library-card-wrapper" data-haystack="pattern recognition and machine learning  physical ">
-            <div class="panel panel-default library-card" style="height: 100%; display: flex; flex-direction: column;">
-                <div class="library-card-cover" style="height: 160px; background-color: #f2f2f2; display: flex; align-items: center; justify-content: center; overflow: hidden;">
+        <div class="library-card-wrapper" data-haystack="pattern recognition and machine learning  physical ">
+            <div class="panel panel-default library-card">
+                <div class="library-card-cover">
                     
                         <i class="fa fa-book" style="font-size: 3em; color: #bbb;"></i>
                     
                 </div>
-                <div class="panel-body" style="flex: 1 1 auto; display: flex; flex-direction: column;">
-                    <h4 class="library-card-title" style="margin-top: 0;">
+                <div class="panel-body library-card-body">
+                    <h4 class="library-card-title">
                         
                             <a href="https://www.amazon.com/dp/0387310738?ref=ppx_yo2ov_dt_b_fed_asin_title">Pattern Recognition and Machine Learning</a>
                         
                     </h4>
-                    <div class="library-card-meta" style="font-size: 0.9em; color: #555; margin-bottom: 8px;">
+                    <div class="library-card-meta">
                         <div><i class="fa fa-user" style="margin-right: 6px;"></i>Author unavailable</div>
                         <div><i class="fa fa-tag" style="margin-right: 6px;"></i>Physical</div>
                     </div>
                     
                     
                 </div>
-                <div class="panel-footer" style="display: flex; align-items: center; justify-content: space-between;">
+                <div class="panel-footer library-card-footer">
                     <span class="label label-success"
                           data-toggle="tooltip"
                           data-placement="top"
                           title="Available"
                     >Available</span>
-                    <span class="library-card-date" style="font-size: 0.85em; color: #777;">
+                    <span class="library-card-date" style="color: #777;">
                         <i class="fa fa-clock-o" style="margin-right: 6px;"></i>Date not recorded
                     </span>
                 </div>
@@ -2174,33 +2230,33 @@ borrow books from me if they're interested.</p>
         
         
         
-        <div class="col-sm-6 col-md-4 col-lg-3 library-card-wrapper" data-haystack="why machines learn: the elegant math behind modern ai  physical ">
-            <div class="panel panel-default library-card" style="height: 100%; display: flex; flex-direction: column;">
-                <div class="library-card-cover" style="height: 160px; background-color: #f2f2f2; display: flex; align-items: center; justify-content: center; overflow: hidden;">
+        <div class="library-card-wrapper" data-haystack="why machines learn: the elegant math behind modern ai  physical ">
+            <div class="panel panel-default library-card">
+                <div class="library-card-cover">
                     
                         <i class="fa fa-book" style="font-size: 3em; color: #bbb;"></i>
                     
                 </div>
-                <div class="panel-body" style="flex: 1 1 auto; display: flex; flex-direction: column;">
-                    <h4 class="library-card-title" style="margin-top: 0;">
+                <div class="panel-body library-card-body">
+                    <h4 class="library-card-title">
                         
                             <a href="https://www.amazon.com/dp/0593185749?ref=ppx_yo2ov_dt_b_fed_asin_title">Why Machines Learn: The Elegant Math Behind Modern AI</a>
                         
                     </h4>
-                    <div class="library-card-meta" style="font-size: 0.9em; color: #555; margin-bottom: 8px;">
+                    <div class="library-card-meta">
                         <div><i class="fa fa-user" style="margin-right: 6px;"></i>Author unavailable</div>
                         <div><i class="fa fa-tag" style="margin-right: 6px;"></i>Physical</div>
                     </div>
                     
                     
                 </div>
-                <div class="panel-footer" style="display: flex; align-items: center; justify-content: space-between;">
+                <div class="panel-footer library-card-footer">
                     <span class="label label-success"
                           data-toggle="tooltip"
                           data-placement="top"
                           title="Available"
                     >Available</span>
-                    <span class="library-card-date" style="font-size: 0.85em; color: #777;">
+                    <span class="library-card-date" style="color: #777;">
                         <i class="fa fa-clock-o" style="margin-right: 6px;"></i>Date not recorded
                     </span>
                 </div>
@@ -2221,33 +2277,33 @@ borrow books from me if they're interested.</p>
         
         
         
-        <div class="col-sm-6 col-md-4 col-lg-3 library-card-wrapper" data-haystack="infinite powers: how calculus reveals the secrets of the universe  physical ">
-            <div class="panel panel-default library-card" style="height: 100%; display: flex; flex-direction: column;">
-                <div class="library-card-cover" style="height: 160px; background-color: #f2f2f2; display: flex; align-items: center; justify-content: center; overflow: hidden;">
+        <div class="library-card-wrapper" data-haystack="infinite powers: how calculus reveals the secrets of the universe  physical ">
+            <div class="panel panel-default library-card">
+                <div class="library-card-cover">
                     
                         <i class="fa fa-book" style="font-size: 3em; color: #bbb;"></i>
                     
                 </div>
-                <div class="panel-body" style="flex: 1 1 auto; display: flex; flex-direction: column;">
-                    <h4 class="library-card-title" style="margin-top: 0;">
+                <div class="panel-body library-card-body">
+                    <h4 class="library-card-title">
                         
                             <a href="https://www.amazon.com/dp/0358299284?ref=ppx_yo2ov_dt_b_fed_asin_title">Infinite Powers: How Calculus Reveals the Secrets of the Universe</a>
                         
                     </h4>
-                    <div class="library-card-meta" style="font-size: 0.9em; color: #555; margin-bottom: 8px;">
+                    <div class="library-card-meta">
                         <div><i class="fa fa-user" style="margin-right: 6px;"></i>Author unavailable</div>
                         <div><i class="fa fa-tag" style="margin-right: 6px;"></i>Physical</div>
                     </div>
                     
                     
                 </div>
-                <div class="panel-footer" style="display: flex; align-items: center; justify-content: space-between;">
+                <div class="panel-footer library-card-footer">
                     <span class="label label-success"
                           data-toggle="tooltip"
                           data-placement="top"
                           title="Available"
                     >Available</span>
-                    <span class="library-card-date" style="font-size: 0.85em; color: #777;">
+                    <span class="library-card-date" style="color: #777;">
                         <i class="fa fa-clock-o" style="margin-right: 6px;"></i>Date not recorded
                     </span>
                 </div>
@@ -2268,33 +2324,33 @@ borrow books from me if they're interested.</p>
         
         
         
-        <div class="col-sm-6 col-md-4 col-lg-3 library-card-wrapper" data-haystack="bayesian statistics the fun way: understanding statistics and probability with star wars, lego, and rubber ducks  physical ">
-            <div class="panel panel-default library-card" style="height: 100%; display: flex; flex-direction: column;">
-                <div class="library-card-cover" style="height: 160px; background-color: #f2f2f2; display: flex; align-items: center; justify-content: center; overflow: hidden;">
+        <div class="library-card-wrapper" data-haystack="bayesian statistics the fun way: understanding statistics and probability with star wars, lego, and rubber ducks  physical ">
+            <div class="panel panel-default library-card">
+                <div class="library-card-cover">
                     
                         <i class="fa fa-book" style="font-size: 3em; color: #bbb;"></i>
                     
                 </div>
-                <div class="panel-body" style="flex: 1 1 auto; display: flex; flex-direction: column;">
-                    <h4 class="library-card-title" style="margin-top: 0;">
+                <div class="panel-body library-card-body">
+                    <h4 class="library-card-title">
                         
                             <a href="https://www.amazon.com/dp/1593279566?ref=ppx_yo2ov_dt_b_fed_asin_title">Bayesian Statistics the Fun Way: Understanding Statistics and Probability with Star Wars, LEGO, and Rubber Ducks</a>
                         
                     </h4>
-                    <div class="library-card-meta" style="font-size: 0.9em; color: #555; margin-bottom: 8px;">
+                    <div class="library-card-meta">
                         <div><i class="fa fa-user" style="margin-right: 6px;"></i>Author unavailable</div>
                         <div><i class="fa fa-tag" style="margin-right: 6px;"></i>Physical</div>
                     </div>
                     
                     
                 </div>
-                <div class="panel-footer" style="display: flex; align-items: center; justify-content: space-between;">
+                <div class="panel-footer library-card-footer">
                     <span class="label label-success"
                           data-toggle="tooltip"
                           data-placement="top"
                           title="Available"
                     >Available</span>
-                    <span class="library-card-date" style="font-size: 0.85em; color: #777;">
+                    <span class="library-card-date" style="color: #777;">
                         <i class="fa fa-clock-o" style="margin-right: 6px;"></i>Date not recorded
                     </span>
                 </div>
@@ -2315,33 +2371,33 @@ borrow books from me if they're interested.</p>
         
         
         
-        <div class="col-sm-6 col-md-4 col-lg-3 library-card-wrapper" data-haystack="machine learning with pytorch and scikit-learn: develop machine learning and deep learning models with python  physical ">
-            <div class="panel panel-default library-card" style="height: 100%; display: flex; flex-direction: column;">
-                <div class="library-card-cover" style="height: 160px; background-color: #f2f2f2; display: flex; align-items: center; justify-content: center; overflow: hidden;">
+        <div class="library-card-wrapper" data-haystack="machine learning with pytorch and scikit-learn: develop machine learning and deep learning models with python  physical ">
+            <div class="panel panel-default library-card">
+                <div class="library-card-cover">
                     
                         <i class="fa fa-book" style="font-size: 3em; color: #bbb;"></i>
                     
                 </div>
-                <div class="panel-body" style="flex: 1 1 auto; display: flex; flex-direction: column;">
-                    <h4 class="library-card-title" style="margin-top: 0;">
+                <div class="panel-body library-card-body">
+                    <h4 class="library-card-title">
                         
                             <a href="https://www.amazon.com/dp/1801819319?ref=ppx_yo2ov_dt_b_fed_asin_title">Machine Learning with PyTorch and Scikit-Learn: Develop machine learning and deep learning models with Python</a>
                         
                     </h4>
-                    <div class="library-card-meta" style="font-size: 0.9em; color: #555; margin-bottom: 8px;">
+                    <div class="library-card-meta">
                         <div><i class="fa fa-user" style="margin-right: 6px;"></i>Author unavailable</div>
                         <div><i class="fa fa-tag" style="margin-right: 6px;"></i>Physical</div>
                     </div>
                     
                     
                 </div>
-                <div class="panel-footer" style="display: flex; align-items: center; justify-content: space-between;">
+                <div class="panel-footer library-card-footer">
                     <span class="label label-success"
                           data-toggle="tooltip"
                           data-placement="top"
                           title="Available"
                     >Available</span>
-                    <span class="library-card-date" style="font-size: 0.85em; color: #777;">
+                    <span class="library-card-date" style="color: #777;">
                         <i class="fa fa-clock-o" style="margin-right: 6px;"></i>Date not recorded
                     </span>
                 </div>
@@ -2362,33 +2418,33 @@ borrow books from me if they're interested.</p>
         
         
         
-        <div class="col-sm-6 col-md-4 col-lg-3 library-card-wrapper" data-haystack="probability and statistics for computer science  physical ">
-            <div class="panel panel-default library-card" style="height: 100%; display: flex; flex-direction: column;">
-                <div class="library-card-cover" style="height: 160px; background-color: #f2f2f2; display: flex; align-items: center; justify-content: center; overflow: hidden;">
+        <div class="library-card-wrapper" data-haystack="probability and statistics for computer science  physical ">
+            <div class="panel panel-default library-card">
+                <div class="library-card-cover">
                     
                         <i class="fa fa-book" style="font-size: 3em; color: #bbb;"></i>
                     
                 </div>
-                <div class="panel-body" style="flex: 1 1 auto; display: flex; flex-direction: column;">
-                    <h4 class="library-card-title" style="margin-top: 0;">
+                <div class="panel-body library-card-body">
+                    <h4 class="library-card-title">
                         
                             <a href="https://www.amazon.com/dp/3319644092?ref=ppx_yo2ov_dt_b_fed_asin_title">Probability and Statistics for Computer Science</a>
                         
                     </h4>
-                    <div class="library-card-meta" style="font-size: 0.9em; color: #555; margin-bottom: 8px;">
+                    <div class="library-card-meta">
                         <div><i class="fa fa-user" style="margin-right: 6px;"></i>Author unavailable</div>
                         <div><i class="fa fa-tag" style="margin-right: 6px;"></i>Physical</div>
                     </div>
                     
                     
                 </div>
-                <div class="panel-footer" style="display: flex; align-items: center; justify-content: space-between;">
+                <div class="panel-footer library-card-footer">
                     <span class="label label-success"
                           data-toggle="tooltip"
                           data-placement="top"
                           title="Available"
                     >Available</span>
-                    <span class="library-card-date" style="font-size: 0.85em; color: #777;">
+                    <span class="library-card-date" style="color: #777;">
                         <i class="fa fa-clock-o" style="margin-right: 6px;"></i>Date not recorded
                     </span>
                 </div>
@@ -2409,33 +2465,33 @@ borrow books from me if they're interested.</p>
         
         
         
-        <div class="col-sm-6 col-md-4 col-lg-3 library-card-wrapper" data-haystack="linear algebra and optimization for machine learning  physical ">
-            <div class="panel panel-default library-card" style="height: 100%; display: flex; flex-direction: column;">
-                <div class="library-card-cover" style="height: 160px; background-color: #f2f2f2; display: flex; align-items: center; justify-content: center; overflow: hidden;">
+        <div class="library-card-wrapper" data-haystack="linear algebra and optimization for machine learning  physical ">
+            <div class="panel panel-default library-card">
+                <div class="library-card-cover">
                     
                         <i class="fa fa-book" style="font-size: 3em; color: #bbb;"></i>
                     
                 </div>
-                <div class="panel-body" style="flex: 1 1 auto; display: flex; flex-direction: column;">
-                    <h4 class="library-card-title" style="margin-top: 0;">
+                <div class="panel-body library-card-body">
+                    <h4 class="library-card-title">
                         
                             <a href="https://www.amazon.com/dp/3030403467?ref=ppx_yo2ov_dt_b_fed_asin_title">Linear Algebra and Optimization for Machine Learning</a>
                         
                     </h4>
-                    <div class="library-card-meta" style="font-size: 0.9em; color: #555; margin-bottom: 8px;">
+                    <div class="library-card-meta">
                         <div><i class="fa fa-user" style="margin-right: 6px;"></i>Author unavailable</div>
                         <div><i class="fa fa-tag" style="margin-right: 6px;"></i>Physical</div>
                     </div>
                     
                     
                 </div>
-                <div class="panel-footer" style="display: flex; align-items: center; justify-content: space-between;">
+                <div class="panel-footer library-card-footer">
                     <span class="label label-success"
                           data-toggle="tooltip"
                           data-placement="top"
                           title="Available"
                     >Available</span>
-                    <span class="library-card-date" style="font-size: 0.85em; color: #777;">
+                    <span class="library-card-date" style="color: #777;">
                         <i class="fa fa-clock-o" style="margin-right: 6px;"></i>Date not recorded
                     </span>
                 </div>
@@ -2456,33 +2512,33 @@ borrow books from me if they're interested.</p>
         
         
         
-        <div class="col-sm-6 col-md-4 col-lg-3 library-card-wrapper" data-haystack="learning from data  physical ">
-            <div class="panel panel-default library-card" style="height: 100%; display: flex; flex-direction: column;">
-                <div class="library-card-cover" style="height: 160px; background-color: #f2f2f2; display: flex; align-items: center; justify-content: center; overflow: hidden;">
+        <div class="library-card-wrapper" data-haystack="learning from data  physical ">
+            <div class="panel panel-default library-card">
+                <div class="library-card-cover">
                     
                         <i class="fa fa-book" style="font-size: 3em; color: #bbb;"></i>
                     
                 </div>
-                <div class="panel-body" style="flex: 1 1 auto; display: flex; flex-direction: column;">
-                    <h4 class="library-card-title" style="margin-top: 0;">
+                <div class="panel-body library-card-body">
+                    <h4 class="library-card-title">
                         
                             <a href="https://www.amazon.com/dp/1600490069?ref=ppx_yo2ov_dt_b_fed_asin_title">Learning From Data</a>
                         
                     </h4>
-                    <div class="library-card-meta" style="font-size: 0.9em; color: #555; margin-bottom: 8px;">
+                    <div class="library-card-meta">
                         <div><i class="fa fa-user" style="margin-right: 6px;"></i>Author unavailable</div>
                         <div><i class="fa fa-tag" style="margin-right: 6px;"></i>Physical</div>
                     </div>
                     
                     
                 </div>
-                <div class="panel-footer" style="display: flex; align-items: center; justify-content: space-between;">
+                <div class="panel-footer library-card-footer">
                     <span class="label label-success"
                           data-toggle="tooltip"
                           data-placement="top"
                           title="Available"
                     >Available</span>
-                    <span class="library-card-date" style="font-size: 0.85em; color: #777;">
+                    <span class="library-card-date" style="color: #777;">
                         <i class="fa fa-clock-o" style="margin-right: 6px;"></i>Date not recorded
                     </span>
                 </div>
@@ -2503,33 +2559,33 @@ borrow books from me if they're interested.</p>
         
         
         
-        <div class="col-sm-6 col-md-4 col-lg-3 library-card-wrapper" data-haystack="why greatness cannot be planned: the myth of the objective  physical ">
-            <div class="panel panel-default library-card" style="height: 100%; display: flex; flex-direction: column;">
-                <div class="library-card-cover" style="height: 160px; background-color: #f2f2f2; display: flex; align-items: center; justify-content: center; overflow: hidden;">
+        <div class="library-card-wrapper" data-haystack="why greatness cannot be planned: the myth of the objective  physical ">
+            <div class="panel panel-default library-card">
+                <div class="library-card-cover">
                     
                         <i class="fa fa-book" style="font-size: 3em; color: #bbb;"></i>
                     
                 </div>
-                <div class="panel-body" style="flex: 1 1 auto; display: flex; flex-direction: column;">
-                    <h4 class="library-card-title" style="margin-top: 0;">
+                <div class="panel-body library-card-body">
+                    <h4 class="library-card-title">
                         
                             <a href="https://www.amazon.com/dp/3319155237?ref=ppx_yo2ov_dt_b_fed_asin_title">Why Greatness Cannot Be Planned: The Myth of the Objective</a>
                         
                     </h4>
-                    <div class="library-card-meta" style="font-size: 0.9em; color: #555; margin-bottom: 8px;">
+                    <div class="library-card-meta">
                         <div><i class="fa fa-user" style="margin-right: 6px;"></i>Author unavailable</div>
                         <div><i class="fa fa-tag" style="margin-right: 6px;"></i>Physical</div>
                     </div>
                     
                     
                 </div>
-                <div class="panel-footer" style="display: flex; align-items: center; justify-content: space-between;">
+                <div class="panel-footer library-card-footer">
                     <span class="label label-success"
                           data-toggle="tooltip"
                           data-placement="top"
                           title="Available"
                     >Available</span>
-                    <span class="library-card-date" style="font-size: 0.85em; color: #777;">
+                    <span class="library-card-date" style="color: #777;">
                         <i class="fa fa-clock-o" style="margin-right: 6px;"></i>Date not recorded
                     </span>
                 </div>
@@ -2550,33 +2606,33 @@ borrow books from me if they're interested.</p>
         
         
         
-        <div class="col-sm-6 col-md-4 col-lg-3 library-card-wrapper" data-haystack="essential math for data science: take control of your data with fundamental linear algebra, probability, and statistics  physical ">
-            <div class="panel panel-default library-card" style="height: 100%; display: flex; flex-direction: column;">
-                <div class="library-card-cover" style="height: 160px; background-color: #f2f2f2; display: flex; align-items: center; justify-content: center; overflow: hidden;">
+        <div class="library-card-wrapper" data-haystack="essential math for data science: take control of your data with fundamental linear algebra, probability, and statistics  physical ">
+            <div class="panel panel-default library-card">
+                <div class="library-card-cover">
                     
                         <i class="fa fa-book" style="font-size: 3em; color: #bbb;"></i>
                     
                 </div>
-                <div class="panel-body" style="flex: 1 1 auto; display: flex; flex-direction: column;">
-                    <h4 class="library-card-title" style="margin-top: 0;">
+                <div class="panel-body library-card-body">
+                    <h4 class="library-card-title">
                         
                             <a href="https://www.amazon.com/dp/1098102932?ref=ppx_yo2ov_dt_b_fed_asin_title">Essential Math for Data Science: Take Control of Your Data with Fundamental Linear Algebra, Probability, and Statistics</a>
                         
                     </h4>
-                    <div class="library-card-meta" style="font-size: 0.9em; color: #555; margin-bottom: 8px;">
+                    <div class="library-card-meta">
                         <div><i class="fa fa-user" style="margin-right: 6px;"></i>Author unavailable</div>
                         <div><i class="fa fa-tag" style="margin-right: 6px;"></i>Physical</div>
                     </div>
                     
                     
                 </div>
-                <div class="panel-footer" style="display: flex; align-items: center; justify-content: space-between;">
+                <div class="panel-footer library-card-footer">
                     <span class="label label-success"
                           data-toggle="tooltip"
                           data-placement="top"
                           title="Available"
                     >Available</span>
-                    <span class="library-card-date" style="font-size: 0.85em; color: #777;">
+                    <span class="library-card-date" style="color: #777;">
                         <i class="fa fa-clock-o" style="margin-right: 6px;"></i>Date not recorded
                     </span>
                 </div>
@@ -2599,33 +2655,33 @@ borrow books from me if they're interested.</p>
         
         
         
-        <div class="col-sm-6 col-md-4 col-lg-3 library-card-wrapper" data-haystack="machine learning for dummies  physical ">
-            <div class="panel panel-default library-card" style="height: 100%; display: flex; flex-direction: column;">
-                <div class="library-card-cover" style="height: 160px; background-color: #f2f2f2; display: flex; align-items: center; justify-content: center; overflow: hidden;">
+        <div class="library-card-wrapper" data-haystack="machine learning for dummies  physical ">
+            <div class="panel panel-default library-card">
+                <div class="library-card-cover">
                     
                         <i class="fa fa-book" style="font-size: 3em; color: #bbb;"></i>
                     
                 </div>
-                <div class="panel-body" style="flex: 1 1 auto; display: flex; flex-direction: column;">
-                    <h4 class="library-card-title" style="margin-top: 0;">
+                <div class="panel-body library-card-body">
+                    <h4 class="library-card-title">
                         
                             <a href="https://www.amazon.com/dp/1119724015?ref=ppx_yo2ov_dt_b_fed_asin_title">Machine Learning For Dummies</a>
                         
                     </h4>
-                    <div class="library-card-meta" style="font-size: 0.9em; color: #555; margin-bottom: 8px;">
+                    <div class="library-card-meta">
                         <div><i class="fa fa-user" style="margin-right: 6px;"></i>Author unavailable</div>
                         <div><i class="fa fa-tag" style="margin-right: 6px;"></i>Physical</div>
                     </div>
                     
                     
                 </div>
-                <div class="panel-footer" style="display: flex; align-items: center; justify-content: space-between;">
+                <div class="panel-footer library-card-footer">
                     <span class="label label-warning"
                           data-toggle="tooltip"
                           data-placement="top"
                           title="Checked out"
                     >Checked out</span>
-                    <span class="library-card-date" style="font-size: 0.85em; color: #777;">
+                    <span class="library-card-date" style="color: #777;">
                         <i class="fa fa-clock-o" style="margin-right: 6px;"></i>Date not recorded
                     </span>
                 </div>
@@ -2646,33 +2702,33 @@ borrow books from me if they're interested.</p>
         
         
         
-        <div class="col-sm-6 col-md-4 col-lg-3 library-card-wrapper" data-haystack="foundations of computer vision  physical ">
-            <div class="panel panel-default library-card" style="height: 100%; display: flex; flex-direction: column;">
-                <div class="library-card-cover" style="height: 160px; background-color: #f2f2f2; display: flex; align-items: center; justify-content: center; overflow: hidden;">
+        <div class="library-card-wrapper" data-haystack="foundations of computer vision  physical ">
+            <div class="panel panel-default library-card">
+                <div class="library-card-cover">
                     
                         <i class="fa fa-book" style="font-size: 3em; color: #bbb;"></i>
                     
                 </div>
-                <div class="panel-body" style="flex: 1 1 auto; display: flex; flex-direction: column;">
-                    <h4 class="library-card-title" style="margin-top: 0;">
+                <div class="panel-body library-card-body">
+                    <h4 class="library-card-title">
                         
                             <a href="https://www.amazon.com/dp/0262048973?ref=ppx_yo2ov_dt_b_fed_asin_title">Foundations of Computer Vision</a>
                         
                     </h4>
-                    <div class="library-card-meta" style="font-size: 0.9em; color: #555; margin-bottom: 8px;">
+                    <div class="library-card-meta">
                         <div><i class="fa fa-user" style="margin-right: 6px;"></i>Author unavailable</div>
                         <div><i class="fa fa-tag" style="margin-right: 6px;"></i>Physical</div>
                     </div>
                     
                     
                 </div>
-                <div class="panel-footer" style="display: flex; align-items: center; justify-content: space-between;">
+                <div class="panel-footer library-card-footer">
                     <span class="label label-success"
                           data-toggle="tooltip"
                           data-placement="top"
                           title="Available"
                     >Available</span>
-                    <span class="library-card-date" style="font-size: 0.85em; color: #777;">
+                    <span class="library-card-date" style="color: #777;">
                         <i class="fa fa-clock-o" style="margin-right: 6px;"></i>Date not recorded
                     </span>
                 </div>
@@ -2693,33 +2749,33 @@ borrow books from me if they're interested.</p>
         
         
         
-        <div class="col-sm-6 col-md-4 col-lg-3 library-card-wrapper" data-haystack="the maniac  physical ">
-            <div class="panel panel-default library-card" style="height: 100%; display: flex; flex-direction: column;">
-                <div class="library-card-cover" style="height: 160px; background-color: #f2f2f2; display: flex; align-items: center; justify-content: center; overflow: hidden;">
+        <div class="library-card-wrapper" data-haystack="the maniac  physical ">
+            <div class="panel panel-default library-card">
+                <div class="library-card-cover">
                     
                         <i class="fa fa-book" style="font-size: 3em; color: #bbb;"></i>
                     
                 </div>
-                <div class="panel-body" style="flex: 1 1 auto; display: flex; flex-direction: column;">
-                    <h4 class="library-card-title" style="margin-top: 0;">
+                <div class="panel-body library-card-body">
+                    <h4 class="library-card-title">
                         
                             <a href="https://www.amazon.com/dp/0593654471?ref=ppx_yo2ov_dt_b_fed_asin_title">The MANIAC</a>
                         
                     </h4>
-                    <div class="library-card-meta" style="font-size: 0.9em; color: #555; margin-bottom: 8px;">
+                    <div class="library-card-meta">
                         <div><i class="fa fa-user" style="margin-right: 6px;"></i>Author unavailable</div>
                         <div><i class="fa fa-tag" style="margin-right: 6px;"></i>Physical</div>
                     </div>
                     
                     
                 </div>
-                <div class="panel-footer" style="display: flex; align-items: center; justify-content: space-between;">
+                <div class="panel-footer library-card-footer">
                     <span class="label label-success"
                           data-toggle="tooltip"
                           data-placement="top"
                           title="Available"
                     >Available</span>
-                    <span class="library-card-date" style="font-size: 0.85em; color: #777;">
+                    <span class="library-card-date" style="color: #777;">
                         <i class="fa fa-clock-o" style="margin-right: 6px;"></i>Date not recorded
                     </span>
                 </div>
@@ -2740,33 +2796,33 @@ borrow books from me if they're interested.</p>
         
         
         
-        <div class="col-sm-6 col-md-4 col-lg-3 library-card-wrapper" data-haystack="recommendation engines  physical ">
-            <div class="panel panel-default library-card" style="height: 100%; display: flex; flex-direction: column;">
-                <div class="library-card-cover" style="height: 160px; background-color: #f2f2f2; display: flex; align-items: center; justify-content: center; overflow: hidden;">
+        <div class="library-card-wrapper" data-haystack="recommendation engines  physical ">
+            <div class="panel panel-default library-card">
+                <div class="library-card-cover">
                     
                         <i class="fa fa-book" style="font-size: 3em; color: #bbb;"></i>
                     
                 </div>
-                <div class="panel-body" style="flex: 1 1 auto; display: flex; flex-direction: column;">
-                    <h4 class="library-card-title" style="margin-top: 0;">
+                <div class="panel-body library-card-body">
+                    <h4 class="library-card-title">
                         
                             <a href="https://www.amazon.com/dp/0262539071?ref=ppx_yo2ov_dt_b_fed_asin_title">Recommendation Engines</a>
                         
                     </h4>
-                    <div class="library-card-meta" style="font-size: 0.9em; color: #555; margin-bottom: 8px;">
+                    <div class="library-card-meta">
                         <div><i class="fa fa-user" style="margin-right: 6px;"></i>Author unavailable</div>
                         <div><i class="fa fa-tag" style="margin-right: 6px;"></i>Physical</div>
                     </div>
                     
                     
                 </div>
-                <div class="panel-footer" style="display: flex; align-items: center; justify-content: space-between;">
+                <div class="panel-footer library-card-footer">
                     <span class="label label-success"
                           data-toggle="tooltip"
                           data-placement="top"
                           title="Available"
                     >Available</span>
-                    <span class="library-card-date" style="font-size: 0.85em; color: #777;">
+                    <span class="library-card-date" style="color: #777;">
                         <i class="fa fa-clock-o" style="margin-right: 6px;"></i>Date not recorded
                     </span>
                 </div>
@@ -2787,33 +2843,33 @@ borrow books from me if they're interested.</p>
         
         
         
-        <div class="col-sm-6 col-md-4 col-lg-3 library-card-wrapper" data-haystack="introduction to graph theory (dover books on mathematics)  physical ">
-            <div class="panel panel-default library-card" style="height: 100%; display: flex; flex-direction: column;">
-                <div class="library-card-cover" style="height: 160px; background-color: #f2f2f2; display: flex; align-items: center; justify-content: center; overflow: hidden;">
+        <div class="library-card-wrapper" data-haystack="introduction to graph theory (dover books on mathematics)  physical ">
+            <div class="panel panel-default library-card">
+                <div class="library-card-cover">
                     
                         <i class="fa fa-book" style="font-size: 3em; color: #bbb;"></i>
                     
                 </div>
-                <div class="panel-body" style="flex: 1 1 auto; display: flex; flex-direction: column;">
-                    <h4 class="library-card-title" style="margin-top: 0;">
+                <div class="panel-body library-card-body">
+                    <h4 class="library-card-title">
                         
                             <a href="https://www.amazon.com/dp/0486678709?ref=ppx_yo2ov_dt_b_fed_asin_title">Introduction to Graph Theory (Dover Books on Mathematics)</a>
                         
                     </h4>
-                    <div class="library-card-meta" style="font-size: 0.9em; color: #555; margin-bottom: 8px;">
+                    <div class="library-card-meta">
                         <div><i class="fa fa-user" style="margin-right: 6px;"></i>Author unavailable</div>
                         <div><i class="fa fa-tag" style="margin-right: 6px;"></i>Physical</div>
                     </div>
                     
                     
                 </div>
-                <div class="panel-footer" style="display: flex; align-items: center; justify-content: space-between;">
+                <div class="panel-footer library-card-footer">
                     <span class="label label-success"
                           data-toggle="tooltip"
                           data-placement="top"
                           title="Available"
                     >Available</span>
-                    <span class="library-card-date" style="font-size: 0.85em; color: #777;">
+                    <span class="library-card-date" style="color: #777;">
                         <i class="fa fa-clock-o" style="margin-right: 6px;"></i>Date not recorded
                     </span>
                 </div>
@@ -2834,33 +2890,33 @@ borrow books from me if they're interested.</p>
         
         
         
-        <div class="col-sm-6 col-md-4 col-lg-3 library-card-wrapper" data-haystack="an introduction to information theory: symbols, signals and noise (dover books on mathematics)  physical ">
-            <div class="panel panel-default library-card" style="height: 100%; display: flex; flex-direction: column;">
-                <div class="library-card-cover" style="height: 160px; background-color: #f2f2f2; display: flex; align-items: center; justify-content: center; overflow: hidden;">
+        <div class="library-card-wrapper" data-haystack="an introduction to information theory: symbols, signals and noise (dover books on mathematics)  physical ">
+            <div class="panel panel-default library-card">
+                <div class="library-card-cover">
                     
                         <i class="fa fa-book" style="font-size: 3em; color: #bbb;"></i>
                     
                 </div>
-                <div class="panel-body" style="flex: 1 1 auto; display: flex; flex-direction: column;">
-                    <h4 class="library-card-title" style="margin-top: 0;">
+                <div class="panel-body library-card-body">
+                    <h4 class="library-card-title">
                         
                             <a href="https://www.amazon.com/dp/0486240614?ref=ppx_yo2ov_dt_b_fed_asin_title">An Introduction to Information Theory: Symbols, Signals and Noise (Dover Books on Mathematics)</a>
                         
                     </h4>
-                    <div class="library-card-meta" style="font-size: 0.9em; color: #555; margin-bottom: 8px;">
+                    <div class="library-card-meta">
                         <div><i class="fa fa-user" style="margin-right: 6px;"></i>Author unavailable</div>
                         <div><i class="fa fa-tag" style="margin-right: 6px;"></i>Physical</div>
                     </div>
                     
                     
                 </div>
-                <div class="panel-footer" style="display: flex; align-items: center; justify-content: space-between;">
+                <div class="panel-footer library-card-footer">
                     <span class="label label-success"
                           data-toggle="tooltip"
                           data-placement="top"
                           title="Available"
                     >Available</span>
-                    <span class="library-card-date" style="font-size: 0.85em; color: #777;">
+                    <span class="library-card-date" style="color: #777;">
                         <i class="fa fa-clock-o" style="margin-right: 6px;"></i>Date not recorded
                     </span>
                 </div>
@@ -2881,33 +2937,33 @@ borrow books from me if they're interested.</p>
         
         
         
-        <div class="col-sm-6 col-md-4 col-lg-3 library-card-wrapper" data-haystack="introduction to algorithms, 3rd edition (the mit press)  physical ">
-            <div class="panel panel-default library-card" style="height: 100%; display: flex; flex-direction: column;">
-                <div class="library-card-cover" style="height: 160px; background-color: #f2f2f2; display: flex; align-items: center; justify-content: center; overflow: hidden;">
+        <div class="library-card-wrapper" data-haystack="introduction to algorithms, 3rd edition (the mit press)  physical ">
+            <div class="panel panel-default library-card">
+                <div class="library-card-cover">
                     
                         <i class="fa fa-book" style="font-size: 3em; color: #bbb;"></i>
                     
                 </div>
-                <div class="panel-body" style="flex: 1 1 auto; display: flex; flex-direction: column;">
-                    <h4 class="library-card-title" style="margin-top: 0;">
+                <div class="panel-body library-card-body">
+                    <h4 class="library-card-title">
                         
                             <a href="https://www.amazon.com/dp/0262033844?ref=ppx_yo2ov_dt_b_fed_asin_title">Introduction to Algorithms, 3rd Edition (The MIT Press)</a>
                         
                     </h4>
-                    <div class="library-card-meta" style="font-size: 0.9em; color: #555; margin-bottom: 8px;">
+                    <div class="library-card-meta">
                         <div><i class="fa fa-user" style="margin-right: 6px;"></i>Author unavailable</div>
                         <div><i class="fa fa-tag" style="margin-right: 6px;"></i>Physical</div>
                     </div>
                     
                     
                 </div>
-                <div class="panel-footer" style="display: flex; align-items: center; justify-content: space-between;">
+                <div class="panel-footer library-card-footer">
                     <span class="label label-success"
                           data-toggle="tooltip"
                           data-placement="top"
                           title="Available"
                     >Available</span>
-                    <span class="library-card-date" style="font-size: 0.85em; color: #777;">
+                    <span class="library-card-date" style="color: #777;">
                         <i class="fa fa-clock-o" style="margin-right: 6px;"></i>Date not recorded
                     </span>
                 </div>
@@ -2928,33 +2984,33 @@ borrow books from me if they're interested.</p>
         
         
         
-        <div class="col-sm-6 col-md-4 col-lg-3 library-card-wrapper" data-haystack="a programmer&#x27;s introduction to mathematics  physical ">
-            <div class="panel panel-default library-card" style="height: 100%; display: flex; flex-direction: column;">
-                <div class="library-card-cover" style="height: 160px; background-color: #f2f2f2; display: flex; align-items: center; justify-content: center; overflow: hidden;">
+        <div class="library-card-wrapper" data-haystack="a programmer&#x27;s introduction to mathematics  physical ">
+            <div class="panel panel-default library-card">
+                <div class="library-card-cover">
                     
                         <i class="fa fa-book" style="font-size: 3em; color: #bbb;"></i>
                     
                 </div>
-                <div class="panel-body" style="flex: 1 1 auto; display: flex; flex-direction: column;">
-                    <h4 class="library-card-title" style="margin-top: 0;">
+                <div class="panel-body library-card-body">
+                    <h4 class="library-card-title">
                         
                             <a href="https://www.amazon.com/dp/1727125452?ref=ppx_yo2ov_dt_b_fed_asin_title">A Programmer&#x27;s Introduction to Mathematics</a>
                         
                     </h4>
-                    <div class="library-card-meta" style="font-size: 0.9em; color: #555; margin-bottom: 8px;">
+                    <div class="library-card-meta">
                         <div><i class="fa fa-user" style="margin-right: 6px;"></i>Author unavailable</div>
                         <div><i class="fa fa-tag" style="margin-right: 6px;"></i>Physical</div>
                     </div>
                     
                     
                 </div>
-                <div class="panel-footer" style="display: flex; align-items: center; justify-content: space-between;">
+                <div class="panel-footer library-card-footer">
                     <span class="label label-success"
                           data-toggle="tooltip"
                           data-placement="top"
                           title="Available"
                     >Available</span>
-                    <span class="library-card-date" style="font-size: 0.85em; color: #777;">
+                    <span class="library-card-date" style="color: #777;">
                         <i class="fa fa-clock-o" style="margin-right: 6px;"></i>Date not recorded
                     </span>
                 </div>
@@ -2975,33 +3031,33 @@ borrow books from me if they're interested.</p>
         
         
         
-        <div class="col-sm-6 col-md-4 col-lg-3 library-card-wrapper" data-haystack="the question concerning technology, and other essays martin heidegger physical ">
-            <div class="panel panel-default library-card" style="height: 100%; display: flex; flex-direction: column;">
-                <div class="library-card-cover" style="height: 160px; background-color: #f2f2f2; display: flex; align-items: center; justify-content: center; overflow: hidden;">
+        <div class="library-card-wrapper" data-haystack="the question concerning technology, and other essays martin heidegger physical ">
+            <div class="panel panel-default library-card">
+                <div class="library-card-cover">
                     
                         <i class="fa fa-book" style="font-size: 3em; color: #bbb;"></i>
                     
                 </div>
-                <div class="panel-body" style="flex: 1 1 auto; display: flex; flex-direction: column;">
-                    <h4 class="library-card-title" style="margin-top: 0;">
+                <div class="panel-body library-card-body">
+                    <h4 class="library-card-title">
                         
                             <a href="https://www.amazon.com/dp/0062290703?ref=ppx_yo2ov_dt_b_fed_asin_title">The Question Concerning Technology, and Other Essays</a>
                         
                     </h4>
-                    <div class="library-card-meta" style="font-size: 0.9em; color: #555; margin-bottom: 8px;">
+                    <div class="library-card-meta">
                         <div><i class="fa fa-user" style="margin-right: 6px;"></i>Martin Heidegger</div>
                         <div><i class="fa fa-tag" style="margin-right: 6px;"></i>Physical</div>
                     </div>
                     
                     
                 </div>
-                <div class="panel-footer" style="display: flex; align-items: center; justify-content: space-between;">
+                <div class="panel-footer library-card-footer">
                     <span class="label label-success"
                           data-toggle="tooltip"
                           data-placement="top"
                           title="Available"
                     >Available</span>
-                    <span class="library-card-date" style="font-size: 0.85em; color: #777;">
+                    <span class="library-card-date" style="color: #777;">
                         <i class="fa fa-clock-o" style="margin-right: 6px;"></i>Date not recorded
                     </span>
                 </div>
@@ -3022,33 +3078,33 @@ borrow books from me if they're interested.</p>
         
         
         
-        <div class="col-sm-6 col-md-4 col-lg-3 library-card-wrapper" data-haystack="man and technics: a contribution to a philosophy of life oswald spengler physical ">
-            <div class="panel panel-default library-card" style="height: 100%; display: flex; flex-direction: column;">
-                <div class="library-card-cover" style="height: 160px; background-color: #f2f2f2; display: flex; align-items: center; justify-content: center; overflow: hidden;">
+        <div class="library-card-wrapper" data-haystack="man and technics: a contribution to a philosophy of life oswald spengler physical ">
+            <div class="panel panel-default library-card">
+                <div class="library-card-cover">
                     
                         <i class="fa fa-book" style="font-size: 3em; color: #bbb;"></i>
                     
                 </div>
-                <div class="panel-body" style="flex: 1 1 auto; display: flex; flex-direction: column;">
-                    <h4 class="library-card-title" style="margin-top: 0;">
+                <div class="panel-body library-card-body">
+                    <h4 class="library-card-title">
                         
                             <a href="https://www.amazon.com/dp/1910524174?ref=ppx_yo2ov_dt_b_fed_asin_title">Man and Technics: A Contribution to a Philosophy of Life</a>
                         
                     </h4>
-                    <div class="library-card-meta" style="font-size: 0.9em; color: #555; margin-bottom: 8px;">
+                    <div class="library-card-meta">
                         <div><i class="fa fa-user" style="margin-right: 6px;"></i>Oswald Spengler</div>
                         <div><i class="fa fa-tag" style="margin-right: 6px;"></i>Physical</div>
                     </div>
                     
                     
                 </div>
-                <div class="panel-footer" style="display: flex; align-items: center; justify-content: space-between;">
+                <div class="panel-footer library-card-footer">
                     <span class="label label-success"
                           data-toggle="tooltip"
                           data-placement="top"
                           title="Available"
                     >Available</span>
-                    <span class="library-card-date" style="font-size: 0.85em; color: #777;">
+                    <span class="library-card-date" style="color: #777;">
                         <i class="fa fa-clock-o" style="margin-right: 6px;"></i>Date not recorded
                     </span>
                 </div>
@@ -3069,33 +3125,33 @@ borrow books from me if they're interested.</p>
         
         
         
-        <div class="col-sm-6 col-md-4 col-lg-3 library-card-wrapper" data-haystack="deep learning with python francis chollet physical ">
-            <div class="panel panel-default library-card" style="height: 100%; display: flex; flex-direction: column;">
-                <div class="library-card-cover" style="height: 160px; background-color: #f2f2f2; display: flex; align-items: center; justify-content: center; overflow: hidden;">
+        <div class="library-card-wrapper" data-haystack="deep learning with python francis chollet physical ">
+            <div class="panel panel-default library-card">
+                <div class="library-card-cover">
                     
                         <i class="fa fa-book" style="font-size: 3em; color: #bbb;"></i>
                     
                 </div>
-                <div class="panel-body" style="flex: 1 1 auto; display: flex; flex-direction: column;">
-                    <h4 class="library-card-title" style="margin-top: 0;">
+                <div class="panel-body library-card-body">
+                    <h4 class="library-card-title">
                         
                             <a href="https://www.amazon.com/dp/1617294438?ref=ppx_yo2ov_dt_b_fed_asin_title">Deep Learning with Python</a>
                         
                     </h4>
-                    <div class="library-card-meta" style="font-size: 0.9em; color: #555; margin-bottom: 8px;">
+                    <div class="library-card-meta">
                         <div><i class="fa fa-user" style="margin-right: 6px;"></i>Francis Chollet</div>
                         <div><i class="fa fa-tag" style="margin-right: 6px;"></i>Physical</div>
                     </div>
                     
                     
                 </div>
-                <div class="panel-footer" style="display: flex; align-items: center; justify-content: space-between;">
+                <div class="panel-footer library-card-footer">
                     <span class="label label-success"
                           data-toggle="tooltip"
                           data-placement="top"
                           title="Available"
                     >Available</span>
-                    <span class="library-card-date" style="font-size: 0.85em; color: #777;">
+                    <span class="library-card-date" style="color: #777;">
                         <i class="fa fa-clock-o" style="margin-right: 6px;"></i>Date not recorded
                     </span>
                 </div>
@@ -3116,33 +3172,33 @@ borrow books from me if they're interested.</p>
         
         
         
-        <div class="col-sm-6 col-md-4 col-lg-3 library-card-wrapper" data-haystack="deep learning  physical ">
-            <div class="panel panel-default library-card" style="height: 100%; display: flex; flex-direction: column;">
-                <div class="library-card-cover" style="height: 160px; background-color: #f2f2f2; display: flex; align-items: center; justify-content: center; overflow: hidden;">
+        <div class="library-card-wrapper" data-haystack="deep learning  physical ">
+            <div class="panel panel-default library-card">
+                <div class="library-card-cover">
                     
                         <i class="fa fa-book" style="font-size: 3em; color: #bbb;"></i>
                     
                 </div>
-                <div class="panel-body" style="flex: 1 1 auto; display: flex; flex-direction: column;">
-                    <h4 class="library-card-title" style="margin-top: 0;">
+                <div class="panel-body library-card-body">
+                    <h4 class="library-card-title">
                         
                             <a href="https://www.amazon.com/dp/0262035618?ref=ppx_yo2ov_dt_b_fed_asin_title">Deep Learning</a>
                         
                     </h4>
-                    <div class="library-card-meta" style="font-size: 0.9em; color: #555; margin-bottom: 8px;">
+                    <div class="library-card-meta">
                         <div><i class="fa fa-user" style="margin-right: 6px;"></i>Author unavailable</div>
                         <div><i class="fa fa-tag" style="margin-right: 6px;"></i>Physical</div>
                     </div>
                     
                     
                 </div>
-                <div class="panel-footer" style="display: flex; align-items: center; justify-content: space-between;">
+                <div class="panel-footer library-card-footer">
                     <span class="label label-success"
                           data-toggle="tooltip"
                           data-placement="top"
                           title="Available"
                     >Available</span>
-                    <span class="library-card-date" style="font-size: 0.85em; color: #777;">
+                    <span class="library-card-date" style="color: #777;">
                         <i class="fa fa-clock-o" style="margin-right: 6px;"></i>Date not recorded
                     </span>
                 </div>
@@ -3163,33 +3219,33 @@ borrow books from me if they're interested.</p>
         
         
         
-        <div class="col-sm-6 col-md-4 col-lg-3 library-card-wrapper" data-haystack="linear algebra demystified  physical ">
-            <div class="panel panel-default library-card" style="height: 100%; display: flex; flex-direction: column;">
-                <div class="library-card-cover" style="height: 160px; background-color: #f2f2f2; display: flex; align-items: center; justify-content: center; overflow: hidden;">
+        <div class="library-card-wrapper" data-haystack="linear algebra demystified  physical ">
+            <div class="panel panel-default library-card">
+                <div class="library-card-cover">
                     
                         <i class="fa fa-book" style="font-size: 3em; color: #bbb;"></i>
                     
                 </div>
-                <div class="panel-body" style="flex: 1 1 auto; display: flex; flex-direction: column;">
-                    <h4 class="library-card-title" style="margin-top: 0;">
+                <div class="panel-body library-card-body">
+                    <h4 class="library-card-title">
                         
                             <a href="https://www.amazon.com/dp/0071465790?ref=ppx_yo2ov_dt_b_fed_asin_title">Linear Algebra Demystified</a>
                         
                     </h4>
-                    <div class="library-card-meta" style="font-size: 0.9em; color: #555; margin-bottom: 8px;">
+                    <div class="library-card-meta">
                         <div><i class="fa fa-user" style="margin-right: 6px;"></i>Author unavailable</div>
                         <div><i class="fa fa-tag" style="margin-right: 6px;"></i>Physical</div>
                     </div>
                     
                     
                 </div>
-                <div class="panel-footer" style="display: flex; align-items: center; justify-content: space-between;">
+                <div class="panel-footer library-card-footer">
                     <span class="label label-success"
                           data-toggle="tooltip"
                           data-placement="top"
                           title="Available"
                     >Available</span>
-                    <span class="library-card-date" style="font-size: 0.85em; color: #777;">
+                    <span class="library-card-date" style="color: #777;">
                         <i class="fa fa-clock-o" style="margin-right: 6px;"></i>Date not recorded
                     </span>
                 </div>
