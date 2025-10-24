@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="blugold">
     <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -54,10 +54,85 @@
     display: flex;
     max-height: 100%;
 }
-	.theme-toggle-btn {
-	    margin-top: 8px;
-	    margin-left: 12px;
-	}
+    .theme-toggle-btn {
+        position: relative;
+        display: inline-flex;
+        align-items: center;
+        justify-content: space-between;
+        width: 54px;
+        height: 28px;
+        margin-top: 8px;
+        margin-left: 12px;
+        padding: 0 8px;
+        border-radius: 999px;
+        border: 1px solid rgba(15, 23, 42, 0.18);
+        background-color: #f2f6ff;
+        cursor: pointer;
+        transition: background-color 0.25s ease, border-color 0.25s ease;
+    }
+    .theme-toggle-btn:focus {
+        outline: none;
+        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.35);
+    }
+    .theme-toggle-btn .theme-icon,
+    .theme-toggle-btn .theme-toggle-handle {
+        pointer-events: none;
+    }
+    .theme-toggle-btn .theme-icon {
+        font-size: 0.85em;
+        opacity: 0.5;
+        transition: opacity 0.25s ease;
+        position: relative;
+        z-index: 2;
+    }
+    .theme-toggle-btn .theme-icon--sun {
+        color: #f59e0b;
+        opacity: 1;
+    }
+    .theme-toggle-btn .theme-icon--moon {
+        color: #c084fc;
+    }
+    .theme-toggle-btn .theme-toggle-handle {
+        position: absolute;
+        top: 2px;
+        left: 2px;
+        width: 24px;
+        height: 24px;
+        border-radius: 50%;
+        background-color: #ffffff;
+        box-shadow: 0 1px 4px rgba(0, 0, 0, 0.15);
+        transition: transform 0.25s ease, background-color 0.25s ease;
+        z-index: 1;
+    }
+    [data-theme="blugold"] .theme-toggle-btn {
+        background-color: #f2f6ff;
+        border-color: rgba(15, 23, 42, 0.18);
+    }
+    [data-theme="blugold"] .theme-toggle-btn .theme-toggle-handle {
+        transform: translateX(0);
+        background-color: #ffffff;
+    }
+    [data-theme="blugold"] .theme-toggle-btn .theme-icon--sun {
+        opacity: 1;
+    }
+    [data-theme="blugold"] .theme-toggle-btn .theme-icon--moon {
+        opacity: 0.35;
+    }
+    [data-theme="gruvbox"] .theme-toggle-btn {
+        background-color: #3c3836;
+        border-color: #665c54;
+        color: #ebdbb2;
+    }
+    [data-theme="gruvbox"] .theme-toggle-btn .theme-toggle-handle {
+        transform: translateX(26px);
+        background-color: #1d2021;
+    }
+    [data-theme="gruvbox"] .theme-toggle-btn .theme-icon--sun {
+        opacity: 0.35;
+    }
+    [data-theme="gruvbox"] .theme-toggle-btn .theme-icon--moon {
+        opacity: 1;
+    }
 	.library-card {
 	    display: flex;
 	    flex-direction: column;
@@ -132,8 +207,10 @@
 
 	    <div class="row">
 		<div class="page-header">
-		    <button type="button" class="btn btn-default btn-xs pull-right theme-toggle-btn" id="theme-toggle">
-			Switch to Gruvbox
+		    <button type="button" class="theme-toggle-btn pull-right" id="theme-toggle" role="switch" aria-checked="false" aria-label="Switch to dark theme">
+			<span class="theme-icon theme-icon--sun"><i class="fa-solid fa-sun"></i></span>
+			<span class="theme-icon theme-icon--moon"><i class="fa-solid fa-moon"></i></span>
+			<span class="theme-toggle-handle"></span>
 		    </button>
 		    <ul class="nav nav-pills pull-right">
 			
@@ -4542,11 +4619,11 @@
 	        return;
 	    }
 	    function updateButton(theme) {
-	        if (theme === 'gruvbox') {
-	            toggleBtn.textContent = 'Switch to Blugold';
-	        } else {
-	            toggleBtn.textContent = 'Switch to Gruvbox';
-	        }
+	        var isDark = theme === 'gruvbox';
+	        var label = isDark ? 'Switch to light theme' : 'Switch to dark theme';
+	        toggleBtn.setAttribute('aria-label', label);
+	        toggleBtn.setAttribute('title', label);
+	        toggleBtn.setAttribute('aria-checked', isDark ? 'true' : 'false');
 	    }
 	    function applyTheme(theme) {
 	        var name = themes[theme] ? theme : 'blugold';
