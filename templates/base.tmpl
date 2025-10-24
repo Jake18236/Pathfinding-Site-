@@ -211,6 +211,37 @@
 	}
 	.course-embed {
 	    background-color: #ffffff;
+	    position: relative;
+	    cursor: pointer;
+	}
+	.course-embed iframe {
+	    pointer-events: none;
+	}
+	.course-embed__overlay {
+	    position: absolute;
+	    inset: 0;
+	    z-index: 2;
+	    display: block;
+	    border-radius: inherit;
+	    text-decoration: none;
+	    color: inherit;
+	    transition: background-color 0.2s ease;
+	}
+	.course-embed__overlay:hover,
+	.course-embed__overlay:focus {
+	    background-color: rgba(15, 23, 42, 0.15);
+	    outline: none;
+	}
+	.course-embed__overlay:focus {
+	    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.35);
+	}
+	.course-title-link {
+	    color: inherit;
+	    text-decoration: none;
+	}
+	.course-title-link:hover,
+	.course-title-link:focus {
+	    text-decoration: underline;
 	}
 	[data-theme="gruvbox-dark"] .embed-responsive {
 	    border-color: #665c54;
@@ -219,6 +250,13 @@
 	}
 	[data-theme="gruvbox-dark"] .course-embed {
 	    background-color: rgba(40, 40, 40, 0.9);
+	}
+	[data-theme="gruvbox-dark"] .course-embed__overlay:hover,
+	[data-theme="gruvbox-dark"] .course-embed__overlay:focus {
+	    background-color: rgba(235, 219, 178, 0.12);
+	}
+	[data-theme="gruvbox-dark"] .course-embed__overlay:focus {
+	    box-shadow: 0 0 0 3px rgba(235, 219, 178, 0.25);
 	}
 	</style>
     </head>

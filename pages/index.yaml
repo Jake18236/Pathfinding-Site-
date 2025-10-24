@@ -46,15 +46,20 @@ body:       |
 
     <div class="row">
         <div class="col-md-6 col-sm-12" style="margin-bottom: 30px;">
-            <h3 style="margin-top: 0; margin-bottom: 12px; font-weight: 600; text-align: center;">CSE 10124 &middot; Introduction to Using Generative AI</h3>
+            <h3 style="margin-top: 0; margin-bottom: 12px; font-weight: 600; text-align: center;">
+                <a href="https://10124.williamtheisen.com" class="course-title-link" target="_blank" rel="noopener">CSE 10124 &middot; Introduction to Using Generative AI</a>
+            </h3>
             <div class="embed-responsive embed-responsive-16by9 course-embed">
                 <iframe
                     src="https://10124.williamtheisen.com"
                     title="Introductory AI Course Site"
                     loading="lazy"
                     class="embed-responsive-item"
-                    allowfullscreen>
+                    allowfullscreen
+                    tabindex="-1"
+                    aria-hidden="true">
                 </iframe>
+                <a class="course-embed__overlay" href="https://10124.williamtheisen.com" target="_blank" rel="noopener" aria-label="Open the full CSE 10124 course website"></a>
             </div>
             {% set cse10124_log = (course_logs.get('cse10124', {}).get('entries') or []) %}
             {% set cse10124_error = course_logs.get('cse10124', {}).get('error') %}
@@ -83,15 +88,20 @@ body:       |
             </div>
         </div>
         <div class="col-md-6 col-sm-12" style="margin-bottom: 30px;">
-            <h3 style="margin-top: 0; margin-bottom: 12px; font-weight: 600; text-align: center;">CSE 30124 &middot; Introduction to Artificial Intelligence</h3>
+            <h3 style="margin-top: 0; margin-bottom: 12px; font-weight: 600; text-align: center;">
+                <a href="https://30124.williamtheisen.com" class="course-title-link" target="_blank" rel="noopener">CSE 30124 &middot; Introduction to Artificial Intelligence</a>
+            </h3>
             <div class="embed-responsive embed-responsive-16by9 course-embed">
                 <iframe
                     src="https://30124.williamtheisen.com"
                     title="Advanced AI Course Site"
                     loading="lazy"
                     class="embed-responsive-item"
-                    allowfullscreen>
+                    allowfullscreen
+                    tabindex="-1"
+                    aria-hidden="true">
                 </iframe>
+                <a class="course-embed__overlay" href="https://30124.williamtheisen.com" target="_blank" rel="noopener" aria-label="Open the full CSE 30124 course website"></a>
             </div>
             {% set cse30124_log = (course_logs.get('cse30124', {}).get('entries') or []) %}
             {% set cse30124_error = course_logs.get('cse30124', {}).get('error') %}
