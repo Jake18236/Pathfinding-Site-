@@ -46,7 +46,7 @@ jobs:
           python3 scripts/fetch_book_covers.py \
             --resources static/csv/resources.csv \
             --dest static/img/book_cover_thumbnails \
-            --size L \
+            --size S \
             --pause 0.05
           make clean && make build
 
