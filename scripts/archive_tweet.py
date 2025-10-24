@@ -54,18 +54,19 @@ def fetch_thread(url: str, workdir: pathlib.Path):
 
     # Prefer the full conversation (writes to stdout, we capture to file)
     try:
-        run_to_file(["twarc2", "conversation", tid], raw_jsonl)
+        # run_to_file(["twarc2", "conversation", tid], raw_jsonl)
+        run_to_file(["twarc2", "--bearer-token", os.environ["TWITTER_BEARER_TOKEN"], "conversation", tid], raw_jsonl)
     except RuntimeError as e:
         print(f"[warn] conversation fetch failed, falling back to single tweet: {e}")
-        run_to_file(["twarc2", "tweet", tid], raw_jsonl)
+        run_to_file(["twarc2", "--bearer-token", os.environ["TWITTER_BEARER_TOKEN"], "tweet", tid], raw_jsonl)
 
     # Flatten: reads raw_jsonl, writes to stdout; capture to flat_jsonl
-    run_to_file(["twarc2", "flatten", str(raw_jsonl)], flat_jsonl)
+    run_to_file(["twarc2", "--bearer-token", os.environ["TWITTER_BEARER_TOKEN"], "flatten", str(raw_jsonl)], flat_jsonl)
 
     # Media: reads raw_jsonl and downloads to a directory
     tmp_media = workdir / "media"
     tmp_media.mkdir(exist_ok=True)
-    run_check(["twarc2", "media", str(raw_jsonl), "--download-dir", str(tmp_media)])
+    run_check(["twarc2", "--bearer-token", os.environ["TWITTER_BEARER_TOKEN"], "media", str(raw_jsonl), "--download-dir", str(tmp_media)])
 
     moved = []
     for f in tmp_media.rglob("*"):
