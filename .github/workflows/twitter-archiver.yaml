@@ -35,10 +35,8 @@ jobs:
           TWITTER_BEARER_TOKEN: ${{ secrets.TWITTER_BEARER_TOKEN }}
         run: |
           mkdir -p ~/.config/twarc
-          cat > ~/.config/twarc/config <<EOF
-          [twarc]
-          bearer_token = ${TWITTER_BEARER_TOKEN}
-          EOF
+          printf "[twarc]\nbearer_token = %s\n" "$TWITTER_BEARER_TOKEN" > ~/.config/twarc/config
+          cat ~/.config/twarc/config
 
       - name: Run archiver (process_bookmarks.py)
         env:
