@@ -16,6 +16,20 @@ def run(cmd):
         raise RuntimeError(f"Command failed: {' '.join(cmd)}\n{r.stderr}")
     return r
 
+def run_check(cmd):
+    # run a command and fail with helpful stderr/stdout
+    r = subprocess.run(cmd, text=True, env=os.environ, capture_output=True)
+    if r.returncode != 0:
+        raise RuntimeError(f"Command failed: {' '.join(cmd)}\n{r.stderr or r.stdout}")
+    return r
+
+def run_to_file(cmd, outpath: pathlib.Path):
+    # run a command that writes to stdout; save stdout to a file
+    with open(outpath, "w", encoding="utf-8") as f:
+        r = subprocess.run(cmd, text=True, env=os.environ, stdout=f, stderr=subprocess.PIPE)
+    if r.returncode != 0:
+        raise RuntimeError(f"Command failed: {' '.join(cmd)}\n{r.stderr}")
+
 def iso_now():
     return datetime.datetime.utcnow().replace(microsecond=0).isoformat() + "Z"
 
@@ -31,28 +45,27 @@ def extract_author(obj):
     return f"@{obj.get('author_id','unknown')}"
 
 def fetch_thread(url: str, workdir: pathlib.Path):
-    raw_json  = workdir / "thread.jsonl"   # conversation outputs JSONL
-    flat_json = workdir / "thread.jsonl"   # we'll re-use JSONL after flatten
+    raw_jsonl  = workdir / "thread.jsonl"
+    flat_jsonl = workdir / "thread_flat.jsonl"
 
     tid = tweet_id_from_url(url) or url.strip()
     if not re.fullmatch(r"\d+", tid):
-        raise RuntimeError(f"Could not extract tweet ID from URL: {url}")
+        raise RuntimeError(f"Could not extract numeric tweet ID from URL: {url}")
 
-    # Prefer full conversation; fallback to single tweet if that fails
+    # Prefer the full conversation (writes to stdout, we capture to file)
     try:
-        # either of these forms is fine; we use positional output file
-        run(["twarc2", "conversation", tid, str(raw_json)])
+        run_to_file(["twarc2", "conversation", tid], raw_jsonl)
     except RuntimeError as e:
         print(f"[warn] conversation fetch failed, falling back to single tweet: {e}")
-        run(["twarc2", "tweet", tid, str(raw_json)])
+        run_to_file(["twarc2", "tweet", tid], raw_jsonl)
 
-    # Flatten into one “simple” line per tweet
-    flat_out = workdir / "thread_flat.jsonl"
-    run(["twarc2", "flatten", str(raw_json), str(flat_out)])
+    # Flatten: reads raw_jsonl, writes to stdout; capture to flat_jsonl
+    run_to_file(["twarc2", "flatten", str(raw_jsonl)], flat_jsonl)
 
-    # Download media referenced in raw_json
-    tmp_media = workdir / "media"; tmp_media.mkdir(exist_ok=True)
-    run(["twarc2", "media", str(raw_json), "--download-dir", str(tmp_media)])
+    # Media: reads raw_jsonl and downloads to a directory
+    tmp_media = workdir / "media"
+    tmp_media.mkdir(exist_ok=True)
+    run_check(["twarc2", "media", str(raw_jsonl), "--download-dir", str(tmp_media)])
 
     moved = []
     for f in tmp_media.rglob("*"):
@@ -73,7 +86,7 @@ def fetch_thread(url: str, workdir: pathlib.Path):
         shutil.move(str(f), str(target))
         moved.append(target.name)
 
-    return raw_json, flat_out, moved
+    return raw_jsonl, flat_jsonl, moved
 
 def read_jsonl(path):
     objs = []

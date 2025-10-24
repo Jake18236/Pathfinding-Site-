@@ -30,6 +30,14 @@ jobs:
           python -m pip install --upgrade pip
           pip install twarc requests python-slugify
 
+      - name: Twarc smoke test (token check)
+        env:
+          TWARC_BEARER_TOKEN: ${{ secrets.TWITTER_BEARER_TOKEN }}
+        run: |
+          test -n "$TWARC_BEARER_TOKEN" || (echo "TOKEN MISSING" && exit 1)
+          twarc2 --version
+          twarc2 help conversation
+
       - name: Run archiver (process_bookmarks.py)
         env:
           SHEETS_WEBHOOK_URL: ${{ secrets.SHEETS_WEBHOOK_URL }}
