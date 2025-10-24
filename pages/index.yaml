@@ -3,13 +3,13 @@ icon:       fa-rocket
 navigation:
     - name: "Courses"
       link: "#courses"
-      icon: "fa-cogs"
+      icon: "fa-chalkboard-user"
     - name: "Learning"
       link: "#learning"
-      icon: "fa-calendar"
+      icon: "fa-brain"
     - name: "Library"
       link: "#library"
-      icon: "fa-balance-scale"
+      icon: "fa-book"
 internal:
 external:
     resources:  'csv:static/csv/resources.csv'
@@ -38,7 +38,7 @@ body:       |
 
     <div class="row">
         <div class="page-header">
-            <h2 id="courses"><i class="fa fa-cogs"></i> Courses</h2>
+            <h2 id="courses"><i class="fa-solid fa-chalkboard-user"></i> Courses</h2>
         </div>
     </div>
 
@@ -85,7 +85,7 @@ body:       |
 
     <div class="row">
         <div class="page-header">
-            <h2 id="learning"><i class="fa fa-clock"></i> Learning</h2>
+            <h2 id="learning"><i class="fa-solid fa-brain"></i> Learning</h2>
         </div>
     </div>
     <div markdown="0">
@@ -232,7 +232,7 @@ body:       |
 
     <div class="row">
         <div class="page-header">
-            <h2 id="library"><i class="fa fa-balance-scale"></i> Library</h2>
+            <h2 id="library"><i class="fa-solid fa-book"></i> Library</h2>
         </div>
     </div>
     <div markdown="0">
