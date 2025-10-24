@@ -94,7 +94,7 @@ body:       |
     {% end %}
     {% if learning_entries %}
         {% set type_icons = {
-            'reading': 'fa-solid fa-book',
+            'book': 'fa-solid fa-book',
             'video': 'fa-solid fa-video-camera',
             'notebook': 'fa-brands fa-python',
             'slides': 'fa-solid fa-person-chalkboard',
