@@ -41,8 +41,13 @@ jobs:
         env:
           COURSE_RESOURCES_CSV_URL: https://docs.google.com/spreadsheets/d/e/2PACX-1vQ0MhdIkphQZpu5C2sQ_1WhGdE8DLxxlVtRirER3_wLgUsli0wvjdq-rYQeStwf9ubSVeDaKDNUbYeh/pub?gid=518321558&single=true&output=csv
         run: |
-          mkdir -p static/csv
+          mkdir -p static/csv static/img/book_cover_thumbnails
           curl -L -s "$COURSE_RESOURCES_CSV_URL" -o static/csv/resources.csv
+          python3 scripts/fetch_book_covers.py \
+            --resources static/csv/resources.csv \
+            --dest static/img/book_cover_thumbnails \
+            --size L \
+            --pause 0.05
           make clean && make build
 
       - name: Checkout gh-pages (publish)

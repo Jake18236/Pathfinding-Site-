@@ -21,6 +21,7 @@ import csv
 import io
 import os
 import itertools
+import pathlib
 import sys
 import datetime as pydatetime
 
@@ -37,6 +38,10 @@ try:
     import requests  # type: ignore
 except Exception:
     requests = None
+
+
+ROOT_DIR = pathlib.Path(__file__).resolve().parents[1]
+COVER_THUMBNAILS_DIR = ROOT_DIR / "static" / "img" / "book_cover_thumbnails"
 
 # Page
 
@@ -185,6 +190,32 @@ def _load_csv_to_resources_map(src: str):
             entry['export_id'] = export_id
         if row.get('id'):
             entry['id'] = row['id']
+
+        cover_value = (
+            row.get('cover')
+            or row.get('image')
+            or row.get('cover_url')
+            or row.get('thumbnail')
+        )
+        if cover_value:
+            entry['cover'] = cover_value
+        else:
+            candidate_ids = []
+            if row.get('id'):
+                candidate_ids.append(row['id'])
+            if export_id and export_id not in candidate_ids:
+                candidate_ids.append(export_id)
+            if lecture_id and lecture_id not in candidate_ids:
+                candidate_ids.append(lecture_id)
+            for cid in candidate_ids:
+                thumb_path = COVER_THUMBNAILS_DIR / f"{cid}.jpg"
+                if thumb_path.exists():
+                    try:
+                        rel_path = thumb_path.relative_to(ROOT_DIR)
+                        entry['cover'] = rel_path.as_posix()
+                    except ValueError:
+                        entry['cover'] = thumb_path.as_posix()
+                    break
 
         out.setdefault(lecture_id, []).append(entry)
         kept_rows += 1
