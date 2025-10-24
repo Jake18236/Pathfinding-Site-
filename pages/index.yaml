@@ -106,94 +106,6 @@ body:       |
         } %}
         {% set sorted_learning = sort_by_key(learning_entries, 'date_added_sort_key', True) %}
         {% set current_year = datetime.datetime.now().year %}
-        {% set current_year_entries = [item for item in sorted_learning if item.get('date_added_year') == current_year] %}
-        {% set recent_learning = current_year_entries[:5] %}
-        <div class="row">
-            <div class="col-sm-12">
-                <ul class="list-group">
-                {% if recent_learning %}
-                    {% for item in recent_learning %}
-                        {% set display_name = (item.get('name', '') or '').strip() %}
-                        {% set type_key = (item.get('type', '') or '').lower() %}
-                        {% set icon_class = type_icons.get(type_key, 'fa-solid fa-paperclip') %}
-                        <li class="list-group-item" style="display: flex; align-items: center; justify-content: space-between;">
-                            <div style="display: flex; align-items: center;">
-                                <i class="{{ icon_class }}" style="margin-right: 10px; color: #4e73df;"></i>
-                                <div>
-                                    {% if item.get('link') %}
-                                        <a href="{{ item['link'] }}">{{ display_name }}</a>
-                                    {% else %}
-                                        {{ display_name }}
-                                    {% end %}
-                                    {% if item.get('author') or item.get('student') %}
-                                        <div class="text-muted" style="font-size: 0.85em;">
-                                            {% if item.get('author') %}
-                                                {{ (item['author'] or '').strip() }}
-                                            {% else %}
-                                                {{ (item['student'] or '').strip() }}
-                                            {% end %}
-                                        </div>
-                                    {% end %}
-                                </div>
-                            </div>
-                            <div class="text-muted" style="font-size: 0.85em;">
-                                {% if item.get('date_added_display') %}
-                                    {{ item['date_added_display'] }}
-                                {% end %}
-                            </div>
-                        </li>
-                    {% end %}
-                {% else %}
-                    <li class="list-group-item text-muted">No learning resources recorded yet for {{ current_year }}.</li>
-                {% end %}
-                </ul>
-            </div>
-        </div>
-        {% if current_year_entries and len(current_year_entries) > 5 %}
-            <div class="row" style="margin-top: 10px;">
-                <div class="col-sm-12">
-                    <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#learning-current-year" aria-expanded="false" aria-controls="learning-current-year">
-                        Show all {{ current_year }} learning resources
-                        <i class="fa fa-caret-down"></i>
-                    </button>
-                    <div class="collapse" id="learning-current-year" style="margin-top: 10px;">
-                        <ul class="list-group">
-                        {% for item in current_year_entries %}
-                            {% set display_name = (item.get('name', '') or '').strip() %}
-                            {% set type_key = (item.get('type', '') or '').lower() %}
-                            {% set icon_class = type_icons.get(type_key, 'fa-solid fa-paperclip') %}
-                            <li class="list-group-item" style="display: flex; align-items: center; justify-content: space-between;">
-                                <div style="display: flex; align-items: center;">
-                                    <i class="{{ icon_class }}" style="margin-right: 10px; color: #4e73df;"></i>
-                                    <div>
-                                        {% if item.get('link') %}
-                                            <a href="{{ item['link'] }}">{{ display_name }}</a>
-                                        {% else %}
-                                            {{ display_name }}
-                                        {% end %}
-                                        {% if item.get('author') or item.get('student') %}
-                                            <div class="text-muted" style="font-size: 0.85em;">
-                                                {% if item.get('author') %}
-                                                    {{ (item['author'] or '').strip() }}
-                                                {% else %}
-                                                    {{ (item['student'] or '').strip() }}
-                                                {% end %}
-                                            </div>
-                                        {% end %}
-                                    </div>
-                                </div>
-                                <div class="text-muted" style="font-size: 0.85em;">
-                                    {% if item.get('date_added_display') %}
-                                        {{ item['date_added_display'] }}
-                                    {% end %}
-                                </div>
-                            </li>
-                        {% end %}
-                        </ul>
-                    </div>
-                </div>
-            </div>
-        {% end %}
         {% if len(sorted_learning) > 5 %}
             {% set grouped_learning = {} %}
             {% for item in sorted_learning %}
@@ -209,13 +121,9 @@ body:       |
                     {% for year in ordered_years %}
                         {% set year_slug = 'learning-year-' + slugify('%s' % year) %}
                         {% set year_entries = grouped_learning.get(year, []) %}
-                        {% if year == current_year %}
-                            {% set preview_list = current_year_entries[:5] %}
-                            {% set collapse_class = 'in' %}
-                        {% else %}
-                            {% set preview_list = year_entries[:5] %}
-                            {% set collapse_class = '' %}
-                        {% end %}
+                        {% set preview_list = year_entries[:5] %}
+                        {% set remaining_list = year_entries[5:] %}
+                        {% set collapse_class = 'in' if year == current_year else '' %}
                         <div class="panel panel-default" style="border-radius: 4px; overflow: hidden; margin-bottom: 10px;">
                             <div class="panel-heading" role="tab" id="{{ year_slug }}-heading" style="padding: 0;">
                                 <button class="btn btn-link btn-block" type="button" data-toggle="collapse" data-target="#{{ year_slug }}" aria-expanded="false" aria-controls="{{ year_slug }}" style="text-align: left; padding: 12px 15px;">
@@ -260,14 +168,14 @@ body:       |
                                     <li class="list-group-item text-muted">No learning resources recorded for {{ year }}.</li>
                                 {% end %}
                                 </ul>
-                                {% if year_entries and len(year_entries) > len(preview_list) %}
+                                {% if remaining_list %}
                                     <button class="btn btn-link btn-sm" type="button" data-toggle="collapse" data-target="#{{ year_slug }}-full" aria-expanded="false" aria-controls="{{ year_slug }}-full" style="margin-top: 10px;">
                                         Show all {{ year }} learning resources
                                         <i class="fa fa-caret-down"></i>
                                     </button>
                                     <div class="collapse" id="{{ year_slug }}-full" style="margin-top: 10px;">
                                         <ul class="list-group" style="margin-bottom: 0;">
-                                        {% for item in year_entries %}
+                                        {% for item in remaining_list %}
                                             {% set display_name = (item.get('name', '') or '').strip() %}
                                             {% set type_key = (item.get('type', '') or '').lower() %}
                                             {% set icon_class = type_icons.get(type_key, 'fa-solid fa-paperclip') %}
@@ -487,38 +395,6 @@ body:       |
                         $card.toggle(matches);
                     });
                 });
-                if ($libraryContainer.length && $libraryCards.length > 1) {
-                    let adjusting = false;
-                    const buffer = 60;
-                    $libraryContainer.on('scroll', function() {
-                        if (adjusting) { return; }
-                        const el = this;
-                        const maxScroll = el.scrollWidth - el.clientWidth;
-                        if (maxScroll <= 0) { return; }
-                        const scrollLeft = el.scrollLeft;
-                        if (scrollLeft >= maxScroll - buffer) {
-                            const $first = $libraryContainer.children(':visible').first();
-                            const $fallbackFirst = $libraryContainer.children().first();
-                            const $target = $first.length ? $first : $fallbackFirst;
-                            if (!$target.length) { return; }
-                            const shiftWidth = $target.outerWidth(true);
-                            adjusting = true;
-                            $target.appendTo($libraryContainer);
-                            el.scrollLeft -= shiftWidth;
-                            adjusting = false;
-                        } else if (scrollLeft <= buffer) {
-                            const $last = $libraryContainer.children(':visible').last();
-                            const $fallbackLast = $libraryContainer.children().last();
-                            const $target = $last.length ? $last : $fallbackLast;
-                            if (!$target.length) { return; }
-                            const shiftWidth = $target.outerWidth(true);
-                            adjusting = true;
-                            $target.prependTo($libraryContainer);
-                            el.scrollLeft += shiftWidth;
-                            adjusting = false;
-                        }
-                    });
-                }
             }
         });
     </script>
