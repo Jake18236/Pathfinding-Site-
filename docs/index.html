@@ -203,15 +203,21 @@
 	    color: #d5c4a1;
 	}
 	.embed-responsive {
-	    border-radius: 8px;
-	    border: 1px solid rgba(30, 41, 59, 0.18);
-	    box-shadow: 0 6px 16px rgba(15, 23, 42, 0.08);
-	    overflow: hidden;
-	    margin-bottom: 18px;
+ 	    border-radius: 8px;
+ 	    border: 1px solid rgba(30, 41, 59, 0.18);
+ 	    box-shadow: 0 6px 16px rgba(15, 23, 42, 0.08);
+ 	    overflow: hidden;
+ 	    margin-bottom: 18px;
+	}
+	.course-embed {
+	    background-color: #ffffff;
 	}
 	[data-theme="gruvbox"] .embed-responsive {
 	    border-color: #665c54;
 	    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.25);
+	    background-color: rgba(40, 40, 40, 0.9);
+	}
+	[data-theme="gruvbox"] .course-embed {
 	    background-color: rgba(40, 40, 40, 0.9);
 	}
 	</style>
@@ -269,12 +275,12 @@
 <div class="row">
     <div class="col-md-6 col-sm-12" style="margin-bottom: 30px;">
         <h3 style="margin-top: 0; margin-bottom: 12px; font-weight: 600; text-align: center;">CSE 10124 &middot; Introduction to Using Generative AI</h3>
-        <div style="position: relative; width: 100%; padding-bottom: 56.25%; height: 0; overflow: hidden; border-radius: 4px; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);">
+        <div class="embed-responsive embed-responsive-16by9 course-embed">
             <iframe
                 src="https://10124.williamtheisen.com"
                 title="Introductory AI Course Site"
                 loading="lazy"
-                style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: 0;"
+                class="embed-responsive-item"
                 allowfullscreen>
             </iframe>
         </div>
@@ -288,12 +294,12 @@
     </div>
     <div class="col-md-6 col-sm-12" style="margin-bottom: 30px;">
         <h3 style="margin-top: 0; margin-bottom: 12px; font-weight: 600; text-align: center;">CSE 30124 &middot; Introduction to Artificial Intelligence</h3>
-        <div style="position: relative; width: 100%; padding-bottom: 56.25%; height: 0; overflow: hidden; border-radius: 4px; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);">
+        <div class="embed-responsive embed-responsive-16by9 course-embed">
             <iframe
                 src="https://30124.williamtheisen.com"
                 title="Advanced AI Course Site"
                 loading="lazy"
-                style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: 0;"
+                class="embed-responsive-item"
                 allowfullscreen>
             </iframe>
         </div>
