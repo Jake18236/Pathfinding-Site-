@@ -45,6 +45,13 @@
     "display_name": "CSE 30124 \u00b7 Introduction to Artificial Intelligence",
     "entries": [
       {
+        "message": "adding gruvbox light",
+        "author": "Bill",
+        "date_iso": "2025-10-24T21:19:18Z",
+        "date_display": "Oct 24, 2025",
+        "url": "https://github.com/wtheisen/nd-cse-30124/commit/c04a17881c869df99e53a62332b7e2a41c3a1c38"
+      },
+      {
         "message": "trying to get nice zebra effect for schedule rows",
         "author": "Bill",
         "date_iso": "2025-10-24T20:43:38Z",
