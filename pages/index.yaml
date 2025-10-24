@@ -100,6 +100,7 @@ body:       |
             'slides': 'fa-solid fa-person-chalkboard',
             'podcast': 'fa-solid fa-podcast',
             'blogpost': 'fa-solid fa-share-alt',
+            'tweet': 'fa-brands fa-square-x-twitter',
             'paper': 'fa-solid fa-file-pdf',
             'essay': 'fa-solid fa-file-pdf'
         } %}
@@ -371,6 +372,7 @@ body:       |
         window.addEventListener("load", function() {
             if (window.jQuery && typeof window.jQuery.fn.tooltip === 'function') {
                 window.jQuery('[data-toggle="tooltip"]').tooltip();
+                const $libraryContainer = window.jQuery('#library-card-container');
                 const $libraryCards = window.jQuery('.library-card-wrapper');
                 window.jQuery('#library-search').on('input', function() {
                     const term = window.jQuery(this).val().toLowerCase().trim();
@@ -382,6 +384,38 @@ body:       |
                         $card.toggle(matches);
                     });
                 });
+                if ($libraryContainer.length && $libraryCards.length > 1) {
+                    let adjusting = false;
+                    const buffer = 60;
+                    $libraryContainer.on('scroll', function() {
+                        if (adjusting) { return; }
+                        const el = this;
+                        const maxScroll = el.scrollWidth - el.clientWidth;
+                        if (maxScroll <= 0) { return; }
+                        const scrollLeft = el.scrollLeft;
+                        if (scrollLeft >= maxScroll - buffer) {
+                            const $first = $libraryContainer.children(':visible').first();
+                            const $fallbackFirst = $libraryContainer.children().first();
+                            const $target = $first.length ? $first : $fallbackFirst;
+                            if (!$target.length) { return; }
+                            const shiftWidth = $target.outerWidth(true);
+                            adjusting = true;
+                            $target.appendTo($libraryContainer);
+                            el.scrollLeft -= shiftWidth;
+                            adjusting = false;
+                        } else if (scrollLeft <= buffer) {
+                            const $last = $libraryContainer.children(':visible').last();
+                            const $fallbackLast = $libraryContainer.children().last();
+                            const $target = $last.length ? $last : $fallbackLast;
+                            if (!$target.length) { return; }
+                            const shiftWidth = $target.outerWidth(true);
+                            adjusting = true;
+                            $target.prependTo($libraryContainer);
+                            el.scrollLeft += shiftWidth;
+                            adjusting = false;
+                        }
+                    });
+                }
             }
         });
     </script>
