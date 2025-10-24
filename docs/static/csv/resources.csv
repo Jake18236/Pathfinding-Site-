@@ -1,4 +1,4 @@
-id,name,date added,read,author,type,link,rating,notes,checked out,student,export_id
+id,read,date added,name,author,type,link,rating,notes,checked out,student,export_id
 but-what-is-a-neural-network-deep-learning-chapter-1,FALSE,11/7/2024,But what is a neural network? | Deep learning chapter 1,3b1b,video,https://www.youtube.com/watch?v=aircAruvnKk,,,FALSE,,lec-learning
 gradient-descent-how-neural-networks-learn-deep-learning-chapter-2,FALSE,11/7/2024,"Gradient descent, how neural networks learn | Deep Learning Chapter 2",3b1b,video,https://www.youtube.com/watch?v=IHZwWFHWa-w,,,FALSE,,lec-learning
 backpropagation-intuitively-deep-learning-chapter-3,FALSE,11/7/2024,"Backpropagation, intuitively | Deep Learning Chapter 3",3b1b,video,https://www.youtube.com/watch?v=Ilg3gGewQ5U,,,FALSE,,lec-learning
