@@ -35,7 +35,7 @@ jobs:
           TWITTER_BEARER_TOKEN: ${{ secrets.TWITTER_BEARER_TOKEN }}
         run: |
           mkdir -p ~/.config/twarc
-          cat > ~/.config/twarc/config <<'EOF'
+          cat > ~/.config/twarc/config <<EOF
           [twarc]
           bearer_token = ${TWITTER_BEARER_TOKEN}
           EOF
