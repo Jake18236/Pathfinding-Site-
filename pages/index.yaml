@@ -100,7 +100,8 @@ body:       |
             'slides': 'fa-solid fa-person-chalkboard',
             'podcast': 'fa-solid fa-podcast',
             'blogpost': 'fa-solid fa-share-alt',
-            'paper': 'fa-solid fa-file-pdf'
+            'paper': 'fa-solid fa-file-pdf',
+            'essay': 'fa-solid fa-file-pdf'
         } %}
         {% set sorted_learning = sort_by_key(learning_entries, 'date_added_sort_key', True) %}
         {% set recent_learning = sorted_learning[:5] %}
