@@ -1,0 +1,55 @@
+name: Archive Tweet
+
+on:
+  schedule:
+    - cron: "0 */8 * * *"      # every 8 hours (midnight, 8am, 4pm UTC)
+  workflow_dispatch: {}        # allow manual runs
+  # (no "push" trigger on purpose)
+
+concurrency:
+  group: tweet-archiver
+  cancel-in-progress: true     # never let two archiver runs overlap
+
+jobs:
+  archive:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write          # needed to commit MD/media and usage file
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install archiver deps
+        run: |
+          python -m pip install --upgrade pip
+          pip install twarc requests python-slugify
+
+      - name: Configure Twarc
+        env:
+          TWITTER_BEARER_TOKEN: ${{ secrets.TWITTER_BEARER_TOKEN }}
+        run: |
+          mkdir -p ~/.config/twarc
+          cat > ~/.config/twarc/config <<'EOF'
+          [twarc]
+          bearer_token = ${TWITTER_BEARER_TOKEN}
+          EOF
+
+      - name: Run archiver (process_bookmarks.py)
+        env:
+          SHEETS_WEBHOOK_URL: ${{ secrets.SHEETS_WEBHOOK_URL }}
+        run: |
+          python scripts/process_bookmarks.py
+
+      - name: Commit archived Markdown/media and counters
+        run: |
+          git config user.name "github-actions"
+          git config user.email "noreply@github.com"
+          git add -A
+          git commit -m "[skip ci] tweet-archiver: new items" || echo "Nothing to commit"
+          git push || true

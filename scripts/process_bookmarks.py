@@ -1,83 +1,138 @@
 #!/usr/bin/env python3
-import pathlib, re, subprocess, json, os, urllib.request
+"""
+Sheet-queue controller for the tweet archiver.
+
+Flow:
+1) POST {action:"claim"} to Apps Script → returns one NEW item {id, url} and marks it PROCESSING (checkbox TRUE + note).
+2) Run archive_tweet.py on that URL → produces markdown + media, returns meta.
+3) POST {action:"complete", id, meta} to Apps Script → marks DONE and appends row to Learning tab.
+
+Environment:
+  SHEETS_WEBHOOK_URL   - required (Apps Script Web App URL)
+  QUEUE_SHARED_SECRET  - optional (must match Apps Script SHARED_SECRET if set)
+
+Repo layout assumptions:
+  scripts/archive_tweet.py
+  static/md/tweets, static/img/tweets, static/vid/tweets exist (archiver writes there)
+"""
+
+import json
+import os
+import pathlib
+import subprocess
+import sys
+import urllib.request
 
 ROOT = pathlib.Path(__file__).resolve().parents[1]
-
-# ====== YOUR TREE ======
-BOOKMARKS           = ROOT / "static/txt/bookmarks.txt"
-BOOKMARKS_PROCESSED = ROOT / "static/txt/processed_bookmarks.txt"
-ARCHIVER            = ROOT / "scripts" / "archive_tweet.py"
-# =======================
+ARCHIVER = ROOT / "scripts" / "archive_tweet.py"
 
 WEBHOOK_URL = os.environ.get("SHEETS_WEBHOOK_URL")
+SHARED_SECRET = os.environ.get("QUEUE_SHARED_SECRET", "")
 
-def read_lines(p: pathlib.Path):
-    if not p.exists(): return []
-    return [ln.strip() for ln in p.read_text(encoding="utf-8").splitlines()]
+# Process only ONE item per run (protects free API & keeps workflows short)
+MAX_PER_RUN = 1
 
-def write_lines(p: pathlib.Path, lines):
-    p.parent.mkdir(parents=True, exist_ok=True)
-    p.write_text("\n".join(lines) + ("\n" if lines else ""), encoding="utf-8")
 
-def is_tweet_url(url: str) -> bool:
-    return bool(re.search(r"(https?://)?(x\.com|twitter\.com)/.+/status/\d+", url))
-
-def post_rows(rows):
-    if not WEBHOOK_URL or not rows: return
-    data = json.dumps({"rows": rows}).encode("utf-8")
+def post_json(url: str, payload: dict) -> dict:
+    data = json.dumps(payload).encode("utf-8")
     req = urllib.request.Request(
-        WEBHOOK_URL, data=data,
+        url,
+        data=data,
         headers={"Content-Type": "application/json"},
         method="POST",
     )
-    with urllib.request.urlopen(req, timeout=20) as resp:
-        _ = resp.read()
+    with urllib.request.urlopen(req, timeout=30) as resp:
+        text = resp.read().decode("utf-8")
+    try:
+        return json.loads(text)
+    except Exception:
+        return {"_raw": text}
 
-def to_sheet_row(meta: dict) -> dict:
+
+def claim_one() -> dict | None:
+    payload = {"action": "claim"}
+    if SHARED_SECRET:
+        payload["secret"] = SHARED_SECRET
+    res = post_json(WEBHOOK_URL, payload)
+    return res.get("item")
+
+
+def complete_item(item_id: int | str, meta: dict) -> None:
+    payload = {"action": "complete", "id": item_id, "meta": meta}
+    if SHARED_SECRET:
+        payload["secret"] = SHARED_SECRET
+    _ = post_json(WEBHOOK_URL, payload)
+
+
+def to_sheet_meta(arch_meta: dict) -> dict:
+    """Map archive_tweet.py output to the Learning sheet schema inputs."""
     return {
-        "name":   meta.get("name") or meta.get("title") or "",
-        "author": meta.get("author") or "",
-        "type":   ("thread" if "Thread" in (meta.get("title") or "") else "tweet"),
-        "link":   meta.get("url") or "",
-        "date":   (meta.get("date") or "")[:10],
+        "name":   arch_meta.get("name") or arch_meta.get("title") or "",
+        "author": arch_meta.get("author") or "",
+        "type":   ("thread" if "Thread" in (arch_meta.get("title") or "") else "tweet"),
+        "link":   arch_meta.get("url") or "",
     }
 
+
+def archive_url(url: str) -> dict | None:
+    """Run archive_tweet.py and return its 'archived' meta dict."""
+    proc = subprocess.run(
+        ["python", str(ARCHIVER), url],
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+    if proc.returncode != 0:
+        print(f"[error] archiver failed ({proc.returncode})\nSTDERR:\n{proc.stderr}", file=sys.stderr)
+        return None
+
+    # Last line of stdout is a JSON object like: {"archived": {...}, "md": "path"}
+    try:
+        last_line = proc.stdout.strip().splitlines()[-1]
+        obj = json.loads(last_line)
+        return obj.get("archived")
+    except Exception as e:
+        print(f"[error] could not parse archiver output: {e}\nSTDOUT:\n{proc.stdout}", file=sys.stderr)
+        return None
+
+
 def main():
-    processed = set(ln for ln in read_lines(BOOKMARKS_PROCESSED) if ln and not ln.startswith("#"))
-    queue = [ln for ln in read_lines(BOOKMARKS) if ln and not ln.startswith("#")]
-    to_process = [u for u in queue if is_tweet_url(u) and u not in processed]
+    if not WEBHOOK_URL:
+        print("No SHEETS_WEBHOOK_URL set; exiting.")
+        sys.exit(0)
 
-    if not to_process:
-        print("No new bookmarks to archive.")
-        return
+    processed_count = 0
 
-    # optional safety cap for API usage
-    MAX_PER_RUN = 10
-    to_process = to_process[:MAX_PER_RUN]
+    for _ in range(MAX_PER_RUN):
+        item = claim_one()
+        if not item:
+            print("No queued items.")
+            break
 
-    print(f"Archiving {len(to_process)} new URL(s)…")
-    rows_for_sheet = []
-    for url in to_process:
+        item_id = item.get("id")
+        url = (item.get("url") or "").strip()
+        if not url:
+            print(f"[warn] Claimed item {item_id} missing URL; skipping.")
+            continue
+
+        print(f"Archiving: {url} (queue id {item_id})")
+
+        meta = archive_url(url)
+        if not meta:
+            print(f"[warn] Archiving failed for {url}. Leave row as PROCESSING; you may uncheck to requeue.")
+            continue
+
+        # Send minimal fields back for Learning
         try:
-            r = subprocess.run(
-                ["python", str(ARCHIVER), url],
-                capture_output=True, text=True, check=True
-            )
-            out = r.stdout.strip().splitlines()[-1]
-            meta = json.loads(out).get("archived", {})
-            if meta:
-                rows_for_sheet.append(to_sheet_row(meta))
-        except subprocess.CalledProcessError as e:
-            print(f"[error] Failed to archive {url}: {e}\n{e.stderr}")
-
-    if rows_for_sheet:
-        try:
-            post_rows(rows_for_sheet)
-            print(f"Logged {len(rows_for_sheet)} row(s) to Google Sheets.")
+            sheet_meta = to_sheet_meta(meta)
+            complete_item(item_id, sheet_meta)
+            processed_count += 1
+            print(f"Completed {url} → appended to Learning, marked DONE.")
         except Exception as e:
-            print(f"[warn] Failed to log to Google Sheets: {e}")
+            print(f"[warn] Could not complete queue item {item_id}: {e}")
 
-    write_lines(BOOKMARKS_PROCESSED, sorted(set(list(processed) + to_process)))
+    print(f"Run finished. Processed {processed_count} item(s).")
+
 
 if __name__ == "__main__":
     main()
