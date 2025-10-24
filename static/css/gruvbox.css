@@ -8,10 +8,10 @@ body {
 }
 
 .container {
-  background-color: #282828 !important;
-  border-color: #504945 !important;
-  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.45) !important;
-  color: #ebdbb2 !important;
+  background-color: transparent !important;
+  border-color: transparent !important;
+  box-shadow: none !important;
+  color: inherit !important;
 }
 
 .page-header {
