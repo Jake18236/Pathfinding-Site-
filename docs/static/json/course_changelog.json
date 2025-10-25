@@ -4,6 +4,20 @@
     "display_name": "CSE 10124 \u00b7 Introduction to Using Generative AI",
     "entries": [
       {
+        "message": "updating csses",
+        "author": "Bill",
+        "date_iso": "2025-10-25T16:24:34Z",
+        "date_display": "Oct 25, 2025",
+        "url": "https://github.com/wtheisen/nd-cse-10124/commit/4306702b3375384b748f70efb150966633ec592a"
+      },
+      {
+        "message": "First pass at new schedule dates (auto-generated)",
+        "author": "Bill",
+        "date_iso": "2025-10-25T16:18:56Z",
+        "date_display": "Oct 25, 2025",
+        "url": "https://github.com/wtheisen/nd-cse-10124/commit/17fda38eb52e7834b696442c269e50720441f72e"
+      },
+      {
         "message": "Add Gruvbox theme support and toggle functionality to base template",
         "author": "Bill",
         "date_iso": "2025-10-24T19:32:41Z",
@@ -23,20 +37,6 @@
         "date_iso": "2025-10-23T18:25:57Z",
         "date_display": "Oct 23, 2025",
         "url": "https://github.com/wtheisen/nd-cse-10124/commit/b6295b931ba82872abd1b75e86e5a0533f740c01"
-      },
-      {
-        "message": "Update course content and schedule for CSE 10124, including title change, revised topics, and updated office hours.",
-        "author": "Bill",
-        "date_iso": "2025-10-23T18:22:30Z",
-        "date_display": "Oct 23, 2025",
-        "url": "https://github.com/wtheisen/nd-cse-10124/commit/9a89c9744f6bf3793fd60f4125b748fa6de5eb3f"
-      },
-      {
-        "message": "Initial commit",
-        "author": "wtheisen",
-        "date_iso": "2025-10-23T17:34:39Z",
-        "date_display": "Oct 23, 2025",
-        "url": "https://github.com/wtheisen/nd-cse-10124/commit/652e83699d670444e4bff629d64ac40e5b5d701b"
       }
     ]
   },
