@@ -1,12 +1,84 @@
 {
   "cse10124": {
     "repo": "wtheisen/nd-cse-10124",
-    "error": "HTTP 403",
-    "entries": []
+    "display_name": "CSE 10124 \u00b7 Introduction to Using Generative AI",
+    "entries": [
+      {
+        "message": "updating csses",
+        "author": "Bill",
+        "date_iso": "2025-10-25T16:24:34Z",
+        "date_display": "Oct 25, 2025",
+        "url": "https://github.com/wtheisen/nd-cse-10124/commit/4306702b3375384b748f70efb150966633ec592a"
+      },
+      {
+        "message": "First pass at new schedule dates (auto-generated)",
+        "author": "Bill",
+        "date_iso": "2025-10-25T16:18:56Z",
+        "date_display": "Oct 25, 2025",
+        "url": "https://github.com/wtheisen/nd-cse-10124/commit/17fda38eb52e7834b696442c269e50720441f72e"
+      },
+      {
+        "message": "Add Gruvbox theme support and toggle functionality to base template",
+        "author": "Bill",
+        "date_iso": "2025-10-24T19:32:41Z",
+        "date_display": "Oct 24, 2025",
+        "url": "https://github.com/wtheisen/nd-cse-10124/commit/f438b9d464b52f8b4d32d8300ddb51829e76dad1"
+      },
+      {
+        "message": "fixing cname thing",
+        "author": "Bill",
+        "date_iso": "2025-10-23T19:13:10Z",
+        "date_display": "Oct 23, 2025",
+        "url": "https://github.com/wtheisen/nd-cse-10124/commit/d6a4443d8da10769adb3ff7406d838ae5b1fd8fe"
+      },
+      {
+        "message": "Remove outdated TA assignment files for Homework 01 to Homework 05",
+        "author": "Bill",
+        "date_iso": "2025-10-23T18:25:57Z",
+        "date_display": "Oct 23, 2025",
+        "url": "https://github.com/wtheisen/nd-cse-10124/commit/b6295b931ba82872abd1b75e86e5a0533f740c01"
+      }
+    ]
   },
   "cse30124": {
     "repo": "wtheisen/nd-cse-30124",
-    "error": "HTTP 403",
-    "entries": []
+    "display_name": "CSE 30124 \u00b7 Introduction to Artificial Intelligence",
+    "entries": [
+      {
+        "message": "updating homework notebook html url",
+        "author": "Bill",
+        "date_iso": "2025-10-24T21:44:34Z",
+        "date_display": "Oct 24, 2025",
+        "url": "https://github.com/wtheisen/nd-cse-30124/commit/8d8d116714f6a86821e6fd5ccd17bff46ba6fff4"
+      },
+      {
+        "message": "trying to have homework iframes respect theme",
+        "author": "Bill",
+        "date_iso": "2025-10-24T21:35:38Z",
+        "date_display": "Oct 24, 2025",
+        "url": "https://github.com/wtheisen/nd-cse-30124/commit/03e33b8ddbe6c518d391f6f999c162e22810e65c"
+      },
+      {
+        "message": "adding gruvbox light",
+        "author": "Bill",
+        "date_iso": "2025-10-24T21:19:18Z",
+        "date_display": "Oct 24, 2025",
+        "url": "https://github.com/wtheisen/nd-cse-30124/commit/c04a17881c869df99e53a62332b7e2a41c3a1c38"
+      },
+      {
+        "message": "trying to get nice zebra effect for schedule rows",
+        "author": "Bill",
+        "date_iso": "2025-10-24T20:43:38Z",
+        "date_display": "Oct 24, 2025",
+        "url": "https://github.com/wtheisen/nd-cse-30124/commit/aeb78a284a988a12ce59574ef0767ce21012a782"
+      },
+      {
+        "message": "expanding gruvbox.css to adapt to schedule and requirements",
+        "author": "Bill",
+        "date_iso": "2025-10-24T20:30:39Z",
+        "date_display": "Oct 24, 2025",
+        "url": "https://github.com/wtheisen/nd-cse-30124/commit/f6bdcc4967af7dd8e1a96bdbf8f543cfe8f493e0"
+      }
+    ]
   }
 }
