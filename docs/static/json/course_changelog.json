@@ -45,6 +45,13 @@
     "display_name": "CSE 30124 \u00b7 Introduction to Artificial Intelligence",
     "entries": [
       {
+        "message": "Adding quiz 09",
+        "author": "Eric Tyson",
+        "date_iso": "2025-10-31T00:08:32Z",
+        "date_display": "Oct 31, 2025",
+        "url": "https://github.com/wtheisen/nd-cse-30124/commit/94331e3c0f4405219377393c179e191f62686bfc"
+      },
+      {
         "message": "updating homework notebook html url",
         "author": "Bill",
         "date_iso": "2025-10-24T21:44:34Z",
@@ -71,13 +78,6 @@
         "date_iso": "2025-10-24T20:43:38Z",
         "date_display": "Oct 24, 2025",
         "url": "https://github.com/wtheisen/nd-cse-30124/commit/aeb78a284a988a12ce59574ef0767ce21012a782"
-      },
-      {
-        "message": "expanding gruvbox.css to adapt to schedule and requirements",
-        "author": "Bill",
-        "date_iso": "2025-10-24T20:30:39Z",
-        "date_display": "Oct 24, 2025",
-        "url": "https://github.com/wtheisen/nd-cse-30124/commit/f6bdcc4967af7dd8e1a96bdbf8f543cfe8f493e0"
       }
     ]
   }
