@@ -77,7 +77,7 @@ artificial-neural-networks-paradigms-applications-and-hardware-implementations,F
 artificial-intelligence-a-modern-approach-fourth-edition,FALSE,,Artificial Intelligence: A Modern Approach (Fourth Edition),"Stuart Russell, Peter Norvig",physical,,,,FALSE,,lec-library
 linear-algebra-and-learning-from-data,FALSE,,Linear Algebra and Learning from Data,Gilbert Strang,physical,,,,FALSE,,lec-library
 an-introduction-to-statistical-learning-with-applications-in-python,FALSE,,An Introduction to Statistical Learning with Applications in Python,"Gareth James, Daniela Witten, Trevor Hastie, Robert Tibshirani, Jonathan Taylor",physical,,,,FALSE,,lec-library
-probabilistic-machine-learning-an-introduction,FALSE,,Probabilistic Machine Learning: An Introduction,Kevin P. Murphy,physical,,,,FALSE,,lec-library
+probabilistic-machine-learning-an-introduction,FALSE,,Probabilistic Machine Learning: An Introduction,Kevin P. Murphy,physical,,,,TRUE,Henry Jochaniewicz,lec-library
 empire-of-ai,FALSE,,Empire of AI,Karen Hao,physical,,,,FALSE,,lec-library
 nexus-a-brief-history-of-information-networks-from-the-stone-age-to-ai,FALSE,,Nexus: A Brief History of Information Networks from the Stone Age to AI,Yuval Noah Harari,physical,,,,FALSE,,lec-library
 deep-learning-foundations-and-concepts,FALSE,,Deep Learning: Foundations and Concepts,"Christopher M. Bishop, Hugh Bishop",physical,,,,FALSE,,lec-library
@@ -97,3 +97,4 @@ deep-learning-for-dummies,FALSE,,Deep Learning for Dummies,"John Paul Mueller, L
 mathematics-for-machine-learning,FALSE,,Mathematics for Machine Learning,Marc Peter Deisenroth,physical,https://www.amazon.com/Mathematics-Machine-Learning-Peter-Deisenroth/dp/110845514X/ref=sr_1_1?crid=DXHWCCE6FCGJ&dib=eyJ2IjoiMSJ9.LVLu1o48uIjPNMruxkqyg0FAet8sMSa5_C8Ci5qfCix_UAdMm2fVJY4pq6TpbZUASGQ7T8l5ccod8S78g_lMGNIjZaQRuIu5mey56LxwZdPAlWF2t5w_4aWQCb5w1rBC6HaL13KTpMsG-8qm1nN-4un1cluIm_rW1B0kgc9l3mVVKw0yRPEswV2Orn3jIdHNvvQbtgCIQIuJyJT3vHgT49bouvHMseLEmeawcQMsMGo.aorFJutLD6in9VhV7-lAkGCaogRZS11gxjbu0P33m5I&dib_tag=se&keywords=Math+for+machine+learning&qid=1761338919&s=books&sprefix=math+for+machine+learning%2Cstripbooks%2C107&sr=1-1,,,TRUE,Kristofer Ulanday,lec-library
 computers-and-thought,FALSE,,Computers and Thought,"Edward A. Feigenbaum, Julian Feldman",physical,,,,FALSE,,lec-library
 handson-large-language-models-language-understanding-and-generation,FALSE,,Hands-On Large Language Models: Language Understanding and Generation,"Jay Alammar, Maarten Grootendorst",physical,,,,FALSE,,lec-library
+if-anyone-builds-it-everyone-dies,FALSE,10/31/2025,"If Anyone Builds It, Everyone Dies","Eliezer Yuskowsky, Nate Soares",physical,https://a.co/d/awFzbQ6,,,FALSE,,lec-library
