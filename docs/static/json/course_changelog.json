@@ -45,6 +45,13 @@
     "display_name": "CSE 30124 \u00b7 Introduction to Artificial Intelligence",
     "entries": [
       {
+        "message": "Updating schedule",
+        "author": "wtheisen",
+        "date_iso": "2025-11-05T12:07:44Z",
+        "date_display": "Nov 05, 2025",
+        "url": "https://github.com/wtheisen/nd-cse-30124/commit/57d7debde2606096dacb02030c26c7643b9e11da"
+      },
+      {
         "message": "Adding quiz 09",
         "author": "Eric Tyson",
         "date_iso": "2025-10-31T00:08:32Z",
@@ -71,13 +78,6 @@
         "date_iso": "2025-10-24T21:19:18Z",
         "date_display": "Oct 24, 2025",
         "url": "https://github.com/wtheisen/nd-cse-30124/commit/c04a17881c869df99e53a62332b7e2a41c3a1c38"
-      },
-      {
-        "message": "trying to get nice zebra effect for schedule rows",
-        "author": "Bill",
-        "date_iso": "2025-10-24T20:43:38Z",
-        "date_display": "Oct 24, 2025",
-        "url": "https://github.com/wtheisen/nd-cse-30124/commit/aeb78a284a988a12ce59574ef0767ce21012a782"
       }
     ]
   }
