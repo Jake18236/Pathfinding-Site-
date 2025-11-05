@@ -45,6 +45,13 @@
     "display_name": "CSE 30124 \u00b7 Introduction to Artificial Intelligence",
     "entries": [
       {
+        "message": "Workin on readins",
+        "author": "wtheisen",
+        "date_iso": "2025-11-05T13:00:08Z",
+        "date_display": "Nov 05, 2025",
+        "url": "https://github.com/wtheisen/nd-cse-30124/commit/ff58601f24cc6e9d5d69bbd447a3c62a667d23f6"
+      },
+      {
         "message": "Updating schedule",
         "author": "wtheisen",
         "date_iso": "2025-11-05T12:07:44Z",
@@ -71,13 +78,6 @@
         "date_iso": "2025-10-24T21:35:38Z",
         "date_display": "Oct 24, 2025",
         "url": "https://github.com/wtheisen/nd-cse-30124/commit/03e33b8ddbe6c518d391f6f999c162e22810e65c"
-      },
-      {
-        "message": "adding gruvbox light",
-        "author": "Bill",
-        "date_iso": "2025-10-24T21:19:18Z",
-        "date_display": "Oct 24, 2025",
-        "url": "https://github.com/wtheisen/nd-cse-30124/commit/c04a17881c869df99e53a62332b7e2a41c3a1c38"
       }
     ]
   }
