@@ -1,84 +1,12 @@
 {
   "cse10124": {
     "repo": "wtheisen/nd-cse-10124",
-    "display_name": "CSE 10124 \u00b7 Introduction to Using Generative AI",
-    "entries": [
-      {
-        "message": "updating csses",
-        "author": "Bill",
-        "date_iso": "2025-10-25T16:24:34Z",
-        "date_display": "Oct 25, 2025",
-        "url": "https://github.com/wtheisen/nd-cse-10124/commit/4306702b3375384b748f70efb150966633ec592a"
-      },
-      {
-        "message": "First pass at new schedule dates (auto-generated)",
-        "author": "Bill",
-        "date_iso": "2025-10-25T16:18:56Z",
-        "date_display": "Oct 25, 2025",
-        "url": "https://github.com/wtheisen/nd-cse-10124/commit/17fda38eb52e7834b696442c269e50720441f72e"
-      },
-      {
-        "message": "Add Gruvbox theme support and toggle functionality to base template",
-        "author": "Bill",
-        "date_iso": "2025-10-24T19:32:41Z",
-        "date_display": "Oct 24, 2025",
-        "url": "https://github.com/wtheisen/nd-cse-10124/commit/f438b9d464b52f8b4d32d8300ddb51829e76dad1"
-      },
-      {
-        "message": "fixing cname thing",
-        "author": "Bill",
-        "date_iso": "2025-10-23T19:13:10Z",
-        "date_display": "Oct 23, 2025",
-        "url": "https://github.com/wtheisen/nd-cse-10124/commit/d6a4443d8da10769adb3ff7406d838ae5b1fd8fe"
-      },
-      {
-        "message": "Remove outdated TA assignment files for Homework 01 to Homework 05",
-        "author": "Bill",
-        "date_iso": "2025-10-23T18:25:57Z",
-        "date_display": "Oct 23, 2025",
-        "url": "https://github.com/wtheisen/nd-cse-10124/commit/b6295b931ba82872abd1b75e86e5a0533f740c01"
-      }
-    ]
+    "error": "HTTP 403",
+    "entries": []
   },
   "cse30124": {
     "repo": "wtheisen/nd-cse-30124",
-    "display_name": "CSE 30124 \u00b7 Introduction to Artificial Intelligence",
-    "entries": [
-      {
-        "message": "Workin on readins",
-        "author": "wtheisen",
-        "date_iso": "2025-11-05T13:00:08Z",
-        "date_display": "Nov 05, 2025",
-        "url": "https://github.com/wtheisen/nd-cse-30124/commit/ff58601f24cc6e9d5d69bbd447a3c62a667d23f6"
-      },
-      {
-        "message": "Updating schedule",
-        "author": "wtheisen",
-        "date_iso": "2025-11-05T12:07:44Z",
-        "date_display": "Nov 05, 2025",
-        "url": "https://github.com/wtheisen/nd-cse-30124/commit/57d7debde2606096dacb02030c26c7643b9e11da"
-      },
-      {
-        "message": "Adding quiz 09",
-        "author": "Eric Tyson",
-        "date_iso": "2025-10-31T00:08:32Z",
-        "date_display": "Oct 31, 2025",
-        "url": "https://github.com/wtheisen/nd-cse-30124/commit/94331e3c0f4405219377393c179e191f62686bfc"
-      },
-      {
-        "message": "updating homework notebook html url",
-        "author": "Bill",
-        "date_iso": "2025-10-24T21:44:34Z",
-        "date_display": "Oct 24, 2025",
-        "url": "https://github.com/wtheisen/nd-cse-30124/commit/8d8d116714f6a86821e6fd5ccd17bff46ba6fff4"
-      },
-      {
-        "message": "trying to have homework iframes respect theme",
-        "author": "Bill",
-        "date_iso": "2025-10-24T21:35:38Z",
-        "date_display": "Oct 24, 2025",
-        "url": "https://github.com/wtheisen/nd-cse-30124/commit/03e33b8ddbe6c518d391f6f999c162e22810e65c"
-      }
-    ]
+    "error": "HTTP 403",
+    "entries": []
   }
 }
