@@ -45,6 +45,20 @@
     "display_name": "CSE 30124 \u00b7 Introduction to Artificial Intelligence",
     "entries": [
       {
+        "message": "working on pp",
+        "author": "Bill",
+        "date_iso": "2025-11-10T23:49:15Z",
+        "date_display": "Nov 10, 2025",
+        "url": "https://github.com/wtheisen/nd-cse-30124/commit/e152ebfd5502559642a6a0793fcc0b36ab54b9a9"
+      },
+      {
+        "message": "PP02",
+        "author": "Bill",
+        "date_iso": "2025-11-10T23:40:59Z",
+        "date_display": "Nov 10, 2025",
+        "url": "https://github.com/wtheisen/nd-cse-30124/commit/52669592a1df718c109b20f56b9b159a418dce21"
+      },
+      {
         "message": "Workin on readins",
         "author": "wtheisen",
         "date_iso": "2025-11-05T13:00:08Z",
@@ -64,20 +78,6 @@
         "date_iso": "2025-10-31T00:08:32Z",
         "date_display": "Oct 31, 2025",
         "url": "https://github.com/wtheisen/nd-cse-30124/commit/94331e3c0f4405219377393c179e191f62686bfc"
-      },
-      {
-        "message": "updating homework notebook html url",
-        "author": "Bill",
-        "date_iso": "2025-10-24T21:44:34Z",
-        "date_display": "Oct 24, 2025",
-        "url": "https://github.com/wtheisen/nd-cse-30124/commit/8d8d116714f6a86821e6fd5ccd17bff46ba6fff4"
-      },
-      {
-        "message": "trying to have homework iframes respect theme",
-        "author": "Bill",
-        "date_iso": "2025-10-24T21:35:38Z",
-        "date_display": "Oct 24, 2025",
-        "url": "https://github.com/wtheisen/nd-cse-30124/commit/03e33b8ddbe6c518d391f6f999c162e22810e65c"
       }
     ]
   }
