@@ -45,6 +45,13 @@
     "display_name": "CSE 30124 \u00b7 Introduction to Artificial Intelligence",
     "entries": [
       {
+        "message": "updating exam name",
+        "author": "wtheisen",
+        "date_iso": "2025-11-12T13:51:14Z",
+        "date_display": "Nov 12, 2025",
+        "url": "https://github.com/wtheisen/nd-cse-30124/commit/b75b2a02853eace8d77f63aa549b4e0122400c2d"
+      },
+      {
         "message": "working on pp",
         "author": "Bill",
         "date_iso": "2025-11-10T23:49:15Z",
@@ -71,13 +78,6 @@
         "date_iso": "2025-11-05T12:07:44Z",
         "date_display": "Nov 05, 2025",
         "url": "https://github.com/wtheisen/nd-cse-30124/commit/57d7debde2606096dacb02030c26c7643b9e11da"
-      },
-      {
-        "message": "Adding quiz 09",
-        "author": "Eric Tyson",
-        "date_iso": "2025-10-31T00:08:32Z",
-        "date_display": "Oct 31, 2025",
-        "url": "https://github.com/wtheisen/nd-cse-30124/commit/94331e3c0f4405219377393c179e191f62686bfc"
       }
     ]
   }
