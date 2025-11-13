@@ -45,6 +45,13 @@
     "display_name": "CSE 30124 \u00b7 Introduction to Artificial Intelligence",
     "entries": [
       {
+        "message": "sched update",
+        "author": "wtheisen",
+        "date_iso": "2025-11-13T14:40:35Z",
+        "date_display": "Nov 13, 2025",
+        "url": "https://github.com/wtheisen/nd-cse-30124/commit/37ef5f7f750c3edd3d634799434a2f761e04e445"
+      },
+      {
         "message": "updating exam name",
         "author": "wtheisen",
         "date_iso": "2025-11-12T13:51:14Z",
@@ -71,13 +78,6 @@
         "date_iso": "2025-11-05T13:00:08Z",
         "date_display": "Nov 05, 2025",
         "url": "https://github.com/wtheisen/nd-cse-30124/commit/ff58601f24cc6e9d5d69bbd447a3c62a667d23f6"
-      },
-      {
-        "message": "Updating schedule",
-        "author": "wtheisen",
-        "date_iso": "2025-11-05T12:07:44Z",
-        "date_display": "Nov 05, 2025",
-        "url": "https://github.com/wtheisen/nd-cse-30124/commit/57d7debde2606096dacb02030c26c7643b9e11da"
       }
     ]
   }
