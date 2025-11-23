@@ -45,6 +45,13 @@
     "display_name": "CSE 30124 \u00b7 Introduction to Artificial Intelligence",
     "entries": [
       {
+        "message": "Reading 12",
+        "author": "Bill",
+        "date_iso": "2025-11-23T15:44:23Z",
+        "date_display": "Nov 23, 2025",
+        "url": "https://github.com/wtheisen/nd-cse-30124/commit/e8b82a2cb7f5e2ac8d970f6511fb2ea34183fda2"
+      },
+      {
         "message": "sched update",
         "author": "wtheisen",
         "date_iso": "2025-11-13T14:40:35Z",
@@ -71,13 +78,6 @@
         "date_iso": "2025-11-10T23:40:59Z",
         "date_display": "Nov 10, 2025",
         "url": "https://github.com/wtheisen/nd-cse-30124/commit/52669592a1df718c109b20f56b9b159a418dce21"
-      },
-      {
-        "message": "Workin on readins",
-        "author": "wtheisen",
-        "date_iso": "2025-11-05T13:00:08Z",
-        "date_display": "Nov 05, 2025",
-        "url": "https://github.com/wtheisen/nd-cse-30124/commit/ff58601f24cc6e9d5d69bbd447a3c62a667d23f6"
       }
     ]
   }
