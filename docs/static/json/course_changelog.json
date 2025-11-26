@@ -42,43 +42,7 @@
   },
   "cse30124": {
     "repo": "wtheisen/nd-cse-30124",
-    "display_name": "CSE 30124 \u00b7 Introduction to Artificial Intelligence",
-    "entries": [
-      {
-        "message": "Reading 12",
-        "author": "Bill",
-        "date_iso": "2025-11-23T15:44:23Z",
-        "date_display": "Nov 23, 2025",
-        "url": "https://github.com/wtheisen/nd-cse-30124/commit/e8b82a2cb7f5e2ac8d970f6511fb2ea34183fda2"
-      },
-      {
-        "message": "sched update",
-        "author": "wtheisen",
-        "date_iso": "2025-11-13T14:40:35Z",
-        "date_display": "Nov 13, 2025",
-        "url": "https://github.com/wtheisen/nd-cse-30124/commit/37ef5f7f750c3edd3d634799434a2f761e04e445"
-      },
-      {
-        "message": "updating exam name",
-        "author": "wtheisen",
-        "date_iso": "2025-11-12T13:51:14Z",
-        "date_display": "Nov 12, 2025",
-        "url": "https://github.com/wtheisen/nd-cse-30124/commit/b75b2a02853eace8d77f63aa549b4e0122400c2d"
-      },
-      {
-        "message": "working on pp",
-        "author": "Bill",
-        "date_iso": "2025-11-10T23:49:15Z",
-        "date_display": "Nov 10, 2025",
-        "url": "https://github.com/wtheisen/nd-cse-30124/commit/e152ebfd5502559642a6a0793fcc0b36ab54b9a9"
-      },
-      {
-        "message": "PP02",
-        "author": "Bill",
-        "date_iso": "2025-11-10T23:40:59Z",
-        "date_display": "Nov 10, 2025",
-        "url": "https://github.com/wtheisen/nd-cse-30124/commit/52669592a1df718c109b20f56b9b159a418dce21"
-      }
-    ]
+    "error": "HTTP 403",
+    "entries": []
   }
 }
