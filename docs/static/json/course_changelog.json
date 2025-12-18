@@ -1,84 +1,12 @@
 {
   "cse10124": {
     "repo": "wtheisen/nd-cse-10124",
-    "display_name": "CSE 10124 \u00b7 Introduction to Using Generative AI",
-    "entries": [
-      {
-        "message": "updating csses",
-        "author": "Bill",
-        "date_iso": "2025-10-25T16:24:34Z",
-        "date_display": "Oct 25, 2025",
-        "url": "https://github.com/wtheisen/nd-cse-10124/commit/4306702b3375384b748f70efb150966633ec592a"
-      },
-      {
-        "message": "First pass at new schedule dates (auto-generated)",
-        "author": "Bill",
-        "date_iso": "2025-10-25T16:18:56Z",
-        "date_display": "Oct 25, 2025",
-        "url": "https://github.com/wtheisen/nd-cse-10124/commit/17fda38eb52e7834b696442c269e50720441f72e"
-      },
-      {
-        "message": "Add Gruvbox theme support and toggle functionality to base template",
-        "author": "Bill",
-        "date_iso": "2025-10-24T19:32:41Z",
-        "date_display": "Oct 24, 2025",
-        "url": "https://github.com/wtheisen/nd-cse-10124/commit/f438b9d464b52f8b4d32d8300ddb51829e76dad1"
-      },
-      {
-        "message": "fixing cname thing",
-        "author": "Bill",
-        "date_iso": "2025-10-23T19:13:10Z",
-        "date_display": "Oct 23, 2025",
-        "url": "https://github.com/wtheisen/nd-cse-10124/commit/d6a4443d8da10769adb3ff7406d838ae5b1fd8fe"
-      },
-      {
-        "message": "Remove outdated TA assignment files for Homework 01 to Homework 05",
-        "author": "Bill",
-        "date_iso": "2025-10-23T18:25:57Z",
-        "date_display": "Oct 23, 2025",
-        "url": "https://github.com/wtheisen/nd-cse-10124/commit/b6295b931ba82872abd1b75e86e5a0533f740c01"
-      }
-    ]
+    "error": "HTTP 403",
+    "entries": []
   },
   "cse30124": {
     "repo": "wtheisen/nd-cse-30124",
-    "display_name": "CSE 30124 \u00b7 Introduction to Artificial Intelligence",
-    "entries": [
-      {
-        "message": "fixing namings",
-        "author": "wtheisen",
-        "date_iso": "2025-12-09T17:54:05Z",
-        "date_display": "Dec 09, 2025",
-        "url": "https://github.com/wtheisen/nd-cse-30124/commit/b2f423c9eaa3bac8cd31466e7c6d0611d822f3e9"
-      },
-      {
-        "message": "updating bonus homework a bit",
-        "author": "wtheisen",
-        "date_iso": "2025-12-03T13:10:27Z",
-        "date_display": "Dec 03, 2025",
-        "url": "https://github.com/wtheisen/nd-cse-30124/commit/6a5ce482ec6eaa3a8f1eb289145eef80a43c3c80"
-      },
-      {
-        "message": "changing reading 13 date",
-        "author": "wtheisen",
-        "date_iso": "2025-12-02T15:03:52Z",
-        "date_display": "Dec 02, 2025",
-        "url": "https://github.com/wtheisen/nd-cse-30124/commit/e4c2bef442ee0dd2ab4aec80c5c00c9f0c4c1d4a"
-      },
-      {
-        "message": "diff mods quiz",
-        "author": "wtheisen",
-        "date_iso": "2025-12-02T14:47:29Z",
-        "date_display": "Dec 02, 2025",
-        "url": "https://github.com/wtheisen/nd-cse-30124/commit/b081ef88c79e01378648fe73b48e55cb0a1db245"
-      },
-      {
-        "message": "Final quizzes",
-        "author": "wtheisen",
-        "date_iso": "2025-12-02T13:57:32Z",
-        "date_display": "Dec 02, 2025",
-        "url": "https://github.com/wtheisen/nd-cse-30124/commit/d67fec0b278af9f513196a25cd831fc822c2015a"
-      }
-    ]
+    "error": "HTTP 403",
+    "entries": []
   }
 }
