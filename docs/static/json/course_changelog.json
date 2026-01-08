@@ -42,43 +42,7 @@
   },
   "cse30124": {
     "repo": "wtheisen/nd-cse-30124",
-    "display_name": "CSE 30124 \u00b7 Introduction to Artificial Intelligence",
-    "entries": [
-      {
-        "message": "fixing namings",
-        "author": "wtheisen",
-        "date_iso": "2025-12-09T17:54:05Z",
-        "date_display": "Dec 09, 2025",
-        "url": "https://github.com/wtheisen/nd-cse-30124/commit/b2f423c9eaa3bac8cd31466e7c6d0611d822f3e9"
-      },
-      {
-        "message": "updating bonus homework a bit",
-        "author": "wtheisen",
-        "date_iso": "2025-12-03T13:10:27Z",
-        "date_display": "Dec 03, 2025",
-        "url": "https://github.com/wtheisen/nd-cse-30124/commit/6a5ce482ec6eaa3a8f1eb289145eef80a43c3c80"
-      },
-      {
-        "message": "changing reading 13 date",
-        "author": "wtheisen",
-        "date_iso": "2025-12-02T15:03:52Z",
-        "date_display": "Dec 02, 2025",
-        "url": "https://github.com/wtheisen/nd-cse-30124/commit/e4c2bef442ee0dd2ab4aec80c5c00c9f0c4c1d4a"
-      },
-      {
-        "message": "diff mods quiz",
-        "author": "wtheisen",
-        "date_iso": "2025-12-02T14:47:29Z",
-        "date_display": "Dec 02, 2025",
-        "url": "https://github.com/wtheisen/nd-cse-30124/commit/b081ef88c79e01378648fe73b48e55cb0a1db245"
-      },
-      {
-        "message": "Final quizzes",
-        "author": "wtheisen",
-        "date_iso": "2025-12-02T13:57:32Z",
-        "date_display": "Dec 02, 2025",
-        "url": "https://github.com/wtheisen/nd-cse-30124/commit/d67fec0b278af9f513196a25cd831fc822c2015a"
-      }
-    ]
+    "error": "HTTP 403",
+    "entries": []
   }
 }
