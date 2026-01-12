@@ -45,6 +45,13 @@
     "display_name": "CSE 30124 \u00b7 Introduction to Artificial Intelligence",
     "entries": [
       {
+        "message": "breaking first HW intentionally",
+        "author": "wtheisen",
+        "date_iso": "2026-01-12T18:33:43Z",
+        "date_display": "Jan 12, 2026",
+        "url": "https://github.com/wtheisen/nd-cse-30124/commit/16462380b74a397e3601b98de633d43b2a2b985d"
+      },
+      {
         "message": "Reading 01 changes",
         "author": "wtheisen",
         "date_iso": "2026-01-12T18:21:09Z",
@@ -71,13 +78,6 @@
         "date_iso": "2026-01-12T13:43:08Z",
         "date_display": "Jan 12, 2026",
         "url": "https://github.com/wtheisen/nd-cse-30124/commit/5d12f66190791963a8f3689dab497f3ea46084ab"
-      },
-      {
-        "message": "First pass at new schedule",
-        "author": "wtheisen",
-        "date_iso": "2026-01-12T13:39:13Z",
-        "date_display": "Jan 12, 2026",
-        "url": "https://github.com/wtheisen/nd-cse-30124/commit/5b06af74e4970f98929a9fe0ead5ec42d375a58b"
       }
     ]
   }
