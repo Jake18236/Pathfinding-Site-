@@ -45,6 +45,13 @@
     "display_name": "CSE 30124 \u00b7 Introduction to Artificial Intelligence",
     "entries": [
       {
+        "message": "Updating office location",
+        "author": "wtheisen",
+        "date_iso": "2026-01-12T19:09:06Z",
+        "date_display": "Jan 12, 2026",
+        "url": "https://github.com/wtheisen/nd-cse-30124/commit/9a74da3e624a4b3441a428cfa95bfe6392376d28"
+      },
+      {
         "message": "breaking first HW intentionally",
         "author": "wtheisen",
         "date_iso": "2026-01-12T18:33:43Z",
@@ -71,13 +78,6 @@
         "date_iso": "2026-01-12T14:07:54Z",
         "date_display": "Jan 12, 2026",
         "url": "https://github.com/wtheisen/nd-cse-30124/commit/0d8702b8ae1005c3cb248194bb84dc89d6fba105"
-      },
-      {
-        "message": "Updating point dis a little",
-        "author": "wtheisen",
-        "date_iso": "2026-01-12T13:43:08Z",
-        "date_display": "Jan 12, 2026",
-        "url": "https://github.com/wtheisen/nd-cse-30124/commit/5d12f66190791963a8f3689dab497f3ea46084ab"
       }
     ]
   }
