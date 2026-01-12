@@ -45,6 +45,20 @@
     "display_name": "CSE 30124 \u00b7 Introduction to Artificial Intelligence",
     "entries": [
       {
+        "message": "Reading 01 changes",
+        "author": "wtheisen",
+        "date_iso": "2026-01-12T18:21:09Z",
+        "date_display": "Jan 12, 2026",
+        "url": "https://github.com/wtheisen/nd-cse-30124/commit/b8f7f562aa33b211af9fb70406d5fb86cc5f2dfb"
+      },
+      {
+        "message": "asdgsfgbxa",
+        "author": "wtheisen",
+        "date_iso": "2026-01-12T18:10:47Z",
+        "date_display": "Jan 12, 2026",
+        "url": "https://github.com/wtheisen/nd-cse-30124/commit/9466a5db24cbea49ec5c800f8fa234c07789a7c7"
+      },
+      {
         "message": "Schedule changes",
         "author": "wtheisen",
         "date_iso": "2026-01-12T14:07:54Z",
@@ -64,20 +78,6 @@
         "date_iso": "2026-01-12T13:39:13Z",
         "date_display": "Jan 12, 2026",
         "url": "https://github.com/wtheisen/nd-cse-30124/commit/5b06af74e4970f98929a9fe0ead5ec42d375a58b"
-      },
-      {
-        "message": "fixing namings",
-        "author": "wtheisen",
-        "date_iso": "2025-12-09T17:54:05Z",
-        "date_display": "Dec 09, 2025",
-        "url": "https://github.com/wtheisen/nd-cse-30124/commit/b2f423c9eaa3bac8cd31466e7c6d0611d822f3e9"
-      },
-      {
-        "message": "updating bonus homework a bit",
-        "author": "wtheisen",
-        "date_iso": "2025-12-03T13:10:27Z",
-        "date_display": "Dec 03, 2025",
-        "url": "https://github.com/wtheisen/nd-cse-30124/commit/6a5ce482ec6eaa3a8f1eb289145eef80a43c3c80"
       }
     ]
   }
