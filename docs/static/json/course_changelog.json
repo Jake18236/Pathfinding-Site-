@@ -1,12 +1,84 @@
 {
   "cse10124": {
     "repo": "wtheisen/nd-cse-10124",
-    "error": "HTTP 403",
-    "entries": []
+    "display_name": "CSE 10124 \u00b7 Introduction to Using Generative AI",
+    "entries": [
+      {
+        "message": "Updating schedule to new course idea",
+        "author": "Bill",
+        "date_iso": "2025-12-29T13:59:24Z",
+        "date_display": "Dec 29, 2025",
+        "url": "https://github.com/wtheisen/nd-cse-10124/commit/6beb70be32773e9517220da673b5e9c8e189a608"
+      },
+      {
+        "message": "updating csses",
+        "author": "Bill",
+        "date_iso": "2025-10-25T16:24:34Z",
+        "date_display": "Oct 25, 2025",
+        "url": "https://github.com/wtheisen/nd-cse-10124/commit/4306702b3375384b748f70efb150966633ec592a"
+      },
+      {
+        "message": "First pass at new schedule dates (auto-generated)",
+        "author": "Bill",
+        "date_iso": "2025-10-25T16:18:56Z",
+        "date_display": "Oct 25, 2025",
+        "url": "https://github.com/wtheisen/nd-cse-10124/commit/17fda38eb52e7834b696442c269e50720441f72e"
+      },
+      {
+        "message": "Add Gruvbox theme support and toggle functionality to base template",
+        "author": "Bill",
+        "date_iso": "2025-10-24T19:32:41Z",
+        "date_display": "Oct 24, 2025",
+        "url": "https://github.com/wtheisen/nd-cse-10124/commit/f438b9d464b52f8b4d32d8300ddb51829e76dad1"
+      },
+      {
+        "message": "fixing cname thing",
+        "author": "Bill",
+        "date_iso": "2025-10-23T19:13:10Z",
+        "date_display": "Oct 23, 2025",
+        "url": "https://github.com/wtheisen/nd-cse-10124/commit/d6a4443d8da10769adb3ff7406d838ae5b1fd8fe"
+      }
+    ]
   },
   "cse30124": {
     "repo": "wtheisen/nd-cse-30124",
-    "error": "HTTP 403",
-    "entries": []
+    "display_name": "CSE 30124 \u00b7 Introduction to Artificial Intelligence",
+    "entries": [
+      {
+        "message": "Schedule changes",
+        "author": "wtheisen",
+        "date_iso": "2026-01-12T14:07:54Z",
+        "date_display": "Jan 12, 2026",
+        "url": "https://github.com/wtheisen/nd-cse-30124/commit/0d8702b8ae1005c3cb248194bb84dc89d6fba105"
+      },
+      {
+        "message": "Updating point dis a little",
+        "author": "wtheisen",
+        "date_iso": "2026-01-12T13:43:08Z",
+        "date_display": "Jan 12, 2026",
+        "url": "https://github.com/wtheisen/nd-cse-30124/commit/5d12f66190791963a8f3689dab497f3ea46084ab"
+      },
+      {
+        "message": "First pass at new schedule",
+        "author": "wtheisen",
+        "date_iso": "2026-01-12T13:39:13Z",
+        "date_display": "Jan 12, 2026",
+        "url": "https://github.com/wtheisen/nd-cse-30124/commit/5b06af74e4970f98929a9fe0ead5ec42d375a58b"
+      },
+      {
+        "message": "fixing namings",
+        "author": "wtheisen",
+        "date_iso": "2025-12-09T17:54:05Z",
+        "date_display": "Dec 09, 2025",
+        "url": "https://github.com/wtheisen/nd-cse-30124/commit/b2f423c9eaa3bac8cd31466e7c6d0611d822f3e9"
+      },
+      {
+        "message": "updating bonus homework a bit",
+        "author": "wtheisen",
+        "date_iso": "2025-12-03T13:10:27Z",
+        "date_display": "Dec 03, 2025",
+        "url": "https://github.com/wtheisen/nd-cse-30124/commit/6a5ce482ec6eaa3a8f1eb289145eef80a43c3c80"
+      }
+    ]
   }
 }
