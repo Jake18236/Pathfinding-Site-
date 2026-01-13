@@ -4,6 +4,13 @@
     "display_name": "CSE 10124 \u00b7 Introduction to Using Generative AI",
     "entries": [
       {
+        "message": "Trying to fix TA OH shz",
+        "author": "wtheisen",
+        "date_iso": "2026-01-13T12:36:19Z",
+        "date_display": "Jan 13, 2026",
+        "url": "https://github.com/wtheisen/nd-cse-10124/commit/4c9f2a3f8e8ff74265ac7b07c1835e3e4204d33c"
+      },
+      {
         "message": "Trying to fix TA stuff",
         "author": "wtheisen",
         "date_iso": "2026-01-13T12:29:27Z",
@@ -30,13 +37,6 @@
         "date_iso": "2025-10-25T16:24:34Z",
         "date_display": "Oct 25, 2025",
         "url": "https://github.com/wtheisen/nd-cse-10124/commit/4306702b3375384b748f70efb150966633ec592a"
-      },
-      {
-        "message": "First pass at new schedule dates (auto-generated)",
-        "author": "Bill",
-        "date_iso": "2025-10-25T16:18:56Z",
-        "date_display": "Oct 25, 2025",
-        "url": "https://github.com/wtheisen/nd-cse-10124/commit/17fda38eb52e7834b696442c269e50720441f72e"
       }
     ]
   },
@@ -44,6 +44,13 @@
     "repo": "wtheisen/nd-cse-30124",
     "display_name": "CSE 30124 \u00b7 Introduction to Artificial Intelligence",
     "entries": [
+      {
+        "message": "Changing light theme back to bluegold",
+        "author": "wtheisen",
+        "date_iso": "2026-01-13T12:34:28Z",
+        "date_display": "Jan 13, 2026",
+        "url": "https://github.com/wtheisen/nd-cse-30124/commit/3c2e3d75dcf0aabd43b4591e7175d8506c9f426e"
+      },
       {
         "message": "bump change",
         "author": "wtheisen",
@@ -71,13 +78,6 @@
         "date_iso": "2026-01-12T19:32:48Z",
         "date_display": "Jan 12, 2026",
         "url": "https://github.com/wtheisen/nd-cse-30124/commit/23d3b1be89ec6f89ce58816c34677a6eddb0b345"
-      },
-      {
-        "message": "Updating office location",
-        "author": "wtheisen",
-        "date_iso": "2026-01-12T19:09:06Z",
-        "date_display": "Jan 12, 2026",
-        "url": "https://github.com/wtheisen/nd-cse-30124/commit/9a74da3e624a4b3441a428cfa95bfe6392376d28"
       }
     ]
   }
