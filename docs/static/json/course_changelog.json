@@ -45,6 +45,13 @@
     "display_name": "CSE 30124 \u00b7 Introduction to Artificial Intelligence",
     "entries": [
       {
+        "message": "Removing git stuff from R01",
+        "author": "wtheisen",
+        "date_iso": "2026-01-13T21:14:23Z",
+        "date_display": "Jan 13, 2026",
+        "url": "https://github.com/wtheisen/nd-cse-30124/commit/6673ab4069b4f56eb71f93dddcdeb8f897092298"
+      },
+      {
         "message": "Changing light theme back to bluegold",
         "author": "wtheisen",
         "date_iso": "2026-01-13T12:34:28Z",
@@ -71,13 +78,6 @@
         "date_iso": "2026-01-12T20:10:57Z",
         "date_display": "Jan 12, 2026",
         "url": "https://github.com/wtheisen/nd-cse-30124/commit/bd6b67ea3720d54dfea4295b3ab58daed58e54d0"
-      },
-      {
-        "message": "Updating cesars OH",
-        "author": "wtheisen",
-        "date_iso": "2026-01-12T19:32:48Z",
-        "date_display": "Jan 12, 2026",
-        "url": "https://github.com/wtheisen/nd-cse-30124/commit/23d3b1be89ec6f89ce58816c34677a6eddb0b345"
       }
     ]
   }
