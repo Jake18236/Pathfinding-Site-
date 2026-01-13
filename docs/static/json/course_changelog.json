@@ -4,6 +4,13 @@
     "display_name": "CSE 10124 \u00b7 Introduction to Using Generative AI",
     "entries": [
       {
+        "message": "shiz",
+        "author": "wtheisen",
+        "date_iso": "2026-01-13T18:28:14Z",
+        "date_display": "Jan 13, 2026",
+        "url": "https://github.com/wtheisen/nd-cse-10124/commit/53e7d5d075fb4da607d588dc1a5735caa8f5e775"
+      },
+      {
         "message": "Trying to fix TA OH shz",
         "author": "wtheisen",
         "date_iso": "2026-01-13T12:36:19Z",
@@ -30,13 +37,6 @@
         "date_iso": "2025-12-29T13:59:24Z",
         "date_display": "Dec 29, 2025",
         "url": "https://github.com/wtheisen/nd-cse-10124/commit/6beb70be32773e9517220da673b5e9c8e189a608"
-      },
-      {
-        "message": "updating csses",
-        "author": "Bill",
-        "date_iso": "2025-10-25T16:24:34Z",
-        "date_display": "Oct 25, 2025",
-        "url": "https://github.com/wtheisen/nd-cse-10124/commit/4306702b3375384b748f70efb150966633ec592a"
       }
     ]
   },
