@@ -4,6 +4,20 @@
     "display_name": "CSE 10124 \u00b7 Introduction to Using Generative AI",
     "entries": [
       {
+        "message": "Trying to fix TA stuff",
+        "author": "wtheisen",
+        "date_iso": "2026-01-13T12:29:27Z",
+        "date_display": "Jan 13, 2026",
+        "url": "https://github.com/wtheisen/nd-cse-10124/commit/94646fc903703d1bb8ba83542a011e9430a299b0"
+      },
+      {
+        "message": "Updating some shiz",
+        "author": "wtheisen",
+        "date_iso": "2026-01-13T12:22:19Z",
+        "date_display": "Jan 13, 2026",
+        "url": "https://github.com/wtheisen/nd-cse-10124/commit/669d3dc544181a5f38417924823237d75ed847d1"
+      },
+      {
         "message": "Updating schedule to new course idea",
         "author": "Bill",
         "date_iso": "2025-12-29T13:59:24Z",
@@ -23,20 +37,6 @@
         "date_iso": "2025-10-25T16:18:56Z",
         "date_display": "Oct 25, 2025",
         "url": "https://github.com/wtheisen/nd-cse-10124/commit/17fda38eb52e7834b696442c269e50720441f72e"
-      },
-      {
-        "message": "Add Gruvbox theme support and toggle functionality to base template",
-        "author": "Bill",
-        "date_iso": "2025-10-24T19:32:41Z",
-        "date_display": "Oct 24, 2025",
-        "url": "https://github.com/wtheisen/nd-cse-10124/commit/f438b9d464b52f8b4d32d8300ddb51829e76dad1"
-      },
-      {
-        "message": "fixing cname thing",
-        "author": "Bill",
-        "date_iso": "2025-10-23T19:13:10Z",
-        "date_display": "Oct 23, 2025",
-        "url": "https://github.com/wtheisen/nd-cse-10124/commit/d6a4443d8da10769adb3ff7406d838ae5b1fd8fe"
       }
     ]
   },
