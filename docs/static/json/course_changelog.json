@@ -4,6 +4,13 @@
     "display_name": "CSE 10124 \u00b7 Introduction to Using Generative AI",
     "entries": [
       {
+        "message": "Small sched change",
+        "author": "wtheisen",
+        "date_iso": "2026-01-13T21:33:28Z",
+        "date_display": "Jan 13, 2026",
+        "url": "https://github.com/wtheisen/nd-cse-10124/commit/50fcb88c1b12c605c7ffb63e00c3b2485d9b1b89"
+      },
+      {
         "message": "shiz",
         "author": "wtheisen",
         "date_iso": "2026-01-13T18:28:14Z",
@@ -30,13 +37,6 @@
         "date_iso": "2026-01-13T12:22:19Z",
         "date_display": "Jan 13, 2026",
         "url": "https://github.com/wtheisen/nd-cse-10124/commit/669d3dc544181a5f38417924823237d75ed847d1"
-      },
-      {
-        "message": "Updating schedule to new course idea",
-        "author": "Bill",
-        "date_iso": "2025-12-29T13:59:24Z",
-        "date_display": "Dec 29, 2025",
-        "url": "https://github.com/wtheisen/nd-cse-10124/commit/6beb70be32773e9517220da673b5e9c8e189a608"
       }
     ]
   },
@@ -44,6 +44,27 @@
     "repo": "wtheisen/nd-cse-30124",
     "display_name": "CSE 30124 \u00b7 Introduction to Artificial Intelligence",
     "entries": [
+      {
+        "message": "Changing assignment file structure around",
+        "author": "wtheisen",
+        "date_iso": "2026-01-13T21:27:39Z",
+        "date_display": "Jan 13, 2026",
+        "url": "https://github.com/wtheisen/nd-cse-30124/commit/979af5a14195edd1e13314bad99b1837bc429b86"
+      },
+      {
+        "message": "meh",
+        "author": "wtheisen",
+        "date_iso": "2026-01-13T21:20:56Z",
+        "date_display": "Jan 13, 2026",
+        "url": "https://github.com/wtheisen/nd-cse-30124/commit/c0259dda5e691dc0c86e2cb7b1b3733a0423cade"
+      },
+      {
+        "message": "working on assignment pages",
+        "author": "wtheisen",
+        "date_iso": "2026-01-13T21:19:28Z",
+        "date_display": "Jan 13, 2026",
+        "url": "https://github.com/wtheisen/nd-cse-30124/commit/d2e173e3ed73aa1482577ee59713d6ca35d238c0"
+      },
       {
         "message": "Removing git stuff from R01",
         "author": "wtheisen",
@@ -57,27 +78,6 @@
         "date_iso": "2026-01-13T12:34:28Z",
         "date_display": "Jan 13, 2026",
         "url": "https://github.com/wtheisen/nd-cse-30124/commit/3c2e3d75dcf0aabd43b4591e7175d8506c9f426e"
-      },
-      {
-        "message": "bump change",
-        "author": "wtheisen",
-        "date_iso": "2026-01-12T20:16:33Z",
-        "date_display": "Jan 12, 2026",
-        "url": "https://github.com/wtheisen/nd-cse-30124/commit/36cf9628e9ae8dceb971165800822a89392255c8"
-      },
-      {
-        "message": "working on more flexible assignment templates",
-        "author": "wtheisen",
-        "date_iso": "2026-01-12T20:14:21Z",
-        "date_display": "Jan 12, 2026",
-        "url": "https://github.com/wtheisen/nd-cse-30124/commit/922463fd85ae21708f847adfb3a4783ebda24386"
-      },
-      {
-        "message": "Working on adding labs to shiz",
-        "author": "wtheisen",
-        "date_iso": "2026-01-12T20:10:57Z",
-        "date_display": "Jan 12, 2026",
-        "url": "https://github.com/wtheisen/nd-cse-30124/commit/bd6b67ea3720d54dfea4295b3ab58daed58e54d0"
       }
     ]
   }
