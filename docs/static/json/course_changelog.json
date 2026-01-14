@@ -1,84 +1,12 @@
 {
   "cse10124": {
     "repo": "wtheisen/nd-cse-10124",
-    "display_name": "CSE 10124 \u00b7 Introduction to Using Generative AI",
-    "entries": [
-      {
-        "message": "Trying to fix course resources",
-        "author": "wtheisen",
-        "date_iso": "2026-01-14T15:02:52Z",
-        "date_display": "Jan 14, 2026",
-        "url": "https://github.com/wtheisen/nd-cse-10124/commit/4e0974cb03642a4eab242894eadb9401e8d2bfc4"
-      },
-      {
-        "message": "Trying to fix resources exports",
-        "author": "wtheisen",
-        "date_iso": "2026-01-14T12:12:03Z",
-        "date_display": "Jan 14, 2026",
-        "url": "https://github.com/wtheisen/nd-cse-10124/commit/f5a16b6ea9f65dc2f9db1182b72ecac3d3e7d08e"
-      },
-      {
-        "message": "Working on silly lil shiz",
-        "author": "wtheisen",
-        "date_iso": "2026-01-14T11:20:15Z",
-        "date_display": "Jan 14, 2026",
-        "url": "https://github.com/wtheisen/nd-cse-10124/commit/65d8ad557b3fb10bb6c41d194e941d2f8a0c58e7"
-      },
-      {
-        "message": "Small sched change",
-        "author": "wtheisen",
-        "date_iso": "2026-01-13T21:33:28Z",
-        "date_display": "Jan 13, 2026",
-        "url": "https://github.com/wtheisen/nd-cse-10124/commit/50fcb88c1b12c605c7ffb63e00c3b2485d9b1b89"
-      },
-      {
-        "message": "shiz",
-        "author": "wtheisen",
-        "date_iso": "2026-01-13T18:28:14Z",
-        "date_display": "Jan 13, 2026",
-        "url": "https://github.com/wtheisen/nd-cse-10124/commit/53e7d5d075fb4da607d588dc1a5735caa8f5e775"
-      }
-    ]
+    "error": "HTTP 403",
+    "entries": []
   },
   "cse30124": {
     "repo": "wtheisen/nd-cse-30124",
-    "display_name": "CSE 30124 \u00b7 Introduction to Artificial Intelligence",
-    "entries": [
-      {
-        "message": "Adding final, schedule is fussed",
-        "author": "wtheisen",
-        "date_iso": "2026-01-14T12:35:20Z",
-        "date_display": "Jan 14, 2026",
-        "url": "https://github.com/wtheisen/nd-cse-30124/commit/109b290532f222c7f5109a245f1848b4145d7383"
-      },
-      {
-        "message": "small updates again",
-        "author": "wtheisen",
-        "date_iso": "2026-01-13T22:13:33Z",
-        "date_display": "Jan 13, 2026",
-        "url": "https://github.com/wtheisen/nd-cse-30124/commit/ad52ebbf2cca99e094436c96a6cb77490614507a"
-      },
-      {
-        "message": "Direction images?",
-        "author": "wtheisen",
-        "date_iso": "2026-01-13T21:42:32Z",
-        "date_display": "Jan 13, 2026",
-        "url": "https://github.com/wtheisen/nd-cse-30124/commit/db9d2c2a187502673866c8b1e33690692bab4391"
-      },
-      {
-        "message": "Changing assignment file structure around",
-        "author": "wtheisen",
-        "date_iso": "2026-01-13T21:27:39Z",
-        "date_display": "Jan 13, 2026",
-        "url": "https://github.com/wtheisen/nd-cse-30124/commit/979af5a14195edd1e13314bad99b1837bc429b86"
-      },
-      {
-        "message": "meh",
-        "author": "wtheisen",
-        "date_iso": "2026-01-13T21:20:56Z",
-        "date_display": "Jan 13, 2026",
-        "url": "https://github.com/wtheisen/nd-cse-30124/commit/c0259dda5e691dc0c86e2cb7b1b3733a0423cade"
-      }
-    ]
+    "error": "HTTP 403",
+    "entries": []
   }
 }
