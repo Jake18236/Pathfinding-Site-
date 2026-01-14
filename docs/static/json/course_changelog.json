@@ -4,6 +4,13 @@
     "display_name": "CSE 10124 \u00b7 Introduction to Using Generative AI",
     "entries": [
       {
+        "message": "Working on silly lil shiz",
+        "author": "wtheisen",
+        "date_iso": "2026-01-14T11:20:15Z",
+        "date_display": "Jan 14, 2026",
+        "url": "https://github.com/wtheisen/nd-cse-10124/commit/65d8ad557b3fb10bb6c41d194e941d2f8a0c58e7"
+      },
+      {
         "message": "Small sched change",
         "author": "wtheisen",
         "date_iso": "2026-01-13T21:33:28Z",
@@ -30,13 +37,6 @@
         "date_iso": "2026-01-13T12:29:27Z",
         "date_display": "Jan 13, 2026",
         "url": "https://github.com/wtheisen/nd-cse-10124/commit/94646fc903703d1bb8ba83542a011e9430a299b0"
-      },
-      {
-        "message": "Updating some shiz",
-        "author": "wtheisen",
-        "date_iso": "2026-01-13T12:22:19Z",
-        "date_display": "Jan 13, 2026",
-        "url": "https://github.com/wtheisen/nd-cse-10124/commit/669d3dc544181a5f38417924823237d75ed847d1"
       }
     ]
   },
