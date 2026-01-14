@@ -4,6 +4,13 @@
     "display_name": "CSE 10124 \u00b7 Introduction to Using Generative AI",
     "entries": [
       {
+        "message": "Trying to fix resources exports",
+        "author": "wtheisen",
+        "date_iso": "2026-01-14T12:12:03Z",
+        "date_display": "Jan 14, 2026",
+        "url": "https://github.com/wtheisen/nd-cse-10124/commit/f5a16b6ea9f65dc2f9db1182b72ecac3d3e7d08e"
+      },
+      {
         "message": "Working on silly lil shiz",
         "author": "wtheisen",
         "date_iso": "2026-01-14T11:20:15Z",
@@ -30,13 +37,6 @@
         "date_iso": "2026-01-13T12:36:19Z",
         "date_display": "Jan 13, 2026",
         "url": "https://github.com/wtheisen/nd-cse-10124/commit/4c9f2a3f8e8ff74265ac7b07c1835e3e4204d33c"
-      },
-      {
-        "message": "Trying to fix TA stuff",
-        "author": "wtheisen",
-        "date_iso": "2026-01-13T12:29:27Z",
-        "date_display": "Jan 13, 2026",
-        "url": "https://github.com/wtheisen/nd-cse-10124/commit/94646fc903703d1bb8ba83542a011e9430a299b0"
       }
     ]
   },
