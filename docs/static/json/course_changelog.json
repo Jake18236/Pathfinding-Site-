@@ -45,6 +45,20 @@
     "display_name": "CSE 30124 \u00b7 Introduction to Artificial Intelligence",
     "entries": [
       {
+        "message": "Fixing URLs",
+        "author": "wtheisen",
+        "date_iso": "2026-01-14T18:45:53Z",
+        "date_display": "Jan 14, 2026",
+        "url": "https://github.com/wtheisen/nd-cse-30124/commit/bf1549c6aef51d76efc9ba60bd78d164f7c32cad"
+      },
+      {
+        "message": "Actually linking to first lab pog",
+        "author": "wtheisen",
+        "date_iso": "2026-01-14T18:43:08Z",
+        "date_display": "Jan 14, 2026",
+        "url": "https://github.com/wtheisen/nd-cse-30124/commit/19cb833b68b98c9e5abecf64e7d7c05595ada23c"
+      },
+      {
         "message": "Adding final, schedule is fussed",
         "author": "wtheisen",
         "date_iso": "2026-01-14T12:35:20Z",
@@ -64,20 +78,6 @@
         "date_iso": "2026-01-13T21:42:32Z",
         "date_display": "Jan 13, 2026",
         "url": "https://github.com/wtheisen/nd-cse-30124/commit/db9d2c2a187502673866c8b1e33690692bab4391"
-      },
-      {
-        "message": "Changing assignment file structure around",
-        "author": "wtheisen",
-        "date_iso": "2026-01-13T21:27:39Z",
-        "date_display": "Jan 13, 2026",
-        "url": "https://github.com/wtheisen/nd-cse-30124/commit/979af5a14195edd1e13314bad99b1837bc429b86"
-      },
-      {
-        "message": "meh",
-        "author": "wtheisen",
-        "date_iso": "2026-01-13T21:20:56Z",
-        "date_display": "Jan 13, 2026",
-        "url": "https://github.com/wtheisen/nd-cse-30124/commit/c0259dda5e691dc0c86e2cb7b1b3733a0423cade"
       }
     ]
   }
