@@ -45,6 +45,13 @@
     "display_name": "CSE 30124 \u00b7 Introduction to Artificial Intelligence",
     "entries": [
       {
+        "message": "Updating classroom",
+        "author": "wtheisen",
+        "date_iso": "2026-01-15T16:18:35Z",
+        "date_display": "Jan 15, 2026",
+        "url": "https://github.com/wtheisen/nd-cse-30124/commit/dfb28e05d931cb9f2de9a8d0d9184b67acf42ebe"
+      },
+      {
         "message": "Fixing URLs",
         "author": "wtheisen",
         "date_iso": "2026-01-14T18:45:53Z",
@@ -71,13 +78,6 @@
         "date_iso": "2026-01-13T22:13:33Z",
         "date_display": "Jan 13, 2026",
         "url": "https://github.com/wtheisen/nd-cse-30124/commit/ad52ebbf2cca99e094436c96a6cb77490614507a"
-      },
-      {
-        "message": "Direction images?",
-        "author": "wtheisen",
-        "date_iso": "2026-01-13T21:42:32Z",
-        "date_display": "Jan 13, 2026",
-        "url": "https://github.com/wtheisen/nd-cse-30124/commit/db9d2c2a187502673866c8b1e33690692bab4391"
       }
     ]
   }
