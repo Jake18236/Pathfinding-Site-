@@ -4,6 +4,13 @@
     "display_name": "CSE 10124 \u00b7 Introduction to Using Generative AI",
     "entries": [
       {
+        "message": "Adding HW01",
+        "author": "wtheisen",
+        "date_iso": "2026-01-17T21:30:55Z",
+        "date_display": "Jan 17, 2026",
+        "url": "https://github.com/wtheisen/nd-cse-10124/commit/53d5ff9eaf2d8f02b2749a54b5a34ade19c5e9b3"
+      },
+      {
         "message": "Trying to fix course resources",
         "author": "wtheisen",
         "date_iso": "2026-01-14T15:02:52Z",
@@ -30,13 +37,6 @@
         "date_iso": "2026-01-13T21:33:28Z",
         "date_display": "Jan 13, 2026",
         "url": "https://github.com/wtheisen/nd-cse-10124/commit/50fcb88c1b12c605c7ffb63e00c3b2485d9b1b89"
-      },
-      {
-        "message": "shiz",
-        "author": "wtheisen",
-        "date_iso": "2026-01-13T18:28:14Z",
-        "date_display": "Jan 13, 2026",
-        "url": "https://github.com/wtheisen/nd-cse-10124/commit/53e7d5d075fb4da607d588dc1a5735caa8f5e775"
       }
     ]
   },
