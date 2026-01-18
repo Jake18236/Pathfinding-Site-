@@ -4,39 +4,39 @@
     "display_name": "CSE 10124 \u00b7 Introduction to Using Generative AI",
     "entries": [
       {
+        "message": "Working on retooling homepage",
+        "author": "wtheisen",
+        "date_iso": "2026-01-18T20:55:52Z",
+        "date_display": "Jan 18, 2026",
+        "url": "https://github.com/wtheisen/nd-cse-10124/commit/662a876fd93b7bcae4bb438ff1d9adb3e34c41c3"
+      },
+      {
+        "message": "Trying to get homeworks to show up",
+        "author": "wtheisen",
+        "date_iso": "2026-01-18T20:52:47Z",
+        "date_display": "Jan 18, 2026",
+        "url": "https://github.com/wtheisen/nd-cse-10124/commit/3bfae3a760eca1ae1511503338689238a501b6eb"
+      },
+      {
+        "message": "Replacing deleted file",
+        "author": "wtheisen",
+        "date_iso": "2026-01-18T20:47:32Z",
+        "date_display": "Jan 18, 2026",
+        "url": "https://github.com/wtheisen/nd-cse-10124/commit/499dc5111ca606660558c250d42e7af16d5ac361"
+      },
+      {
+        "message": "Breaking everything :D",
+        "author": "wtheisen",
+        "date_iso": "2026-01-18T20:44:32Z",
+        "date_display": "Jan 18, 2026",
+        "url": "https://github.com/wtheisen/nd-cse-10124/commit/7292b739ae67af3de3614a86c39438835b1ab805"
+      },
+      {
         "message": "Scheduling shiz",
         "author": "wtheisen",
         "date_iso": "2026-01-17T21:57:50Z",
         "date_display": "Jan 17, 2026",
         "url": "https://github.com/wtheisen/nd-cse-10124/commit/70c82bbbc0ce3b7d4f2204aae9a22658b10f15c1"
-      },
-      {
-        "message": "Working on coloring",
-        "author": "wtheisen",
-        "date_iso": "2026-01-17T21:55:37Z",
-        "date_display": "Jan 17, 2026",
-        "url": "https://github.com/wtheisen/nd-cse-10124/commit/52b92f81cbde65dead10a5e1551b47f3f10cc18f"
-      },
-      {
-        "message": "Highlighting HW due days a different color",
-        "author": "wtheisen",
-        "date_iso": "2026-01-17T21:50:45Z",
-        "date_display": "Jan 17, 2026",
-        "url": "https://github.com/wtheisen/nd-cse-10124/commit/9d8620c9f238e5d076a23ce2b6a354b263d04ee7"
-      },
-      {
-        "message": "I think homeworks are pretty spaced?",
-        "author": "wtheisen",
-        "date_iso": "2026-01-17T21:45:06Z",
-        "date_display": "Jan 17, 2026",
-        "url": "https://github.com/wtheisen/nd-cse-10124/commit/ff9bd91d8889c6785bf5d11b19a7f096cc140583"
-      },
-      {
-        "message": "Adding HW01",
-        "author": "wtheisen",
-        "date_iso": "2026-01-17T21:30:55Z",
-        "date_display": "Jan 17, 2026",
-        "url": "https://github.com/wtheisen/nd-cse-10124/commit/53d5ff9eaf2d8f02b2749a54b5a34ade19c5e9b3"
       }
     ]
   },
