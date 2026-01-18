@@ -45,6 +45,27 @@
     "display_name": "CSE 30124 \u00b7 Introduction to Artificial Intelligence",
     "entries": [
       {
+        "message": "templating",
+        "author": "wtheisen",
+        "date_iso": "2026-01-18T19:07:11Z",
+        "date_display": "Jan 18, 2026",
+        "url": "https://github.com/wtheisen/nd-cse-30124/commit/2979bb98350a972462c30934cb1ca4649070c74b"
+      },
+      {
+        "message": "Working on assingment templating",
+        "author": "wtheisen",
+        "date_iso": "2026-01-18T19:05:42Z",
+        "date_display": "Jan 18, 2026",
+        "url": "https://github.com/wtheisen/nd-cse-30124/commit/cac44bee89656fee522eb92a79a55f1d49a1e3cf"
+      },
+      {
+        "message": "OH parsers zzzzz",
+        "author": "wtheisen",
+        "date_iso": "2026-01-18T18:49:30Z",
+        "date_display": "Jan 18, 2026",
+        "url": "https://github.com/wtheisen/nd-cse-30124/commit/9ba6e2e9acae51aac09a4fdff546782b3cc29531"
+      },
+      {
         "message": "Trying to fix OH parser",
         "author": "wtheisen",
         "date_iso": "2026-01-18T18:43:08Z",
@@ -57,27 +78,6 @@
         "date_iso": "2026-01-18T18:35:40Z",
         "date_display": "Jan 18, 2026",
         "url": "https://github.com/wtheisen/nd-cse-30124/commit/f315e106527b080262a13f7489d70f52d8a523c5"
-      },
-      {
-        "message": "Working on OH table",
-        "author": "wtheisen",
-        "date_iso": "2026-01-18T18:30:52Z",
-        "date_display": "Jan 18, 2026",
-        "url": "https://github.com/wtheisen/nd-cse-30124/commit/b11bf8d32c234336cec1365ef48ff49228f18fe2"
-      },
-      {
-        "message": "Still working on OH",
-        "author": "wtheisen",
-        "date_iso": "2026-01-18T18:25:26Z",
-        "date_display": "Jan 18, 2026",
-        "url": "https://github.com/wtheisen/nd-cse-30124/commit/76be6a1fb03623a6e27fcab8ed3bda5415fae62f"
-      },
-      {
-        "message": "Trying to fix OH schedule zzzzzzz",
-        "author": "wtheisen",
-        "date_iso": "2026-01-18T18:19:39Z",
-        "date_display": "Jan 18, 2026",
-        "url": "https://github.com/wtheisen/nd-cse-30124/commit/177285785d48ee7b0342cbeb044f584b099cd9e0"
       }
     ]
   }
