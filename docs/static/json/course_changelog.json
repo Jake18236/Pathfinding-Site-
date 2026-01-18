@@ -45,6 +45,20 @@
     "display_name": "CSE 30124 \u00b7 Introduction to Artificial Intelligence",
     "entries": [
       {
+        "message": "Working on homework templating and sheets schedule still",
+        "author": "wtheisen",
+        "date_iso": "2026-01-18T16:35:58Z",
+        "date_display": "Jan 18, 2026",
+        "url": "https://github.com/wtheisen/nd-cse-30124/commit/eaa40e16767ef621f9a59d1b2bc7b081a6451005"
+      },
+      {
+        "message": "Working on having schedule also pull from sheet",
+        "author": "wtheisen",
+        "date_iso": "2026-01-18T16:31:25Z",
+        "date_display": "Jan 18, 2026",
+        "url": "https://github.com/wtheisen/nd-cse-30124/commit/2ef441e5f9fa279d32de7b45979cc4b0924efced"
+      },
+      {
         "message": "Updating OH",
         "author": "wtheisen",
         "date_iso": "2026-01-15T20:26:45Z",
@@ -64,20 +78,6 @@
         "date_iso": "2026-01-14T18:45:53Z",
         "date_display": "Jan 14, 2026",
         "url": "https://github.com/wtheisen/nd-cse-30124/commit/bf1549c6aef51d76efc9ba60bd78d164f7c32cad"
-      },
-      {
-        "message": "Actually linking to first lab pog",
-        "author": "wtheisen",
-        "date_iso": "2026-01-14T18:43:08Z",
-        "date_display": "Jan 14, 2026",
-        "url": "https://github.com/wtheisen/nd-cse-30124/commit/19cb833b68b98c9e5abecf64e7d7c05595ada23c"
-      },
-      {
-        "message": "Adding final, schedule is fussed",
-        "author": "wtheisen",
-        "date_iso": "2026-01-14T12:35:20Z",
-        "date_display": "Jan 14, 2026",
-        "url": "https://github.com/wtheisen/nd-cse-30124/commit/109b290532f222c7f5109a245f1848b4145d7383"
       }
     ]
   }
