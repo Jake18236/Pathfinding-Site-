@@ -45,39 +45,39 @@
     "display_name": "CSE 30124 \u00b7 Introduction to Artificial Intelligence",
     "entries": [
       {
-        "message": "Working on homework templating and sheets schedule still",
+        "message": "Trying to fix OH schedule zzzzzzz",
         "author": "wtheisen",
-        "date_iso": "2026-01-18T16:35:58Z",
+        "date_iso": "2026-01-18T18:19:39Z",
         "date_display": "Jan 18, 2026",
-        "url": "https://github.com/wtheisen/nd-cse-30124/commit/eaa40e16767ef621f9a59d1b2bc7b081a6451005"
+        "url": "https://github.com/wtheisen/nd-cse-30124/commit/177285785d48ee7b0342cbeb044f584b099cd9e0"
       },
       {
-        "message": "Working on having schedule also pull from sheet",
+        "message": "Modularizing things a lil more",
         "author": "wtheisen",
-        "date_iso": "2026-01-18T16:31:25Z",
+        "date_iso": "2026-01-18T18:08:47Z",
         "date_display": "Jan 18, 2026",
-        "url": "https://github.com/wtheisen/nd-cse-30124/commit/2ef441e5f9fa279d32de7b45979cc4b0924efced"
+        "url": "https://github.com/wtheisen/nd-cse-30124/commit/83638ebf0a73aee664a642e0b79bf4514b33c839"
       },
       {
-        "message": "Updating OH",
+        "message": "Trying to fix OH table",
         "author": "wtheisen",
-        "date_iso": "2026-01-15T20:26:45Z",
-        "date_display": "Jan 15, 2026",
-        "url": "https://github.com/wtheisen/nd-cse-30124/commit/cc1163eac4ef53a03ce5bd0f26ea07ae805a4bbb"
+        "date_iso": "2026-01-18T18:03:36Z",
+        "date_display": "Jan 18, 2026",
+        "url": "https://github.com/wtheisen/nd-cse-30124/commit/ed7a327869f146c3f6cb40cfcdea4a2cb80036b3"
       },
       {
-        "message": "Updating classroom",
+        "message": "Still making things more modular",
         "author": "wtheisen",
-        "date_iso": "2026-01-15T16:18:35Z",
-        "date_display": "Jan 15, 2026",
-        "url": "https://github.com/wtheisen/nd-cse-30124/commit/dfb28e05d931cb9f2de9a8d0d9184b67acf42ebe"
+        "date_iso": "2026-01-18T17:59:23Z",
+        "date_display": "Jan 18, 2026",
+        "url": "https://github.com/wtheisen/nd-cse-30124/commit/02c44d71df860cf2f9581c04afb8da38ad57ad90"
       },
       {
-        "message": "Fixing URLs",
+        "message": "trying to fix readings",
         "author": "wtheisen",
-        "date_iso": "2026-01-14T18:45:53Z",
-        "date_display": "Jan 14, 2026",
-        "url": "https://github.com/wtheisen/nd-cse-30124/commit/bf1549c6aef51d76efc9ba60bd78d164f7c32cad"
+        "date_iso": "2026-01-18T17:55:47Z",
+        "date_display": "Jan 18, 2026",
+        "url": "https://github.com/wtheisen/nd-cse-30124/commit/8f39b4fc93294abf1151283b555b481a684d659c"
       }
     ]
   }
