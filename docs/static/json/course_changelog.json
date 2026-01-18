@@ -4,6 +4,27 @@
     "display_name": "CSE 10124 \u00b7 Introduction to Using Generative AI",
     "entries": [
       {
+        "message": "Better iframe for HWs (I hope)",
+        "author": "wtheisen",
+        "date_iso": "2026-01-18T21:28:29Z",
+        "date_display": "Jan 18, 2026",
+        "url": "https://github.com/wtheisen/nd-cse-10124/commit/327867e34b18fe545aa2487af3dbd8f418390425"
+      },
+      {
+        "message": "Updating HW template a lil",
+        "author": "wtheisen",
+        "date_iso": "2026-01-18T21:24:38Z",
+        "date_display": "Jan 18, 2026",
+        "url": "https://github.com/wtheisen/nd-cse-10124/commit/a59fa1b2fc85f41ee77063b67d54546ac8af767d"
+      },
+      {
+        "message": "Add generate step to Makefile for homework page generation",
+        "author": "wtheisen",
+        "date_iso": "2026-01-18T21:19:05Z",
+        "date_display": "Jan 18, 2026",
+        "url": "https://github.com/wtheisen/nd-cse-10124/commit/a61ddebb4e9835750af772251e7ab2552c91fec2"
+      },
+      {
         "message": "Working on retooling homepage",
         "author": "wtheisen",
         "date_iso": "2026-01-18T20:55:52Z",
@@ -16,27 +37,6 @@
         "date_iso": "2026-01-18T20:52:47Z",
         "date_display": "Jan 18, 2026",
         "url": "https://github.com/wtheisen/nd-cse-10124/commit/3bfae3a760eca1ae1511503338689238a501b6eb"
-      },
-      {
-        "message": "Replacing deleted file",
-        "author": "wtheisen",
-        "date_iso": "2026-01-18T20:47:32Z",
-        "date_display": "Jan 18, 2026",
-        "url": "https://github.com/wtheisen/nd-cse-10124/commit/499dc5111ca606660558c250d42e7af16d5ac361"
-      },
-      {
-        "message": "Breaking everything :D",
-        "author": "wtheisen",
-        "date_iso": "2026-01-18T20:44:32Z",
-        "date_display": "Jan 18, 2026",
-        "url": "https://github.com/wtheisen/nd-cse-10124/commit/7292b739ae67af3de3614a86c39438835b1ab805"
-      },
-      {
-        "message": "Scheduling shiz",
-        "author": "wtheisen",
-        "date_iso": "2026-01-17T21:57:50Z",
-        "date_display": "Jan 17, 2026",
-        "url": "https://github.com/wtheisen/nd-cse-10124/commit/70c82bbbc0ce3b7d4f2204aae9a22658b10f15c1"
       }
     ]
   },
