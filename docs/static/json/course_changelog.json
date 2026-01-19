@@ -4,39 +4,39 @@
     "display_name": "CSE 10124 \u00b7 Introduction to Using Generative AI",
     "entries": [
       {
-        "message": "Better iframe for HWs (I hope)",
+        "message": "Add scheduled rebuild every 30 minutes",
         "author": "wtheisen",
-        "date_iso": "2026-01-18T21:28:29Z",
-        "date_display": "Jan 18, 2026",
-        "url": "https://github.com/wtheisen/nd-cse-10124/commit/327867e34b18fe545aa2487af3dbd8f418390425"
+        "date_iso": "2026-01-19T12:28:12Z",
+        "date_display": "Jan 19, 2026",
+        "url": "https://github.com/wtheisen/nd-cse-10124/commit/d912a699b9b97deba506a240201693f64e9b1480"
       },
       {
-        "message": "Updating HW template a lil",
+        "message": "Rewrite office hours calendar with visual blocks algorithm",
         "author": "wtheisen",
-        "date_iso": "2026-01-18T21:24:38Z",
-        "date_display": "Jan 18, 2026",
-        "url": "https://github.com/wtheisen/nd-cse-10124/commit/a59fa1b2fc85f41ee77063b67d54546ac8af767d"
+        "date_iso": "2026-01-19T12:26:41Z",
+        "date_display": "Jan 19, 2026",
+        "url": "https://github.com/wtheisen/nd-cse-10124/commit/9ac1d71e8580ba990baefcc12ccb069ffaf36392"
       },
       {
-        "message": "Add generate step to Makefile for homework page generation",
+        "message": "Use 15-minute increments and dynamic TA colors",
         "author": "wtheisen",
-        "date_iso": "2026-01-18T21:19:05Z",
-        "date_display": "Jan 18, 2026",
-        "url": "https://github.com/wtheisen/nd-cse-10124/commit/a61ddebb4e9835750af772251e7ab2552c91fec2"
+        "date_iso": "2026-01-19T12:22:13Z",
+        "date_display": "Jan 19, 2026",
+        "url": "https://github.com/wtheisen/nd-cse-10124/commit/badb377d298cfe00c7eb9ed56f942c74bd4ae904"
       },
       {
-        "message": "Working on retooling homepage",
+        "message": "Fix office hours calendar and resources display",
         "author": "wtheisen",
-        "date_iso": "2026-01-18T20:55:52Z",
-        "date_display": "Jan 18, 2026",
-        "url": "https://github.com/wtheisen/nd-cse-10124/commit/662a876fd93b7bcae4bb438ff1d9adb3e34c41c3"
+        "date_iso": "2026-01-19T12:17:12Z",
+        "date_display": "Jan 19, 2026",
+        "url": "https://github.com/wtheisen/nd-cse-10124/commit/d92098a900136d74a315ef1d63fa836be7f42b5d"
       },
       {
-        "message": "Trying to get homeworks to show up",
+        "message": "Fix GitHub Pages deployment permissions",
         "author": "wtheisen",
-        "date_iso": "2026-01-18T20:52:47Z",
-        "date_display": "Jan 18, 2026",
-        "url": "https://github.com/wtheisen/nd-cse-10124/commit/3bfae3a760eca1ae1511503338689238a501b6eb"
+        "date_iso": "2026-01-19T12:09:42Z",
+        "date_display": "Jan 19, 2026",
+        "url": "https://github.com/wtheisen/nd-cse-10124/commit/5ef7418c96fc7025f700db053280b07c97b705f0"
       }
     ]
   },
