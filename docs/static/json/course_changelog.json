@@ -1,84 +1,12 @@
 {
   "cse10124": {
     "repo": "wtheisen/nd-cse-10124",
-    "display_name": "CSE 10124 \u00b7 Introduction to Using Generative AI",
-    "entries": [
-      {
-        "message": "Better iframe for HWs (I hope)",
-        "author": "wtheisen",
-        "date_iso": "2026-01-18T21:28:29Z",
-        "date_display": "Jan 18, 2026",
-        "url": "https://github.com/wtheisen/nd-cse-10124/commit/327867e34b18fe545aa2487af3dbd8f418390425"
-      },
-      {
-        "message": "Updating HW template a lil",
-        "author": "wtheisen",
-        "date_iso": "2026-01-18T21:24:38Z",
-        "date_display": "Jan 18, 2026",
-        "url": "https://github.com/wtheisen/nd-cse-10124/commit/a59fa1b2fc85f41ee77063b67d54546ac8af767d"
-      },
-      {
-        "message": "Add generate step to Makefile for homework page generation",
-        "author": "wtheisen",
-        "date_iso": "2026-01-18T21:19:05Z",
-        "date_display": "Jan 18, 2026",
-        "url": "https://github.com/wtheisen/nd-cse-10124/commit/a61ddebb4e9835750af772251e7ab2552c91fec2"
-      },
-      {
-        "message": "Working on retooling homepage",
-        "author": "wtheisen",
-        "date_iso": "2026-01-18T20:55:52Z",
-        "date_display": "Jan 18, 2026",
-        "url": "https://github.com/wtheisen/nd-cse-10124/commit/662a876fd93b7bcae4bb438ff1d9adb3e34c41c3"
-      },
-      {
-        "message": "Trying to get homeworks to show up",
-        "author": "wtheisen",
-        "date_iso": "2026-01-18T20:52:47Z",
-        "date_display": "Jan 18, 2026",
-        "url": "https://github.com/wtheisen/nd-cse-10124/commit/3bfae3a760eca1ae1511503338689238a501b6eb"
-      }
-    ]
+    "error": "HTTP 403",
+    "entries": []
   },
   "cse30124": {
     "repo": "wtheisen/nd-cse-30124",
-    "display_name": "CSE 30124 \u00b7 Introduction to Artificial Intelligence",
-    "entries": [
-      {
-        "message": "Cleaning up extra shiz, Think it's working thank you CC my beloved",
-        "author": "wtheisen",
-        "date_iso": "2026-01-18T20:14:10Z",
-        "date_display": "Jan 18, 2026",
-        "url": "https://github.com/wtheisen/nd-cse-30124/commit/2c6b13850c1a9a791eafd56766b29ca04d791fc4"
-      },
-      {
-        "message": "Fix build: add dateutil.relativedelta import, requirements.txt, and fix JS/template conflicts",
-        "author": "wtheisen",
-        "date_iso": "2026-01-18T20:10:03Z",
-        "date_display": "Jan 18, 2026",
-        "url": "https://github.com/wtheisen/nd-cse-30124/commit/c72222871271852466aa81d1ef1179ae465dae93"
-      },
-      {
-        "message": "jfc",
-        "author": "wtheisen",
-        "date_iso": "2026-01-18T19:41:36Z",
-        "date_display": "Jan 18, 2026",
-        "url": "https://github.com/wtheisen/nd-cse-30124/commit/eef068bba09aa1e28371122d5109f244fb14320b"
-      },
-      {
-        "message": "buis shit is so chopped",
-        "author": "wtheisen",
-        "date_iso": "2026-01-18T19:38:07Z",
-        "date_display": "Jan 18, 2026",
-        "url": "https://github.com/wtheisen/nd-cse-30124/commit/f1fec1e8ebd5dc0f9a3c9f062600d94823b10bfd"
-      },
-      {
-        "message": "sneed",
-        "author": "wtheisen",
-        "date_iso": "2026-01-18T19:34:52Z",
-        "date_display": "Jan 18, 2026",
-        "url": "https://github.com/wtheisen/nd-cse-30124/commit/b964bd5ff0caecc257163d6f9d553000b47aebc3"
-      }
-    ]
+    "error": "HTTP 403",
+    "entries": []
   }
 }
