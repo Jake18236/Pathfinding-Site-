@@ -4,6 +4,20 @@
     "display_name": "CSE 10124 \u00b7 Introduction to Using Generative AI",
     "entries": [
       {
+        "message": "Updating a lil logistical stuff",
+        "author": "wtheisen",
+        "date_iso": "2026-01-19T13:45:00Z",
+        "date_display": "Jan 19, 2026",
+        "url": "https://github.com/wtheisen/nd-cse-10124/commit/e2882fb488dd583c547da59551530be5837b3bbb"
+      },
+      {
+        "message": "Remove conflicting nth-of-type CSS from schedule table",
+        "author": "wtheisen",
+        "date_iso": "2026-01-19T13:42:06Z",
+        "date_display": "Jan 19, 2026",
+        "url": "https://github.com/wtheisen/nd-cse-10124/commit/bec54b8dbe1b34778e4adb178d3d17939f66d4d4"
+      },
+      {
         "message": "Move schedule row colors from JS to CSS themes",
         "author": "wtheisen",
         "date_iso": "2026-01-19T13:38:50Z",
@@ -23,20 +37,6 @@
         "date_iso": "2026-01-19T13:36:23Z",
         "date_display": "Jan 19, 2026",
         "url": "https://github.com/wtheisen/nd-cse-10124/commit/ef0056b2454b56776b238d2fec5f328c63e9d8b9"
-      },
-      {
-        "message": "Reduce width difference between event and empty calendar columns",
-        "author": "wtheisen",
-        "date_iso": "2026-01-19T13:31:32Z",
-        "date_display": "Jan 19, 2026",
-        "url": "https://github.com/wtheisen/nd-cse-10124/commit/8b498976db272014352f3b0ff2a0abfa60ada61f"
-      },
-      {
-        "message": "Reduce calendar event row height from 80px to 60px",
-        "author": "wtheisen",
-        "date_iso": "2026-01-19T13:30:37Z",
-        "date_display": "Jan 19, 2026",
-        "url": "https://github.com/wtheisen/nd-cse-10124/commit/76f529b608c1038bc0cd083b2861c7ac0be53bc7"
       }
     ]
   },
