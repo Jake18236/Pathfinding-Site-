@@ -4,39 +4,39 @@
     "display_name": "CSE 10124 \u00b7 Introduction to Using Generative AI",
     "entries": [
       {
-        "message": "Add scheduled rebuild every 30 minutes",
+        "message": "Move schedule row colors from JS to CSS themes",
         "author": "wtheisen",
-        "date_iso": "2026-01-19T12:28:12Z",
+        "date_iso": "2026-01-19T13:38:50Z",
         "date_display": "Jan 19, 2026",
-        "url": "https://github.com/wtheisen/nd-cse-10124/commit/d912a699b9b97deba506a240201693f64e9b1480"
+        "url": "https://github.com/wtheisen/nd-cse-10124/commit/c325d388a63523ec0c347baff266217c9dfd2a92"
       },
       {
-        "message": "Rewrite office hours calendar with visual blocks algorithm",
+        "message": "Fix schedule table row colors for bluegold theme",
         "author": "wtheisen",
-        "date_iso": "2026-01-19T12:26:41Z",
+        "date_iso": "2026-01-19T13:37:21Z",
         "date_display": "Jan 19, 2026",
-        "url": "https://github.com/wtheisen/nd-cse-10124/commit/9ac1d71e8580ba990baefcc12ccb069ffaf36392"
+        "url": "https://github.com/wtheisen/nd-cse-10124/commit/b286e2eb6f0509c45f028bb8673a2401e765cb10"
       },
       {
-        "message": "Use 15-minute increments and dynamic TA colors",
+        "message": "Make bluegold.css (light mode) the default theme",
         "author": "wtheisen",
-        "date_iso": "2026-01-19T12:22:13Z",
+        "date_iso": "2026-01-19T13:36:23Z",
         "date_display": "Jan 19, 2026",
-        "url": "https://github.com/wtheisen/nd-cse-10124/commit/badb377d298cfe00c7eb9ed56f942c74bd4ae904"
+        "url": "https://github.com/wtheisen/nd-cse-10124/commit/ef0056b2454b56776b238d2fec5f328c63e9d8b9"
       },
       {
-        "message": "Fix office hours calendar and resources display",
+        "message": "Reduce width difference between event and empty calendar columns",
         "author": "wtheisen",
-        "date_iso": "2026-01-19T12:17:12Z",
+        "date_iso": "2026-01-19T13:31:32Z",
         "date_display": "Jan 19, 2026",
-        "url": "https://github.com/wtheisen/nd-cse-10124/commit/d92098a900136d74a315ef1d63fa836be7f42b5d"
+        "url": "https://github.com/wtheisen/nd-cse-10124/commit/8b498976db272014352f3b0ff2a0abfa60ada61f"
       },
       {
-        "message": "Fix GitHub Pages deployment permissions",
+        "message": "Reduce calendar event row height from 80px to 60px",
         "author": "wtheisen",
-        "date_iso": "2026-01-19T12:09:42Z",
+        "date_iso": "2026-01-19T13:30:37Z",
         "date_display": "Jan 19, 2026",
-        "url": "https://github.com/wtheisen/nd-cse-10124/commit/5ef7418c96fc7025f700db053280b07c97b705f0"
+        "url": "https://github.com/wtheisen/nd-cse-10124/commit/76f529b608c1038bc0cd083b2861c7ac0be53bc7"
       }
     ]
   },
