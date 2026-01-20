@@ -4,39 +4,39 @@
     "display_name": "CSE 10124 \u00b7 Introduction to Using Generative AI",
     "entries": [
       {
-        "message": "Add click-to-lock and edge weights to graph visualizer",
+        "message": "Add simple token graph to visualizer",
         "author": "wtheisen",
-        "date_iso": "2026-01-20T14:23:16Z",
+        "date_iso": "2026-01-20T14:54:14Z",
         "date_display": "Jan 20, 2026",
-        "url": "https://github.com/wtheisen/nd-cse-10124/commit/a64594d9900e3481cf37112131c98da84d74e04b"
+        "url": "https://github.com/wtheisen/nd-cse-10124/commit/41be54f5b4ff52f5f239b3f47e7aceaab46553f4"
       },
       {
-        "message": "Add Markov babbler graph visualization page",
+        "message": "Use theme background for graph container",
         "author": "wtheisen",
-        "date_iso": "2026-01-20T14:16:05Z",
+        "date_iso": "2026-01-20T14:38:39Z",
         "date_display": "Jan 20, 2026",
-        "url": "https://github.com/wtheisen/nd-cse-10124/commit/e019028f0b1752f1224a89a5ff7f55745023e4f9"
+        "url": "https://github.com/wtheisen/nd-cse-10124/commit/3394346f43a86b79c2a21c3c197ebefd5d6389c2"
       },
       {
-        "message": "Updating a lil logistical stuff",
+        "message": "Pre-convert graphs to Graphology format",
         "author": "wtheisen",
-        "date_iso": "2026-01-19T13:45:00Z",
-        "date_display": "Jan 19, 2026",
-        "url": "https://github.com/wtheisen/nd-cse-10124/commit/e2882fb488dd583c547da59551530be5837b3bbb"
+        "date_iso": "2026-01-20T14:36:15Z",
+        "date_display": "Jan 20, 2026",
+        "url": "https://github.com/wtheisen/nd-cse-10124/commit/052f518bac35d881fccc1135b8d70044f2b67548"
       },
       {
-        "message": "Remove conflicting nth-of-type CSS from schedule table",
+        "message": "Remove demo graphs, keep only Zoomer babbler",
         "author": "wtheisen",
-        "date_iso": "2026-01-19T13:42:06Z",
-        "date_display": "Jan 19, 2026",
-        "url": "https://github.com/wtheisen/nd-cse-10124/commit/bec54b8dbe1b34778e4adb178d3d17939f66d4d4"
+        "date_iso": "2026-01-20T14:35:05Z",
+        "date_display": "Jan 20, 2026",
+        "url": "https://github.com/wtheisen/nd-cse-10124/commit/7122eaa9b023229eed747a9dab67383bbe7b73f0"
       },
       {
-        "message": "Move schedule row colors from JS to CSS themes",
+        "message": "Add Zoomer babbler graphs to visualizer",
         "author": "wtheisen",
-        "date_iso": "2026-01-19T13:38:50Z",
-        "date_display": "Jan 19, 2026",
-        "url": "https://github.com/wtheisen/nd-cse-10124/commit/c325d388a63523ec0c347baff266217c9dfd2a92"
+        "date_iso": "2026-01-20T14:33:06Z",
+        "date_display": "Jan 20, 2026",
+        "url": "https://github.com/wtheisen/nd-cse-10124/commit/97c08aa8f5f6602f7708738fdf4fbb8308f88a50"
       }
     ]
   },
