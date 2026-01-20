@@ -4,6 +4,20 @@
     "display_name": "CSE 10124 \u00b7 Introduction to Using Generative AI",
     "entries": [
       {
+        "message": "Add click-to-lock and edge weights to graph visualizer",
+        "author": "wtheisen",
+        "date_iso": "2026-01-20T14:23:16Z",
+        "date_display": "Jan 20, 2026",
+        "url": "https://github.com/wtheisen/nd-cse-10124/commit/a64594d9900e3481cf37112131c98da84d74e04b"
+      },
+      {
+        "message": "Add Markov babbler graph visualization page",
+        "author": "wtheisen",
+        "date_iso": "2026-01-20T14:16:05Z",
+        "date_display": "Jan 20, 2026",
+        "url": "https://github.com/wtheisen/nd-cse-10124/commit/e019028f0b1752f1224a89a5ff7f55745023e4f9"
+      },
+      {
         "message": "Updating a lil logistical stuff",
         "author": "wtheisen",
         "date_iso": "2026-01-19T13:45:00Z",
@@ -23,20 +37,6 @@
         "date_iso": "2026-01-19T13:38:50Z",
         "date_display": "Jan 19, 2026",
         "url": "https://github.com/wtheisen/nd-cse-10124/commit/c325d388a63523ec0c347baff266217c9dfd2a92"
-      },
-      {
-        "message": "Fix schedule table row colors for bluegold theme",
-        "author": "wtheisen",
-        "date_iso": "2026-01-19T13:37:21Z",
-        "date_display": "Jan 19, 2026",
-        "url": "https://github.com/wtheisen/nd-cse-10124/commit/b286e2eb6f0509c45f028bb8673a2401e765cb10"
-      },
-      {
-        "message": "Make bluegold.css (light mode) the default theme",
-        "author": "wtheisen",
-        "date_iso": "2026-01-19T13:36:23Z",
-        "date_display": "Jan 19, 2026",
-        "url": "https://github.com/wtheisen/nd-cse-10124/commit/ef0056b2454b56776b238d2fec5f328c63e9d8b9"
       }
     ]
   },
