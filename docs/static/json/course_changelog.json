@@ -45,6 +45,13 @@
     "display_name": "CSE 30124 \u00b7 Introduction to Artificial Intelligence",
     "entries": [
       {
+        "message": "Trying to switch over build system",
+        "author": "wtheisen",
+        "date_iso": "2026-01-20T12:33:05Z",
+        "date_display": "Jan 20, 2026",
+        "url": "https://github.com/wtheisen/nd-cse-30124/commit/26d4ebd5540d80b3aede50f496e9f356cefe8a15"
+      },
+      {
         "message": "Cleaning up extra shiz, Think it's working thank you CC my beloved",
         "author": "wtheisen",
         "date_iso": "2026-01-18T20:14:10Z",
@@ -71,13 +78,6 @@
         "date_iso": "2026-01-18T19:38:07Z",
         "date_display": "Jan 18, 2026",
         "url": "https://github.com/wtheisen/nd-cse-30124/commit/f1fec1e8ebd5dc0f9a3c9f062600d94823b10bfd"
-      },
-      {
-        "message": "sneed",
-        "author": "wtheisen",
-        "date_iso": "2026-01-18T19:34:52Z",
-        "date_display": "Jan 18, 2026",
-        "url": "https://github.com/wtheisen/nd-cse-30124/commit/b964bd5ff0caecc257163d6f9d553000b47aebc3"
       }
     ]
   }
