@@ -45,39 +45,39 @@
     "display_name": "CSE 30124 \u00b7 Introduction to Artificial Intelligence",
     "entries": [
       {
-        "message": "Trying to switch over build system",
+        "message": "Reduce office hours row height to 30px",
         "author": "wtheisen",
-        "date_iso": "2026-01-20T12:33:05Z",
+        "date_iso": "2026-01-20T13:29:25Z",
         "date_display": "Jan 20, 2026",
-        "url": "https://github.com/wtheisen/nd-cse-30124/commit/26d4ebd5540d80b3aede50f496e9f356cefe8a15"
+        "url": "https://github.com/wtheisen/nd-cse-30124/commit/7d590cd2f7f646b5f568c8a820181b7b1aa0e334"
       },
       {
-        "message": "Cleaning up extra shiz, Think it's working thank you CC my beloved",
+        "message": "Make office hours calendar fonts scale with box size",
         "author": "wtheisen",
-        "date_iso": "2026-01-18T20:14:10Z",
-        "date_display": "Jan 18, 2026",
-        "url": "https://github.com/wtheisen/nd-cse-30124/commit/2c6b13850c1a9a791eafd56766b29ca04d791fc4"
+        "date_iso": "2026-01-20T13:27:07Z",
+        "date_display": "Jan 20, 2026",
+        "url": "https://github.com/wtheisen/nd-cse-30124/commit/01811756a575888ef73b936636ddc84e832f33bd"
       },
       {
-        "message": "Fix build: add dateutil.relativedelta import, requirements.txt, and fix JS/template conflicts",
+        "message": "Adjust office hours calendar row height to 40px",
         "author": "wtheisen",
-        "date_iso": "2026-01-18T20:10:03Z",
-        "date_display": "Jan 18, 2026",
-        "url": "https://github.com/wtheisen/nd-cse-30124/commit/c72222871271852466aa81d1ef1179ae465dae93"
+        "date_iso": "2026-01-20T13:23:34Z",
+        "date_display": "Jan 20, 2026",
+        "url": "https://github.com/wtheisen/nd-cse-30124/commit/9c6bda13a79af070bc4d8546be9be1293e0928e0"
       },
       {
-        "message": "jfc",
+        "message": "Reduce office hours calendar row height by 50%",
         "author": "wtheisen",
-        "date_iso": "2026-01-18T19:41:36Z",
-        "date_display": "Jan 18, 2026",
-        "url": "https://github.com/wtheisen/nd-cse-30124/commit/eef068bba09aa1e28371122d5109f244fb14320b"
+        "date_iso": "2026-01-20T13:21:43Z",
+        "date_display": "Jan 20, 2026",
+        "url": "https://github.com/wtheisen/nd-cse-30124/commit/2f1a813b7a0d23dfb93f0f08ac187ee96b9db64f"
       },
       {
-        "message": "buis shit is so chopped",
+        "message": "Remove gruvbox-light theme, fix schedule table striping",
         "author": "wtheisen",
-        "date_iso": "2026-01-18T19:38:07Z",
-        "date_display": "Jan 18, 2026",
-        "url": "https://github.com/wtheisen/nd-cse-30124/commit/f1fec1e8ebd5dc0f9a3c9f062600d94823b10bfd"
+        "date_iso": "2026-01-20T13:17:22Z",
+        "date_display": "Jan 20, 2026",
+        "url": "https://github.com/wtheisen/nd-cse-30124/commit/01383725a0aacfcfa2c1b3293ffe67407ac59210"
       }
     ]
   }
