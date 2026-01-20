@@ -1,12 +1,84 @@
 {
   "cse10124": {
     "repo": "wtheisen/nd-cse-10124",
-    "error": "HTTP 403",
-    "entries": []
+    "display_name": "CSE 10124 \u00b7 Introduction to Using Generative AI",
+    "entries": [
+      {
+        "message": "Updating a lil logistical stuff",
+        "author": "wtheisen",
+        "date_iso": "2026-01-19T13:45:00Z",
+        "date_display": "Jan 19, 2026",
+        "url": "https://github.com/wtheisen/nd-cse-10124/commit/e2882fb488dd583c547da59551530be5837b3bbb"
+      },
+      {
+        "message": "Remove conflicting nth-of-type CSS from schedule table",
+        "author": "wtheisen",
+        "date_iso": "2026-01-19T13:42:06Z",
+        "date_display": "Jan 19, 2026",
+        "url": "https://github.com/wtheisen/nd-cse-10124/commit/bec54b8dbe1b34778e4adb178d3d17939f66d4d4"
+      },
+      {
+        "message": "Move schedule row colors from JS to CSS themes",
+        "author": "wtheisen",
+        "date_iso": "2026-01-19T13:38:50Z",
+        "date_display": "Jan 19, 2026",
+        "url": "https://github.com/wtheisen/nd-cse-10124/commit/c325d388a63523ec0c347baff266217c9dfd2a92"
+      },
+      {
+        "message": "Fix schedule table row colors for bluegold theme",
+        "author": "wtheisen",
+        "date_iso": "2026-01-19T13:37:21Z",
+        "date_display": "Jan 19, 2026",
+        "url": "https://github.com/wtheisen/nd-cse-10124/commit/b286e2eb6f0509c45f028bb8673a2401e765cb10"
+      },
+      {
+        "message": "Make bluegold.css (light mode) the default theme",
+        "author": "wtheisen",
+        "date_iso": "2026-01-19T13:36:23Z",
+        "date_display": "Jan 19, 2026",
+        "url": "https://github.com/wtheisen/nd-cse-10124/commit/ef0056b2454b56776b238d2fec5f328c63e9d8b9"
+      }
+    ]
   },
   "cse30124": {
     "repo": "wtheisen/nd-cse-30124",
-    "error": "HTTP 403",
-    "entries": []
+    "display_name": "CSE 30124 \u00b7 Introduction to Artificial Intelligence",
+    "entries": [
+      {
+        "message": "Cleaning up extra shiz, Think it's working thank you CC my beloved",
+        "author": "wtheisen",
+        "date_iso": "2026-01-18T20:14:10Z",
+        "date_display": "Jan 18, 2026",
+        "url": "https://github.com/wtheisen/nd-cse-30124/commit/2c6b13850c1a9a791eafd56766b29ca04d791fc4"
+      },
+      {
+        "message": "Fix build: add dateutil.relativedelta import, requirements.txt, and fix JS/template conflicts",
+        "author": "wtheisen",
+        "date_iso": "2026-01-18T20:10:03Z",
+        "date_display": "Jan 18, 2026",
+        "url": "https://github.com/wtheisen/nd-cse-30124/commit/c72222871271852466aa81d1ef1179ae465dae93"
+      },
+      {
+        "message": "jfc",
+        "author": "wtheisen",
+        "date_iso": "2026-01-18T19:41:36Z",
+        "date_display": "Jan 18, 2026",
+        "url": "https://github.com/wtheisen/nd-cse-30124/commit/eef068bba09aa1e28371122d5109f244fb14320b"
+      },
+      {
+        "message": "buis shit is so chopped",
+        "author": "wtheisen",
+        "date_iso": "2026-01-18T19:38:07Z",
+        "date_display": "Jan 18, 2026",
+        "url": "https://github.com/wtheisen/nd-cse-30124/commit/f1fec1e8ebd5dc0f9a3c9f062600d94823b10bfd"
+      },
+      {
+        "message": "sneed",
+        "author": "wtheisen",
+        "date_iso": "2026-01-18T19:34:52Z",
+        "date_display": "Jan 18, 2026",
+        "url": "https://github.com/wtheisen/nd-cse-30124/commit/b964bd5ff0caecc257163d6f9d553000b47aebc3"
+      }
+    ]
   }
 }
