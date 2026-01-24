@@ -1,12 +1,84 @@
 {
   "cse10124": {
     "repo": "wtheisen/nd-cse-10124",
-    "error": "HTTP 403",
-    "entries": []
+    "display_name": "CSE 10124 \u00b7 Introduction to Using Generative AI",
+    "entries": [
+      {
+        "message": "Add simple token graph to visualizer",
+        "author": "wtheisen",
+        "date_iso": "2026-01-20T14:54:14Z",
+        "date_display": "Jan 20, 2026",
+        "url": "https://github.com/wtheisen/nd-cse-10124/commit/41be54f5b4ff52f5f239b3f47e7aceaab46553f4"
+      },
+      {
+        "message": "Use theme background for graph container",
+        "author": "wtheisen",
+        "date_iso": "2026-01-20T14:38:39Z",
+        "date_display": "Jan 20, 2026",
+        "url": "https://github.com/wtheisen/nd-cse-10124/commit/3394346f43a86b79c2a21c3c197ebefd5d6389c2"
+      },
+      {
+        "message": "Pre-convert graphs to Graphology format",
+        "author": "wtheisen",
+        "date_iso": "2026-01-20T14:36:15Z",
+        "date_display": "Jan 20, 2026",
+        "url": "https://github.com/wtheisen/nd-cse-10124/commit/052f518bac35d881fccc1135b8d70044f2b67548"
+      },
+      {
+        "message": "Remove demo graphs, keep only Zoomer babbler",
+        "author": "wtheisen",
+        "date_iso": "2026-01-20T14:35:05Z",
+        "date_display": "Jan 20, 2026",
+        "url": "https://github.com/wtheisen/nd-cse-10124/commit/7122eaa9b023229eed747a9dab67383bbe7b73f0"
+      },
+      {
+        "message": "Add Zoomer babbler graphs to visualizer",
+        "author": "wtheisen",
+        "date_iso": "2026-01-20T14:33:06Z",
+        "date_display": "Jan 20, 2026",
+        "url": "https://github.com/wtheisen/nd-cse-10124/commit/97c08aa8f5f6602f7708738fdf4fbb8308f88a50"
+      }
+    ]
   },
   "cse30124": {
     "repo": "wtheisen/nd-cse-30124",
-    "error": "HTTP 403",
-    "entries": []
+    "display_name": "CSE 30124 \u00b7 Introduction to Artificial Intelligence",
+    "entries": [
+      {
+        "message": "Reduce office hours row height to 30px",
+        "author": "wtheisen",
+        "date_iso": "2026-01-20T13:29:25Z",
+        "date_display": "Jan 20, 2026",
+        "url": "https://github.com/wtheisen/nd-cse-30124/commit/7d590cd2f7f646b5f568c8a820181b7b1aa0e334"
+      },
+      {
+        "message": "Make office hours calendar fonts scale with box size",
+        "author": "wtheisen",
+        "date_iso": "2026-01-20T13:27:07Z",
+        "date_display": "Jan 20, 2026",
+        "url": "https://github.com/wtheisen/nd-cse-30124/commit/01811756a575888ef73b936636ddc84e832f33bd"
+      },
+      {
+        "message": "Adjust office hours calendar row height to 40px",
+        "author": "wtheisen",
+        "date_iso": "2026-01-20T13:23:34Z",
+        "date_display": "Jan 20, 2026",
+        "url": "https://github.com/wtheisen/nd-cse-30124/commit/9c6bda13a79af070bc4d8546be9be1293e0928e0"
+      },
+      {
+        "message": "Reduce office hours calendar row height by 50%",
+        "author": "wtheisen",
+        "date_iso": "2026-01-20T13:21:43Z",
+        "date_display": "Jan 20, 2026",
+        "url": "https://github.com/wtheisen/nd-cse-30124/commit/2f1a813b7a0d23dfb93f0f08ac187ee96b9db64f"
+      },
+      {
+        "message": "Remove gruvbox-light theme, fix schedule table striping",
+        "author": "wtheisen",
+        "date_iso": "2026-01-20T13:17:22Z",
+        "date_display": "Jan 20, 2026",
+        "url": "https://github.com/wtheisen/nd-cse-30124/commit/01383725a0aacfcfa2c1b3293ffe67407ac59210"
+      }
+    ]
   }
 }
