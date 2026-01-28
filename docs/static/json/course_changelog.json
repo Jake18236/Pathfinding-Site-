@@ -1,12 +1,84 @@
 {
   "cse10124": {
     "repo": "wtheisen/nd-cse-10124",
-    "error": "HTTP 403",
-    "entries": []
+    "display_name": "CSE 10124 \u00b7 Introduction to Using Generative AI",
+    "entries": [
+      {
+        "message": "Updating \"Code Copies\" to \"Labs\"",
+        "author": "wtheisen",
+        "date_iso": "2026-01-27T15:45:52Z",
+        "date_display": "Jan 27, 2026",
+        "url": "https://github.com/wtheisen/nd-cse-10124/commit/e0860b74bee46d6fbb83774b6f2c01f9713663ca"
+      },
+      {
+        "message": "Add simple token graph to visualizer",
+        "author": "wtheisen",
+        "date_iso": "2026-01-20T14:54:14Z",
+        "date_display": "Jan 20, 2026",
+        "url": "https://github.com/wtheisen/nd-cse-10124/commit/41be54f5b4ff52f5f239b3f47e7aceaab46553f4"
+      },
+      {
+        "message": "Use theme background for graph container",
+        "author": "wtheisen",
+        "date_iso": "2026-01-20T14:38:39Z",
+        "date_display": "Jan 20, 2026",
+        "url": "https://github.com/wtheisen/nd-cse-10124/commit/3394346f43a86b79c2a21c3c197ebefd5d6389c2"
+      },
+      {
+        "message": "Pre-convert graphs to Graphology format",
+        "author": "wtheisen",
+        "date_iso": "2026-01-20T14:36:15Z",
+        "date_display": "Jan 20, 2026",
+        "url": "https://github.com/wtheisen/nd-cse-10124/commit/052f518bac35d881fccc1135b8d70044f2b67548"
+      },
+      {
+        "message": "Remove demo graphs, keep only Zoomer babbler",
+        "author": "wtheisen",
+        "date_iso": "2026-01-20T14:35:05Z",
+        "date_display": "Jan 20, 2026",
+        "url": "https://github.com/wtheisen/nd-cse-10124/commit/7122eaa9b023229eed747a9dab67383bbe7b73f0"
+      }
+    ]
   },
   "cse30124": {
     "repo": "wtheisen/nd-cse-30124",
-    "error": "HTTP 403",
-    "entries": []
+    "display_name": "CSE 30124 \u00b7 Introduction to Artificial Intelligence",
+    "entries": [
+      {
+        "message": "Fix comparison table borders on colored cells",
+        "author": "wtheisen",
+        "date_iso": "2026-01-28T18:35:30Z",
+        "date_display": "Jan 28, 2026",
+        "url": "https://github.com/wtheisen/nd-cse-30124/commit/3851e43f0bbcae6eb56f5f0431e2f60500ac25c6"
+      },
+      {
+        "message": "Add algorithm comparison tab to Shidoku CSP visualizer",
+        "author": "wtheisen",
+        "date_iso": "2026-01-28T18:32:50Z",
+        "date_display": "Jan 28, 2026",
+        "url": "https://github.com/wtheisen/nd-cse-30124/commit/ac7bed5d45ce7313bd0f14093985d13f460f904b"
+      },
+      {
+        "message": "Reduce office hours row height to 30px",
+        "author": "wtheisen",
+        "date_iso": "2026-01-20T13:29:25Z",
+        "date_display": "Jan 20, 2026",
+        "url": "https://github.com/wtheisen/nd-cse-30124/commit/7d590cd2f7f646b5f568c8a820181b7b1aa0e334"
+      },
+      {
+        "message": "Make office hours calendar fonts scale with box size",
+        "author": "wtheisen",
+        "date_iso": "2026-01-20T13:27:07Z",
+        "date_display": "Jan 20, 2026",
+        "url": "https://github.com/wtheisen/nd-cse-30124/commit/01811756a575888ef73b936636ddc84e832f33bd"
+      },
+      {
+        "message": "Adjust office hours calendar row height to 40px",
+        "author": "wtheisen",
+        "date_iso": "2026-01-20T13:23:34Z",
+        "date_display": "Jan 20, 2026",
+        "url": "https://github.com/wtheisen/nd-cse-30124/commit/9c6bda13a79af070bc4d8546be9be1293e0928e0"
+      }
+    ]
   }
 }
