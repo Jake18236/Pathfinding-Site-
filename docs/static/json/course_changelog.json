@@ -4,6 +4,13 @@
     "display_name": "CSE 10124 \u00b7 Introduction to Using Generative AI",
     "entries": [
       {
+        "message": "Changing teaser figure",
+        "author": "wtheisen",
+        "date_iso": "2026-01-29T14:21:42Z",
+        "date_display": "Jan 29, 2026",
+        "url": "https://github.com/wtheisen/nd-cse-10124/commit/f15adf34de0aa8b3c7e413ba25ce799ebaae3d94"
+      },
+      {
         "message": "Updating \"Code Copies\" to \"Labs\"",
         "author": "wtheisen",
         "date_iso": "2026-01-27T15:45:52Z",
@@ -30,13 +37,6 @@
         "date_iso": "2026-01-20T14:36:15Z",
         "date_display": "Jan 20, 2026",
         "url": "https://github.com/wtheisen/nd-cse-10124/commit/052f518bac35d881fccc1135b8d70044f2b67548"
-      },
-      {
-        "message": "Remove demo graphs, keep only Zoomer babbler",
-        "author": "wtheisen",
-        "date_iso": "2026-01-20T14:35:05Z",
-        "date_display": "Jan 20, 2026",
-        "url": "https://github.com/wtheisen/nd-cse-10124/commit/7122eaa9b023229eed747a9dab67383bbe7b73f0"
       }
     ]
   },
