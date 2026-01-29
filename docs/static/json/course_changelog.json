@@ -4,6 +4,13 @@
     "display_name": "CSE 10124 \u00b7 Introduction to Using Generative AI",
     "entries": [
       {
+        "message": "Trying to fix teaser height",
+        "author": "wtheisen",
+        "date_iso": "2026-01-29T16:53:23Z",
+        "date_display": "Jan 29, 2026",
+        "url": "https://github.com/wtheisen/nd-cse-10124/commit/20ed6cbaf7340a8343485b5da060ce70e45ff84e"
+      },
+      {
         "message": "Trying to fix teaser image styling/sizing",
         "author": "wtheisen",
         "date_iso": "2026-01-29T14:50:55Z",
@@ -30,13 +37,6 @@
         "date_iso": "2026-01-20T14:54:14Z",
         "date_display": "Jan 20, 2026",
         "url": "https://github.com/wtheisen/nd-cse-10124/commit/41be54f5b4ff52f5f239b3f47e7aceaab46553f4"
-      },
-      {
-        "message": "Use theme background for graph container",
-        "author": "wtheisen",
-        "date_iso": "2026-01-20T14:38:39Z",
-        "date_display": "Jan 20, 2026",
-        "url": "https://github.com/wtheisen/nd-cse-10124/commit/3394346f43a86b79c2a21c3c197ebefd5d6389c2"
       }
     ]
   },
