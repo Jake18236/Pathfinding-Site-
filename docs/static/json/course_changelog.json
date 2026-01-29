@@ -45,6 +45,20 @@
     "display_name": "CSE 30124 \u00b7 Introduction to Artificial Intelligence",
     "entries": [
       {
+        "message": "Rename A* metrics: Expanded->Explored, Generated->Discovered",
+        "author": "Bill",
+        "date_iso": "2026-01-29T03:04:56Z",
+        "date_display": "Jan 29, 2026",
+        "url": "https://github.com/wtheisen/nd-cse-30124/commit/9fe033a441d27f561c98317b9e5aee16400eacab"
+      },
+      {
+        "message": "Add A* Pathfinding Visualizer",
+        "author": "Bill",
+        "date_iso": "2026-01-29T02:59:43Z",
+        "date_display": "Jan 29, 2026",
+        "url": "https://github.com/wtheisen/nd-cse-30124/commit/0a39f3ef7199b038f64e4270f3d111806a1c0537"
+      },
+      {
         "message": "Fix comparison table borders on colored cells",
         "author": "wtheisen",
         "date_iso": "2026-01-28T18:35:30Z",
@@ -64,20 +78,6 @@
         "date_iso": "2026-01-20T13:29:25Z",
         "date_display": "Jan 20, 2026",
         "url": "https://github.com/wtheisen/nd-cse-30124/commit/7d590cd2f7f646b5f568c8a820181b7b1aa0e334"
-      },
-      {
-        "message": "Make office hours calendar fonts scale with box size",
-        "author": "wtheisen",
-        "date_iso": "2026-01-20T13:27:07Z",
-        "date_display": "Jan 20, 2026",
-        "url": "https://github.com/wtheisen/nd-cse-30124/commit/01811756a575888ef73b936636ddc84e832f33bd"
-      },
-      {
-        "message": "Adjust office hours calendar row height to 40px",
-        "author": "wtheisen",
-        "date_iso": "2026-01-20T13:23:34Z",
-        "date_display": "Jan 20, 2026",
-        "url": "https://github.com/wtheisen/nd-cse-30124/commit/9c6bda13a79af070bc4d8546be9be1293e0928e0"
       }
     ]
   }
