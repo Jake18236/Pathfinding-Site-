@@ -4,6 +4,13 @@
     "display_name": "CSE 10124 \u00b7 Introduction to Using Generative AI",
     "entries": [
       {
+        "message": "Trying to force build?",
+        "author": "wtheisen",
+        "date_iso": "2026-01-29T18:51:48Z",
+        "date_display": "Jan 29, 2026",
+        "url": "https://github.com/wtheisen/nd-cse-10124/commit/7bacb5c60ed4a43f3370cfe34b895edc8122ebad"
+      },
+      {
         "message": "Trying to fix teaser height",
         "author": "wtheisen",
         "date_iso": "2026-01-29T16:53:23Z",
@@ -30,13 +37,6 @@
         "date_iso": "2026-01-27T15:45:52Z",
         "date_display": "Jan 27, 2026",
         "url": "https://github.com/wtheisen/nd-cse-10124/commit/e0860b74bee46d6fbb83774b6f2c01f9713663ca"
-      },
-      {
-        "message": "Add simple token graph to visualizer",
-        "author": "wtheisen",
-        "date_iso": "2026-01-20T14:54:14Z",
-        "date_display": "Jan 20, 2026",
-        "url": "https://github.com/wtheisen/nd-cse-10124/commit/41be54f5b4ff52f5f239b3f47e7aceaab46553f4"
       }
     ]
   },
