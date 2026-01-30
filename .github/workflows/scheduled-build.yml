@@ -13,25 +13,18 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  build_and_publish:
+  build:
     if: ${{ github.actor != 'github-actions[bot]' }}
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
     steps:
       - name: Checkout main (source)
         uses: actions/checkout@v4
-        with:
-          ref: main
-          path: source
-          fetch-depth: 0
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '20'
           cache: 'npm'
-          cache-dependency-path: source/package-lock.json
 
       - name: Setup Python
         uses: actions/setup-python@v5
@@ -43,26 +36,15 @@ jobs:
           python -m pip install --upgrade pip
           pip install PyYAML python-dateutil requests
 
-      - name: Checkout gh-pages (publish)
-        uses: actions/checkout@v4
+      - name: Restore book cover cache
+        uses: actions/cache@v4
         with:
-          ref: gh-pages
-          path: publish
-          fetch-depth: 0
-
-      - name: Prime cover cache
-        run: |
-          # Check both old (docs/) and new (root) locations for covers
-          if [ -d publish/static/img/book_cover_thumbnails ]; then
-            mkdir -p source/static/img/book_cover_thumbnails
-            rsync -a publish/static/img/book_cover_thumbnails/ source/static/img/book_cover_thumbnails/
-          elif [ -d publish/docs/static/img/book_cover_thumbnails ]; then
-            mkdir -p source/static/img/book_cover_thumbnails
-            rsync -a publish/docs/static/img/book_cover_thumbnails/ source/static/img/book_cover_thumbnails/
-          fi
+          path: static/img/book_cover_thumbnails
+          key: book-covers-${{ hashFiles('static/csv/resources.csv') }}
+          restore-keys: |
+            book-covers-
 
       - name: Fetch external data
-        working-directory: source
         env:
           COURSE_RESOURCES_CSV_URL: https://docs.google.com/spreadsheets/d/e/2PACX-1vQ0MhdIkphQZpu5C2sQ_1WhGdE8DLxxlVtRirER3_wLgUsli0wvjdq-rYQeStwf9ubSVeDaKDNUbYeh/pub?gid=518321558&single=true&output=csv
         run: |
@@ -79,41 +61,29 @@ jobs:
             --limit 5
 
       - name: Install npm dependencies
-        working-directory: source
         run: npm ci
 
       - name: Build site with Eleventy
-        working-directory: source
         run: npm run build
 
-      - name: Sync built docs to gh-pages root
-        run: |
-          # Preserve existing CNAME from gh-pages if present
-          if [ -f publish/CNAME ]; then cp publish/CNAME /tmp/CNAME; fi
-          # Use CNAME from source if provided
-          if [ -f source/CNAME ]; then cp source/CNAME /tmp/CNAME; fi
+      - name: Add .nojekyll
+        run: touch docs/.nojekyll
 
-          # Clear old content but preserve .git and CNAME
-          find publish -mindepth 1 -maxdepth 1 ! -name '.git' ! -name 'CNAME' -exec rm -rf {} +
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: docs/
 
-          # Copy built site to root of gh-pages
-          cp -r source/docs/* publish/
-
-          # Add .nojekyll to bypass Jekyll processing
-          touch publish/.nojekyll
-
-          # Restore CNAME
-          if [ -f /tmp/CNAME ]; then cp /tmp/CNAME publish/CNAME; fi
-
-      - name: Commit and push to gh-pages
-        working-directory: publish
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add -A .
-          if ! git diff --cached --quiet; then
-            git commit -m "Automated build: refresh resources from CSV"
-            git push origin gh-pages
-          else
-            echo "No changes to commit"
-          fi
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
