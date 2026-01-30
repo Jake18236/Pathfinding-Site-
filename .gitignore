@@ -9,6 +9,8 @@ MNIST
 static/solutions
 scripts/yasb.py
 Makefile
-static/csv/*
 tweet_saver_info.md
 scripts/test_enque.py
+
+# Node.js
+node_modules/

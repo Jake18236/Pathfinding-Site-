@@ -1,0 +1,152 @@
+<div class="row">
+    <div class="page-header">
+        <h2 id="learning"><i class="fa-solid fa-brain"></i> Learning</h2>
+    </div>
+</div>
+
+{# Filter learning resources and sort by date #}
+{% set learning_entries = resources | filterLearning %}
+{% set sorted_learning = learning_entries | sortByKey('date_added_sort_key', true) %}
+{% set current_year = '' | currentYear %}
+
+{% if sorted_learning | length > 0 %}
+    {% if sorted_learning | length > 5 %}
+        {# Group by year #}
+        {% set grouped_learning = sorted_learning | groupByYear %}
+        {% set ordered_years = grouped_learning | sortedYearKeys %}
+
+        <div class="row" style="margin-top: 15px;">
+            <div class="col-sm-12">
+                <div class="panel-group" id="learning-archive" role="tablist">
+                {% for year in ordered_years %}
+                    {% set year_slug = 'learning-year-' + (year | slugify) %}
+                    {% set year_entries = grouped_learning[year] %}
+                    {% set preview_list = year_entries | slice(0, 5) %}
+                    {% set remaining_list = year_entries | slice(5) %}
+                    {% set collapse_class = 'in' if (year | string) == (current_year | string) else '' %}
+
+                    <div class="panel panel-default" style="border-radius: 4px; overflow: hidden; margin-bottom: 10px;">
+                        <div class="panel-heading" role="tab" id="{{ year_slug }}-heading" style="padding: 0;">
+                            <button class="btn btn-link btn-block" type="button" data-toggle="collapse" data-target="#{{ year_slug }}" aria-expanded="false" aria-controls="{{ year_slug }}" style="text-align: left; padding: 12px 15px;">
+                                {{ year }}
+                                <i class="fa fa-caret-down pull-right"></i>
+                            </button>
+                        </div>
+                        <div id="{{ year_slug }}" class="panel-collapse collapse {{ collapse_class }}" role="tabpanel" aria-labelledby="{{ year_slug }}-heading">
+                            <ul class="list-group" style="margin-bottom: 0;">
+                            {% for item in preview_list %}
+                                {% set display_name = item.name | default('') | trim %}
+                                {% set icon_class = item.type | typeIcon %}
+                                <li class="list-group-item" style="display: flex; align-items: center; justify-content: space-between;">
+                                    <div style="display: flex; align-items: center;">
+                                        <i class="{{ icon_class }}" style="margin-right: 10px; color: #4e73df;"></i>
+                                        <div>
+                                            {% if item.link %}
+                                                <a href="{{ item.link }}">{{ display_name }}</a>
+                                            {% else %}
+                                                {{ display_name }}
+                                            {% endif %}
+                                            {% if item.author or item.student %}
+                                                <div class="text-muted" style="font-size: 0.85em;">
+                                                    {{ item.author | default(item.student) | trim }}
+                                                </div>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                    <div class="text-muted" style="font-size: 0.85em;">
+                                        {% if item.date_added_display %}
+                                            {{ item.date_added_display }}
+                                        {% endif %}
+                                    </div>
+                                </li>
+                            {% endfor %}
+                            {% if preview_list | length == 0 %}
+                                <li class="list-group-item text-muted">No learning resources recorded for {{ year }}.</li>
+                            {% endif %}
+                            </ul>
+                            {% if remaining_list | length > 0 %}
+                                <div style="display: flex; justify-content: center; margin-top: 10px;">
+                                    <button class="btn btn-link btn-sm" type="button" data-toggle="collapse" data-target="#{{ year_slug }}-full" aria-expanded="false" aria-controls="{{ year_slug }}-full">
+                                        Show all {{ year }} learning resources
+                                        <i class="fa fa-caret-down"></i>
+                                    </button>
+                                </div>
+                                <div class="collapse" id="{{ year_slug }}-full" style="margin-top: 10px;">
+                                    <ul class="list-group" style="margin-bottom: 0;">
+                                    {% for item in remaining_list %}
+                                        {% set display_name = item.name | default('') | trim %}
+                                        {% set icon_class = item.type | typeIcon %}
+                                        <li class="list-group-item" style="display: flex; align-items: center; justify-content: space-between;">
+                                            <div style="display: flex; align-items: center;">
+                                                <i class="{{ icon_class }}" style="margin-right: 10px; color: #4e73df;"></i>
+                                                <div>
+                                                    {% if item.link %}
+                                                        <a href="{{ item.link }}">{{ display_name }}</a>
+                                                    {% else %}
+                                                        {{ display_name }}
+                                                    {% endif %}
+                                                    {% if item.author or item.student %}
+                                                        <div class="text-muted" style="font-size: 0.85em;">
+                                                            {{ item.author | default(item.student) | trim }}
+                                                        </div>
+                                                    {% endif %}
+                                                </div>
+                                            </div>
+                                            <div class="text-muted" style="font-size: 0.85em;">
+                                                {% if item.date_added_display %}
+                                                    {{ item.date_added_display }}
+                                                {% endif %}
+                                            </div>
+                                        </li>
+                                    {% endfor %}
+                                    </ul>
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                {% endfor %}
+                </div>
+            </div>
+        </div>
+    {% else %}
+        {# Simple list for 5 or fewer items #}
+        <div class="row">
+            <div class="col-sm-12">
+                <ul class="list-group">
+                {% for item in sorted_learning %}
+                    {% set display_name = item.name | default('') | trim %}
+                    {% set icon_class = item.type | typeIcon %}
+                    <li class="list-group-item" style="display: flex; align-items: center; justify-content: space-between;">
+                        <div style="display: flex; align-items: center;">
+                            <i class="{{ icon_class }}" style="margin-right: 10px; color: #4e73df;"></i>
+                            <div>
+                                {% if item.link %}
+                                    <a href="{{ item.link }}">{{ display_name }}</a>
+                                {% else %}
+                                    {{ display_name }}
+                                {% endif %}
+                                {% if item.author or item.student %}
+                                    <div class="text-muted" style="font-size: 0.85em;">
+                                        {{ item.author | default(item.student) | trim }}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="text-muted" style="font-size: 0.85em;">
+                            {% if item.date_added_display %}
+                                {{ item.date_added_display }}
+                            {% endif %}
+                        </div>
+                    </li>
+                {% endfor %}
+                </ul>
+            </div>
+        </div>
+    {% endif %}
+{% else %}
+    <div class="row">
+        <div class="col-sm-12">
+            <p class="text-muted">Learning resources will appear here once they are added to <code>static/csv/resources.csv</code> with an <code>export_id</code> containing "learning".</p>
+        </div>
+    </div>
+{% endif %}

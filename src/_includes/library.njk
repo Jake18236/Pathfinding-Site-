@@ -1,0 +1,106 @@
+<div class="row">
+    <div class="page-header">
+        <h2 id="library"><i class="fa-solid fa-book"></i> Library</h2>
+    </div>
+</div>
+
+{# Filter library resources and sort by date #}
+{% set library_entries = resources | filterLibrary %}
+{% set library_sorted = library_entries | sortByKey('date_added_sort_key', true) %}
+
+{% if library_sorted | length > 0 %}
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="form-group" style="margin-bottom: 20px;">
+                <label for="library-search" class="sr-only">Search library</label>
+                <div class="input-group">
+                    <span class="input-group-addon"><i class="fa fa-search"></i></span>
+                    <input type="text" id="library-search" class="form-control" placeholder="Search library by title, author, type, or notes&hellip;">
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="library-card-container">
+    {% for item in library_sorted %}
+        {% set display_title = item.name | default(item.id) | default('') | trim %}
+        {% set display_author = item.author | default('') | trim %}
+        {% set raw_type = item.type | default('') | trim %}
+        {% set display_type = raw_type | replace('_', ' ') | title if raw_type else '' %}
+        {% set checked_out = item.checked_out %}
+        {% set status_class = 'label-warning' if checked_out else 'label-success' %}
+        {% set status_text = 'Checked out' if checked_out else 'Available' %}
+        {% set date_added = item.date_added_display | default(item.date_added_raw) | default('') %}
+        {% set tooltip_text = ('Checked out by ' + item.student) if (checked_out and item.student) else status_text %}
+        {% set cover_image = item.cover | default('') %}
+        {% set notes = item.notes | default('') | trim %}
+        {% set search_blob = (display_title + ' ' + display_author + ' ' + display_type + ' ' + notes) | lower %}
+
+        <div class="library-card-wrapper" data-haystack="{{ search_blob }}">
+            <div class="panel panel-default library-card">
+                <div class="library-card-cover">
+                    {% if cover_image %}
+                        <img src="{{ cover_image }}" alt="Cover for {{ display_title }}">
+                    {% else %}
+                        <i class="fa fa-book" style="font-size: 3em; color: #bbb;"></i>
+                    {% endif %}
+                </div>
+                <div class="panel-body library-card-body">
+                    <h4 class="library-card-title">
+                        {% if item.link %}
+                            <a href="{{ item.link }}">{{ display_title }}</a>
+                        {% else %}
+                            {{ display_title }}
+                        {% endif %}
+                    </h4>
+                    <div class="library-card-meta">
+                        <div><i class="fa fa-user" style="margin-right: 6px;"></i>{{ display_author if display_author else 'Author unavailable' }}</div>
+                        <div><i class="fa fa-tag" style="margin-right: 6px;"></i>{{ display_type if display_type else 'Type unavailable' }}</div>
+                    </div>
+                    {% if notes %}
+                        <p class="text-muted" style="font-size: 0.85em;">{{ notes }}</p>
+                    {% endif %}
+                    {% if item.rating %}
+                        <span class="label label-info" style="margin-top: auto; align-self: flex-start;">Rated {{ item.rating }}</span>
+                    {% endif %}
+                </div>
+                <div class="panel-footer library-card-footer">
+                    <span class="label {{ status_class }}"
+                          data-toggle="tooltip"
+                          data-placement="top"
+                          title="{{ tooltip_text }}"
+                    >{{ status_text }}</span>
+                    <span class="library-card-date" style="color: #777;">
+                        <i class="fa fa-clock-o" style="margin-right: 6px;"></i>{{ date_added if date_added else 'Date not recorded' }}
+                    </span>
+                </div>
+            </div>
+        </div>
+    {% endfor %}
+    </div>
+
+    <script>
+    window.addEventListener("load", function() {
+        if (window.jQuery && typeof window.jQuery.fn.tooltip === 'function') {
+            window.jQuery('[data-toggle="tooltip"]').tooltip();
+            var $libraryContainer = window.jQuery('#library-card-container');
+            var $libraryCards = window.jQuery('.library-card-wrapper');
+            window.jQuery('#library-search').on('input', function() {
+                var term = window.jQuery(this).val().toLowerCase().trim();
+                $libraryCards.each(function() {
+                    var $card = window.jQuery(this);
+                    var haystack = ($card.data('haystack') || '').toString();
+                    var fallback = $card.text().toLowerCase();
+                    var matches = term === '' || haystack.indexOf(term) !== -1 || fallback.indexOf(term) !== -1;
+                    $card.toggle(matches);
+                });
+            });
+        }
+    });
+    </script>
+{% else %}
+    <div class="row">
+        <div class="col-sm-12">
+            <p class="text-muted">Library inventory is maintained in <code>static/csv/resources.csv</code>; tag entries with an <code>export_id</code> beginning with <code>lib-</code> or containing "library" to surface them here.</p>
+        </div>
+    </div>
+{% endif %}

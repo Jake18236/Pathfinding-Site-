@@ -1,0 +1,219 @@
+@import url('blugold.css');
+
+/* Override palette for the Gruvbox variant while inheriting Blugold layout */
+
+body {
+  background-color: #1d2021 !important;
+  color: #ebdbb2 !important;
+}
+
+.container {
+  background-color: transparent !important;
+  border-color: transparent !important;
+  box-shadow: none !important;
+  color: inherit !important;
+}
+
+.page-header {
+  border-color: #665c54 !important;
+  color: #ebdbb2 !important;
+}
+
+.page-header h1 {
+  color: #fb4934 !important;
+}
+
+.page-header .nav > li > a,
+.page-header .nav > li > a:visited {
+  color: #83a598 !important;
+}
+
+.page-header .nav > li > a:hover {
+  color: #d65d0e !important;
+}
+
+h1,
+h2 {
+  color: #b8bb26 !important;
+}
+
+h3,
+h4,
+h5,
+h6 {
+  color: #fabd2f !important;
+}
+
+a {
+  color: #83a598 !important;
+}
+
+a:hover,
+a:focus {
+  color: #d65d0e !important;
+}
+
+.panel,
+.panel-heading,
+.panel-footer,
+.panel-default,
+.panel-default > .panel-heading,
+.panel-default > .panel-footer,
+.panel-default > .panel-body {
+  background-color: #282828 !important;
+  border-color: #504945 !important;
+  color: #ebdbb2 !important;
+}
+
+.panel-heading,
+.panel-default > .panel-heading {
+  background-color: #32302f !important;
+  color: #fabd2f !important;
+}
+
+.panel-footer,
+.panel-default > .panel-footer {
+  color: #d5c4a1 !important;
+}
+
+.panel-title,
+.panel-title a,
+.panel-default > .panel-heading .panel-title {
+  color: #b8bb26 !important;
+}
+
+.table {
+  background-color: #282828 !important;
+  color: #ebdbb2 !important;
+}
+
+.table > thead > tr > th,
+.table > tbody > tr > td,
+.table-bordered > thead > tr > th,
+.table-bordered > tbody > tr > td {
+  border-color: #504945 !important;
+}
+
+.list-group-item {
+  background-color: #282828 !important;
+  border-color: #504945 !important;
+  color: #ebdbb2 !important;
+}
+
+.form-control,
+input,
+textarea {
+  background-color: #32302f !important;
+  border-color: #665c54 !important;
+  color: #ebdbb2 !important;
+}
+
+.form-control::placeholder {
+  color: #bdae93 !important;
+}
+
+.btn,
+.btn-default,
+.btn-link {
+  border-color: #665c54 !important;
+  color: #83a598 !important;
+  background-color: transparent !important;
+}
+
+.btn:hover,
+.btn:focus,
+.btn-link:hover {
+  color: #d65d0e !important;
+  border-color: #d65d0e !important;
+}
+
+.label-success {
+  background-color: #b8bb26 !important;
+  color: #1d2021 !important;
+}
+
+.label-warning {
+  background-color: #fe8019 !important;
+  color: #1d2021 !important;
+}
+
+.label-info {
+  background-color: #83a598 !important;
+  color: #1d2021 !important;
+}
+
+.alert-info {
+  background-color: rgba(131, 165, 152, 0.2) !important;
+  border-color: #83a598 !important;
+  color: #ebdbb2 !important;
+}
+
+blockquote {
+  border-left-color: #665c54 !important;
+  color: #d5c4a1 !important;
+}
+
+pre,
+code,
+pre code {
+  background-color: #32302f !important;
+  border: 1px solid #504945 !important;
+  color: #ebdbb2 !important;
+}
+
+.nav-pills > li > a {
+  color: #83a598 !important;
+}
+
+.nav-pills > li.active > a,
+.nav-pills > li.active > a:hover,
+.nav-pills > li.active > a:focus {
+  background-color: #83a598 !important;
+  color: #1d2021 !important;
+}
+
+footer,
+footer p {
+  color: #d5c4a1 !important;
+}
+
+.library-card a {
+  color: #83a598 !important;
+}
+
+.library-card a:hover {
+  color: #d65d0e !important;
+}
+
+.topic-row:nth-child(even) {
+  background-color: rgba(80, 73, 69, 0.45) !important;
+}
+
+.topic-row:nth-child(odd) {
+  background-color: rgba(40, 40, 40, 0.6) !important;
+}
+
+.progress {
+  background-color: #32302f !important;
+}
+
+.progress-bar {
+  background-color: #b8bb26 !important;
+  color: #1d2021 !important;
+}
+
+.badge {
+  background-color: #b8bb26 !important;
+  color: #1d2021 !important;
+}
+
+.modal-content {
+  background-color: #282828 !important;
+  color: #ebdbb2 !important;
+  border-color: #504945 !important;
+}
+
+.modal-header,
+.modal-footer {
+  border-color: #665c54 !important;
+}

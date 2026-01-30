@@ -1,0 +1,92 @@
+<div class="row">
+    <div class="page-header">
+        <h2 id="courses"><i class="fa-solid fa-chalkboard-user"></i> Courses</h2>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-6 col-sm-12" style="margin-bottom: 30px;">
+        <h3 style="margin-top: 0; margin-bottom: 12px; font-weight: 600; text-align: center;">
+            <a href="https://10124.williamtheisen.com" class="course-title-link" target="_blank" rel="noopener">CSE 10124 &middot; Introduction to Using Generative AI</a>
+        </h3>
+        <div class="embed-responsive embed-responsive-16by9 course-embed">
+            <iframe
+                src="https://10124.williamtheisen.com"
+                title="Introductory AI Course Site"
+                loading="lazy"
+                class="embed-responsive-item"
+                allowfullscreen
+                tabindex="-1"
+                aria-hidden="true">
+            </iframe>
+            <a class="course-embed__overlay" href="https://10124.williamtheisen.com" target="_blank" rel="noopener" aria-label="Open the full CSE 10124 course website"></a>
+        </div>
+        {% set cse10124_log = courseChangelog.cse10124.entries if courseChangelog.cse10124 else [] %}
+        {% set cse10124_error = courseChangelog.cse10124.error if courseChangelog.cse10124 else '' %}
+        <div style="color: #9a9a9a; font-size: 0.8em; margin-top: 10px;">
+            <strong>Changelog</strong>
+            <ul style="margin: 6px 0 0 18px;">
+            {% if cse10124_log | length > 0 %}
+                {% for entry in cse10124_log | slice(0, 4) %}
+                    <li>
+                        {% if entry.url %}
+                            <a href="{{ entry.url }}">{{ entry.message | default('Update') }}</a>
+                        {% else %}
+                            {{ entry.message | default('Update') }}
+                        {% endif %}
+                        {% if entry.date_display %}
+                            <span class="text-muted" style="margin-left: 6px;">{{ entry.date_display }}</span>
+                        {% endif %}
+                    </li>
+                {% endfor %}
+            {% elif cse10124_error %}
+                <li class="text-muted">Could not fetch updates ({{ cse10124_error }}).</li>
+            {% else %}
+                <li class="text-muted">No recent updates.</li>
+            {% endif %}
+            </ul>
+        </div>
+    </div>
+    <div class="col-md-6 col-sm-12" style="margin-bottom: 30px;">
+        <h3 style="margin-top: 0; margin-bottom: 12px; font-weight: 600; text-align: center;">
+            <a href="https://30124.williamtheisen.com" class="course-title-link" target="_blank" rel="noopener">CSE 30124 &middot; Introduction to Artificial Intelligence</a>
+        </h3>
+        <div class="embed-responsive embed-responsive-16by9 course-embed">
+            <iframe
+                src="https://30124.williamtheisen.com"
+                title="Advanced AI Course Site"
+                loading="lazy"
+                class="embed-responsive-item"
+                allowfullscreen
+                tabindex="-1"
+                aria-hidden="true">
+            </iframe>
+            <a class="course-embed__overlay" href="https://30124.williamtheisen.com" target="_blank" rel="noopener" aria-label="Open the full CSE 30124 course website"></a>
+        </div>
+        {% set cse30124_log = courseChangelog.cse30124.entries if courseChangelog.cse30124 else [] %}
+        {% set cse30124_error = courseChangelog.cse30124.error if courseChangelog.cse30124 else '' %}
+        <div style="color: #9a9a9a; font-size: 0.8em; margin-top: 10px;">
+            <strong>Changelog</strong>
+            <ul style="margin: 6px 0 0 18px;">
+            {% if cse30124_log | length > 0 %}
+                {% for entry in cse30124_log | slice(0, 4) %}
+                    <li>
+                        {% if entry.url %}
+                            <a href="{{ entry.url }}">{{ entry.message | default('Update') }}</a>
+                        {% else %}
+                            {{ entry.message | default('Update') }}
+                        {% endif %}
+                        {% if entry.date_display %}
+                            <span class="text-muted" style="margin-left: 6px;">{{ entry.date_display }}</span>
+                        {% endif %}
+                    </li>
+                {% endfor %}
+            {% elif cse30124_error %}
+                <li class="text-muted">Could not fetch updates ({{ cse30124_error }}).</li>
+            {% else %}
+                <li class="text-muted">No recent updates.</li>
+            {% endif %}
+            </ul>
+        </div>
+    </div>
+</div>
