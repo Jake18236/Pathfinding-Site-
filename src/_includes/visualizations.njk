@@ -11,9 +11,21 @@
     </p>
 </div>
 
+<div class="row">
+    <div class="col-sm-12">
+        <div class="form-group" style="margin-bottom: 20px;">
+            <label for="viz-search" class="sr-only">Search visualizations</label>
+            <div class="input-group">
+                <span class="input-group-addon"><i class="fa fa-search"></i></span>
+                <input type="text" id="viz-search" class="form-control" placeholder="Search visualizations by title, description, or tags&hellip;">
+            </div>
+        </div>
+    </div>
+</div>
+
 <div class="row" id="viz-card-container">
     <!-- A* Pathfinding -->
-    <div class="col-lg-3 col-md-6 col-sm-6" style="margin-bottom: 20px;">
+    <div class="col-lg-3 col-md-6 col-sm-6 viz-card-wrapper" style="margin-bottom: 20px;" data-haystack="a* pathfinding search heuristics manhattan euclidean dijkstra grid optimal paths">
         <div class="viz-card">
             <a href="astar.html" class="viz-card-link">
                 <div class="viz-card-icon">
@@ -33,7 +45,7 @@
     </div>
 
     <!-- Minimax & Alpha-Beta -->
-    <div class="col-lg-3 col-md-6 col-sm-6" style="margin-bottom: 20px;">
+    <div class="col-lg-3 col-md-6 col-sm-6 viz-card-wrapper" style="margin-bottom: 20px;" data-haystack="minimax alpha-beta pruning game theory adversarial tic-tac-toe nim game trees">
         <div class="viz-card">
             <a href="minimax.html" class="viz-card-link">
                 <div class="viz-card-icon">
@@ -53,7 +65,7 @@
     </div>
 
     <!-- Dimensionality Reduction -->
-    <div class="col-lg-3 col-md-6 col-sm-6" style="margin-bottom: 20px;">
+    <div class="col-lg-3 col-md-6 col-sm-6 viz-card-wrapper" style="margin-bottom: 20px;" data-haystack="dimensionality reduction mnist cifar-10 pca t-sne umap cnn embeddings ml visualization machine learning">
         <div class="viz-card">
             <a href="mnist.html" class="viz-card-link">
                 <div class="viz-card-icon">
@@ -73,7 +85,7 @@
     </div>
 
     <!-- Constraint Satisfaction -->
-    <div class="col-lg-3 col-md-6 col-sm-6" style="margin-bottom: 20px;">
+    <div class="col-lg-3 col-md-6 col-sm-6 viz-card-wrapper" style="margin-bottom: 20px;" data-haystack="constraint satisfaction csp shidoku sudoku backtracking ac-3 mrv mac arc consistency search trees">
         <div class="viz-card">
             <a href="shidoku.html" class="viz-card-link">
                 <div class="viz-card-icon">
@@ -92,6 +104,25 @@
         </div>
     </div>
 </div>
+
+<script>
+window.addEventListener("load", function() {
+    if (window.jQuery) {
+        var $vizContainer = window.jQuery('#viz-card-container');
+        var $vizCards = window.jQuery('.viz-card-wrapper');
+        window.jQuery('#viz-search').on('input', function() {
+            var term = window.jQuery(this).val().toLowerCase().trim();
+            $vizCards.each(function() {
+                var $card = window.jQuery(this);
+                var haystack = ($card.data('haystack') || '').toString();
+                var fallback = $card.text().toLowerCase();
+                var matches = term === '' || haystack.indexOf(term) !== -1 || fallback.indexOf(term) !== -1;
+                $card.toggle(matches);
+            });
+        });
+    }
+});
+</script>
 
 <style>
 .viz-card {
@@ -129,7 +160,7 @@
     width: 56px;
     height: 56px;
     border-radius: 12px;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: #002b5c;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -197,6 +228,6 @@
 }
 
 [data-theme="gruvbox-dark"] .viz-card-icon {
-    background: linear-gradient(135deg, #b16286 0%, #d3869b 100%);
+    background: #458588;
 }
 </style>
