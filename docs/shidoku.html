@@ -1,0 +1,656 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="gruvbox-light">
+    <head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta name="description" content="">
+	<meta name="author" content="">
+
+	<title>Teaching and Learning Artificial Intelligence</title>
+
+	<!-- Theme CSS (toggleable) -->
+	<link id="theme-style" href="static/css/gruvbox-light.css" rel="stylesheet">
+	<script src="https://kit.fontawesome.com/9d2722956c.js" crossorigin="anonymous"></script>
+
+	<!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+	<!--[if lt IE 9]>
+	<script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+	<script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+	<![endif]-->
+
+	<style>
+	body {
+	    padding: 10px;
+	}
+	.resource-list {
+	    list-style: none;
+	    padding-left: 0;
+	    margin-bottom: 1.25em;
+	}
+	.resource-credit {
+	    margin-left: 0.5em;
+	    font-size: 0.85em;
+	    color: #777;
+	    font-style: italic;
+	}
+	.resource-credit::before {
+	    content: "\2014";
+	    margin-right: 0.35em;
+	}
+	.teaser-row {
+	    position: relative;
+	    padding-right: 42%;
+	}
+	.teaser-row .teaser-text {
+	    margin-right: 0;
+	}
+	.teaser-row .teaser-image-col {
+	    position: absolute;
+	    right: 0;
+	    top: 0;
+	    height: 100%;
+	    width: 41.66666667%;
+	    display: flex;
+	    align-items: center;
+	    justify-content: center;
+	    padding-left: 15px;
+	    box-sizing: border-box;
+	}
+	.teaser-row .teaser-image {
+	    max-height: 100%;
+	    width: auto;
+	    max-width: 100%;
+	    object-fit: contain;
+	}
+	@media (max-width: 991px) {
+	    .teaser-row {
+	        padding-right: 0;
+	    }
+	    .teaser-row .teaser-image-col {
+	        position: static;
+	        height: auto;
+	        width: 100%;
+	        padding-left: 0;
+	        margin-top: 1em;
+	    }
+	    .teaser-row .teaser-image {
+	        max-height: 320px;
+	    }
+	}
+#library-card-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    margin-top: 10px;
+    max-height: 540px;
+    overflow-y: auto;
+    padding-right: 8px;
+}
+.library-card-wrapper {
+    flex: 1 1 calc(20% - 16px);
+    max-width: calc(20% - 16px);
+    min-width: 180px;
+    display: flex;
+    max-height: 100%;
+}
+    .theme-toggle-btn {
+        position: relative;
+        display: inline-flex;
+        align-items: center;
+        justify-content: space-between;
+        width: 54px;
+        height: 28px;
+        margin-top: 8px;
+        margin-left: 12px;
+        padding: 0 8px;
+        border-radius: 999px;
+        border: 1px solid rgba(15, 23, 42, 0.18);
+        background-color: #f2f6ff;
+        cursor: pointer;
+        transition: background-color 0.25s ease, border-color 0.25s ease;
+    }
+    .theme-toggle-btn:focus {
+        outline: none;
+        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.35);
+    }
+    .theme-toggle-btn .theme-icon,
+    .theme-toggle-btn .theme-toggle-handle {
+        pointer-events: none;
+    }
+    .theme-toggle-btn .theme-icon {
+        font-size: 0.85em;
+        opacity: 0.5;
+        transition: opacity 0.25s ease;
+        position: relative;
+        z-index: 2;
+    }
+    .theme-toggle-btn .theme-icon--sun {
+        color: #f59e0b;
+        opacity: 1;
+    }
+    .theme-toggle-btn .theme-icon--moon {
+        color: #c084fc;
+    }
+    .theme-toggle-btn .theme-toggle-handle {
+        position: absolute;
+        top: 2px;
+        left: 2px;
+        width: 24px;
+        height: 24px;
+        border-radius: 50%;
+        background-color: #ffffff;
+        box-shadow: 0 1px 4px rgba(0, 0, 0, 0.15);
+        transition: transform 0.25s ease, background-color 0.25s ease;
+        z-index: 1;
+    }
+    [data-theme="gruvbox-light"] .theme-toggle-btn {
+        background-color: #f2f6ff;
+        border-color: rgba(15, 23, 42, 0.18);
+    }
+    [data-theme="gruvbox-light"] .theme-toggle-btn .theme-toggle-handle {
+        transform: translateX(0);
+        background-color: #ffffff;
+    }
+    [data-theme="gruvbox-light"] .theme-toggle-btn .theme-icon--sun {
+        opacity: 1;
+    }
+    [data-theme="gruvbox-light"] .theme-toggle-btn .theme-icon--moon {
+        opacity: 0.35;
+    }
+    [data-theme="gruvbox-dark"] .theme-toggle-btn {
+        background-color: #3c3836;
+        border-color: #665c54;
+        color: #ebdbb2;
+    }
+    [data-theme="gruvbox-dark"] .theme-toggle-btn .theme-toggle-handle {
+        transform: translateX(26px);
+        background-color: #1d2021;
+    }
+    [data-theme="gruvbox-dark"] .theme-toggle-btn .theme-icon--sun {
+        opacity: 0.35;
+    }
+    [data-theme="gruvbox-dark"] .theme-toggle-btn .theme-icon--moon {
+        opacity: 1;
+    }
+	.library-card {
+	    display: flex;
+	    flex-direction: column;
+	    width: 100%;
+	    border-radius: 6px;
+	    border: 1px solid #ddd;
+	    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+	    overflow: hidden;
+	    background-color: #fff;
+	    color: #333;
+	}
+	.library-card-cover {
+	    aspect-ratio: 2 / 3;
+	    width: 100%;
+	    min-height: 220px;
+	    max-height: 320px;
+	    background-color: #f7f7f7;
+	    display: grid;
+	    place-items: center;
+	    overflow: hidden;
+	    padding: 6px;
+	}
+	.library-card-cover img {
+	    width: 100%;
+	    height: 100%;
+	    object-fit: contain;
+	    background-color: transparent;
+	}
+	.library-card-body {
+	    flex: 1 1 auto;
+	    display: flex;
+	    flex-direction: column;
+	}
+	.library-card-title {
+	    margin-top: 0;
+	    font-size: 0.95em;
+	    line-height: 1.35;
+	    min-height: 2.7em;
+	}
+	.library-card-meta {
+	    font-size: 0.82em;
+	    color: #555;
+	    margin-bottom: 6px;
+	}
+	.library-card-footer {
+	    display: flex;
+	    align-items: center;
+	    justify-content: space-between;
+	    font-size: 0.78em;
+	}
+	[data-theme="gruvbox-dark"] .library-card {
+	    border-color: #504945;
+	    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.45);
+	    background-color: #282828;
+	    color: #ebdbb2;
+	}
+	[data-theme="gruvbox-dark"] .library-card-cover {
+	    background-color: #32302f;
+	}
+	[data-theme="gruvbox-dark"] .library-card-body {
+	    color: #ebdbb2;
+	}
+	[data-theme="gruvbox-dark"] .library-card-footer {
+	    color: #d5c4a1;
+	}
+	[data-theme="gruvbox-dark"] .library-card-title,
+	[data-theme="gruvbox-dark"] .library-card-meta {
+	    color: #d5c4a1;
+	}
+	.embed-responsive {
+ 	    border-radius: 8px;
+ 	    border: 1px solid rgba(30, 41, 59, 0.18);
+ 	    box-shadow: 0 6px 16px rgba(15, 23, 42, 0.08);
+ 	    overflow: hidden;
+ 	    margin-bottom: 18px;
+	}
+	.course-embed {
+	    background-color: #ffffff;
+	    position: relative;
+	    cursor: pointer;
+	}
+	.course-embed iframe {
+	    pointer-events: none;
+	}
+	.course-embed__overlay {
+	    position: absolute;
+	    inset: 0;
+	    z-index: 2;
+	    display: block;
+	    border-radius: inherit;
+	    text-decoration: none;
+	    color: inherit;
+	    transition: background-color 0.2s ease;
+	}
+	.course-embed__overlay:hover,
+	.course-embed__overlay:focus {
+	    background-color: rgba(15, 23, 42, 0.15);
+	    outline: none;
+	}
+	.course-embed__overlay:focus {
+	    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.35);
+	}
+	.course-title-link {
+	    color: inherit;
+	    text-decoration: none;
+	}
+	.course-title-link:hover,
+	.course-title-link:focus {
+	    text-decoration: underline;
+	}
+	[data-theme="gruvbox-dark"] .embed-responsive {
+	    border-color: #665c54;
+	    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.25);
+	    background-color: rgba(40, 40, 40, 0.9);
+	}
+	[data-theme="gruvbox-dark"] .course-embed {
+	    background-color: rgba(40, 40, 40, 0.9);
+	}
+	[data-theme="gruvbox-dark"] .course-embed__overlay:hover,
+	[data-theme="gruvbox-dark"] .course-embed__overlay:focus {
+	    background-color: rgba(235, 219, 178, 0.12);
+	}
+	[data-theme="gruvbox-dark"] .course-embed__overlay:focus {
+	    box-shadow: 0 0 0 3px rgba(235, 219, 178, 0.25);
+	}
+	</style>
+    </head>
+    <body>
+	<div class="container">
+
+	    <div class="row">
+		<div class="page-header">
+		    <button type="button" class="theme-toggle-btn pull-right" id="theme-toggle" role="switch" aria-checked="false" aria-label="Switch to dark theme">
+			<span class="theme-icon theme-icon--sun"><i class="fa-solid fa-sun"></i></span>
+			<span class="theme-icon theme-icon--moon"><i class="fa-solid fa-moon"></i></span>
+			<span class="theme-toggle-handle"></span>
+		    </button>
+		    <ul class="nav nav-pills pull-right">
+			
+			<li><a href="#courses"><i class="fa fa-chalkboard-user"></i> <span class="visible-md-inline visible-lg-inline">Courses</span></a></li>
+			
+			<li><a href="#learning"><i class="fa fa-brain"></i> <span class="visible-md-inline visible-lg-inline">Learning</span></a></li>
+			
+			<li><a href="#library"><i class="fa fa-book"></i> <span class="visible-md-inline visible-lg-inline">Library</span></a></li>
+			
+		    </ul>
+		    <h1><i class="fa fa-rocket"></i> Teaching and Learning Artificial Intelligence</h1>
+		</div>
+	    </div>
+
+		
+<link rel="stylesheet" href="static/css/shidoku.css">
+
+<!-- Top Row: Grid + Info Panel (2 columns) -->
+<div class="row" id="grid">
+    <!-- Left Column: Puzzle Grid -->
+    <div class="col-md-5">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <div class="btn-group puzzle-header-tabs" role="group">
+                    <button type="button" class="btn btn-sm btn-default active" data-puzzle="easy" title="8 clues">Easy</button>
+                    <button type="button" class="btn btn-sm btn-default" data-puzzle="medium" title="6 clues">Medium</button>
+                    <button type="button" class="btn btn-sm btn-default" data-puzzle="hard" title="4 clues">Hard</button>
+                    <button type="button" class="btn btn-sm btn-default" data-puzzle="empty" title="Blank grid">Custom</button>
+                </div>
+            </div>
+            <div class="panel-body text-center">
+                <div id="shidoku-grid" class="shidoku-grid">
+                    <!-- Grid cells will be generated by JavaScript -->
+                </div>
+                <div class="grid-legend">
+                    <span class="legend-item"><span class="legend-color legend-fixed"></span> Fixed</span>
+                    <span class="legend-item"><span class="legend-color legend-assigned"></span> Assigned</span>
+                    <span class="legend-item"><span class="legend-color legend-examining"></span> Trying</span>
+                    <span class="legend-item"><span class="legend-color legend-conflict"></span> Backtrack</span>
+                    <span class="legend-item"><span class="legend-color legend-arc-source"></span> Arc Xi</span>
+                    <span class="legend-item"><span class="legend-color legend-arc-target"></span> Arc Xj</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Right Column: Tabbed Info Panel -->
+    <div class="col-md-7">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <div class="btn-group info-panel-tabs" role="group">
+                    <button type="button" class="btn btn-sm btn-default active" data-tab="about">
+                        <i class="fa fa-info-circle"></i> About
+                    </button>
+                    <button type="button" class="btn btn-sm btn-default" data-tab="tree">
+                        <i class="fa fa-sitemap"></i> Search Tree
+                    </button>
+                    <button type="button" class="btn btn-sm btn-default" data-tab="log">
+                        <i class="fa fa-terminal"></i> Execution Log
+                    </button>
+                    <button type="button" class="btn btn-sm btn-default" data-tab="compare">
+                        <i class="fa fa-table"></i> Compare
+                    </button>
+                </div>
+            </div>
+            <div class="panel-body info-panel-body">
+                <!-- About Tab -->
+                <div id="tab-about" class="info-tab-content active">
+                    <h4><i class="fa fa-puzzle-piece"></i> What is Shidoku?</h4>
+                    <p>
+                        <strong>Shidoku</strong> is a 4x4 variant of Sudoku, perfect for learning constraint satisfaction problems (CSPs).
+                        Fill each row, column, and 2x2 box with the digits 1-4, with no repeats.
+                    </p>
+                    <h4><i class="fa fa-cogs"></i> Algorithms</h4>
+                    <ul class="algorithm-list">
+                        <li><strong>AC-3</strong> - Arc Consistency algorithm that prunes impossible values from domains before searching.</li>
+                        <li><strong>Backtracking + MRV</strong> - Depth-first search with Minimum Remaining Values heuristic for variable selection.</li>
+                        <li><strong>MAC</strong> - Maintaining Arc Consistency runs AC-3 after each assignment for more aggressive pruning.</li>
+                    </ul>
+                    <h4><i class="fa fa-keyboard-o"></i> Controls</h4>
+                    <p>Click cells to enter clues (1-4). Use arrow keys to navigate. Press Delete/Backspace to clear a cell.</p>
+                </div>
+
+                <!-- Search Tree Tab -->
+                <div id="tab-tree" class="info-tab-content">
+                    <div id="search-tree-container" class="search-tree-container">
+                        <svg id="search-tree-svg" class="search-tree-svg">
+                            <!-- Tree will be rendered here -->
+                        </svg>
+                        <div id="tree-tooltip" class="tree-tooltip"></div>
+                    </div>
+                    <div class="tree-controls">
+                        <div class="tree-legend-bar">
+                            <span class="tree-legend-item"><span class="tree-legend-dot tree-dot-current"></span> Current</span>
+                            <span class="tree-legend-item"><span class="tree-legend-dot tree-dot-success"></span> Solution</span>
+                            <span class="tree-legend-item"><span class="tree-legend-dot tree-dot-backtracked"></span> Backtracked</span>
+                        </div>
+                        <div class="tree-controls-right">
+                            <div class="tree-zoom-control">
+                                <i class="fa fa-search-minus"></i>
+                                <input type="range" id="tree-zoom-slider" min="20" max="150" value="100">
+                                <i class="fa fa-search-plus"></i>
+                            </div>
+                            <span class="tree-info">
+                                <span id="tree-depth">Depth: 0</span> |
+                                <span id="tree-nodes">Nodes: 0</span>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Execution Log Tab -->
+                <div id="tab-log" class="info-tab-content">
+                    <div class="log-header">
+                        <button id="btn-clear-log" class="btn btn-xs btn-default pull-right">
+                            <i class="fa fa-trash"></i> Clear
+                        </button>
+                    </div>
+                    <div id="execution-log" class="execution-log">
+                        <div class="log-entry log-info">
+                            <span class="log-icon"><i class="fa fa-info-circle"></i></span>
+                            <span class="log-message">Click on cells to enter clues (1-4), then click Solve to start.</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Compare Tab -->
+                <div id="tab-compare" class="info-tab-content">
+                    <div class="compare-table-container">
+                        <table id="comparison-table" class="table table-bordered table-striped table-condensed">
+                            <thead>
+                                <tr>
+                                    <th>Algorithm</th>
+                                    <th>Assigns</th>
+                                    <th>Backtracks</th>
+                                    <th>Arc Checks</th>
+                                    <th>Prunings</th>
+                                    <th>Time (ms)</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Bottom Row: Controls (3 columns) -->
+<div class="row" id="controls">
+    <!-- Algorithm Selection -->
+    <div class="col-md-4">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title"><i class="fa fa-cogs"></i> Algorithm</h3>
+            </div>
+            <div class="panel-body compact-panel">
+                <div class="checkbox disabled-checkbox">
+                    <label>
+                        <input type="checkbox" checked disabled>
+                        <strong>Backtracking</strong> (base)
+                    </label>
+                </div>
+                <div class="checkbox">
+                    <label>
+                        <input type="checkbox" id="use-fc">
+                        <strong>Forward Checking</strong>
+                    </label>
+                </div>
+                <div class="checkbox">
+                    <label>
+                        <input type="checkbox" id="use-mrv">
+                        <strong>MRV</strong> heuristic
+                    </label>
+                </div>
+                <div class="checkbox">
+                    <label>
+                        <input type="checkbox" id="use-ac3">
+                        <strong>AC-3</strong> preprocessing
+                    </label>
+                </div>
+                <div class="checkbox">
+                    <label>
+                        <input type="checkbox" id="use-mac">
+                        <strong>MAC</strong> (AC-3 after assign)
+                    </label>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Playback Controls -->
+    <div class="col-md-4">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title"><i class="fa fa-play-circle"></i> Playback</h3>
+            </div>
+            <div class="panel-body compact-panel">
+                <div class="btn-toolbar playback-buttons" role="toolbar">
+                    <button id="btn-solve" class="btn btn-success" title="Start solving">
+                        <i class="fa fa-play"></i> Solve
+                    </button>
+                    <button id="btn-pause" class="btn btn-warning" title="Pause/Resume" disabled>
+                        <i class="fa fa-pause"></i> Pause
+                    </button>
+                    <button id="btn-step" class="btn btn-info" title="Step forward" disabled>
+                        <i class="fa fa-step-forward"></i> Step
+                    </button>
+                    <button id="btn-reset" class="btn btn-danger" title="Reset puzzle">
+                        <i class="fa fa-refresh"></i> Reset
+                    </button>
+                </div>
+                <div class="speed-control-inline">
+                    <label><i class="fa fa-tachometer"></i> Speed:</label>
+                    <input type="range" id="speed-slider" min="1" max="10" value="5">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Metrics -->
+    <div class="col-md-4">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title"><i class="fa fa-bar-chart"></i> Metrics</h3>
+            </div>
+            <div class="panel-body compact-panel">
+                <table class="table table-condensed metrics-table">
+                    <tbody>
+                        <tr>
+                            <td><i class="fa fa-pencil"></i> Assigns</td>
+                            <td id="metric-assignments" class="text-right metric-value">0</td>
+                            <td><i class="fa fa-undo"></i> Backtracks</td>
+                            <td id="metric-backtracks" class="text-right metric-value">0</td>
+                        </tr>
+                        <tr>
+                            <td><i class="fa fa-exchange"></i> Arcs</td>
+                            <td id="metric-arcs" class="text-right metric-value">0</td>
+                            <td><i class="fa fa-cut"></i> Prunings</td>
+                            <td id="metric-prunings" class="text-right metric-value">0</td>
+                        </tr>
+                        <tr>
+                            <td><i class="fa fa-clock-o"></i> Time</td>
+                            <td id="metric-time" class="text-right metric-value" colspan="3">0.00s</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+	    <div class="row">
+		<hr/>
+
+		<footer class="text-center">
+		    <p class="text-muted">
+		    <small>
+		    Built using
+		    <a href="https://www.11ty.dev/">Eleventy</a>,
+		    <a href="http://twitter.github.com/bootstrap/">Bootstrap</a>,
+		    <a href="http://fortawesome.github.com/Font-Awesome/">Font Awesome</a>, and
+		    <a href="https://nodejs.org/">Node.js</a>.
+		    <br/>
+		    &copy; 2022 <a href="http://www.nd.edu">University of Notre Dame</a>
+		    </small>
+		    </p>
+		</footer>
+	    </div>
+
+	</div> <!-- /container -->
+
+	<!-- Bootstrap core JavaScript
+	================================================== -->
+	<!-- Placed at the end of the document so the pages load faster -->
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+	
+	<script src="static/js/shidoku.js"></script>
+	
+	<script>
+	(function() {
+	    var STORAGE_KEY = 'ai-landing-theme';
+	    var prefix = '';
+	    var themes = {
+	        'gruvbox-dark': prefix + 'static/css/gruvbox-dark.css',
+	        'gruvbox-light': prefix + 'static/css/gruvbox-light.css'
+	    };
+	    var linkEl = document.getElementById('theme-style');
+	    var toggleBtn = document.getElementById('theme-toggle');
+	    if (!linkEl || !toggleBtn) {
+	        return;
+	    }
+        function updateButton(theme) {
+            var isDark = theme === 'gruvbox-dark';
+            var label = isDark ? 'Switch to light theme' : 'Switch to dark theme';
+            toggleBtn.setAttribute('aria-label', label);
+            toggleBtn.setAttribute('title', label);
+            toggleBtn.setAttribute('aria-checked', isDark ? 'true' : 'false');
+        }
+        function updateNotebookFrames(theme) {
+            var frames = document.querySelectorAll('iframe[data-src-dark][data-src-light]');
+            var attr = theme === 'gruvbox-light' ? 'data-src-light' : 'data-src-dark';
+            Array.prototype.forEach.call(frames, function(frame) {
+                var nextSrc = frame.getAttribute(attr);
+                if (nextSrc && frame.getAttribute('src') !== nextSrc) {
+                    frame.setAttribute('src', nextSrc);
+                }
+            });
+        }
+        function applyTheme(theme) {
+            var name = themes[theme] ? theme : 'gruvbox-light';
+            linkEl.setAttribute('href', themes[name]);
+            document.documentElement.setAttribute('data-theme', name);
+            updateButton(name);
+            updateNotebookFrames(name);
+            return name;
+        }
+	    var savedTheme = (function() {
+	        try {
+	            return localStorage.getItem(STORAGE_KEY);
+	        } catch (err) {
+	            return null;
+	        }
+    })();
+        var currentTheme = applyTheme(savedTheme);
+        document.addEventListener('themechange', function(event) {
+            updateNotebookFrames(event.detail || currentTheme);
+        });
+        toggleBtn.addEventListener('click', function() {
+            var nextTheme = currentTheme === 'gruvbox-dark' ? 'gruvbox-light' : 'gruvbox-dark';
+            currentTheme = applyTheme(nextTheme);
+            document.dispatchEvent(new CustomEvent('themechange', { detail: currentTheme }));
+            try {
+                localStorage.setItem(STORAGE_KEY, currentTheme);
+            } catch (err) {
+                /* ignore write errors */
+            }
+        });
+	})();
+	</script>
+    </body>
+</html>

@@ -479,6 +479,210 @@
 
 <div class="row">
     <div class="page-header">
+        <h2 id="visualizations"><i class="fa-solid fa-eye"></i> Interactive Visualizations</h2>
+    </div>
+</div>
+
+<div class="row">
+    <p style="margin-bottom: 24px;">
+        Explore core AI algorithms through interactive visualizations. These tools are designed to help
+        you understand how fundamental algorithms work by watching them execute step-by-step.
+    </p>
+</div>
+
+<div class="row" id="viz-card-container">
+    <!-- A* Pathfinding -->
+    <div class="col-lg-3 col-md-6 col-sm-6" style="margin-bottom: 20px;">
+        <div class="viz-card">
+            <a href="astar.html" class="viz-card-link">
+                <div class="viz-card-icon">
+                    <i class="fa fa-route"></i>
+                </div>
+                <h4 class="viz-card-title">A* Pathfinding</h4>
+                <p class="viz-card-description">
+                    Visualize the A* search algorithm finding optimal paths through grids.
+                    Compare heuristics like Manhattan, Euclidean, and Dijkstra.
+                </p>
+                <div class="viz-card-tags">
+                    <span class="viz-tag">Search</span>
+                    <span class="viz-tag">Heuristics</span>
+                </div>
+            </a>
+        </div>
+    </div>
+
+    <!-- Minimax & Alpha-Beta -->
+    <div class="col-lg-3 col-md-6 col-sm-6" style="margin-bottom: 20px;">
+        <div class="viz-card">
+            <a href="minimax.html" class="viz-card-link">
+                <div class="viz-card-icon">
+                    <i class="fa fa-gamepad"></i>
+                </div>
+                <h4 class="viz-card-title">Minimax & Alpha-Beta</h4>
+                <p class="viz-card-description">
+                    Watch game trees expand with minimax and alpha-beta pruning.
+                    Play Tic-Tac-Toe and Nim against optimal strategies.
+                </p>
+                <div class="viz-card-tags">
+                    <span class="viz-tag">Game Theory</span>
+                    <span class="viz-tag">Adversarial</span>
+                </div>
+            </a>
+        </div>
+    </div>
+
+    <!-- Dimensionality Reduction -->
+    <div class="col-lg-3 col-md-6 col-sm-6" style="margin-bottom: 20px;">
+        <div class="viz-card">
+            <a href="mnist.html" class="viz-card-link">
+                <div class="viz-card-icon">
+                    <i class="fa fa-braille"></i>
+                </div>
+                <h4 class="viz-card-title">Dimensionality Reduction</h4>
+                <p class="viz-card-description">
+                    Project MNIST and CIFAR-10 into 2D using PCA, t-SNE, and UMAP.
+                    Watch CNN embeddings evolve during training.
+                </p>
+                <div class="viz-card-tags">
+                    <span class="viz-tag">ML</span>
+                    <span class="viz-tag">Visualization</span>
+                </div>
+            </a>
+        </div>
+    </div>
+
+    <!-- Constraint Satisfaction -->
+    <div class="col-lg-3 col-md-6 col-sm-6" style="margin-bottom: 20px;">
+        <div class="viz-card">
+            <a href="shidoku.html" class="viz-card-link">
+                <div class="viz-card-icon">
+                    <i class="fa fa-puzzle-piece"></i>
+                </div>
+                <h4 class="viz-card-title">Constraint Satisfaction</h4>
+                <p class="viz-card-description">
+                    Solve Shidoku (4x4 Sudoku) with backtracking, AC-3, MRV, and MAC.
+                    Visualize search trees and arc consistency.
+                </p>
+                <div class="viz-card-tags">
+                    <span class="viz-tag">CSP</span>
+                    <span class="viz-tag">Backtracking</span>
+                </div>
+            </a>
+        </div>
+    </div>
+</div>
+
+<style>
+.viz-card {
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    background: #fff;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.viz-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12);
+}
+
+.viz-card-link {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    padding: 20px;
+    text-decoration: none;
+    color: inherit;
+}
+
+.viz-card-link:hover,
+.viz-card-link:focus {
+    text-decoration: none;
+    color: inherit;
+}
+
+.viz-card-icon {
+    width: 56px;
+    height: 56px;
+    border-radius: 12px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 16px;
+}
+
+.viz-card-icon i {
+    font-size: 24px;
+    color: #fff;
+}
+
+.viz-card-title {
+    font-size: 1.1em;
+    font-weight: 600;
+    margin: 0 0 10px 0;
+    color: #1a1a2e;
+}
+
+.viz-card-description {
+    font-size: 0.88em;
+    color: #666;
+    line-height: 1.5;
+    margin: 0 0 14px 0;
+    flex: 1;
+}
+
+.viz-card-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: auto;
+}
+
+.viz-tag {
+    font-size: 0.72em;
+    padding: 3px 8px;
+    border-radius: 4px;
+    background: #f0f0f5;
+    color: #555;
+    font-weight: 500;
+}
+
+/* Dark theme support */
+[data-theme="gruvbox-dark"] .viz-card {
+    background: #282828;
+    border-color: #504945;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+[data-theme="gruvbox-dark"] .viz-card:hover {
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+}
+
+[data-theme="gruvbox-dark"] .viz-card-title {
+    color: #ebdbb2;
+}
+
+[data-theme="gruvbox-dark"] .viz-card-description {
+    color: #a89984;
+}
+
+[data-theme="gruvbox-dark"] .viz-tag {
+    background: #3c3836;
+    color: #bdae93;
+}
+
+[data-theme="gruvbox-dark"] .viz-card-icon {
+    background: linear-gradient(135deg, #b16286 0%, #d3869b 100%);
+}
+</style>
+
+
+<div class="row">
+    <div class="page-header">
         <h2 id="learning"><i class="fa-solid fa-brain"></i> Learning</h2>
     </div>
 </div>

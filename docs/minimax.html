@@ -1,0 +1,691 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="gruvbox-light">
+    <head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta name="description" content="">
+	<meta name="author" content="">
+
+	<title>Teaching and Learning Artificial Intelligence</title>
+
+	<!-- Theme CSS (toggleable) -->
+	<link id="theme-style" href="static/css/gruvbox-light.css" rel="stylesheet">
+	<script src="https://kit.fontawesome.com/9d2722956c.js" crossorigin="anonymous"></script>
+
+	<!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+	<!--[if lt IE 9]>
+	<script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+	<script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+	<![endif]-->
+
+	<style>
+	body {
+	    padding: 10px;
+	}
+	.resource-list {
+	    list-style: none;
+	    padding-left: 0;
+	    margin-bottom: 1.25em;
+	}
+	.resource-credit {
+	    margin-left: 0.5em;
+	    font-size: 0.85em;
+	    color: #777;
+	    font-style: italic;
+	}
+	.resource-credit::before {
+	    content: "\2014";
+	    margin-right: 0.35em;
+	}
+	.teaser-row {
+	    position: relative;
+	    padding-right: 42%;
+	}
+	.teaser-row .teaser-text {
+	    margin-right: 0;
+	}
+	.teaser-row .teaser-image-col {
+	    position: absolute;
+	    right: 0;
+	    top: 0;
+	    height: 100%;
+	    width: 41.66666667%;
+	    display: flex;
+	    align-items: center;
+	    justify-content: center;
+	    padding-left: 15px;
+	    box-sizing: border-box;
+	}
+	.teaser-row .teaser-image {
+	    max-height: 100%;
+	    width: auto;
+	    max-width: 100%;
+	    object-fit: contain;
+	}
+	@media (max-width: 991px) {
+	    .teaser-row {
+	        padding-right: 0;
+	    }
+	    .teaser-row .teaser-image-col {
+	        position: static;
+	        height: auto;
+	        width: 100%;
+	        padding-left: 0;
+	        margin-top: 1em;
+	    }
+	    .teaser-row .teaser-image {
+	        max-height: 320px;
+	    }
+	}
+#library-card-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    margin-top: 10px;
+    max-height: 540px;
+    overflow-y: auto;
+    padding-right: 8px;
+}
+.library-card-wrapper {
+    flex: 1 1 calc(20% - 16px);
+    max-width: calc(20% - 16px);
+    min-width: 180px;
+    display: flex;
+    max-height: 100%;
+}
+    .theme-toggle-btn {
+        position: relative;
+        display: inline-flex;
+        align-items: center;
+        justify-content: space-between;
+        width: 54px;
+        height: 28px;
+        margin-top: 8px;
+        margin-left: 12px;
+        padding: 0 8px;
+        border-radius: 999px;
+        border: 1px solid rgba(15, 23, 42, 0.18);
+        background-color: #f2f6ff;
+        cursor: pointer;
+        transition: background-color 0.25s ease, border-color 0.25s ease;
+    }
+    .theme-toggle-btn:focus {
+        outline: none;
+        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.35);
+    }
+    .theme-toggle-btn .theme-icon,
+    .theme-toggle-btn .theme-toggle-handle {
+        pointer-events: none;
+    }
+    .theme-toggle-btn .theme-icon {
+        font-size: 0.85em;
+        opacity: 0.5;
+        transition: opacity 0.25s ease;
+        position: relative;
+        z-index: 2;
+    }
+    .theme-toggle-btn .theme-icon--sun {
+        color: #f59e0b;
+        opacity: 1;
+    }
+    .theme-toggle-btn .theme-icon--moon {
+        color: #c084fc;
+    }
+    .theme-toggle-btn .theme-toggle-handle {
+        position: absolute;
+        top: 2px;
+        left: 2px;
+        width: 24px;
+        height: 24px;
+        border-radius: 50%;
+        background-color: #ffffff;
+        box-shadow: 0 1px 4px rgba(0, 0, 0, 0.15);
+        transition: transform 0.25s ease, background-color 0.25s ease;
+        z-index: 1;
+    }
+    [data-theme="gruvbox-light"] .theme-toggle-btn {
+        background-color: #f2f6ff;
+        border-color: rgba(15, 23, 42, 0.18);
+    }
+    [data-theme="gruvbox-light"] .theme-toggle-btn .theme-toggle-handle {
+        transform: translateX(0);
+        background-color: #ffffff;
+    }
+    [data-theme="gruvbox-light"] .theme-toggle-btn .theme-icon--sun {
+        opacity: 1;
+    }
+    [data-theme="gruvbox-light"] .theme-toggle-btn .theme-icon--moon {
+        opacity: 0.35;
+    }
+    [data-theme="gruvbox-dark"] .theme-toggle-btn {
+        background-color: #3c3836;
+        border-color: #665c54;
+        color: #ebdbb2;
+    }
+    [data-theme="gruvbox-dark"] .theme-toggle-btn .theme-toggle-handle {
+        transform: translateX(26px);
+        background-color: #1d2021;
+    }
+    [data-theme="gruvbox-dark"] .theme-toggle-btn .theme-icon--sun {
+        opacity: 0.35;
+    }
+    [data-theme="gruvbox-dark"] .theme-toggle-btn .theme-icon--moon {
+        opacity: 1;
+    }
+	.library-card {
+	    display: flex;
+	    flex-direction: column;
+	    width: 100%;
+	    border-radius: 6px;
+	    border: 1px solid #ddd;
+	    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+	    overflow: hidden;
+	    background-color: #fff;
+	    color: #333;
+	}
+	.library-card-cover {
+	    aspect-ratio: 2 / 3;
+	    width: 100%;
+	    min-height: 220px;
+	    max-height: 320px;
+	    background-color: #f7f7f7;
+	    display: grid;
+	    place-items: center;
+	    overflow: hidden;
+	    padding: 6px;
+	}
+	.library-card-cover img {
+	    width: 100%;
+	    height: 100%;
+	    object-fit: contain;
+	    background-color: transparent;
+	}
+	.library-card-body {
+	    flex: 1 1 auto;
+	    display: flex;
+	    flex-direction: column;
+	}
+	.library-card-title {
+	    margin-top: 0;
+	    font-size: 0.95em;
+	    line-height: 1.35;
+	    min-height: 2.7em;
+	}
+	.library-card-meta {
+	    font-size: 0.82em;
+	    color: #555;
+	    margin-bottom: 6px;
+	}
+	.library-card-footer {
+	    display: flex;
+	    align-items: center;
+	    justify-content: space-between;
+	    font-size: 0.78em;
+	}
+	[data-theme="gruvbox-dark"] .library-card {
+	    border-color: #504945;
+	    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.45);
+	    background-color: #282828;
+	    color: #ebdbb2;
+	}
+	[data-theme="gruvbox-dark"] .library-card-cover {
+	    background-color: #32302f;
+	}
+	[data-theme="gruvbox-dark"] .library-card-body {
+	    color: #ebdbb2;
+	}
+	[data-theme="gruvbox-dark"] .library-card-footer {
+	    color: #d5c4a1;
+	}
+	[data-theme="gruvbox-dark"] .library-card-title,
+	[data-theme="gruvbox-dark"] .library-card-meta {
+	    color: #d5c4a1;
+	}
+	.embed-responsive {
+ 	    border-radius: 8px;
+ 	    border: 1px solid rgba(30, 41, 59, 0.18);
+ 	    box-shadow: 0 6px 16px rgba(15, 23, 42, 0.08);
+ 	    overflow: hidden;
+ 	    margin-bottom: 18px;
+	}
+	.course-embed {
+	    background-color: #ffffff;
+	    position: relative;
+	    cursor: pointer;
+	}
+	.course-embed iframe {
+	    pointer-events: none;
+	}
+	.course-embed__overlay {
+	    position: absolute;
+	    inset: 0;
+	    z-index: 2;
+	    display: block;
+	    border-radius: inherit;
+	    text-decoration: none;
+	    color: inherit;
+	    transition: background-color 0.2s ease;
+	}
+	.course-embed__overlay:hover,
+	.course-embed__overlay:focus {
+	    background-color: rgba(15, 23, 42, 0.15);
+	    outline: none;
+	}
+	.course-embed__overlay:focus {
+	    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.35);
+	}
+	.course-title-link {
+	    color: inherit;
+	    text-decoration: none;
+	}
+	.course-title-link:hover,
+	.course-title-link:focus {
+	    text-decoration: underline;
+	}
+	[data-theme="gruvbox-dark"] .embed-responsive {
+	    border-color: #665c54;
+	    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.25);
+	    background-color: rgba(40, 40, 40, 0.9);
+	}
+	[data-theme="gruvbox-dark"] .course-embed {
+	    background-color: rgba(40, 40, 40, 0.9);
+	}
+	[data-theme="gruvbox-dark"] .course-embed__overlay:hover,
+	[data-theme="gruvbox-dark"] .course-embed__overlay:focus {
+	    background-color: rgba(235, 219, 178, 0.12);
+	}
+	[data-theme="gruvbox-dark"] .course-embed__overlay:focus {
+	    box-shadow: 0 0 0 3px rgba(235, 219, 178, 0.25);
+	}
+	</style>
+    </head>
+    <body>
+	<div class="container">
+
+	    <div class="row">
+		<div class="page-header">
+		    <button type="button" class="theme-toggle-btn pull-right" id="theme-toggle" role="switch" aria-checked="false" aria-label="Switch to dark theme">
+			<span class="theme-icon theme-icon--sun"><i class="fa-solid fa-sun"></i></span>
+			<span class="theme-icon theme-icon--moon"><i class="fa-solid fa-moon"></i></span>
+			<span class="theme-toggle-handle"></span>
+		    </button>
+		    <ul class="nav nav-pills pull-right">
+			
+			<li><a href="#courses"><i class="fa fa-chalkboard-user"></i> <span class="visible-md-inline visible-lg-inline">Courses</span></a></li>
+			
+			<li><a href="#learning"><i class="fa fa-brain"></i> <span class="visible-md-inline visible-lg-inline">Learning</span></a></li>
+			
+			<li><a href="#library"><i class="fa fa-book"></i> <span class="visible-md-inline visible-lg-inline">Library</span></a></li>
+			
+		    </ul>
+		    <h1><i class="fa fa-rocket"></i> Teaching and Learning Artificial Intelligence</h1>
+		</div>
+	    </div>
+
+		
+<link rel="stylesheet" href="static/css/minimax.css">
+<!-- Sigma.js v3 for high-performance WebGL graph rendering -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/graphology/0.25.4/graphology.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sigma@3.0.2/dist/sigma.min.js"></script>
+
+<!-- Top Controls Bar -->
+<div class="row" id="controls-bar">
+    <div class="col-md-12">
+        <div class="panel panel-default controls-panel">
+            <div class="panel-body controls-bar-body">
+                <div class="controls-row">
+                    <!-- Game Selection -->
+                    <div class="control-group">
+                        <label><i class="fa fa-gamepad"></i> Game:</label>
+                        <div class="btn-group game-selector" role="group">
+                            <button type="button" class="btn btn-sm btn-default active" data-game="tictactoe">
+                                <i class="fa fa-th"></i> Tic-Tac-Toe
+                            </button>
+                            <button type="button" class="btn btn-sm btn-default" data-game="nim">
+                                <i class="fa fa-cubes"></i> Nim
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Depth Control -->
+                    <div class="control-group">
+                        <label>Depth:</label>
+                        <div class="depth-buttons">
+                            <button type="button" class="btn btn-sm btn-default" id="depth-minus">
+                                <i class="fa fa-minus"></i>
+                            </button>
+                            <span id="depth-value" class="depth-display">2</span>
+                            <button type="button" class="btn btn-sm btn-default" id="depth-plus">
+                                <i class="fa fa-plus"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Alpha-Beta Toggle -->
+                    <div class="control-group">
+                        <label class="checkbox-inline">
+                            <input type="checkbox" id="use-alphabeta" checked>
+                            <strong>Alpha-Beta Pruning</strong>
+                        </label>
+                    </div>
+
+                    <!-- Move Ordering -->
+                    <div class="control-group">
+                        <label>Move Order:</label>
+                        <select id="move-ordering" class="form-control input-sm">
+                            <option value="default">Default</option>
+                            <option value="center">Center first</option>
+                            <option value="best">Best first</option>
+                            <option value="worst">Worst first</option>
+                            <option value="random">Random</option>
+                        </select>
+                    </div>
+
+                    <!-- Start Position -->
+                    <div class="control-group" id="position-control">
+                        <label>Position:</label>
+                        <select id="position-preset" class="form-control input-sm">
+                            <option value="empty">Empty Board</option>
+                            <option value="early">Early Game</option>
+                            <option value="mid">Mid Game</option>
+                            <option value="near-win">Near Win</option>
+                            <option value="forced">Forced Mate</option>
+                        </select>
+                    </div>
+
+                    <!-- Nim Controls (hidden by default) -->
+                    <div class="control-group nim-only" style="display: none;">
+                        <label>Piles:</label>
+                        <select id="nim-preset" class="form-control input-sm">
+                            <option value="1,2,3">[1, 2, 3]</option>
+                            <option value="3,4,5" selected>[3, 4, 5]</option>
+                            <option value="1,3,5,7">[1, 3, 5, 7]</option>
+                            <option value="2,2">[2, 2]</option>
+                        </select>
+                    </div>
+
+                    <!-- Reset Button -->
+                    <div class="control-group">
+                        <button id="btn-reset" class="btn btn-sm btn-danger" title="Reset">
+                            <i class="fa fa-refresh"></i> Reset
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Main Content: Tree (2/3) + Side Panel (1/3) -->
+<div class="row" id="main-content">
+    <!-- Game Tree (Primary View) -->
+    <div class="col-md-8">
+        <div class="panel panel-default tree-panel">
+            <div class="panel-heading">
+                <h3 class="panel-title">
+                    <i class="fa fa-sitemap"></i> Game Tree
+                    <span class="tree-stats pull-right">
+                        <span id="tree-nodes">0 nodes</span> |
+                        <span id="tree-depth">depth 0</span> |
+                        <span id="metric-time">0.00ms</span>
+                    </span>
+                </h3>
+            </div>
+            <div class="panel-body tree-panel-body">
+                <div id="game-tree-container" class="game-tree-container-main">
+                    <!-- Cytoscape.js renders here -->
+                    <div id="depth-line-overlay" class="depth-line-overlay">
+                        <div id="depth-line" class="depth-line"></div>
+                        <span id="depth-line-label" class="depth-line-label">Depth limit: 2</span>
+                    </div>
+                    <div id="tree-tooltip" class="tree-tooltip"></div>
+                </div>
+                <div class="tree-controls-bar">
+                    <div class="tree-legend-bar">
+                        <span class="tree-legend-item"><span class="tree-legend-dot tree-dot-max"></span> MAX (X)</span>
+                        <span class="tree-legend-item"><span class="tree-legend-dot tree-dot-min"></span> MIN (O)</span>
+                        <span class="tree-legend-item"><span class="tree-legend-dot tree-dot-pruned"></span> Pruned</span>
+                        <span class="tree-legend-item"><span class="tree-legend-dot tree-dot-optimal"></span> Optimal</span>
+                    </div>
+                    <div class="tree-zoom-controls">
+                        <button class="btn btn-xs btn-default" id="btn-zoom-fit" title="Fit to view">
+                            <i class="fa fa-arrows-alt"></i>
+                        </button>
+                        <i class="fa fa-search-minus"></i>
+                        <input type="range" id="tree-zoom-slider" min="20" max="400" value="400">
+                        <i class="fa fa-search-plus"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Side Panel -->
+    <div class="col-md-4">
+        <!-- Hidden containers for JS state (not displayed) -->
+        <div style="display: none;">
+            <div id="tictactoe-container">
+                <div id="tictactoe-grid" class="tictactoe-grid"></div>
+            </div>
+            <div id="nim-container">
+                <div id="nim-piles" class="nim-piles"></div>
+            </div>
+            <span id="current-player"></span>
+            <span id="game-result"></span>
+        </div>
+
+        <!-- Node Details Panel -->
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title"><i class="fa fa-info-circle"></i> Node Details</h3>
+            </div>
+            <div class="panel-body node-details-body">
+                <!-- Board Preview for Selected Node -->
+                <div id="selected-board-preview" class="selected-board-preview" style="display: none;">
+                    <div id="preview-grid" class="preview-grid"></div>
+                </div>
+                <div id="node-details" class="node-details">
+                    <div class="node-detail-row">
+                        <span class="node-detail-label">Player:</span>
+                        <span id="detail-player" class="node-detail-value">-</span>
+                    </div>
+                    <div class="node-detail-row">
+                        <span class="node-detail-label">Depth:</span>
+                        <span id="detail-depth" class="node-detail-value">-</span>
+                    </div>
+                    <div class="node-detail-row">
+                        <span class="node-detail-label">Value:</span>
+                        <span id="detail-value" class="node-detail-value">-</span>
+                    </div>
+                    <div class="node-detail-row alpha-beta-row">
+                        <span class="node-detail-label">Alpha:</span>
+                        <span id="detail-alpha" class="node-detail-value alpha-value">-</span>
+                    </div>
+                    <div class="node-detail-row alpha-beta-row">
+                        <span class="node-detail-label">Beta:</span>
+                        <span id="detail-beta" class="node-detail-value beta-value">-</span>
+                    </div>
+                    <div class="node-detail-row">
+                        <span class="node-detail-label">Status:</span>
+                        <span id="detail-status" class="node-detail-value">-</span>
+                    </div>
+                    <div class="node-detail-row" id="detail-move-row" style="display: none;">
+                        <span class="node-detail-label">Move:</span>
+                        <span id="detail-move" class="node-detail-value">-</span>
+                    </div>
+                </div>
+                <div id="no-node-selected" class="no-node-message">
+                    <i class="fa fa-mouse-pointer"></i>
+                    Click a node in the tree to see details
+                </div>
+            </div>
+        </div>
+
+        <!-- Metrics Panel -->
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title"><i class="fa fa-bar-chart"></i> Metrics</h3>
+            </div>
+            <div class="panel-body compact-panel">
+                <table class="table table-condensed metrics-table">
+                    <tbody>
+                        <tr>
+                            <td><i class="fa fa-tree"></i> Evaluated</td>
+                            <td id="metric-evaluated" class="text-right metric-value">0</td>
+                            <td><i class="fa fa-expand"></i> Expanded</td>
+                            <td id="metric-expanded" class="text-right metric-value">0</td>
+                        </tr>
+                        <tr>
+                            <td><i class="fa fa-cut"></i> a-Cutoffs</td>
+                            <td id="metric-alpha-cuts" class="text-right metric-value">0</td>
+                            <td><i class="fa fa-cut"></i> b-Cutoffs</td>
+                            <td id="metric-beta-cuts" class="text-right metric-value">0</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Heuristic Evaluation Function -->
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title"><i class="fa fa-sliders"></i> Heuristic Function</h3>
+            </div>
+            <div class="panel-body heuristic-panel">
+                <p class="heuristic-description">
+                    <code>h(state)</code> evaluates non-terminal positions.<br>
+                    <span class="max-text">+</span> favors X, <span class="min-text">-</span> favors O
+                </p>
+                <div class="heuristic-inputs">
+                    <div class="heuristic-row">
+                        <label title="Points for winning the game">
+                            <i class="fa fa-trophy"></i> Win
+                        </label>
+                        <input type="number" id="h-win" value="100" min="0" max="1000" class="heuristic-input">
+                    </div>
+                    <div class="heuristic-row">
+                        <label title="Points for two-in-a-row with empty third cell">
+                            <i class="fa fa-minus"></i><i class="fa fa-minus"></i> Two-in-row
+                        </label>
+                        <input type="number" id="h-two-row" value="10" min="0" max="100" class="heuristic-input">
+                    </div>
+                    <div class="heuristic-row">
+                        <label title="Points for one piece in a line with two empty">
+                            <i class="fa fa-minus"></i> One-in-row
+                        </label>
+                        <input type="number" id="h-one-row" value="1" min="0" max="100" class="heuristic-input">
+                    </div>
+                    <div class="heuristic-row">
+                        <label title="Points for controlling the center square">
+                            <i class="fa fa-dot-circle-o"></i> Center
+                        </label>
+                        <input type="number" id="h-center" value="3" min="0" max="100" class="heuristic-input">
+                    </div>
+                    <div class="heuristic-row">
+                        <label title="Points for controlling a corner square">
+                            <i class="fa fa-square-o"></i> Corner
+                        </label>
+                        <input type="number" id="h-corner" value="2" min="0" max="100" class="heuristic-input">
+                    </div>
+                </div>
+                <button id="btn-apply-heuristic" class="btn btn-sm btn-primary btn-block">
+                    <i class="fa fa-refresh"></i> Apply & Recompute
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+	    <div class="row">
+		<hr/>
+
+		<footer class="text-center">
+		    <p class="text-muted">
+		    <small>
+		    Built using
+		    <a href="https://www.11ty.dev/">Eleventy</a>,
+		    <a href="http://twitter.github.com/bootstrap/">Bootstrap</a>,
+		    <a href="http://fortawesome.github.com/Font-Awesome/">Font Awesome</a>, and
+		    <a href="https://nodejs.org/">Node.js</a>.
+		    <br/>
+		    &copy; 2022 <a href="http://www.nd.edu">University of Notre Dame</a>
+		    </small>
+		    </p>
+		</footer>
+	    </div>
+
+	</div> <!-- /container -->
+
+	<!-- Bootstrap core JavaScript
+	================================================== -->
+	<!-- Placed at the end of the document so the pages load faster -->
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+	
+	<script src="static/js/minimax.js"></script>
+	
+	<script>
+	(function() {
+	    var STORAGE_KEY = 'ai-landing-theme';
+	    var prefix = '';
+	    var themes = {
+	        'gruvbox-dark': prefix + 'static/css/gruvbox-dark.css',
+	        'gruvbox-light': prefix + 'static/css/gruvbox-light.css'
+	    };
+	    var linkEl = document.getElementById('theme-style');
+	    var toggleBtn = document.getElementById('theme-toggle');
+	    if (!linkEl || !toggleBtn) {
+	        return;
+	    }
+        function updateButton(theme) {
+            var isDark = theme === 'gruvbox-dark';
+            var label = isDark ? 'Switch to light theme' : 'Switch to dark theme';
+            toggleBtn.setAttribute('aria-label', label);
+            toggleBtn.setAttribute('title', label);
+            toggleBtn.setAttribute('aria-checked', isDark ? 'true' : 'false');
+        }
+        function updateNotebookFrames(theme) {
+            var frames = document.querySelectorAll('iframe[data-src-dark][data-src-light]');
+            var attr = theme === 'gruvbox-light' ? 'data-src-light' : 'data-src-dark';
+            Array.prototype.forEach.call(frames, function(frame) {
+                var nextSrc = frame.getAttribute(attr);
+                if (nextSrc && frame.getAttribute('src') !== nextSrc) {
+                    frame.setAttribute('src', nextSrc);
+                }
+            });
+        }
+        function applyTheme(theme) {
+            var name = themes[theme] ? theme : 'gruvbox-light';
+            linkEl.setAttribute('href', themes[name]);
+            document.documentElement.setAttribute('data-theme', name);
+            updateButton(name);
+            updateNotebookFrames(name);
+            return name;
+        }
+	    var savedTheme = (function() {
+	        try {
+	            return localStorage.getItem(STORAGE_KEY);
+	        } catch (err) {
+	            return null;
+	        }
+    })();
+        var currentTheme = applyTheme(savedTheme);
+        document.addEventListener('themechange', function(event) {
+            updateNotebookFrames(event.detail || currentTheme);
+        });
+        toggleBtn.addEventListener('click', function() {
+            var nextTheme = currentTheme === 'gruvbox-dark' ? 'gruvbox-light' : 'gruvbox-dark';
+            currentTheme = applyTheme(nextTheme);
+            document.dispatchEvent(new CustomEvent('themechange', { detail: currentTheme }));
+            try {
+                localStorage.setItem(STORAGE_KEY, currentTheme);
+            } catch (err) {
+                /* ignore write errors */
+            }
+        });
+	})();
+	</script>
+    </body>
+</html>
