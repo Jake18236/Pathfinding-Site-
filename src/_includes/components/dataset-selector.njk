@@ -1,0 +1,44 @@
+{#
+  Dataset Selector Component
+
+  @param datasets - Array of {id, label, title, active?}
+  @param infoId - ID for description element (default: 'dataset-description')
+  @param defaultInfo - Default description text
+
+  Example:
+  {% from "components/dataset-selector.njk" import datasetSelector %}
+  {{ datasetSelector(
+      datasets=[
+        {id: 'moons', label: 'Moons', title: 'Two interleaving half circles', active: true},
+        {id: 'circles', label: 'Circles', title: 'Concentric circles'}
+      ],
+      defaultInfo='Two interleaving half circles'
+  ) }}
+#}
+
+{% macro datasetSelector(datasets, infoId='dataset-description', defaultInfo='') %}
+<div class="row">
+    <div class="col-md-12">
+        <div class="panel panel-default">
+            <div class="panel-body dataset-panel">
+                <div class="dataset-selector">
+                    <label>Dataset:</label>
+                    <div class="btn-group sample-input-tabs" role="group">
+                        {% for ds in datasets %}
+                        <button type="button"
+                                class="btn btn-sm btn-default{% if ds.active %} active{% endif %}"
+                                data-dataset="{{ ds.id }}"
+                                title="{{ ds.title }}">{{ ds.label }}</button>
+                        {% endfor %}
+                    </div>
+                </div>
+                {% if defaultInfo %}
+                <div class="dataset-info">
+                    <span id="{{ infoId }}"><i class="fa fa-info-circle"></i> {{ defaultInfo }}</span>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endmacro %}

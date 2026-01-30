@@ -10,98 +10,47 @@ permalink: "minimax.html"
 extraScript: "static/js/minimax.js"
 ---
 
+{% from "components/legend.njk" import legend %}
+{% from "components/controls-bar.njk" import controlsBar %}
+{% from "components/metrics-panel.njk" import metricsPanel %}
+{% from "components/algorithm-options.njk" import algorithmOptions %}
+
 <link rel="stylesheet" href="static/css/minimax.css">
 <!-- Sigma.js v3 for high-performance WebGL graph rendering -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/graphology/0.25.4/graphology.umd.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sigma@3.0.2/dist/sigma.min.js"></script>
 
-<!-- Top Controls Bar -->
-<div class="row" id="controls-bar">
-    <div class="col-md-12">
-        <div class="panel panel-default controls-panel">
-            <div class="panel-body controls-bar-body">
-                <div class="controls-row">
-                    <!-- Game Selection -->
-                    <div class="control-group">
-                        <label><i class="fa fa-gamepad"></i> Game:</label>
-                        <div class="btn-group game-selector" role="group">
-                            <button type="button" class="btn btn-sm btn-default active" data-game="tictactoe">
-                                <i class="fa fa-th"></i> Tic-Tac-Toe
-                            </button>
-                            <button type="button" class="btn btn-sm btn-default" data-game="nim">
-                                <i class="fa fa-cubes"></i> Nim
-                            </button>
-                        </div>
-                    </div>
-
-                    <!-- Depth Control -->
-                    <div class="control-group">
-                        <label>Depth:</label>
-                        <div class="depth-buttons">
-                            <button type="button" class="btn btn-sm btn-default" id="depth-minus">
-                                <i class="fa fa-minus"></i>
-                            </button>
-                            <span id="depth-value" class="depth-display">2</span>
-                            <button type="button" class="btn btn-sm btn-default" id="depth-plus">
-                                <i class="fa fa-plus"></i>
-                            </button>
-                        </div>
-                    </div>
-
-                    <!-- Alpha-Beta Toggle -->
-                    <div class="control-group">
-                        <label class="checkbox-inline">
-                            <input type="checkbox" id="use-alphabeta" checked>
-                            <strong>Alpha-Beta Pruning</strong>
-                        </label>
-                    </div>
-
-                    <!-- Move Ordering -->
-                    <div class="control-group">
-                        <label>Move Order:</label>
-                        <select id="move-ordering" class="form-control input-sm">
-                            <option value="default">Default</option>
-                            <option value="center">Center first</option>
-                            <option value="best">Best first</option>
-                            <option value="worst">Worst first</option>
-                            <option value="random">Random</option>
-                        </select>
-                    </div>
-
-                    <!-- Start Position -->
-                    <div class="control-group" id="position-control">
-                        <label>Position:</label>
-                        <select id="position-preset" class="form-control input-sm">
-                            <option value="empty">Empty Board</option>
-                            <option value="early">Early Game</option>
-                            <option value="mid">Mid Game</option>
-                            <option value="near-win">Near Win</option>
-                            <option value="forced">Forced Mate</option>
-                        </select>
-                    </div>
-
-                    <!-- Nim Controls (hidden by default) -->
-                    <div class="control-group nim-only" style="display: none;">
-                        <label>Piles:</label>
-                        <select id="nim-preset" class="form-control input-sm">
-                            <option value="1,2,3">[1, 2, 3]</option>
-                            <option value="3,4,5" selected>[3, 4, 5]</option>
-                            <option value="1,3,5,7">[1, 3, 5, 7]</option>
-                            <option value="2,2">[2, 2]</option>
-                        </select>
-                    </div>
-
-                    <!-- Reset Button -->
-                    <div class="control-group">
-                        <button id="btn-reset" class="btn btn-sm btn-danger" title="Reset">
-                            <i class="fa fa-refresh"></i> Reset
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
+{{ controlsBar(
+    groups=[
+        {type: 'button-group', label: 'Game', icon: 'fa-gamepad', id: 'game-selector', buttons: [
+            {label: 'Tic-Tac-Toe', icon: 'fa-th', dataAttr: 'game', dataValue: 'tictactoe', active: true},
+            {label: 'Nim', icon: 'fa-cubes', dataAttr: 'game', dataValue: 'nim'}
+        ]},
+        {type: 'number-stepper', label: 'Depth', minusId: 'depth-minus', plusId: 'depth-plus', valueId: 'depth-value', value: '2'},
+        {type: 'checkbox', id: 'use-alphabeta', text: 'Alpha-Beta Pruning', checked: true},
+        {type: 'select', label: 'Move Order', id: 'move-ordering', options: [
+            {value: 'default', text: 'Default', selected: true},
+            {value: 'center', text: 'Center first'},
+            {value: 'best', text: 'Best first'},
+            {value: 'worst', text: 'Worst first'},
+            {value: 'random', text: 'Random'}
+        ]},
+        {type: 'select', label: 'Position', id: 'position-preset', class: 'position-control', options: [
+            {value: 'empty', text: 'Empty Board', selected: true},
+            {value: 'early', text: 'Early Game'},
+            {value: 'mid', text: 'Mid Game'},
+            {value: 'near-win', text: 'Near Win'},
+            {value: 'forced', text: 'Forced Mate'}
+        ]},
+        {type: 'select', label: 'Piles', id: 'nim-preset', class: 'nim-only', visible: false, options: [
+            {value: '1,2,3', text: '[1, 2, 3]'},
+            {value: '3,4,5', text: '[3, 4, 5]', selected: true},
+            {value: '1,3,5,7', text: '[1, 3, 5, 7]'},
+            {value: '2,2', text: '[2, 2]'}
+        ]}
+    ],
+    resetButton={id: 'btn-reset', label: 'Reset'}
+) }}
 
 <!-- Main Content: Tree (2/3) + Side Panel (1/3) -->
 <div class="row" id="main-content">
@@ -128,12 +77,15 @@ extraScript: "static/js/minimax.js"
                     <div id="tree-tooltip" class="tree-tooltip"></div>
                 </div>
                 <div class="tree-controls-bar">
-                    <div class="tree-legend-bar">
-                        <span class="tree-legend-item"><span class="tree-legend-dot tree-dot-max"></span> MAX (X)</span>
-                        <span class="tree-legend-item"><span class="tree-legend-dot tree-dot-min"></span> MIN (O)</span>
-                        <span class="tree-legend-item"><span class="tree-legend-dot tree-dot-pruned"></span> Pruned</span>
-                        <span class="tree-legend-item"><span class="tree-legend-dot tree-dot-optimal"></span> Optimal</span>
-                    </div>
+                    {{ legend(
+                        items=[
+                            {class: 'tree-dot-max', label: 'MAX (X)'},
+                            {class: 'tree-dot-min', label: 'MIN (O)'},
+                            {class: 'tree-dot-pruned', label: 'Pruned'},
+                            {class: 'tree-dot-optimal', label: 'Optimal'}
+                        ],
+                        className='tree-legend-bar'
+                    ) }}
                     <div class="tree-zoom-controls">
                         <button class="btn btn-xs btn-default" id="btn-zoom-fit" title="Fit to view">
                             <i class="fa fa-arrows-alt"></i>
@@ -161,7 +113,7 @@ extraScript: "static/js/minimax.js"
             <span id="game-result"></span>
         </div>
 
-        <!-- Node Details Panel -->
+        <!-- Node Details Panel (custom - requires special JS interaction) -->
         <div class="panel panel-default">
             <div class="panel-heading">
                 <h3 class="panel-title"><i class="fa fa-info-circle"></i> Node Details</h3>
@@ -208,77 +160,29 @@ extraScript: "static/js/minimax.js"
             </div>
         </div>
 
-        <!-- Metrics Panel -->
-        <div class="panel panel-default">
-            <div class="panel-heading">
-                <h3 class="panel-title"><i class="fa fa-bar-chart"></i> Metrics</h3>
-            </div>
-            <div class="panel-body compact-panel">
-                <table class="table table-condensed metrics-table">
-                    <tbody>
-                        <tr>
-                            <td><i class="fa fa-tree"></i> Evaluated</td>
-                            <td id="metric-evaluated" class="text-right metric-value">0</td>
-                            <td><i class="fa fa-expand"></i> Expanded</td>
-                            <td id="metric-expanded" class="text-right metric-value">0</td>
-                        </tr>
-                        <tr>
-                            <td><i class="fa fa-cut"></i> a-Cutoffs</td>
-                            <td id="metric-alpha-cuts" class="text-right metric-value">0</td>
-                            <td><i class="fa fa-cut"></i> b-Cutoffs</td>
-                            <td id="metric-beta-cuts" class="text-right metric-value">0</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
+        {{ metricsPanel(
+            title='Metrics',
+            layout='grid',
+            rows=[
+                [{icon: 'fa-tree', label: 'Evaluated', id: 'metric-evaluated', default: '0'},
+                 {icon: 'fa-expand', label: 'Expanded', id: 'metric-expanded', default: '0'}],
+                [{icon: 'fa-cut', label: 'a-Cutoffs', id: 'metric-alpha-cuts', default: '0'},
+                 {icon: 'fa-cut', label: 'b-Cutoffs', id: 'metric-beta-cuts', default: '0'}]
+            ]
+        ) }}
 
-        <!-- Heuristic Evaluation Function -->
-        <div class="panel panel-default">
-            <div class="panel-heading">
-                <h3 class="panel-title"><i class="fa fa-sliders"></i> Heuristic Function</h3>
-            </div>
-            <div class="panel-body heuristic-panel">
-                <p class="heuristic-description">
-                    <code>h(state)</code> evaluates non-terminal positions.<br>
-                    <span class="max-text">+</span> favors X, <span class="min-text">-</span> favors O
-                </p>
-                <div class="heuristic-inputs">
-                    <div class="heuristic-row">
-                        <label title="Points for winning the game">
-                            <i class="fa fa-trophy"></i> Win
-                        </label>
-                        <input type="number" id="h-win" value="100" min="0" max="1000" class="heuristic-input">
-                    </div>
-                    <div class="heuristic-row">
-                        <label title="Points for two-in-a-row with empty third cell">
-                            <i class="fa fa-minus"></i><i class="fa fa-minus"></i> Two-in-row
-                        </label>
-                        <input type="number" id="h-two-row" value="10" min="0" max="100" class="heuristic-input">
-                    </div>
-                    <div class="heuristic-row">
-                        <label title="Points for one piece in a line with two empty">
-                            <i class="fa fa-minus"></i> One-in-row
-                        </label>
-                        <input type="number" id="h-one-row" value="1" min="0" max="100" class="heuristic-input">
-                    </div>
-                    <div class="heuristic-row">
-                        <label title="Points for controlling the center square">
-                            <i class="fa fa-dot-circle-o"></i> Center
-                        </label>
-                        <input type="number" id="h-center" value="3" min="0" max="100" class="heuristic-input">
-                    </div>
-                    <div class="heuristic-row">
-                        <label title="Points for controlling a corner square">
-                            <i class="fa fa-square-o"></i> Corner
-                        </label>
-                        <input type="number" id="h-corner" value="2" min="0" max="100" class="heuristic-input">
-                    </div>
-                </div>
-                <button id="btn-apply-heuristic" class="btn btn-sm btn-primary btn-block">
-                    <i class="fa fa-refresh"></i> Apply & Recompute
-                </button>
-            </div>
-        </div>
+        {{ algorithmOptions(
+            title='Heuristic Function',
+            icon='fa-sliders',
+            options=[
+                {type: 'custom', content: '<p class="heuristic-description"><code>h(state)</code> evaluates non-terminal positions.<br><span class="max-text">+</span> favors X, <span class="min-text">-</span> favors O</p>'},
+                {type: 'number', label: 'Win', id: 'h-win', min: 0, max: 1000, value: 100, icon: 'fa-trophy', title: 'Points for winning the game'},
+                {type: 'number', label: 'Two-in-row', id: 'h-two-row', min: 0, max: 100, value: 10, icon: 'fa-minus', title: 'Points for two-in-a-row with empty third cell'},
+                {type: 'number', label: 'One-in-row', id: 'h-one-row', min: 0, max: 100, value: 1, icon: 'fa-minus', title: 'Points for one piece in a line with two empty'},
+                {type: 'number', label: 'Center', id: 'h-center', min: 0, max: 100, value: 3, icon: 'fa-dot-circle-o', title: 'Points for controlling the center square'},
+                {type: 'number', label: 'Corner', id: 'h-corner', min: 0, max: 100, value: 2, icon: 'fa-square-o', title: 'Points for controlling a corner square'},
+                {type: 'custom', content: '<button id="btn-apply-heuristic" class="btn btn-sm btn-primary btn-block"><i class="fa fa-refresh"></i> Apply & Recompute</button>'}
+            ]
+        ) }}
     </div>
 </div>

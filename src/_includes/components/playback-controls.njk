@@ -1,0 +1,52 @@
+{#
+  Playback Controls Component
+
+  @param buttons - Array of {id, icon, label?, style, title, disabled?}
+  @param speedSlider - Whether to show speed slider (default: true)
+  @param statusId - ID for status display element
+  @param statusText - Initial status text
+
+  Example:
+  {% from "components/playback-controls.njk" import playbackControls %}
+  {{ playbackControls(
+      buttons=[
+        {id: 'btn-play', icon: 'play', label: 'Play', style: 'success', title: 'Play animation', disabled: true},
+        {id: 'btn-pause', icon: 'pause', style: 'warning', title: 'Pause', disabled: true},
+        {id: 'btn-step-back', icon: 'step-backward', style: 'info', title: 'Step backward', disabled: true},
+        {id: 'btn-step-forward', icon: 'step-forward', style: 'info', title: 'Step forward', disabled: true},
+        {id: 'btn-reset', icon: 'refresh', style: 'danger', title: 'Reset'}
+      ],
+      statusId='playback-step',
+      statusText='Click anywhere to classify'
+  ) }}
+#}
+
+{% macro playbackControls(buttons, speedSlider=true, statusId=none, statusText='') %}
+<div class="panel panel-default">
+    <div class="panel-body playback-panel-body">
+        <div class="playback-controls-row">
+            <div class="btn-toolbar playback-buttons" role="toolbar">
+                {% for btn in buttons %}
+                <button id="{{ btn.id }}"
+                        class="btn btn-{{ btn.style }}"
+                        title="{{ btn.title }}"
+                        {% if btn.disabled %}disabled{% endif %}>
+                    <i class="fa fa-{{ btn.icon }}"></i>{% if btn.label %} {{ btn.label }}{% endif %}
+                </button>
+                {% endfor %}
+            </div>
+            {% if statusId %}
+            <div class="playback-status">
+                <span id="{{ statusId }}">{{ statusText }}</span>
+            </div>
+            {% endif %}
+            {% if speedSlider %}
+            <div class="speed-control-inline">
+                <label><i class="fa fa-tachometer"></i></label>
+                <input type="range" id="speed-slider" min="1" max="10" value="5">
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endmacro %}

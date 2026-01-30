@@ -17,66 +17,39 @@
     'use strict';
 
     // ============================================
-    // Constants
+    // Constants (using shared ThemeManager for colors)
     // ============================================
 
-    // MNIST digit colors (0-9)
-    const MNIST_COLORS = [
-        '#e41a1c',  // 0 - red
-        '#377eb8',  // 1 - blue
-        '#4daf4a',  // 2 - green
-        '#984ea3',  // 3 - purple
-        '#ff7f00',  // 4 - orange
-        '#c4a000',  // 5 - gold/yellow
-        '#a65628',  // 6 - brown
-        '#f781bf',  // 7 - pink
-        '#999999',  // 8 - gray
-        '#17becf'   // 9 - cyan
-    ];
+    // Get ThemeManager from shared library (loaded via base.njk)
+    const getThemeManager = () => window.VizLib?.ThemeManager;
 
-    const MNIST_COLORS_DARK = [
-        '#fb4934',  // 0 - red
-        '#83a598',  // 1 - blue
-        '#b8bb26',  // 2 - green
-        '#d3869b',  // 3 - purple
-        '#fe8019',  // 4 - orange
-        '#fabd2f',  // 5 - yellow
-        '#d65d0e',  // 6 - brown/orange
-        '#d3869b',  // 7 - pink
-        '#928374',  // 8 - gray
-        '#8ec07c'   // 9 - cyan/green
-    ];
+    // Helper to get colors based on current theme
+    const getColors = (isDark) => {
+        const TM = getThemeManager();
+        if (TM) {
+            return TM.getColors('categorical');
+        }
+        // Fallback if VizLib not loaded yet
+        return isDark ? [
+            '#fb4934', '#83a598', '#b8bb26', '#d3869b', '#fe8019',
+            '#fabd2f', '#d65d0e', '#d3869b', '#928374', '#8ec07c'
+        ] : [
+            '#e41a1c', '#377eb8', '#4daf4a', '#984ea3', '#ff7f00',
+            '#c4a000', '#a65628', '#f781bf', '#999999', '#17becf'
+        ];
+    };
 
-    // CIFAR-10 class colors
-    const CIFAR10_COLORS = [
-        '#e41a1c',  // airplane - red
-        '#377eb8',  // automobile - blue
-        '#4daf4a',  // bird - green
-        '#984ea3',  // cat - purple
-        '#ff7f00',  // deer - orange
-        '#c4a000',  // dog - gold
-        '#a65628',  // frog - brown
-        '#f781bf',  // horse - pink
-        '#999999',  // ship - gray
-        '#17becf'   // truck - cyan
-    ];
-
-    const CIFAR10_COLORS_DARK = [
-        '#fb4934',  // airplane - red
-        '#83a598',  // automobile - blue
-        '#b8bb26',  // bird - green
-        '#d3869b',  // cat - purple
-        '#fe8019',  // deer - orange
-        '#fabd2f',  // dog - yellow
-        '#d65d0e',  // frog - brown/orange
-        '#d3869b',  // horse - pink
-        '#928374',  // ship - gray
-        '#8ec07c'   // truck - cyan/green
-    ];
-
-    const MNIST_LABELS = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
-    const CIFAR10_LABELS = ['airplane', 'automobile', 'bird', 'cat', 'deer',
-                            'dog', 'frog', 'horse', 'ship', 'truck'];
+    // Labels use shared ThemeManager when available
+    const getLabels = (dataset) => {
+        const TM = getThemeManager();
+        if (TM) {
+            return TM.getLabels(dataset);
+        }
+        // Fallback
+        return dataset === 'cifar10'
+            ? ['airplane', 'automobile', 'bird', 'cat', 'deer', 'dog', 'frog', 'horse', 'ship', 'truck']
+            : ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
+    };
 
     // Data URLs
     // Embeddings and images are split for lazy loading
@@ -97,71 +70,10 @@
     };
 
     // ============================================
-    // Quadtree for efficient point lookup
+    // Quadtree for efficient point lookup (uses shared VizLib.Quadtree)
     // ============================================
 
-    class Quadtree {
-        constructor(bounds, capacity = 8) {
-            this.bounds = bounds;
-            this.capacity = capacity;
-            this.points = [];
-            this.divided = false;
-            this.ne = null;
-            this.nw = null;
-            this.se = null;
-            this.sw = null;
-        }
-
-        insert(point) {
-            if (!this.contains(point)) return false;
-            if (this.points.length < this.capacity && !this.divided) {
-                this.points.push(point);
-                return true;
-            }
-            if (!this.divided) this.subdivide();
-            return this.ne.insert(point) || this.nw.insert(point) ||
-                   this.se.insert(point) || this.sw.insert(point);
-        }
-
-        contains(point) {
-            return point.x >= this.bounds.x &&
-                   point.x < this.bounds.x + this.bounds.width &&
-                   point.y >= this.bounds.y &&
-                   point.y < this.bounds.y + this.bounds.height;
-        }
-
-        subdivide() {
-            const { x, y, width, height } = this.bounds;
-            const w = width / 2, h = height / 2;
-            this.ne = new Quadtree({ x: x + w, y, width: w, height: h }, this.capacity);
-            this.nw = new Quadtree({ x, y, width: w, height: h }, this.capacity);
-            this.se = new Quadtree({ x: x + w, y: y + h, width: w, height: h }, this.capacity);
-            this.sw = new Quadtree({ x, y: y + h, width: w, height: h }, this.capacity);
-            this.divided = true;
-        }
-
-        queryRadius(cx, cy, radius) {
-            const found = [];
-            if (!this.intersectsCircle(cx, cy, radius)) return found;
-            for (const p of this.points) {
-                if (Math.hypot(p.x - cx, p.y - cy) <= radius) found.push(p);
-            }
-            if (this.divided) {
-                found.push(...this.ne.queryRadius(cx, cy, radius));
-                found.push(...this.nw.queryRadius(cx, cy, radius));
-                found.push(...this.se.queryRadius(cx, cy, radius));
-                found.push(...this.sw.queryRadius(cx, cy, radius));
-            }
-            return found;
-        }
-
-        intersectsCircle(cx, cy, r) {
-            const { x, y, width, height } = this.bounds;
-            const closestX = Math.max(x, Math.min(cx, x + width));
-            const closestY = Math.max(y, Math.min(cy, y + height));
-            return Math.hypot(cx - closestX, cy - closestY) <= r;
-        }
-    }
+    const getQuadtreeClass = () => window.VizLib.Quadtree;
 
     // ============================================
     // Data Manager
@@ -327,15 +239,13 @@
         }
 
         getClassLabels() {
-            return this.currentDataset === 'mnist' ? MNIST_LABELS : CIFAR10_LABELS;
+            // Use shared ThemeManager when available
+            return getLabels(this.currentDataset);
         }
 
         getColors(isDarkTheme) {
-            if (this.currentDataset === 'mnist') {
-                return isDarkTheme ? MNIST_COLORS_DARK : MNIST_COLORS;
-            } else {
-                return isDarkTheme ? CIFAR10_COLORS_DARK : CIFAR10_COLORS;
-            }
+            // Use shared ThemeManager when available
+            return getColors(isDarkTheme);
         }
 
         getImageSize() {
@@ -413,26 +323,11 @@
             this.panX = 0;  // Pan offset in normalized coordinates
             this.panY = 0;
 
-            // Setup high-DPI canvas scaling
-            this.setupHiDPI();
-        }
-
-        setupHiDPI() {
-            const dpr = window.devicePixelRatio || 1;
-            const rect = this.canvas.getBoundingClientRect();
-
-            // Store logical dimensions (CSS size) for calculations
-            this.logicalWidth = rect.width;
-            this.logicalHeight = rect.height;
+            // Setup high-DPI canvas scaling using shared utility
+            const { dpr, logicalWidth, logicalHeight } = window.VizLib.CanvasUtils.setupHiDPICanvas(this.canvas);
             this.dpr = dpr;
-
-            // Scale canvas internal resolution by device pixel ratio for crisp rendering
-            this.canvas.width = rect.width * dpr;
-            this.canvas.height = rect.height * dpr;
-
-            // Force the canvas to display at its original CSS size
-            this.canvas.style.width = rect.width + 'px';
-            this.canvas.style.height = rect.height + 'px';
+            this.logicalWidth = logicalWidth;
+            this.logicalHeight = logicalHeight;
         }
 
         resetView() {
@@ -550,7 +445,8 @@
             }
 
             // Build quadtree and prepare screen points
-            this.quadtree = new Quadtree({ x: 0, y: 0, width, height });
+            const QuadtreeClass = getQuadtreeClass();
+            this.quadtree = new QuadtreeClass({ x: 0, y: 0, width, height });
             this.screenPoints = [];
 
             // Calculate screen positions
@@ -641,17 +537,7 @@
         }
 
         hexToRgba(hex, alpha) {
-            // Cache color conversions
-            const key = `${hex}_${alpha}`;
-            if (!this._colorCache) this._colorCache = new Map();
-            if (this._colorCache.has(key)) return this._colorCache.get(key);
-
-            const r = parseInt(hex.slice(1, 3), 16);
-            const g = parseInt(hex.slice(3, 5), 16);
-            const b = parseInt(hex.slice(5, 7), 16);
-            const result = `rgba(${r}, ${g}, ${b}, ${alpha})`;
-            this._colorCache.set(key, result);
-            return result;
+            return window.VizLib.ThemeManager.hexToRgba(hex, alpha);
         }
 
         findPointAt(x, y) {

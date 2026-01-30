@@ -1,0 +1,207 @@
+---
+layout: base.njk
+title: KNN Classification Visualizer
+icon: fa-project-diagram
+navigation:
+  - name: "Home"
+    link: "index.html"
+    icon: "fa-gavel"
+permalink: "knn.html"
+extraScript: "static/js/knn.js"
+---
+
+{% from "components/dataset-selector.njk" import datasetSelector %}
+{% from "components/edit-toolbar.njk" import editToolbar %}
+{% from "components/legend.njk" import legend %}
+{% from "components/playback-controls.njk" import playbackControls %}
+{% from "components/algorithm-options.njk" import algorithmOptions %}
+{% from "components/metrics-panel.njk" import metricsPanel %}
+{% from "components/info-tabs.njk" import infoTabs %}
+
+<link rel="stylesheet" href="static/css/knn.css">
+
+<!-- Dataset Selector Panel -->
+{{ datasetSelector(
+    datasets=[
+        {id: 'moons', label: 'Moons', title: 'Two interleaving half circles', active: true},
+        {id: 'circles', label: 'Circles', title: 'Concentric circles'},
+        {id: 'blobs', label: 'Blobs', title: 'Gaussian blobs'},
+        {id: 'linear', label: 'Linear', title: 'Linearly separable'},
+        {id: 'xor', label: 'XOR', title: 'XOR pattern'},
+        {id: 'spiral', label: 'Spiral', title: 'Two spirals'},
+        {id: 'custom', label: 'Custom', title: 'Draw your own'}
+    ],
+    defaultInfo='Two interleaving half circles - a classic non-linear classification problem'
+) }}
+
+<!-- Main Content: Canvas (left) + Controls/Info (right) -->
+<div class="row" id="main-content">
+    <!-- Left Column: Classification Canvas -->
+    <div class="col-md-7">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <div class="panel-heading-content">
+                    <span class="panel-title-text"><i class="fa fa-crosshairs"></i> Classification Space</span>
+                    {{ editToolbar(
+                        modes=[
+                            {id: 'classify', icon: 'fa-crosshairs', label: 'Classify', title: 'Click to classify', active: true},
+                            {id: 'add', icon: 'fa-plus', label: 'Add', title: 'Add training points'},
+                            {id: 'delete', icon: 'fa-minus', label: 'Delete', title: 'Delete points'}
+                        ],
+                        classes=[
+                            {id: '0', title: 'Class 1', active: true},
+                            {id: '1', title: 'Class 2'},
+                            {id: '2', title: 'Class 3'}
+                        ]
+                    ) }}
+                </div>
+            </div>
+            <div class="panel-body canvas-panel-body">
+                <div class="canvas-wrapper">
+                    <canvas id="knn-canvas" width="560" height="480"></canvas>
+                    <canvas id="boundary-canvas" width="560" height="480"></canvas>
+                    <div id="loading-overlay" class="loading-overlay" style="display: none;">
+                        <div class="spinner"></div>
+                        <div class="loading-text">Computing boundaries...</div>
+                    </div>
+                </div>
+                {{ legend(
+                    items=[
+                        {class: 'class-0', label: 'Class 1'},
+                        {class: 'class-1', label: 'Class 2'},
+                        {class: 'class-2', label: 'Class 3', id: 'legend-class-2'},
+                        {class: 'query-point', label: 'Query'},
+                        {class: 'neighbor-line', label: 'Neighbor', type: 'line'}
+                    ]
+                ) }}
+            </div>
+        </div>
+
+        <!-- Playback Controls Panel -->
+        {{ playbackControls(
+            buttons=[
+                {id: 'btn-play', icon: 'play', label: 'Play', style: 'success', title: 'Play classification animation', disabled: true},
+                {id: 'btn-pause', icon: 'pause', style: 'warning', title: 'Pause', disabled: true},
+                {id: 'btn-step-back', icon: 'step-backward', style: 'info', title: 'Step backward', disabled: true},
+                {id: 'btn-step-forward', icon: 'step-forward', style: 'info', title: 'Step forward', disabled: true},
+                {id: 'btn-reset', icon: 'refresh', style: 'danger', title: 'Reset classification'}
+            ],
+            statusId='playback-step',
+            statusText='Click anywhere to classify'
+        ) }}
+    </div>
+
+    <!-- Right Column: Controls + Info -->
+    <div class="col-md-5">
+        <!-- Algorithm Options Panel -->
+        {{ algorithmOptions(
+            options=[
+                {type: 'slider', label: 'K Value', id: 'k-slider', min: 1, max: 15, value: 3, valueId: 'k-value'},
+                {type: 'select', label: 'Distance Metric', id: 'distance-metric', options: [
+                    {value: 'euclidean', text: 'Euclidean', selected: true},
+                    {value: 'manhattan', text: 'Manhattan'},
+                    {value: 'chebyshev', text: 'Chebyshev'}
+                ]},
+                {type: 'checkbox', label: 'Show decision boundaries', id: 'show-boundaries'},
+                {type: 'checkbox', label: 'Weighted voting (1/distance)', id: 'weighted-knn'}
+            ]
+        ) }}
+
+        <!-- Metrics Panel -->
+        {{ metricsPanel(
+            title='Classification Result',
+            metrics=[
+                {icon: 'fa-crosshairs', label: 'Query Point', id: 'metric-query'},
+                {icon: 'fa-tag', label: 'Prediction', id: 'metric-prediction'},
+                {icon: 'fa-percent', label: 'Confidence', id: 'metric-confidence'},
+                {icon: 'fa-users', label: 'K Neighbors', id: 'metric-neighbors'}
+            ],
+            extraContent='<div id="vote-breakdown" class="vote-breakdown" style="display: none;">
+                <div class="vote-header">Vote Breakdown:</div>
+                <div id="vote-bars" class="vote-bars"></div>
+            </div>'
+        ) }}
+
+        <!-- Tabbed Info Panel -->
+        {{ infoTabs(
+            tabs=[
+                {id: 'about', icon: 'fa-info-circle', label: 'About', active: true, content: '
+                    <h4><i class="fa fa-project-diagram"></i> What is KNN?</h4>
+                    <p>
+                        <strong>K-Nearest Neighbors</strong> is a simple yet powerful classification algorithm.
+                        It classifies a point based on the majority class of its K nearest neighbors.
+                    </p>
+                    <h4><i class="fa fa-mouse-pointer"></i> How to Use</h4>
+                    <ul class="interaction-list">
+                        <li><strong>Click</strong> anywhere to classify that point</li>
+                        <li><strong>Watch</strong> the algorithm find K nearest neighbors</li>
+                        <li><strong>Adjust K</strong> to see how it affects classification</li>
+                        <li><strong>Try</strong> different distance metrics</li>
+                    </ul>
+                    <h4><i class="fa fa-pencil"></i> Custom Mode</h4>
+                    <p>
+                        Select \"Custom\" dataset to draw your own training points.
+                        Switch between Add/Delete modes to create your dataset.
+                    </p>
+                '},
+                {id: 'algorithm', icon: 'fa-book', label: 'Algorithm', content: '
+                    <h4><i class="fa fa-cogs"></i> Algorithm Steps</h4>
+                    <ol class="algorithm-steps">
+                        <li>Calculate distance from query to all training points</li>
+                        <li>Sort points by distance (ascending)</li>
+                        <li>Select K nearest neighbors</li>
+                        <li>Count votes for each class</li>
+                        <li>Assign majority class to query</li>
+                    </ol>
+                    <h4><i class="fa fa-ruler"></i> Distance Metrics</h4>
+                    <ul class="formula-list">
+                        <li><strong>Euclidean</strong>: √(Σ(xᵢ - yᵢ)²)</li>
+                        <li><strong>Manhattan</strong>: Σ|xᵢ - yᵢ|</li>
+                        <li><strong>Chebyshev</strong>: max(|xᵢ - yᵢ|)</li>
+                    </ul>
+                    <h4><i class="fa fa-balance-scale"></i> Weighted Voting</h4>
+                    <p>
+                        When enabled, closer neighbors have more influence.
+                        Each vote is weighted by <code>1/distance</code>.
+                    </p>
+                '},
+                {id: 'neighbors', icon: 'fa-list', label: 'Neighbors', content: '
+                    <div class="neighbors-header">
+                        <span>K Nearest Neighbors</span>
+                        <span id="neighbors-count" class="badge">0</span>
+                    </div>
+                    <div id="neighbors-list" class="neighbors-list">
+                        <div class="list-empty">Click to classify a point</div>
+                    </div>
+                '},
+                {id: 'compare', icon: 'fa-table', label: 'Compare', content: '
+                    <div class="compare-controls">
+                        <button id="btn-run-comparison" class="btn btn-sm btn-default" disabled>
+                            <i class="fa fa-refresh"></i> Run Comparison
+                        </button>
+                    </div>
+                    <div class="compare-table-container">
+                        <table id="comparison-table" class="table table-bordered table-striped table-condensed">
+                            <thead>
+                                <tr>
+                                    <th>K</th>
+                                    <th>Metric</th>
+                                    <th>Prediction</th>
+                                    <th>Confidence</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr class="compare-empty">
+                                    <td colspan="4">Classify a point to compare</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <p class="compare-hint">
+                        <i class="fa fa-lightbulb-o"></i> Shows classification with different K values and metrics.
+                    </p>
+                '}
+            ]
+        ) }}
+    </div>
+</div>

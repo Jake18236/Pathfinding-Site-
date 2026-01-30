@@ -1289,127 +1289,58 @@
 
     /**
      * Playback Controller - manages visualization playback
+     * Uses shared VizLib.PlaybackController with shidoku-specific rendering
      */
-    class PlaybackController {
-        constructor(ui, treeViz) {
-            this.ui = ui;
-            this.treeViz = treeViz;
-            this.steps = [];
-            this.currentStep = 0;
-            this.playing = false;
-            this.paused = false;
-            this.speed = 5;
-            this.timeoutId = null;
-            this.startTime = null;
-        }
+    function createPlaybackController(ui, treeViz) {
+        // Use shared PlaybackController from VizLib
+        let startTime = null;
 
-        load(steps) {
-            this.steps = steps;
-            this.currentStep = 0;
-            this.playing = false;
-            this.paused = false;
-        }
+        const controller = new window.VizLib.PlaybackController({
+            initialSpeed: 5,
+            onRenderStep: (step, index) => {
+                ui.renderState(step.snapshot, step.type, step.metadata);
+                ui.updateMetrics(step.metrics);
+                ui.addLogEntry(step.type, step.metadata, step.snapshot);
 
-        getDelay() {
-            // Speed 1 = 1000ms, Speed 10 = 50ms
-            return 1050 - (this.speed * 100);
-        }
-
-        setSpeed(speed) {
-            this.speed = Math.max(1, Math.min(10, speed));
-        }
-
-        play() {
-            if (this.steps.length === 0) return;
-
-            this.playing = true;
-            this.paused = false;
-            this.startTime = Date.now();
-            this.ui.setPlayingState(true);
-            this.advance();
-        }
-
-        pause() {
-            this.paused = true;
-            this.playing = false;
-            if (this.timeoutId) {
-                clearTimeout(this.timeoutId);
-                this.timeoutId = null;
-            }
-            this.ui.setPlayingState(false);
-        }
-
-        resume() {
-            if (!this.paused) return;
-            this.paused = false;
-            this.playing = true;
-            this.ui.setPlayingState(true);
-            this.advance();
-        }
-
-        step() {
-            if (this.currentStep < this.steps.length) {
-                this.renderStep(this.steps[this.currentStep]);
-                this.currentStep++;
-
-                if (this.currentStep >= this.steps.length) {
-                    this.playing = false;
-                    this.ui.setPlayingState(false);
-                    this.ui.setFinishedState();
+                // Update tree visualization
+                if (treeViz && step.treeState) {
+                    treeViz.update(step.treeState);
                 }
-            }
-        }
 
-        advance() {
-            if (!this.playing || this.paused) return;
-
-            if (this.currentStep < this.steps.length) {
-                this.renderStep(this.steps[this.currentStep]);
-                this.currentStep++;
-
-                if (this.currentStep < this.steps.length) {
-                    this.timeoutId = setTimeout(() => this.advance(), this.getDelay());
-                } else {
-                    this.playing = false;
-                    this.ui.setPlayingState(false);
-                    this.ui.setFinishedState();
+                if (startTime) {
+                    const elapsed = (Date.now() - startTime) / 1000;
+                    ui.updateElapsedTime(elapsed);
                 }
+            },
+            onPlayStateChange: (isPlaying) => {
+                ui.setPlayingState(isPlaying);
+                if (isPlaying && !startTime) {
+                    startTime = Date.now();
+                }
+            },
+            onFinished: () => {
+                ui.setFinishedState();
+            },
+            onReset: () => {
+                startTime = null;
             }
-        }
+        });
 
-        renderStep(step) {
-            this.ui.renderState(step.snapshot, step.type, step.metadata);
-            this.ui.updateMetrics(step.metrics);
-            this.ui.addLogEntry(step.type, step.metadata, step.snapshot);
-
-            // Update tree visualization
-            if (this.treeViz && step.treeState) {
-                this.treeViz.update(step.treeState);
-            }
-
-            if (this.startTime) {
-                const elapsed = (Date.now() - this.startTime) / 1000;
-                this.ui.updateElapsedTime(elapsed);
-            }
-        }
-
-        stop() {
-            this.playing = false;
-            this.paused = false;
-            if (this.timeoutId) {
-                clearTimeout(this.timeoutId);
-                this.timeoutId = null;
-            }
-            this.currentStep = 0;
-        }
-
-        isPlaying() {
-            return this.playing;
-        }
-
-        isPaused() {
-            return this.paused;
-        }
+        // Return adapted interface matching original API
+        return {
+            load: (steps) => controller.load(steps),
+            play: () => controller.play(),
+            pause: () => controller.pause(),
+            resume: () => controller.play(),  // shared controller handles resume in play()
+            step: () => controller.stepForward(),
+            stop: () => controller.reset(),
+            setSpeed: (speed) => controller.setSpeed(speed),
+            getDelay: () => controller.getDelay(),
+            isPlaying: () => controller.getIsPlaying(),
+            isPaused: () => !controller.getIsPlaying() && controller.getCurrentIndex() >= 0,
+            get currentStep() { return controller.getCurrentIndex() + 1; },
+            get steps() { return controller.steps; }
+        };
     }
 
     /**
@@ -2413,7 +2344,7 @@
             this.ui = new UIController();
             this.solver = new ShidokuSolver();
             this.treeViz = new SearchTreeVisualizer('search-tree-container', 'search-tree-svg');
-            this.playback = new PlaybackController(this.ui, this.treeViz);
+            this.playback = createPlaybackController(this.ui, this.treeViz);
 
             this.initControls();
 

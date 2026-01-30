@@ -1,0 +1,38 @@
+{#
+  Info Tabs Component
+
+  @param tabs - Array of {id, icon, label, active?, content}
+
+  Example:
+  {% from "components/info-tabs.njk" import infoTabs %}
+  {{ infoTabs(
+      tabs=[
+        {id: 'about', icon: 'fa-info-circle', label: 'About', active: true, content: '<h4>About this visualization...</h4>'},
+        {id: 'algorithm', icon: 'fa-book', label: 'Algorithm', content: '<h4>How it works...</h4>'},
+        {id: 'compare', icon: 'fa-table', label: 'Compare', content: '<table>...</table>'}
+      ]
+  ) }}
+#}
+
+{% macro infoTabs(tabs) %}
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <div class="btn-group info-panel-tabs" role="group">
+            {% for tab in tabs %}
+            <button type="button"
+                    class="btn btn-sm btn-default{% if tab.active %} active{% endif %}"
+                    data-tab="{{ tab.id }}">
+                <i class="fa {{ tab.icon }}"></i> {{ tab.label }}
+            </button>
+            {% endfor %}
+        </div>
+    </div>
+    <div class="panel-body info-panel-body">
+        {% for tab in tabs %}
+        <div id="tab-{{ tab.id }}" class="info-tab-content{% if tab.active %} active{% endif %}">
+            {{ tab.content | safe }}
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endmacro %}

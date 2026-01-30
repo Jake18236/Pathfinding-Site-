@@ -1,0 +1,33 @@
+{#
+  Legend Component
+
+  @param items - Array of {class, label, type?, id?}
+                 type: 'color' (default) or 'line'
+  @param className - Container class (default: 'canvas-legend')
+
+  Example:
+  {% from "components/legend.njk" import legend %}
+  {{ legend(
+      items=[
+        {class: 'class-0', label: 'Class 1'},
+        {class: 'class-1', label: 'Class 2'},
+        {class: 'query-point', label: 'Query'},
+        {class: 'neighbor-line', label: 'Neighbor', type: 'line'}
+      ]
+  ) }}
+#}
+
+{% macro legend(items, className='canvas-legend') %}
+<div class="{{ className }}">
+    {% for item in items %}
+    <span class="legend-item"{% if item.id %} id="{{ item.id }}"{% endif %}>
+        {% if item.type == 'line' %}
+        <span class="legend-line {{ item.class }}"></span>
+        {% else %}
+        <span class="legend-color {{ item.class }}"></span>
+        {% endif %}
+        {{ item.label }}
+    </span>
+    {% endfor %}
+</div>
+{% endmacro %}

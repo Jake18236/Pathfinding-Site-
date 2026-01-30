@@ -2849,140 +2849,81 @@
 
     // ============================================
     // Playback Controller
+    // Uses shared VizLib.PlaybackController when available with A*-specific rendering
     // ============================================
 
-    class PlaybackController {
-        constructor(ui) {
-            this.ui = ui;
-            this.steps = [];
-            this.currentStepIndex = -1;
-            this.isPlaying = false;
-            this.playbackSpeed = 9;
-            this.playbackTimer = null;
-            this.onStepChange = null;
-            this.goal = null;
+    // Helper to map step type to log type
+    function getLogType(stepType) {
+        switch (stepType) {
+            case STEP_INIT: return 'info';
+            case STEP_EXPAND: return 'expand';
+            case STEP_NEIGHBOR_CHECK: return 'neighbor';
+            case STEP_ADD_TO_OPEN: return 'add';
+            case STEP_UPDATE_PATH: return 'update';
+            case STEP_GOAL_FOUND: return 'success';
+            case STEP_NO_SOLUTION: return 'failure';
+            default: return 'info';
         }
+    }
 
-        loadSteps(steps, goal = null) {
-            this.steps = steps;
-            this.goal = goal;
-            this.currentStepIndex = -1;
-            this.isPlaying = false;
-            this.updateStepDisplay();
-        }
+    function createAStarPlaybackController(ui) {
+        // Use shared PlaybackController from VizLib
+        let onStepChangeCallback = null;
 
-        play() {
-            if (this.steps.length === 0) return;
-            this.isPlaying = true;
-            this.playNext();
-        }
+        const controller = new window.VizLib.PlaybackController({
+            initialSpeed: 9,
+            onRenderStep: (step, index, metadata) => {
+                const goal = metadata;
+                ui.renderStep(step, [], goal);
+                ui.updateLists(step.openList, step.closedList, goal);
 
-        pause() {
-            this.isPlaying = false;
-            if (this.playbackTimer) {
-                clearTimeout(this.playbackTimer);
-                this.playbackTimer = null;
-            }
-        }
-
-        playNext() {
-            if (!this.isPlaying) return;
-
-            if (this.currentStepIndex < this.steps.length - 1) {
-                this.stepForward();
-                const delay = this.getDelay();
-                this.playbackTimer = setTimeout(() => this.playNext(), delay);
-            } else {
-                this.isPlaying = false;
-            }
-        }
-
-        stepForward() {
-            if (this.currentStepIndex < this.steps.length - 1) {
-                this.currentStepIndex++;
-                this.renderCurrentStep();
-                this.updateStepDisplay();
-            }
-        }
-
-        stepBackward() {
-            if (this.currentStepIndex > 0) {
-                this.currentStepIndex--;
-                this.renderCurrentStep();
-                this.updateStepDisplay();
-            }
-        }
-
-        goToStep(index) {
-            if (index >= 0 && index < this.steps.length) {
-                this.currentStepIndex = index;
-                this.renderCurrentStep();
-                this.updateStepDisplay();
-            }
-        }
-
-        reset() {
-            this.pause();
-            this.currentStepIndex = -1;
-            this.goal = null;
-            this.ui.clearHeuristicLine();
-            this.ui.clearPseudocode();
-            this.ui.renderGrid();
-            this.updateStepDisplay();
-        }
-
-        setSpeed(speed) {
-            this.playbackSpeed = speed;
-        }
-
-        getDelay() {
-            // Speed 1 = 1000ms, Speed 10 = 50ms
-            return 1050 - (this.playbackSpeed * 100);
-        }
-
-        renderCurrentStep() {
-            const step = this.steps[this.currentStepIndex];
-            if (step) {
-                this.ui.renderStep(step, [], this.goal);
-                this.ui.updateLists(step.openList, step.closedList, this.goal);
-
-                // Update metrics from step
                 if (step.metrics) {
-                    this.ui.updateMetrics(step.metrics);
+                    ui.updateMetrics(step.metrics);
                 }
 
-                // Update pseudocode highlighting
-                this.ui.updatePseudocode(step.type);
+                ui.updatePseudocode(step.type);
 
-                // Log the step
-                const logType = this.getLogType(step.type);
-                this.ui.addLogEntry(step.message, logType);
+                const logType = getLogType(step.type);
+                ui.addLogEntry(step.message, logType);
 
-                if (this.onStepChange) {
-                    this.onStepChange(step, this.currentStepIndex);
+                if (onStepChangeCallback) {
+                    onStepChangeCallback(step, index);
+                }
+            },
+            onStepChange: (index, total) => {
+                const display = document.getElementById('playback-step');
+                if (display) {
+                    display.textContent = `Step: ${index + 1} / ${total}`;
+                }
+            },
+            onReset: () => {
+                ui.clearHeuristicLine();
+                ui.clearPseudocode();
+                ui.renderGrid();
+                const display = document.getElementById('playback-step');
+                if (display) {
+                    display.textContent = `Step: 0 / 0`;
                 }
             }
-        }
+        });
 
-        getLogType(stepType) {
-            switch (stepType) {
-                case STEP_INIT: return 'info';
-                case STEP_EXPAND: return 'expand';
-                case STEP_NEIGHBOR_CHECK: return 'neighbor';
-                case STEP_ADD_TO_OPEN: return 'add';
-                case STEP_UPDATE_PATH: return 'update';
-                case STEP_GOAL_FOUND: return 'success';
-                case STEP_NO_SOLUTION: return 'failure';
-                default: return 'info';
-            }
-        }
-
-        updateStepDisplay() {
-            const display = document.getElementById('playback-step');
-            if (display) {
-                display.textContent = `Step: ${this.currentStepIndex + 1} / ${this.steps.length}`;
-            }
-        }
+        // Return adapted interface matching original API
+        return {
+            loadSteps: (steps, goal = null) => controller.load(steps, goal),
+            play: () => controller.play(),
+            pause: () => controller.pause(),
+            stepForward: () => controller.stepForward(),
+            stepBackward: () => controller.stepBackward(),
+            goToStep: (index) => controller.goToStep(index),
+            reset: () => controller.reset(),
+            setSpeed: (speed) => controller.setSpeed(speed),
+            getDelay: () => controller.getDelay(),
+            get isPlaying() { return controller.getIsPlaying(); },
+            get currentStepIndex() { return controller.getCurrentIndex(); },
+            get steps() { return controller.steps; },
+            get goal() { return controller.getMetadata(); },
+            set onStepChange(fn) { onStepChangeCallback = fn; }
+        };
     }
 
     // ============================================
@@ -2995,12 +2936,12 @@
             this.grid = new GridState();
             this.solver = new AStarSolver();
             this.ui = new UIController(this.grid);
-            this.playback = new PlaybackController(this.ui);
+            this.playback = createAStarPlaybackController(this.ui);
 
             // Graph mode components
             this.graphState = new DirectGraphState();
             this.graphUI = new GraphUIController(this.graphState);
-            this.graphPlayback = new PlaybackController(this.graphUI);
+            this.graphPlayback = createAStarPlaybackController(this.graphUI);
 
             // Mode tracking
             this.isGraphMode = false;

@@ -1,0 +1,52 @@
+{#
+  Edit Toolbar Component
+
+  @param modes - Array of {id, icon, label?, title, active?}
+  @param classes - Array of {id, title, active?} for class selector
+  @param clearId - ID for clear button (default: 'btn-clear-points')
+
+  Example:
+  {% from "components/edit-toolbar.njk" import editToolbar %}
+  {{ editToolbar(
+      modes=[
+        {id: 'classify', icon: 'fa-crosshairs', label: 'Classify', title: 'Click to classify', active: true},
+        {id: 'add', icon: 'fa-plus', label: 'Add', title: 'Add training points'},
+        {id: 'delete', icon: 'fa-minus', label: 'Delete', title: 'Delete points'}
+      ],
+      classes=[
+        {id: '0', title: 'Class 1', active: true},
+        {id: '1', title: 'Class 2'},
+        {id: '2', title: 'Class 3'}
+      ]
+  ) }}
+#}
+
+{% macro editToolbar(modes, classes, clearId='btn-clear-points') %}
+<div class="edit-toolbar" id="edit-toolbar" style="display: none;">
+    <div class="btn-group edit-mode-buttons" role="group">
+        {% for mode in modes %}
+        <button type="button"
+                class="btn btn-sm btn-default{% if mode.active %} active{% endif %}"
+                data-mode="{{ mode.id }}"
+                title="{{ mode.title }}">
+            <i class="fa {{ mode.icon }}"></i>{% if mode.label %} {{ mode.label }}{% endif %}
+        </button>
+        {% endfor %}
+    </div>
+    {% if classes %}
+    <div class="btn-group class-selector" role="group" id="class-selector">
+        {% for cls in classes %}
+        <button type="button"
+                class="btn btn-sm btn-default{% if cls.active %} active{% endif %}"
+                data-class="{{ cls.id }}"
+                title="{{ cls.title }}">
+            <span class="class-dot class-{{ cls.id }}"></span>
+        </button>
+        {% endfor %}
+    </div>
+    {% endif %}
+    <button id="{{ clearId }}" class="btn btn-sm btn-danger" title="Clear all points">
+        <i class="fa fa-trash"></i> Clear
+    </button>
+</div>
+{% endmacro %}

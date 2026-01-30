@@ -20,17 +20,26 @@
     const HORIZONTAL_SPACING = 120;  // Increased so boards are visible without zooming
     const MIN_NODE_WIDTH = 100;  // Increased to prevent overlap
 
-    // Colors
-    const COLORS = {
-        maxNode: '#1976d2',
-        minNode: '#d32f2f',
-        optimalNode: '#388e3c',
-        beyondDepth: '#cccccc',
-        selectedNode: '#ff9800',
-        edge: '#999999',
-        optimalEdge: '#388e3c',
-        beyondEdge: '#cccccc'
+    // Colors - use shared ThemeManager when available
+    const getGameTreeColors = () => {
+        const TM = window.VizLib?.ThemeManager;
+        if (TM) {
+            return TM.getColors('gameTree');
+        }
+        // Fallback
+        return {
+            maxNode: '#1976d2',
+            minNode: '#d32f2f',
+            optimalNode: '#388e3c',
+            beyondDepth: '#cccccc',
+            selectedNode: '#ff9800',
+            edge: '#999999',
+            optimalEdge: '#388e3c',
+            beyondEdge: '#cccccc'
+        };
     };
+    // For backwards compatibility, also expose as COLORS
+    const COLORS = getGameTreeColors();
 
     // Board image cache (key: board string like "XO_X_____", value: data URL)
     const boardImageCache = new Map();
@@ -248,122 +257,20 @@
             }
         }
 
-        // Compute layout for visible nodes only - compact algorithm
+        // Compute layout for visible nodes only using shared TreeLayoutEngine
         computeLayout() {
-            this.nodePositions.clear();
+            const layoutEngine = new window.VizLib.TreeLayoutEngine({
+                horizontalSpacing: HORIZONTAL_SPACING,
+                verticalSpacing: VERTICAL_SPACING,
+                minNodeWidth: MIN_NODE_WIDTH
+            });
 
-            // Build visible tree structure
-            const visibleChildren = new Map();  // nodeId -> [childIds]
-            for (const nodeKey of this.visibleNodes) {
-                const nodeId = parseInt(nodeKey, 10);
-                if (this.isExpanded(nodeId)) {
-                    const children = this.getChildren(nodeId).filter(c => this.visibleNodes.has(String(c)));
-                    visibleChildren.set(nodeKey, children.map(String));
-                } else {
-                    visibleChildren.set(nodeKey, []);
-                }
-            }
-
-            // Pass 1: Initial positioning - children centered under parent with fixed spacing
-            const positionNode = (nodeKey, x, depth) => {
-                this.nodePositions.set(nodeKey, { x, y: -depth * VERTICAL_SPACING });
-
-                const children = visibleChildren.get(nodeKey) || [];
-                if (children.length === 0) return;
-
-                // Position children with fixed spacing, centered under parent
-                const totalWidth = (children.length - 1) * HORIZONTAL_SPACING;
-                let currentX = x - totalWidth / 2;
-
-                for (const childKey of children) {
-                    positionNode(childKey, currentX, depth + 1);
-                    currentX += HORIZONTAL_SPACING;
-                }
-            };
-            positionNode('0', 0, 0);
-
-            // Pass 2: Fix overlaps by shifting subtrees
-            // Get contour (leftmost/rightmost x at each depth) for a subtree
-            const getContour = (nodeKey, depth, contour, side) => {
-                const pos = this.nodePositions.get(nodeKey);
-                if (!pos) return;
-
-                if (!contour.has(depth)) {
-                    contour.set(depth, pos.x);
-                } else {
-                    contour.set(depth, side === 'left'
-                        ? Math.min(contour.get(depth), pos.x)
-                        : Math.max(contour.get(depth), pos.x));
-                }
-
-                const children = visibleChildren.get(nodeKey) || [];
-                for (const childKey of children) {
-                    getContour(childKey, depth + 1, contour, side);
-                }
-            };
-
-            // Shift a subtree horizontally
-            const shiftSubtree = (nodeKey, dx) => {
-                const pos = this.nodePositions.get(nodeKey);
-                if (pos) {
-                    pos.x += dx;
-                }
-                const children = visibleChildren.get(nodeKey) || [];
-                for (const childKey of children) {
-                    shiftSubtree(childKey, dx);
-                }
-            };
-
-            // Fix overlaps between adjacent siblings (bottom-up)
-            const fixOverlaps = (nodeKey, depth) => {
-                const children = visibleChildren.get(nodeKey) || [];
-
-                // First, recursively fix children's subtrees
-                for (const childKey of children) {
-                    fixOverlaps(childKey, depth + 1);
-                }
-
-                // Then check for overlaps between adjacent siblings
-                for (let i = 1; i < children.length; i++) {
-                    const leftChild = children[i - 1];
-                    const rightChild = children[i];
-
-                    // Get right contour of left subtree
-                    const leftContour = new Map();
-                    getContour(leftChild, depth + 1, leftContour, 'right');
-
-                    // Get left contour of right subtree
-                    const rightContour = new Map();
-                    getContour(rightChild, depth + 1, rightContour, 'left');
-
-                    // Find max overlap across all depths
-                    let maxOverlap = 0;
-                    for (const [d, leftX] of leftContour) {
-                        if (rightContour.has(d)) {
-                            const rightX = rightContour.get(d);
-                            const overlap = leftX + MIN_NODE_WIDTH - rightX;
-                            maxOverlap = Math.max(maxOverlap, overlap);
-                        }
-                    }
-
-                    // Shift right subtree if there's overlap
-                    if (maxOverlap > 0) {
-                        shiftSubtree(rightChild, maxOverlap);
-                    }
-                }
-
-                // Center parent over its children
-                if (children.length > 0) {
-                    const firstChild = this.nodePositions.get(children[0]);
-                    const lastChild = this.nodePositions.get(children[children.length - 1]);
-                    const parentPos = this.nodePositions.get(nodeKey);
-                    if (firstChild && lastChild && parentPos) {
-                        parentPos.x = (firstChild.x + lastChild.x) / 2;
-                    }
-                }
-            };
-
-            fixOverlaps('0', 0);
+            this.nodePositions = layoutEngine.computeVisibleLayout(
+                this.visibleNodes,
+                (nodeId) => this.getChildren(nodeId),
+                (nodeId) => this.isExpanded(nodeId),
+                '0'
+            );
         }
 
         // Read value at specific depth from binary data

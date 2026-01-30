@@ -1,0 +1,69 @@
+{#
+  Metrics Panel Component
+
+  @param title - Panel title (default: 'Classification Result')
+  @param icon - Panel icon class (default: 'fa-bar-chart')
+  @param metrics - Array of {icon, label, id, default}
+  @param layout - 'single' (default) or 'grid' for 2x2 paired layout
+  @param rows - For grid layout: Array of [{icon, label, id, default}, {icon, label, id, default}] pairs
+  @param extraContent - Optional HTML to append after the metrics table
+  @param noHeader - If true, hide the panel header (for compact inline use)
+
+  Example (single column):
+  {% from "components/metrics-panel.njk" import metricsPanel %}
+  {{ metricsPanel(
+      title='Classification Result',
+      metrics=[
+        {icon: 'fa-crosshairs', label: 'Query Point', id: 'metric-query', default: '-'},
+        {icon: 'fa-tag', label: 'Prediction', id: 'metric-prediction', default: '-'}
+      ]
+  ) }}
+
+  Example (grid layout):
+  {{ metricsPanel(
+      title='Metrics',
+      layout='grid',
+      rows=[
+        [{icon: 'fa-tree', label: 'Evaluated', id: 'metric-evaluated', default: '0'},
+         {icon: 'fa-expand', label: 'Expanded', id: 'metric-expanded', default: '0'}],
+        [{icon: 'fa-cut', label: 'a-Cutoffs', id: 'metric-alpha-cuts', default: '0'},
+         {icon: 'fa-cut', label: 'b-Cutoffs', id: 'metric-beta-cuts', default: '0'}]
+      ]
+  ) }}
+#}
+
+{% macro metricsPanel(title='Classification Result', icon='fa-bar-chart', metrics=[], layout='single', rows=[], extraContent='', noHeader=false) %}
+<div class="panel panel-default">
+    {% if not noHeader %}
+    <div class="panel-heading">
+        <h3 class="panel-title"><i class="fa {{ icon }}"></i> {{ title }}</h3>
+    </div>
+    {% endif %}
+    <div class="panel-body compact-panel">
+        <table class="table table-condensed metrics-table">
+            <tbody>
+                {% if layout == 'grid' %}
+                    {% for row in rows %}
+                    <tr>
+                        {% for metric in row %}
+                        <td><i class="fa {{ metric.icon }}"></i> {{ metric.label }}</td>
+                        <td id="{{ metric.id }}" class="text-right metric-value"{% if metric.colspan %} colspan="{{ metric.colspan }}"{% endif %}>{{ metric.default | default('-') }}</td>
+                        {% endfor %}
+                    </tr>
+                    {% endfor %}
+                {% else %}
+                    {% for metric in metrics %}
+                    <tr>
+                        <td><i class="fa {{ metric.icon }}"></i> {{ metric.label }}</td>
+                        <td id="{{ metric.id }}" class="text-right metric-value"{% if metric.colspan %} colspan="{{ metric.colspan }}"{% endif %}>{{ metric.default | default('-') }}</td>
+                    </tr>
+                    {% endfor %}
+                {% endif %}
+            </tbody>
+        </table>
+        {% if extraContent %}
+        {{ extraContent | safe }}
+        {% endif %}
+    </div>
+</div>
+{% endmacro %}

@@ -10,6 +10,11 @@ permalink: "astar.html"
 extraScript: "static/js/astar.js"
 ---
 
+{% from "components/info-tabs.njk" import infoTabs %}
+{% from "components/legend.njk" import legend %}
+{% from "components/algorithm-options.njk" import algorithmOptions %}
+{% from "components/metrics-panel.njk" import metricsPanel %}
+
 <link rel="stylesheet" href="static/css/astar.css">
 
 <!-- Main Content: Grid (left) + Info Tabs (right) -->
@@ -18,7 +23,7 @@ extraScript: "static/js/astar.js"
     <div class="col-md-7">
         <div class="panel panel-default">
             <div class="panel-body grid-panel-body">
-                <!-- Combined Toolbar: Sample select, Edit buttons, Playback controls -->
+                <!-- Combined Toolbar: Sample select, Edit buttons, Playback controls (custom - too integrated) -->
                 <div class="unified-toolbar">
                     <div class="toolbar-left">
                         <div class="sample-select-wrapper">
@@ -126,21 +131,31 @@ extraScript: "static/js/astar.js"
 
                 <div class="grid-footer">
                     <!-- Grid legend -->
-                    <div class="grid-legend grid-controls">
-                        <span class="legend-item"><span class="legend-color legend-start"></span> Start</span>
-                        <span class="legend-item"><span class="legend-color legend-goal"></span> Goal</span>
-                        <span class="legend-item"><span class="legend-color legend-wall"></span> Wall</span>
-                        <span class="legend-item"><span class="legend-color legend-open"></span> Frontier</span>
-                        <span class="legend-item"><span class="legend-color legend-closed"></span> Visited</span>
-                        <span class="legend-item"><span class="legend-color legend-path"></span> Path</span>
+                    <div class="grid-controls">
+                        {{ legend(
+                            items=[
+                                {class: 'legend-start', label: 'Start'},
+                                {class: 'legend-goal', label: 'Goal'},
+                                {class: 'legend-wall', label: 'Wall'},
+                                {class: 'legend-open', label: 'Frontier'},
+                                {class: 'legend-closed', label: 'Visited'},
+                                {class: 'legend-path', label: 'Path'}
+                            ],
+                            className='grid-legend'
+                        ) }}
                     </div>
                     <!-- Graph legend (hidden by default) -->
-                    <div class="grid-legend graph-controls" style="display: none;">
-                        <span class="legend-item"><span class="legend-color legend-start"></span> Start</span>
-                        <span class="legend-item"><span class="legend-color legend-goal"></span> Goal</span>
-                        <span class="legend-item"><span class="legend-color legend-open"></span> Frontier</span>
-                        <span class="legend-item"><span class="legend-color legend-closed"></span> Visited</span>
-                        <span class="legend-item"><span class="legend-color legend-path"></span> Path</span>
+                    <div class="graph-controls" style="display: none;">
+                        {{ legend(
+                            items=[
+                                {class: 'legend-start', label: 'Start'},
+                                {class: 'legend-goal', label: 'Goal'},
+                                {class: 'legend-open', label: 'Frontier'},
+                                {class: 'legend-closed', label: 'Visited'},
+                                {class: 'legend-path', label: 'Path'}
+                            ],
+                            className='grid-legend'
+                        ) }}
                     </div>
                     <div class="playback-status">
                         <span id="playback-step">Step: 0 / 0</span>
@@ -152,216 +167,146 @@ extraScript: "static/js/astar.js"
         <!-- Algorithm Options + Metrics (side by side under grid) -->
         <div class="row options-metrics-row">
             <div class="col-sm-7">
-                <div class="panel panel-default compact-options-panel">
-                    <div class="panel-heading panel-heading-sm">
-                        <h3 class="panel-title"><i class="fa fa-cogs"></i> Algorithm Options</h3>
-                    </div>
-                    <div class="panel-body">
-                        <div class="options-grid">
-                            <div class="option-item">
-                                <label>Algorithm:</label>
-                                <select id="heuristic-select" class="form-control input-sm">
-                                    <option value="manhattan" selected>A* Manhattan</option>
-                                    <option value="euclidean">A* Euclidean</option>
-                                    <option value="chebyshev">A* Chebyshev</option>
-                                    <option value="dijkstra">Dijkstra (h=0)</option>
-                                    <option value="bfs">BFS</option>
-                                    <option value="dfs">DFS</option>
-                                </select>
-                            </div>
-                            <div class="option-item grid-controls">
-                                <label>Movement:</label>
-                                <select id="movement-mode" class="form-control input-sm">
-                                    <option value="grid" selected>4-Dir</option>
-                                    <option value="free">8-Dir</option>
-                                </select>
-                            </div>
-                            <div class="option-item">
-                                <label>Tie-break:</label>
-                                <select id="tiebreaker-select" class="form-control input-sm">
-                                    <option value="none">None</option>
-                                    <option value="highg" selected>High g</option>
-                                    <option value="lowg">Low g</option>
-                                </select>
-                            </div>
-                            <div class="option-item">
-                                <label>Weight:</label>
-                                <div class="weight-control">
-                                    <input type="range" id="heuristic-weight" min="1" max="3" step="0.1" value="1">
-                                    <span id="weight-value">1.0</span>
-                                </div>
-                            </div>
-                            <div class="option-item checkbox-item">
-                                <label class="checkbox-inline">
-                                    <input type="checkbox" id="show-values"> Show f/g/h
-                                </label>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                {{ algorithmOptions(
+                    title='Algorithm Options',
+                    options=[
+                        {type: 'select', label: 'Algorithm', id: 'heuristic-select', options: [
+                            {value: 'manhattan', text: 'A* Manhattan', selected: true},
+                            {value: 'euclidean', text: 'A* Euclidean'},
+                            {value: 'chebyshev', text: 'A* Chebyshev'},
+                            {value: 'dijkstra', text: 'Dijkstra (h=0)'},
+                            {value: 'bfs', text: 'BFS'},
+                            {value: 'dfs', text: 'DFS'}
+                        ]},
+                        {type: 'select', label: 'Movement', id: 'movement-mode', class: 'grid-controls', options: [
+                            {value: 'grid', text: '4-Dir', selected: true},
+                            {value: 'free', text: '8-Dir'}
+                        ]},
+                        {type: 'select', label: 'Tie-break', id: 'tiebreaker-select', options: [
+                            {value: 'none', text: 'None'},
+                            {value: 'highg', text: 'High g', selected: true},
+                            {value: 'lowg', text: 'Low g'}
+                        ]},
+                        {type: 'slider', label: 'Weight', id: 'heuristic-weight', min: 1, max: 3, step: 0.1, value: 1, valueId: 'weight-value'},
+                        {type: 'checkbox', label: 'Show f/g/h', id: 'show-values'}
+                    ]
+                ) }}
             </div>
             <div class="col-sm-5">
-                <div class="panel panel-default compact-metrics-panel">
-                    <div class="panel-heading panel-heading-sm">
-                        <h3 class="panel-title"><i class="fa fa-bar-chart"></i> Metrics</h3>
-                    </div>
-                    <div class="panel-body">
-                        <div class="metrics-grid">
-                            <div class="metric-item">
-                                <span class="metric-label"><i class="fa fa-expand"></i> Explored</span>
-                                <span id="metric-expanded" class="metric-value">0</span>
-                            </div>
-                            <div class="metric-item">
-                                <span class="metric-label"><i class="fa fa-plus-square"></i> Discovered</span>
-                                <span id="metric-generated" class="metric-value">0</span>
-                            </div>
-                            <div class="metric-item">
-                                <span class="metric-label"><i class="fa fa-road"></i> Path Len</span>
-                                <span id="metric-path-length" class="metric-value">-</span>
-                            </div>
-                            <div class="metric-item">
-                                <span class="metric-label"><i class="fa fa-calculator"></i> Cost</span>
-                                <span id="metric-path-cost" class="metric-value">-</span>
-                            </div>
-                            <div class="metric-item metric-time">
-                                <span class="metric-label"><i class="fa fa-clock-o"></i> Time</span>
-                                <span id="metric-time" class="metric-value">0.00ms</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                {{ metricsPanel(
+                    title='Metrics',
+                    layout='grid',
+                    rows=[
+                        [{icon: 'fa-expand', label: 'Explored', id: 'metric-expanded', default: '0'},
+                         {icon: 'fa-plus-square', label: 'Discovered', id: 'metric-generated', default: '0'}],
+                        [{icon: 'fa-road', label: 'Path Len', id: 'metric-path-length'},
+                         {icon: 'fa-calculator', label: 'Cost', id: 'metric-path-cost'}],
+                        [{icon: 'fa-clock-o', label: 'Time', id: 'metric-time', default: '0.00ms', colspan: 3}]
+                    ]
+                ) }}
             </div>
         </div>
     </div>
 
     <!-- Right Column: Info Tabs -->
     <div class="col-md-5">
-        <!-- Tabbed Info Panel -->
-        <div class="panel panel-default info-panel">
-            <div class="panel-heading">
-                <div class="btn-group info-panel-tabs" role="group">
-                    <button type="button" class="btn btn-sm btn-default active" data-tab="about">
-                        <i class="fa fa-info-circle"></i> About
-                    </button>
-                    <button type="button" class="btn btn-sm btn-default" data-tab="pseudocode">
-                        <i class="fa fa-code"></i> Code
-                    </button>
-                    <button type="button" class="btn btn-sm btn-default" data-tab="lists">
-                        <i class="fa fa-list"></i> Lists
-                    </button>
-                    <button type="button" class="btn btn-sm btn-default" data-tab="log">
-                        <i class="fa fa-terminal"></i> Log
-                    </button>
-                    <button type="button" class="btn btn-sm btn-default" data-tab="compare">
-                        <i class="fa fa-table"></i> Compare
-                    </button>
-                </div>
-            </div>
-            <div class="panel-body info-panel-body">
-                <!-- About Tab -->
-                <div id="tab-about" class="info-tab-content active">
-                    <h4><i class="fa fa-route"></i> What is A*?</h4>
+        {{ infoTabs(
+            tabs=[
+                {id: 'about', icon: 'fa-info-circle', label: 'About', active: true, content: '
+                    <h4><i class=\"fa fa-route\"></i> What is A*?</h4>
                     <p>
                         <strong>A*</strong> (A-star) is the most popular pathfinding algorithm. It combines
-                        Dijkstra's guaranteed shortest path with heuristic guidance toward the goal.
+                        Dijkstra\"s guaranteed shortest path with heuristic guidance toward the goal.
                     </p>
-                    <h4><i class="fa fa-calculator"></i> The Formula</h4>
+                    <h4><i class=\"fa fa-calculator\"></i> The Formula</h4>
                     <p>
                         A* evaluates nodes using: <code>f(n) = g(n) + h(n)</code>
                     </p>
-                    <ul class="formula-list">
+                    <ul class=\"formula-list\">
                         <li><strong>g(n)</strong> - Actual cost from start to node n</li>
                         <li><strong>h(n)</strong> - Estimated cost from n to goal (heuristic)</li>
                         <li><strong>f(n)</strong> - Total estimated cost through n</li>
                     </ul>
-                    <h4><i class="fa fa-compass"></i> Heuristics & Movement</h4>
+                    <h4><i class=\"fa fa-compass\"></i> Heuristics & Movement</h4>
                     <p><strong>Grid (4-dir):</strong> Use <em>Manhattan</em> - it exactly matches the movement cost.</p>
                     <p><strong>Free Space (8-dir):</strong> Use <em>Euclidean</em> or <em>Chebyshev</em> - they match diagonal movement costs.</p>
-                    <ul class="algorithm-list">
+                    <ul class=\"algorithm-list\">
                         <li><strong>Manhattan</strong> - |dx| + |dy|</li>
                         <li><strong>Euclidean</strong> - sqrt(dx² + dy²)</li>
                         <li><strong>Chebyshev</strong> - max(|dx|, |dy|)</li>
                         <li><strong>Dijkstra</strong> - h=0 (no heuristic)</li>
                     </ul>
-                    <h4><i class="fa fa-sitemap"></i> Other Algorithms</h4>
-                    <ul class="algorithm-list">
+                    <h4><i class=\"fa fa-sitemap\"></i> Other Algorithms</h4>
+                    <ul class=\"algorithm-list\">
                         <li><strong>BFS</strong> - Breadth-first search explores all nodes at depth d before d+1. Guarantees shortest path (by hop count).</li>
                         <li><strong>DFS</strong> - Depth-first search explores as deep as possible before backtracking. Fast but does not guarantee shortest path.</li>
                     </ul>
-                </div>
-
-                <!-- Pseudocode Tab -->
-                <div id="tab-pseudocode" class="info-tab-content">
-                    <div class="pseudocode-container">
-                        <pre class="pseudocode"><code><span class="line" data-line="init"><span class="keyword">function</span> <span class="function">A*</span>(start, goal):</span>
-<span class="line" data-line="init-open">    openSet ← {start}</span>
-<span class="line" data-line="init-closed">    closedSet ← {}</span>
-<span class="line" data-line="init-g">    g[start] ← <span class="number">0</span></span>
-<span class="line" data-line="init-f">    f[start] ← h(start, goal)</span>
-<span class="line" data-line="while">    <span class="keyword">while</span> openSet <span class="keyword">is not</span> empty:</span>
-<span class="line" data-line="select">        current ← node in openSet with lowest f</span>
-<span class="line" data-line="goal-found">        <span class="keyword">if</span> current = goal:</span>
-<span class="line" data-line="return-path">            <span class="keyword">return</span> reconstructPath(current)</span>
-<span class="line" data-line="remove-open">        openSet.remove(current)</span>
-<span class="line" data-line="add-closed">        closedSet.add(current)</span>
-<span class="line" data-line="for-neighbor">        <span class="keyword">for each</span> neighbor <span class="keyword">of</span> current:</span>
-<span class="line" data-line="skip-closed">            <span class="keyword">if</span> neighbor <span class="keyword">in</span> closedSet: <span class="keyword">continue</span></span>
-<span class="line" data-line="tentative-g">            tentativeG ← g[current] + cost(current, neighbor)</span>
-<span class="line" data-line="if-better">            <span class="keyword">if</span> tentativeG &lt; g[neighbor]:</span>
-<span class="line" data-line="update-parent">                parent[neighbor] ← current</span>
-<span class="line" data-line="update-g">                g[neighbor] ← tentativeG</span>
-<span class="line" data-line="update-f">                f[neighbor] ← g[neighbor] + h(neighbor, goal)</span>
-<span class="line" data-line="add-to-open">                <span class="keyword">if</span> neighbor <span class="keyword">not in</span> openSet:</span>
-<span class="line" data-line="push-open">                    openSet.add(neighbor)</span>
-<span class="line" data-line="no-path">    <span class="keyword">return</span> <span class="string">"no path found"</span></span></code></pre>
+                '},
+                {id: 'pseudocode', icon: 'fa-code', label: 'Code', content: '
+                    <div class=\"pseudocode-container\">
+                        <pre class=\"pseudocode\"><code><span class=\"line\" data-line=\"init\"><span class=\"keyword\">function</span> <span class=\"function\">A*</span>(start, goal):</span>
+<span class=\"line\" data-line=\"init-open\">    openSet ← {start}</span>
+<span class=\"line\" data-line=\"init-closed\">    closedSet ← {}</span>
+<span class=\"line\" data-line=\"init-g\">    g[start] ← <span class=\"number\">0</span></span>
+<span class=\"line\" data-line=\"init-f\">    f[start] ← h(start, goal)</span>
+<span class=\"line\" data-line=\"while\">    <span class=\"keyword\">while</span> openSet <span class=\"keyword\">is not</span> empty:</span>
+<span class=\"line\" data-line=\"select\">        current ← node in openSet with lowest f</span>
+<span class=\"line\" data-line=\"goal-found\">        <span class=\"keyword\">if</span> current = goal:</span>
+<span class=\"line\" data-line=\"return-path\">            <span class=\"keyword\">return</span> reconstructPath(current)</span>
+<span class=\"line\" data-line=\"remove-open\">        openSet.remove(current)</span>
+<span class=\"line\" data-line=\"add-closed\">        closedSet.add(current)</span>
+<span class=\"line\" data-line=\"for-neighbor\">        <span class=\"keyword\">for each</span> neighbor <span class=\"keyword\">of</span> current:</span>
+<span class=\"line\" data-line=\"skip-closed\">            <span class=\"keyword\">if</span> neighbor <span class=\"keyword\">in</span> closedSet: <span class=\"keyword\">continue</span></span>
+<span class=\"line\" data-line=\"tentative-g\">            tentativeG ← g[current] + cost(current, neighbor)</span>
+<span class=\"line\" data-line=\"if-better\">            <span class=\"keyword\">if</span> tentativeG &lt; g[neighbor]:</span>
+<span class=\"line\" data-line=\"update-parent\">                parent[neighbor] ← current</span>
+<span class=\"line\" data-line=\"update-g\">                g[neighbor] ← tentativeG</span>
+<span class=\"line\" data-line=\"update-f\">                f[neighbor] ← g[neighbor] + h(neighbor, goal)</span>
+<span class=\"line\" data-line=\"add-to-open\">                <span class=\"keyword\">if</span> neighbor <span class=\"keyword\">not in</span> openSet:</span>
+<span class=\"line\" data-line=\"push-open\">                    openSet.add(neighbor)</span>
+<span class=\"line\" data-line=\"no-path\">    <span class=\"keyword\">return</span> <span class=\"string\">\"no path found\"</span></span></code></pre>
                     </div>
-                    <div class="pseudocode-legend">
-                        <span class="legend-active"><i class="fa fa-arrow-right"></i> Current step</span>
+                    <div class=\"pseudocode-legend\">
+                        <span class=\"legend-active\"><i class=\"fa fa-arrow-right\"></i> Current step</span>
                     </div>
-                </div>
-
-                <!-- Frontier/Visited Lists Tab -->
-                <div id="tab-lists" class="info-tab-content">
-                    <div class="lists-container">
-                        <div class="list-section">
-                            <h5><i class="fa fa-folder-open"></i> Frontier <span id="open-count" class="badge">0</span></h5>
-                            <div id="open-list" class="node-list">
-                                <div class="list-empty">No nodes yet</div>
+                '},
+                {id: 'lists', icon: 'fa-list', label: 'Lists', content: '
+                    <div class=\"lists-container\">
+                        <div class=\"list-section\">
+                            <h5><i class=\"fa fa-folder-open\"></i> Frontier <span id=\"open-count\" class=\"badge\">0</span></h5>
+                            <div id=\"open-list\" class=\"node-list\">
+                                <div class=\"list-empty\">No nodes yet</div>
                             </div>
                         </div>
-                        <div class="list-section">
-                            <h5><i class="fa fa-folder"></i> Visited <span id="closed-count" class="badge">0</span></h5>
-                            <div id="closed-list" class="node-list">
-                                <div class="list-empty">No nodes yet</div>
+                        <div class=\"list-section\">
+                            <h5><i class=\"fa fa-folder\"></i> Visited <span id=\"closed-count\" class=\"badge\">0</span></h5>
+                            <div id=\"closed-list\" class=\"node-list\">
+                                <div class=\"list-empty\">No nodes yet</div>
                             </div>
                         </div>
                     </div>
-                </div>
-
-                <!-- Execution Log Tab -->
-                <div id="tab-log" class="info-tab-content">
-                    <div class="log-header">
-                        <button id="btn-clear-log" class="btn btn-xs btn-default pull-right">
-                            <i class="fa fa-trash"></i> Clear
+                '},
+                {id: 'log', icon: 'fa-terminal', label: 'Log', content: '
+                    <div class=\"log-header\">
+                        <button id=\"btn-clear-log\" class=\"btn btn-xs btn-default pull-right\">
+                            <i class=\"fa fa-trash\"></i> Clear
                         </button>
                     </div>
-                    <div id="execution-log" class="execution-log">
-                        <div class="log-entry log-info">
-                            <span class="log-icon"><i class="fa fa-info-circle"></i></span>
-                            <span class="log-message">Select Custom to draw, then click Solve.</span>
+                    <div id=\"execution-log\" class=\"execution-log\">
+                        <div class=\"log-entry log-info\">
+                            <span class=\"log-icon\"><i class=\"fa fa-info-circle\"></i></span>
+                            <span class=\"log-message\">Select Custom to draw, then click Solve.</span>
                         </div>
                     </div>
-                </div>
-
-                <!-- Compare Tab -->
-                <div id="tab-compare" class="info-tab-content">
-                    <div class="compare-controls">
-                        <button id="btn-run-comparison" class="btn btn-sm btn-default">
-                            <i class="fa fa-refresh"></i> Refresh
+                '},
+                {id: 'compare', icon: 'fa-table', label: 'Compare', content: '
+                    <div class=\"compare-controls\">
+                        <button id=\"btn-run-comparison\" class=\"btn btn-sm btn-default\">
+                            <i class=\"fa fa-refresh\"></i> Refresh
                         </button>
                     </div>
-                    <div class="compare-table-container">
-                        <table id="comparison-table" class="table table-bordered table-striped table-condensed">
+                    <div class=\"compare-table-container\">
+                        <table id=\"comparison-table\" class=\"table table-bordered table-striped table-condensed\">
                             <thead>
                                 <tr>
                                     <th>Heuristic</th>
@@ -375,11 +320,11 @@ extraScript: "static/js/astar.js"
                             <tbody></tbody>
                         </table>
                     </div>
-                    <p class="compare-hint">
-                        <i class="fa fa-lightbulb-o"></i> Click a row to visualize.
+                    <p class=\"compare-hint\">
+                        <i class=\"fa fa-lightbulb-o\"></i> Click a row to visualize.
                     </p>
-                </div>
-            </div>
-        </div>
+                '}
+            ]
+        ) }}
     </div>
 </div>

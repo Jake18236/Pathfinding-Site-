@@ -1,0 +1,101 @@
+{#
+  Controls Bar Component - Horizontal toolbar with grouped controls
+
+  @param groups - Array of control groups, each containing:
+    - type: 'button-group' | 'select' | 'checkbox' | 'number-stepper' | 'custom'
+    - label: Label text (optional)
+    - icon: Icon class for label (optional)
+    - id: Element ID
+    - class: Additional CSS class (optional)
+    - visible: Whether group is visible (default: true)
+    - For button-group: buttons=[{id, label, icon, dataAttr, dataValue, active?}]
+    - For select: options=[{value, text, selected?}]
+    - For checkbox: text, checked?
+    - For number-stepper: minusId, plusId, valueId, value
+    - For custom: content (raw HTML)
+
+  Example:
+  {% from "components/controls-bar.njk" import controlsBar %}
+  {{ controlsBar(
+      groups=[
+        {type: 'button-group', label: 'Game', icon: 'fa-gamepad', buttons: [
+          {label: 'Tic-Tac-Toe', icon: 'fa-th', dataAttr: 'game', dataValue: 'tictactoe', active: true},
+          {label: 'Nim', icon: 'fa-cubes', dataAttr: 'game', dataValue: 'nim'}
+        ]},
+        {type: 'select', label: 'Position', id: 'position-preset', options: [
+          {value: 'empty', text: 'Empty', selected: true},
+          {value: 'mid', text: 'Mid Game'}
+        ]},
+        {type: 'checkbox', id: 'use-feature', label: 'Feature', text: 'Enable Feature', checked: true}
+      ],
+      resetButton={id: 'btn-reset', label: 'Reset'}
+  ) }}
+#}
+
+{% macro controlsBar(groups, resetButton=none, className='') %}
+<div class="row" id="controls-bar">
+    <div class="col-md-12">
+        <div class="panel panel-default controls-panel">
+            <div class="panel-body controls-bar-body">
+                <div class="controls-row {{ className }}">
+                    {% for group in groups %}
+                    <div class="control-group{% if group.class %} {{ group.class }}{% endif %}"{% if group.visible == false %} style="display: none;"{% endif %}>
+                        {% if group.type == 'button-group' %}
+                            {% if group.label %}<label>{% if group.icon %}<i class="fa {{ group.icon }}"></i> {% endif %}{{ group.label }}:</label>{% endif %}
+                            <div class="btn-group{% if group.id %} {{ group.id }}{% endif %}" role="group">
+                                {% for btn in group.buttons %}
+                                <button type="button"
+                                        class="btn btn-sm btn-default{% if btn.active %} active{% endif %}"
+                                        {% if btn.dataAttr %}data-{{ btn.dataAttr }}="{{ btn.dataValue }}"{% endif %}
+                                        {% if btn.id %}id="{{ btn.id }}"{% endif %}>
+                                    {% if btn.icon %}<i class="fa {{ btn.icon }}"></i>{% endif %}{% if btn.icon and btn.label %} {% endif %}{{ btn.label }}
+                                </button>
+                                {% endfor %}
+                            </div>
+
+                        {% elif group.type == 'select' %}
+                            {% if group.label %}<label>{{ group.label }}:</label>{% endif %}
+                            <select id="{{ group.id }}" class="form-control input-sm">
+                                {% for opt in group.options %}
+                                <option value="{{ opt.value }}"{% if opt.selected %} selected{% endif %}>{{ opt.text }}</option>
+                                {% endfor %}
+                            </select>
+
+                        {% elif group.type == 'checkbox' %}
+                            <label class="checkbox-inline">
+                                <input type="checkbox" id="{{ group.id }}"{% if group.checked %} checked{% endif %}>
+                                <strong>{{ group.text }}</strong>
+                            </label>
+
+                        {% elif group.type == 'number-stepper' %}
+                            {% if group.label %}<label>{{ group.label }}:</label>{% endif %}
+                            <div class="depth-buttons">
+                                <button type="button" class="btn btn-sm btn-default" id="{{ group.minusId }}">
+                                    <i class="fa fa-minus"></i>
+                                </button>
+                                <span id="{{ group.valueId }}" class="depth-display">{{ group.value }}</span>
+                                <button type="button" class="btn btn-sm btn-default" id="{{ group.plusId }}">
+                                    <i class="fa fa-plus"></i>
+                                </button>
+                            </div>
+
+                        {% elif group.type == 'custom' %}
+                            {{ group.content | safe }}
+
+                        {% endif %}
+                    </div>
+                    {% endfor %}
+
+                    {% if resetButton %}
+                    <div class="control-group">
+                        <button id="{{ resetButton.id }}" class="btn btn-sm btn-danger" title="{{ resetButton.title | default('Reset') }}">
+                            <i class="fa fa-refresh"></i>{% if resetButton.label %} {{ resetButton.label }}{% endif %}
+                        </button>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endmacro %}

@@ -1,0 +1,82 @@
+{#
+  Algorithm Options Component
+
+  @param title - Panel title (default: 'Algorithm Options')
+  @param icon - Panel icon (default: 'fa-cogs')
+  @param options - Array of option rows
+
+  Each option can be:
+    - slider: {type: 'slider', label, id, min, max, value, valueId, icon?}
+    - number: {type: 'number', label, id, min, max, value, icon?}
+    - checkbox: {type: 'checkbox', label, id, checked?}
+    - select: {type: 'select', label, id, options: [{value, text, selected?}]}
+    - button-group: {type: 'button-group', label, id, options: [{value, text, active?}]}
+    - custom: {type: 'custom', content: 'raw HTML'}
+
+  Example:
+  {% from "components/algorithm-options.njk" import algorithmOptions %}
+  {{ algorithmOptions(
+      options=[
+        {type: 'slider', label: 'K Neighbors', id: 'k-slider', min: 1, max: 15, value: 5, valueId: 'k-value'},
+        {type: 'number', label: 'Win Value', id: 'h-win', min: 0, max: 1000, value: 100, icon: 'fa-trophy'},
+        {type: 'checkbox', label: 'Show boundaries', id: 'show-boundaries', checked: true},
+        {type: 'select', label: 'Distance', id: 'distance-select', options: [
+          {value: 'euclidean', text: 'Euclidean', selected: true},
+          {value: 'manhattan', text: 'Manhattan'}
+        ]}
+      ]
+  ) }}
+#}
+
+{% macro algorithmOptions(title='Algorithm Options', icon='fa-cogs', options=[]) %}
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h3 class="panel-title"><i class="fa {{ icon }}"></i> {{ title }}</h3>
+    </div>
+    <div class="panel-body compact-panel">
+        {% for opt in options %}
+        <div class="option-row{% if opt.class %} {{ opt.class }}{% endif %}">
+            {% if opt.type == 'slider' %}
+            <label>{% if opt.icon %}<i class="fa {{ opt.icon }}"></i> {% endif %}{{ opt.label }}:</label>
+            <div class="slider-control">
+                <input type="range" id="{{ opt.id }}" min="{{ opt.min }}" max="{{ opt.max }}" value="{{ opt.value }}"{% if opt.step %} step="{{ opt.step }}"{% endif %}>
+                <span id="{{ opt.valueId }}">{{ opt.value }}</span>
+            </div>
+
+            {% elif opt.type == 'number' %}
+            <label{% if opt.title %} title="{{ opt.title }}"{% endif %}>{% if opt.icon %}<i class="fa {{ opt.icon }}"></i> {% endif %}{{ opt.label }}</label>
+            <input type="number" id="{{ opt.id }}" value="{{ opt.value }}" min="{{ opt.min }}" max="{{ opt.max }}" class="heuristic-input">
+
+            {% elif opt.type == 'checkbox' %}
+            <label class="checkbox-label">
+                <input type="checkbox" id="{{ opt.id }}"{% if opt.checked %} checked{% endif %}>
+                {{ opt.label | safe }}
+            </label>
+
+            {% elif opt.type == 'select' %}
+            <label>{{ opt.label }}:</label>
+            <select id="{{ opt.id }}" class="form-control input-sm">
+                {% for option in opt.options %}
+                <option value="{{ option.value }}"{% if option.selected %} selected{% endif %}>{{ option.text }}</option>
+                {% endfor %}
+            </select>
+
+            {% elif opt.type == 'button-group' %}
+            <label>{{ opt.label }}:</label>
+            <div class="btn-group" role="group" id="{{ opt.id }}">
+                {% for option in opt.options %}
+                <button type="button"
+                        class="btn btn-sm btn-default{% if option.active %} active{% endif %}"
+                        data-value="{{ option.value }}">{{ option.text }}</button>
+                {% endfor %}
+            </div>
+
+            {% elif opt.type == 'custom' %}
+            {{ opt.content | safe }}
+
+            {% endif %}
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endmacro %}
