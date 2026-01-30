@@ -10,35 +10,15 @@ permalink: "dtree.html"
 extraScript: "static/js/dtree.js"
 ---
 
-{% from "components/dataset-selector.njk" import datasetSelector %}
 {% from "components/edit-toolbar.njk" import editToolbar %}
 {% from "components/legend.njk" import legend %}
-{% from "components/algorithm-options.njk" import algorithmOptions %}
-{% from "components/metrics-panel.njk" import metricsPanel %}
-{% from "components/info-tabs.njk" import infoTabs %}
-{% from "components/controls-bar.njk" import controlsBar %}
 
 <link rel="stylesheet" href="static/css/dtree.css">
 
-<!-- Dataset Selector Panel -->
-{{ datasetSelector(
-    datasets=[
-        {id: 'moons', label: 'Moons', title: 'Two interleaving half circles', active: true},
-        {id: 'circles', label: 'Circles', title: 'Concentric circles'},
-        {id: 'blobs', label: 'Blobs', title: 'Gaussian blobs'},
-        {id: 'linear', label: 'Linear', title: 'Linearly separable'},
-        {id: 'xor', label: 'XOR', title: 'XOR pattern'},
-        {id: 'spiral', label: 'Spiral', title: 'Two spirals'},
-        {id: 'custom', label: 'Custom', title: 'Draw your own'}
-    ],
-    defaultInfo='Two interleaving half circles - a classic non-linear classification problem'
-) }}
-
-<!-- Main Content: Canvas (left) + Controls/Info (right) -->
+<!-- Main Content: Canvas (left) + Info (right) -->
 <div class="row" id="main-content">
-    <!-- Left Column: Classification Canvas + Tree View -->
+    <!-- Left Column: Classification Canvas + Controls -->
     <div class="col-md-7">
-        <!-- Classification Space -->
         <div class="panel panel-default">
             <div class="panel-heading">
                 <div class="panel-heading-content">
@@ -62,6 +42,8 @@ extraScript: "static/js/dtree.js"
                     <canvas id="dtree-canvas" width="560" height="400"></canvas>
                     <canvas id="boundary-canvas" width="560" height="400"></canvas>
                 </div>
+            </div>
+            <div class="panel-footer legend-footer">
                 {{ legend(
                     items=[
                         {class: 'class-0', label: 'Class 1'},
@@ -74,170 +56,189 @@ extraScript: "static/js/dtree.js"
             </div>
         </div>
 
-        <!-- Tree Structure Panel (custom - not using component) -->
+        <!-- Controls Panel -->
         <div class="panel panel-default">
             <div class="panel-heading">
-                <div class="panel-heading-content">
-                    <span class="panel-title-text"><i class="fa fa-sitemap"></i> Tree Structure</span>
-                    <div class="tree-controls">
-                        <div class="btn-group tree-mode-toggle" role="group">
-                            <button type="button" class="btn btn-sm btn-default active" id="btn-auto-mode" title="Auto-build from data">
-                                <i class="fa fa-magic"></i> Auto
-                            </button>
-                            <button type="button" class="btn btn-sm btn-default" id="btn-design-mode" title="Design tree manually">
-                                <i class="fa fa-pencil"></i> Design
-                            </button>
+                <h3 class="panel-title"><i class="fa fa-sliders"></i> Controls</h3>
+            </div>
+            <div class="panel-body compact-panel dtree-controls-panel">
+                <!-- Left: Dataset & Algorithm Options -->
+                <div class="dtree-options-col">
+                    <div class="dtree-option-group">
+                        <div class="option-row">
+                            <label>Dataset:</label>
+                            <select id="dataset-select" class="form-control input-sm">
+                                <option value="moons" selected>Moons</option>
+                                <option value="circles">Circles</option>
+                                <option value="blobs">Blobs</option>
+                                <option value="linear">Linear</option>
+                                <option value="xor">XOR</option>
+                                <option value="spiral">Spiral</option>
+                                <option value="custom">Custom</option>
+                            </select>
                         </div>
+                        <div class="option-row">
+                            <label>Criterion:</label>
+                            <select id="criterion-select" class="form-control input-sm">
+                                <option value="gini" selected>Gini Impurity</option>
+                                <option value="entropy">Entropy</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="dtree-option-group">
+                        <div class="option-row">
+                            <label>Max Depth:</label>
+                            <div class="depth-stepper">
+                                <button id="depth-minus" class="btn btn-xs btn-default" title="Decrease depth">−</button>
+                                <input type="text" id="max-depth-value" class="depth-input" value="5" readonly>
+                                <button id="depth-plus" class="btn btn-xs btn-default" title="Increase depth">+</button>
+                            </div>
+                        </div>
+                        <label class="checkbox-label"><input type="checkbox" id="show-boundaries" checked> Boundaries</label>
+                    </div>
+                </div>
+                <!-- Right: Tree Mode -->
+                <div class="dtree-mode-col">
+                    <div class="btn-group tree-mode-toggle" role="group">
+                        <button type="button" class="btn btn-sm btn-default active" id="btn-auto-mode" title="Auto-build from data">
+                            <i class="fa fa-magic"></i> Auto
+                        </button>
+                        <button type="button" class="btn btn-sm btn-default" id="btn-design-mode" title="Design tree manually">
+                            <i class="fa fa-pencil"></i> Design
+                        </button>
+                    </div>
+                    <div class="tree-action-buttons">
                         <button id="btn-rebuild-tree" class="btn btn-sm btn-default" title="Rebuild tree">
-                            <i class="fa fa-refresh"></i> Rebuild
+                            <i class="fa fa-refresh"></i>
                         </button>
                         <button id="btn-clear-tree" class="btn btn-sm btn-danger" title="Clear tree" style="display: none;">
-                            <i class="fa fa-trash"></i> Clear
+                            <i class="fa fa-trash"></i>
                         </button>
                     </div>
-                </div>
-            </div>
-            <div class="panel-body tree-panel-body">
-                <div id="design-instructions" class="design-instructions" style="display: none;">
-                    <i class="fa fa-info-circle"></i>
-                    <span id="design-instruction-text">Click on a <strong>leaf node</strong> to split it, or click to change its class.</span>
-                </div>
-                <div class="tree-wrapper">
-                    <svg id="tree-svg" width="560" height="200"></svg>
-                </div>
-                <div class="tree-stats">
-                    <span><i class="fa fa-tree"></i> Depth: <strong id="stat-depth">0</strong></span>
-                    <span><i class="fa fa-leaf"></i> Leaves: <strong id="stat-leaves">0</strong></span>
-                    <span><i class="fa fa-code-fork"></i> Nodes: <strong id="stat-nodes">0</strong></span>
-                </div>
-            </div>
-        </div>
-
-        <!-- Design Mode Split Dialog (custom - not using component) -->
-        <div id="split-dialog" class="split-dialog" style="display: none;">
-            <div class="split-dialog-content">
-                <div class="split-dialog-header">
-                    <span><i class="fa fa-code-fork"></i> Create Split</span>
-                    <button id="btn-close-split-dialog" class="btn btn-xs btn-default"><i class="fa fa-times"></i></button>
-                </div>
-                <div class="split-dialog-body">
-                    <div class="split-option-row">
-                        <label>Feature:</label>
-                        <div class="btn-group" role="group">
-                            <button type="button" class="btn btn-sm btn-default active" data-feature="x">X (horizontal)</button>
-                            <button type="button" class="btn btn-sm btn-default" data-feature="y">Y (vertical)</button>
-                        </div>
-                    </div>
-                    <div class="split-option-row">
-                        <label>Threshold: <span id="threshold-value">0.50</span></label>
-                        <input type="range" id="threshold-slider" min="0" max="100" value="50">
-                    </div>
-                    <div class="split-preview">
-                        <span id="split-preview-text">x ≤ 0.50</span>
-                    </div>
-                </div>
-                <div class="split-dialog-footer">
-                    <button id="btn-cancel-split" class="btn btn-sm btn-default">Cancel</button>
-                    <button id="btn-apply-split" class="btn btn-sm btn-success"><i class="fa fa-check"></i> Apply Split</button>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Right Column: Controls + Info -->
+    <!-- Right Column: Tabbed Info -->
     <div class="col-md-5">
-        <!-- Algorithm Options Panel -->
-        {{ algorithmOptions(
-            options=[
-                {type: 'slider', label: 'Max Depth', id: 'max-depth-slider', min: 1, max: 10, value: 5, valueId: 'max-depth-value'},
-                {type: 'slider', label: 'Min Samples Split', id: 'min-samples-slider', min: 2, max: 20, value: 2, valueId: 'min-samples-value'},
-                {type: 'select', label: 'Split Criterion', id: 'criterion-select', options: [
-                    {value: 'gini', text: 'Gini Impurity', selected: true},
-                    {value: 'entropy', text: 'Entropy (Info Gain)'}
-                ]},
-                {type: 'checkbox', label: 'Show decision boundaries', id: 'show-boundaries', checked: true}
-            ]
-        ) }}
-
-        <!-- Classification Result Panel -->
-        {{ metricsPanel(
-            title='Classification Result',
-            metrics=[
-                {icon: 'fa-crosshairs', label: 'Query Point', id: 'metric-query'},
-                {icon: 'fa-tag', label: 'Prediction', id: 'metric-prediction'},
-                {icon: 'fa-route', label: 'Path Length', id: 'metric-path'},
-                {icon: 'fa-leaf', label: 'Leaf Samples', id: 'metric-samples'}
-            ],
-            extraContent='<div id="class-distribution" class="class-distribution" style="display: none;">
-                <div class="distribution-header">Leaf Class Distribution:</div>
-                <div id="distribution-bars" class="distribution-bars"></div>
-            </div>'
-        ) }}
-
-        <!-- Tabbed Info Panel -->
-        {{ infoTabs(
-            tabs=[
-                {id: 'about', icon: 'fa-info-circle', label: 'About', active: true, content: '
-                    <h4><i class="fa fa-sitemap"></i> What is a Decision Tree?</h4>
-                    <p>
-                        A <strong>Decision Tree</strong> is a flowchart-like classifier that makes decisions
-                        by asking a series of questions about feature values. Each internal node tests a
-                        feature, each branch represents the outcome, and each leaf holds a class prediction.
-                    </p>
-                    <h4><i class="fa fa-magic"></i> Auto Mode</h4>
-                    <ul class="interaction-list">
-                        <li><strong>Click canvas</strong> to classify points</li>
-                        <li><strong>Adjust depth</strong> to control complexity</li>
-                        <li>Tree is built automatically from data</li>
-                    </ul>
-                    <h4><i class="fa fa-pencil"></i> Design Mode</h4>
-                    <ul class="interaction-list">
-                        <li><strong>Click leaf</strong> to split it or change class</li>
-                        <li><strong>Choose feature</strong> (X or Y) and threshold</li>
-                        <li><strong>Drag on canvas</strong> to set threshold visually</li>
-                        <li>Build your own tree from scratch!</li>
-                    </ul>
-                    <h4><i class="fa fa-lightbulb-o"></i> Key Insight</h4>
-                    <p>
-                        Decision trees create axis-aligned boundaries. Design mode helps you understand
-                        why certain splits work better than others!
-                    </p>
-                '},
-                {id: 'algorithm', icon: 'fa-book', label: 'Algorithm', content: '
-                    <h4><i class="fa fa-cogs"></i> Building the Tree</h4>
-                    <ol class="algorithm-steps">
-                        <li>Start with all samples at root</li>
-                        <li>Find best feature and threshold to split</li>
-                        <li>Create child nodes for each split</li>
-                        <li>Recurse until stopping criteria met</li>
-                        <li>Assign majority class to leaves</li>
-                    </ol>
-                    <h4><i class="fa fa-calculator"></i> Split Criteria</h4>
-                    <p><strong>Gini Impurity:</strong></p>
-                    <code>G = 1 - Σ(pᵢ)²</code>
-                    <p class=\"formula-desc\">Measures probability of misclassification</p>
-
-                    <p><strong>Entropy:</strong></p>
-                    <code>H = -Σ pᵢ log₂(pᵢ)</code>
-                    <p class=\"formula-desc\">Measures information content / uncertainty</p>
-
-                    <h4><i class=\"fa fa-stop-circle\"></i> Stopping Criteria</h4>
-                    <ul class=\"criteria-list\">
-                        <li>Max depth reached</li>
-                        <li>Min samples per node</li>
-                        <li>Pure node (single class)</li>
-                    </ul>
-                '},
-                {id: 'path', icon: 'fa-route', label: 'Path', content: '
-                    <div class="path-header">
-                        <span>Decision Path</span>
-                        <span id="path-length" class="badge">0</span>
+        <!-- Tabbed Info Panel with Tree as first tab -->
+        <div class="panel panel-default panel-full-height">
+            <div class="panel-heading">
+                <ul class="nav nav-tabs panel-tabs">
+                    <li class="active"><a href="#tab-tree" data-toggle="tab"><i class="fa fa-sitemap"></i> Tree</a></li>
+                    <li><a href="#tab-about" data-toggle="tab"><i class="fa fa-info-circle"></i> About</a></li>
+                    <li><a href="#tab-algorithm" data-toggle="tab"><i class="fa fa-book"></i> Algorithm</a></li>
+                    <li><a href="#tab-path" data-toggle="tab"><i class="fa fa-route"></i> Path</a></li>
+                </ul>
+            </div>
+            <div class="panel-body">
+                <div class="tab-content">
+                    <!-- Tree Tab -->
+                    <div class="tab-pane active" id="tab-tree">
+                        <div class="tree-tab-header">
+                            <div class="tree-stats-inline">
+                                <span>Depth: <strong id="stat-depth">0</strong></span>
+                                <span>Leaves: <strong id="stat-leaves">0</strong></span>
+                                <span>Nodes: <strong id="stat-nodes">0</strong></span>
+                            </div>
+                            <div class="tree-zoom-controls">
+                                <button id="tree-zoom-in" class="btn btn-xs btn-default" title="Zoom in"><i class="fa fa-search-plus"></i></button>
+                                <button id="tree-zoom-out" class="btn btn-xs btn-default" title="Zoom out"><i class="fa fa-search-minus"></i></button>
+                                <button id="tree-zoom-fit" class="btn btn-xs btn-default" title="Fit to view"><i class="fa fa-compress"></i></button>
+                            </div>
+                        </div>
+                        <div id="design-instructions" class="design-instructions" style="display: none;">
+                            <i class="fa fa-info-circle"></i>
+                            <span id="design-instruction-text">Click a <strong>leaf node</strong> to split it</span>
+                        </div>
+                        <div class="tree-wrapper" id="tree-wrapper">
+                            <svg id="tree-svg" width="100%" height="450"></svg>
+                        </div>
+                        <div class="tree-controls-row">
+                            <div class="tree-hint"><i class="fa fa-hand-paper-o"></i> Drag to pan, scroll to zoom</div>
+                            <div class="animation-controls">
+                                <label class="checkbox-label"><input type="checkbox" id="animate-classification" checked> Animate</label>
+                                <div class="speed-control">
+                                    <i class="fa fa-clock-o"></i>
+                                    <input type="range" id="animation-speed" min="1" max="10" value="5" title="Animation speed">
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    <div id="path-list" class="path-list">
-                        <div class="list-empty">Click to classify a point</div>
+
+                    <!-- About Tab -->
+                    <div class="tab-pane" id="tab-about">
+                        <h4><i class="fa fa-sitemap"></i> What is a Decision Tree?</h4>
+                        <p>
+                            A <strong>Decision Tree</strong> is a flowchart-like classifier that makes decisions
+                            by asking a series of questions about feature values.
+                        </p>
+                        <h4><i class="fa fa-mouse-pointer"></i> How to Use</h4>
+                        <ul class="interaction-list">
+                            <li><strong>Click</strong> anywhere to classify that point</li>
+                            <li><strong>Watch</strong> the decision path highlight in the Tree tab</li>
+                            <li><strong>Adjust depth</strong> to control tree complexity</li>
+                            <li><strong>Design mode</strong> to build your own tree manually</li>
+                        </ul>
                     </div>
-                '}
-            ]
-        ) }}
+
+                    <!-- Algorithm Tab -->
+                    <div class="tab-pane" id="tab-algorithm">
+                        <h4><i class="fa fa-cogs"></i> Building the Tree</h4>
+                        <ol class="algorithm-steps">
+                            <li>Start with all samples at root</li>
+                            <li>Find best feature and threshold to split</li>
+                            <li>Create child nodes for each split</li>
+                            <li>Recurse until stopping criteria met</li>
+                        </ol>
+                        <h4><i class="fa fa-calculator"></i> Split Criteria</h4>
+                        <p><strong>Gini:</strong> <code>G = 1 - Σ(pᵢ)²</code></p>
+                        <p><strong>Entropy:</strong> <code>H = -Σ pᵢ log₂(pᵢ)</code></p>
+                    </div>
+
+                    <!-- Path Tab -->
+                    <div class="tab-pane" id="tab-path">
+                        <div class="path-header">
+                            <span>Decision Path</span>
+                            <span id="path-length" class="badge">0</span>
+                        </div>
+                        <div id="path-list" class="path-list">
+                            <div class="list-empty">Click to classify a point</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Design Mode Split Dialog -->
+<div id="split-dialog" class="split-dialog" style="display: none;">
+    <div class="split-dialog-content">
+        <div class="split-dialog-header">
+            <span><i class="fa fa-code-fork"></i> Create Split</span>
+            <button id="btn-close-split-dialog" class="btn btn-xs btn-default"><i class="fa fa-times"></i></button>
+        </div>
+        <div class="split-dialog-body">
+            <div class="split-option-row">
+                <label>Feature:</label>
+                <div class="btn-group" role="group">
+                    <button type="button" class="btn btn-sm btn-default active" data-feature="x">X (horizontal)</button>
+                    <button type="button" class="btn btn-sm btn-default" data-feature="y">Y (vertical)</button>
+                </div>
+            </div>
+            <div class="split-option-row">
+                <label>Threshold: <span id="threshold-value">0.50</span></label>
+                <input type="range" id="threshold-slider" min="0" max="100" value="50">
+            </div>
+            <div class="split-preview">
+                <span id="split-preview-text">x ≤ 0.50</span>
+            </div>
+        </div>
+        <div class="split-dialog-footer">
+            <button id="btn-cancel-split" class="btn btn-sm btn-default">Cancel</button>
+            <button id="btn-apply-split" class="btn btn-sm btn-success"><i class="fa fa-check"></i> Apply Split</button>
+        </div>
     </div>
 </div>

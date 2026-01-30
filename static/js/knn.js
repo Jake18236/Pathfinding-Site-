@@ -13,9 +13,9 @@
     // ============================================
     const CANVAS_WIDTH = 560;
     const CANVAS_HEIGHT = 480;
-    const PADDING = 40;
-    const PLOT_WIDTH = CANVAS_WIDTH - 2 * PADDING;
-    const PLOT_HEIGHT = CANVAS_HEIGHT - 2 * PADDING;
+    const PADDING = 0;
+    const PLOT_WIDTH = CANVAS_WIDTH;
+    const PLOT_HEIGHT = CANVAS_HEIGHT;
 
     const POINT_RADIUS = 6;
     const QUERY_RADIUS = 8;
@@ -520,19 +520,30 @@
             const dpr = window.devicePixelRatio || 1;
             this.dpr = dpr;
 
-            // Main canvas
-            this.canvas.width = CANVAS_WIDTH * dpr;
-            this.canvas.height = CANVAS_HEIGHT * dpr;
-            this.canvas.style.width = CANVAS_WIDTH + 'px';
-            this.canvas.style.height = CANVAS_HEIGHT + 'px';
-            this.ctx.scale(dpr, dpr);
+            // Get the actual display size from the container
+            const wrapper = this.canvas.parentElement;
+            const displayWidth = wrapper.clientWidth;
+            const displayHeight = Math.round(displayWidth * (CANVAS_HEIGHT / CANVAS_WIDTH));
 
-            // Boundary canvas
-            this.boundaryCanvas.width = CANVAS_WIDTH * dpr;
-            this.boundaryCanvas.height = CANVAS_HEIGHT * dpr;
-            this.boundaryCanvas.style.width = CANVAS_WIDTH + 'px';
-            this.boundaryCanvas.style.height = CANVAS_HEIGHT + 'px';
-            this.boundaryCtx.scale(dpr, dpr);
+            // Calculate scale to fit logical canvas in display area
+            const scale = displayWidth / CANVAS_WIDTH;
+
+            // Set canvas internal resolution to match display size * dpr for crisp rendering
+            this.canvas.width = displayWidth * dpr;
+            this.canvas.height = displayHeight * dpr;
+            this.canvas.style.width = displayWidth + 'px';
+            this.canvas.style.height = displayHeight + 'px';
+            // Scale context: dpr for hi-DPI, plus scale for fitting
+            this.ctx.setTransform(scale * dpr, 0, 0, scale * dpr, 0, 0);
+
+            this.boundaryCanvas.width = displayWidth * dpr;
+            this.boundaryCanvas.height = displayHeight * dpr;
+            this.boundaryCanvas.style.width = displayWidth + 'px';
+            this.boundaryCanvas.style.height = displayHeight + 'px';
+            this.boundaryCtx.setTransform(scale * dpr, 0, 0, scale * dpr, 0, 0);
+
+            // Store the scale factor for mouse coordinate conversion
+            this.displayScale = scale;
         }
 
         _updateColors() {
@@ -570,8 +581,10 @@
         // Get mouse position in data coordinates
         getMouseDataCoords(event) {
             const rect = this.canvas.getBoundingClientRect();
-            const canvasX = event.clientX - rect.left;
-            const canvasY = event.clientY - rect.top;
+            // Convert from display coordinates to logical canvas coordinates
+            const scale = this.displayScale || 1;
+            const canvasX = (event.clientX - rect.left) / scale;
+            const canvasY = (event.clientY - rect.top) / scale;
             return this.canvasToData(canvasX, canvasY);
         }
 
@@ -613,32 +626,7 @@
         }
 
         _drawGrid() {
-            const ctx = this.ctx;
-            ctx.strokeStyle = '#e0e0e0';
-            ctx.lineWidth = 1;
-
-            // Vertical lines
-            for (let i = 0; i <= 10; i++) {
-                const x = PADDING + (i / 10) * PLOT_WIDTH;
-                ctx.beginPath();
-                ctx.moveTo(x, PADDING);
-                ctx.lineTo(x, PADDING + PLOT_HEIGHT);
-                ctx.stroke();
-            }
-
-            // Horizontal lines
-            for (let i = 0; i <= 10; i++) {
-                const y = PADDING + (i / 10) * PLOT_HEIGHT;
-                ctx.beginPath();
-                ctx.moveTo(PADDING, y);
-                ctx.lineTo(PADDING + PLOT_WIDTH, y);
-                ctx.stroke();
-            }
-
-            // Border
-            ctx.strokeStyle = '#999';
-            ctx.lineWidth = 2;
-            ctx.strokeRect(PADDING, PADDING, PLOT_WIDTH, PLOT_HEIGHT);
+            // Grid removed for cleaner look - canvas fills its container
         }
 
         _drawPoints(points) {

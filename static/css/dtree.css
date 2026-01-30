@@ -1,0 +1,861 @@
+/**
+ * Decision Tree Classification Visualizer Styles
+ *
+ * Uses semantic color variables with light/dark theme support.
+ * Colors for classes 0-2 match ThemeManager categorical palette.
+ */
+
+/* ============================================
+   CSS Custom Properties - Light Theme (default)
+   ============================================ */
+:root {
+    /* Class colors - from ThemeManager categorical palette */
+    --dtree-class-0: #e41a1c;
+    --dtree-class-1: #377eb8;
+    --dtree-class-2: #4daf4a;
+
+    /* Query point styling */
+    --dtree-query-bg: #ffd700;
+    --dtree-query-border: #b8860b;
+    --dtree-query-size: 14px;
+
+    /* Split line styling */
+    --dtree-split-line: #333;
+    --dtree-split-line-width: 2px;
+
+    /* Decision boundary */
+    --dtree-boundary-opacity: 0.25;
+
+    /* UI colors */
+    --dtree-bg: #ffffff;
+    --dtree-text: #333333;
+    --dtree-text-muted: #6c757d;
+    --dtree-border: #dee2e6;
+    --dtree-hover-bg: #f8f9fa;
+
+    /* Tree node colors */
+    --dtree-node-bg: #ffffff;
+    --dtree-node-border: #333333;
+    --dtree-node-selected: #ffd700;
+    --dtree-edge-color: #999999;
+}
+
+/* ============================================
+   Dark Theme Overrides
+   ============================================ */
+[data-theme="gruvbox-dark"] {
+    /* Class colors - Gruvbox dark palette */
+    --dtree-class-0: #fb4934;
+    --dtree-class-1: #83a598;
+    --dtree-class-2: #b8bb26;
+
+    /* Query point - Gruvbox yellow */
+    --dtree-query-bg: #fabd2f;
+    --dtree-query-border: #d79921;
+
+    /* Split lines - lighter for dark bg */
+    --dtree-split-line: #ebdbb2;
+
+    /* UI colors - Gruvbox */
+    --dtree-bg: #282828;
+    --dtree-text: #ebdbb2;
+    --dtree-text-muted: #a89984;
+    --dtree-border: #504945;
+    --dtree-hover-bg: #3c3836;
+
+    /* Tree node colors */
+    --dtree-node-bg: #3c3836;
+    --dtree-node-border: #ebdbb2;
+    --dtree-node-selected: #fabd2f;
+    --dtree-edge-color: #a89984;
+}
+
+/* ============================================
+   Canvas Container
+   ============================================ */
+.canvas-panel-body {
+    padding: 0 !important;
+}
+
+.canvas-wrapper {
+    position: relative;
+    display: block;
+    line-height: 0;
+    width: 100%;
+}
+
+#dtree-canvas,
+#boundary-canvas {
+    border: none;
+    border-radius: 0;
+    display: block;
+}
+
+#boundary-canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 1;
+    pointer-events: none;
+}
+
+#dtree-canvas {
+    position: relative;
+    z-index: 2;
+    cursor: crosshair;
+}
+
+/* Legend Footer */
+.legend-footer {
+    padding: 8px 15px !important;
+    text-align: center;
+    background: var(--dtree-bg);
+    border-top: 1px solid var(--dtree-border);
+}
+
+/* Full Height Panel */
+.panel-full-height {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.panel-full-height > .panel-body {
+    flex: 1;
+    overflow: auto;
+}
+
+.panel-full-height .tab-content {
+    height: 100%;
+}
+
+.panel-full-height .tab-pane {
+    height: 100%;
+}
+
+.panel-full-height #tab-tree {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.panel-full-height .tree-wrapper {
+    flex: 1;
+    min-height: 400px;
+}
+
+.panel-full-height #tree-svg {
+    height: 100%;
+    min-height: 400px;
+}
+
+/* Panel Tabs - match panel-heading height exactly (39px) */
+.panel-heading .nav-tabs.panel-tabs {
+    margin: -10px -15px;
+    border-bottom: none;
+    display: flex;
+}
+
+.panel-heading .nav-tabs.panel-tabs > li {
+    margin-bottom: 0;
+    float: none;
+}
+
+.panel-heading .nav-tabs.panel-tabs > li > a {
+    padding: 9px 12px;
+    border: none;
+    border-radius: 0;
+    margin: 0;
+    font-size: 13px;
+    line-height: 1.42857143;
+    display: block;
+}
+
+.panel-heading .nav-tabs.panel-tabs > li.active > a,
+.panel-heading .nav-tabs.panel-tabs > li.active > a:hover,
+.panel-heading .nav-tabs.panel-tabs > li.active > a:focus {
+    background-color: #fff;
+    border: none;
+    border-bottom: 2px solid var(--dtree-class-1, #377eb8);
+}
+
+.panel-heading .nav-tabs.panel-tabs > li > a:hover {
+    background-color: rgba(0, 0, 0, 0.05);
+}
+
+/* ============================================
+   Legend Colors
+   ============================================ */
+.legend-color.class-0 {
+    background-color: var(--dtree-class-0);
+}
+
+.legend-color.class-1 {
+    background-color: var(--dtree-class-1);
+}
+
+.legend-color.class-2 {
+    background-color: var(--dtree-class-2);
+}
+
+.legend-color.query-point {
+    background-color: var(--dtree-query-bg);
+    border: 2px solid var(--dtree-query-border);
+    box-sizing: border-box;
+}
+
+.legend-line.split-line {
+    background-color: var(--dtree-split-line);
+    height: 2px;
+    width: 20px;
+    display: inline-block;
+    vertical-align: middle;
+    border-style: dashed;
+}
+
+/* ============================================
+   Tree Structure Panel
+   ============================================ */
+.tree-panel-body {
+    padding: 12px;
+    text-align: center;
+    min-height: 200px;
+}
+
+.tree-wrapper {
+    overflow-x: auto;
+    overflow-y: hidden;
+    margin-bottom: 12px;
+}
+
+#tree-svg {
+    display: block;
+    margin: 0 auto;
+    min-height: 180px;
+}
+
+#tree-svg .tree-node {
+    cursor: pointer;
+}
+
+#tree-svg .tree-node:hover circle {
+    stroke-width: 3;
+}
+
+.tree-stats {
+    display: flex;
+    justify-content: center;
+    gap: 24px;
+    padding-top: 12px;
+    border-top: 1px solid var(--dtree-border);
+    font-size: 13px;
+    color: var(--dtree-text-muted);
+}
+
+.tree-stats span {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.tree-stats strong {
+    color: var(--dtree-text);
+    font-weight: 600;
+}
+
+/* Tree Mode Controls */
+.tree-controls {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
+.tree-mode-toggle .btn {
+    padding: 4px 10px;
+    font-size: 12px;
+}
+
+.tree-mode-toggle .btn.active {
+    background-color: var(--primary-color, #007bff);
+    border-color: var(--primary-color, #007bff);
+    color: #fff;
+}
+
+/* Design Mode Instructions */
+.design-instructions {
+    background: rgba(255, 215, 0, 0.1);
+    border: 1px solid rgba(255, 215, 0, 0.3);
+    border-radius: 4px;
+    padding: 8px 12px;
+    margin-bottom: 12px;
+    font-size: 12px;
+    color: var(--dtree-text);
+    text-align: left;
+}
+
+.design-instructions i {
+    color: #ffd700;
+    margin-right: 6px;
+}
+
+/* ============================================
+   Split Dialog
+   ============================================ */
+.split-dialog {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+
+.split-dialog-content {
+    background: var(--dtree-bg);
+    border-radius: 8px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    min-width: 320px;
+    max-width: 400px;
+}
+
+.split-dialog-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--dtree-border);
+    font-weight: 600;
+    font-size: 14px;
+}
+
+.split-dialog-header i {
+    margin-right: 8px;
+    color: var(--dtree-text-muted);
+}
+
+.split-dialog-body {
+    padding: 16px;
+}
+
+.split-option-row {
+    margin-bottom: 16px;
+}
+
+.split-option-row label {
+    display: block;
+    margin-bottom: 8px;
+    font-size: 13px;
+    font-weight: 500;
+}
+
+.split-option-row .btn-group {
+    display: flex;
+    gap: 4px;
+}
+
+.split-option-row .btn-group .btn {
+    flex: 1;
+    padding: 6px 12px;
+    font-size: 12px;
+}
+
+.split-option-row .btn-group .btn.active {
+    background-color: var(--primary-color, #007bff);
+    border-color: var(--primary-color, #007bff);
+    color: #fff;
+}
+
+.split-option-row input[type="range"] {
+    width: 100%;
+    margin-top: 8px;
+}
+
+.split-preview {
+    background: var(--dtree-hover-bg);
+    border-radius: 4px;
+    padding: 10px 12px;
+    text-align: center;
+    font-family: 'SF Mono', Monaco, 'Courier New', monospace;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.split-dialog-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+    padding: 12px 16px;
+    border-top: 1px solid var(--dtree-border);
+}
+
+.split-dialog-footer .btn {
+    padding: 6px 16px;
+    font-size: 13px;
+}
+
+/* ============================================
+   Class Distribution Bars
+   ============================================ */
+.class-distribution {
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 1px solid var(--dtree-border);
+}
+
+.distribution-header {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--dtree-text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 8px;
+}
+
+.distribution-bars {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.distribution-bar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.distribution-label {
+    min-width: 28px;
+    font-size: 11px;
+    font-weight: 600;
+}
+
+.distribution-label.class-0 { color: var(--dtree-class-0); }
+.distribution-label.class-1 { color: var(--dtree-class-1); }
+.distribution-label.class-2 { color: var(--dtree-class-2); }
+
+.distribution-track {
+    flex: 1;
+    height: 12px;
+    background: var(--dtree-hover-bg);
+    border-radius: 3px;
+    overflow: hidden;
+}
+
+.distribution-fill {
+    height: 100%;
+    border-radius: 3px;
+    transition: width 0.3s ease;
+}
+
+.distribution-fill.class-0 { background-color: var(--dtree-class-0); }
+.distribution-fill.class-1 { background-color: var(--dtree-class-1); }
+.distribution-fill.class-2 { background-color: var(--dtree-class-2); }
+
+.distribution-value {
+    min-width: 24px;
+    font-size: 11px;
+    color: var(--dtree-text-muted);
+    text-align: right;
+}
+
+/* ============================================
+   Path List
+   ============================================ */
+.path-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+    font-weight: 600;
+}
+
+.path-list {
+    max-height: 180px;
+    overflow-y: auto;
+}
+
+.path-list .list-empty {
+    color: var(--dtree-text-muted);
+    font-style: italic;
+    padding: 12px;
+    text-align: center;
+}
+
+.path-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 6px 10px;
+    margin: 3px 0;
+    border-radius: 4px;
+    font-size: 12px;
+    background: var(--dtree-hover-bg);
+    border-left: 3px solid var(--dtree-border);
+}
+
+.path-item.path-leaf {
+    border-left-color: var(--dtree-node-selected);
+    background: rgba(255, 215, 0, 0.1);
+}
+
+.path-step {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: var(--dtree-border);
+    font-size: 10px;
+    font-weight: 600;
+    color: var(--dtree-text);
+}
+
+.path-desc {
+    flex: 1;
+    font-family: 'SF Mono', Monaco, 'Courier New', monospace;
+}
+
+.path-desc i {
+    margin-left: 6px;
+    color: var(--dtree-text-muted);
+}
+
+/* ============================================
+   Metrics Panel Prediction Colors
+   ============================================ */
+.prediction-badge {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 3px;
+    font-weight: 600;
+    color: #fff;
+    font-size: 11px;
+}
+
+.prediction-badge.class-0 { background-color: var(--dtree-class-0); }
+.prediction-badge.class-1 { background-color: var(--dtree-class-1); }
+.prediction-badge.class-2 { background-color: var(--dtree-class-2); }
+
+/* ============================================
+   Algorithm Steps & Formulas
+   ============================================ */
+.algorithm-steps {
+    padding-left: 20px;
+    margin: 12px 0;
+}
+
+.algorithm-steps li {
+    margin-bottom: 6px;
+}
+
+code {
+    display: inline-block;
+    background: var(--dtree-hover-bg);
+    padding: 4px 8px;
+    border-radius: 3px;
+    font-family: 'SF Mono', Monaco, 'Courier New', monospace;
+    font-size: 12px;
+    margin: 4px 0;
+}
+
+.formula-desc {
+    font-size: 11px;
+    color: var(--dtree-text-muted);
+    margin-top: 2px;
+    margin-bottom: 12px;
+}
+
+.criteria-list {
+    padding-left: 20px;
+}
+
+.criteria-list li {
+    margin-bottom: 4px;
+}
+
+/* ============================================
+   Interaction List
+   ============================================ */
+.interaction-list {
+    padding-left: 20px;
+    margin: 8px 0;
+}
+
+.interaction-list li {
+    margin-bottom: 4px;
+}
+
+/* ============================================
+   Edit Toolbar Adjustments
+   ============================================ */
+.edit-toolbar {
+    display: none;
+}
+
+.edit-toolbar.active {
+    display: flex;
+}
+
+/* Class selector colors */
+.class-selector .btn[data-class="0"].active {
+    background-color: var(--dtree-class-0);
+    border-color: var(--dtree-class-0);
+    color: #fff;
+}
+
+.class-selector .btn[data-class="1"].active {
+    background-color: var(--dtree-class-1);
+    border-color: var(--dtree-class-1);
+    color: #fff;
+}
+
+.class-selector .btn[data-class="2"].active {
+    background-color: var(--dtree-class-2);
+    border-color: var(--dtree-class-2);
+    color: #fff;
+}
+
+/* ============================================
+   Info Panel Tabs
+   ============================================ */
+.info-tab-content {
+    display: none;
+}
+
+.info-tab-content.active {
+    display: block;
+}
+
+/* ============================================
+   Controls Panel - Two Column Layout
+   ============================================ */
+.dtree-controls-panel {
+    display: flex;
+    gap: 20px;
+}
+
+/* Left column: Dataset & Algorithm Options */
+.dtree-options-col {
+    flex: 1;
+    display: flex;
+    gap: 16px;
+}
+
+.dtree-option-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.dtree-options-col .option-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.dtree-options-col .option-row > label:first-child {
+    min-width: 55px;
+    font-size: 12px;
+}
+
+.dtree-options-col .option-row select {
+    width: auto;
+    min-width: 100px;
+    font-size: 12px;
+}
+
+.dtree-options-col .checkbox-label {
+    font-size: 12px;
+}
+
+/* Depth stepper */
+.depth-stepper {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+}
+
+.depth-stepper .btn {
+    padding: 2px 8px;
+    font-size: 14px;
+    line-height: 1;
+}
+
+.depth-input {
+    width: 32px;
+    text-align: center;
+    font-size: 12px;
+    font-weight: 600;
+    border: 1px solid var(--dtree-border);
+    border-radius: 3px;
+    padding: 2px 4px;
+    background: var(--dtree-bg);
+    color: var(--dtree-text);
+}
+
+/* Right column: Tree Mode */
+.dtree-mode-col {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    border-left: 1px solid var(--dtree-border);
+    padding-left: 20px;
+}
+
+.tree-action-buttons {
+    display: flex;
+    gap: 4px;
+}
+
+.tree-action-buttons .btn {
+    padding: 4px 8px;
+}
+
+/* Tree tab header with stats */
+.tree-tab-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--dtree-border);
+}
+
+.tree-stats-inline {
+    display: flex;
+    gap: 16px;
+    font-size: 12px;
+    color: var(--dtree-text-muted);
+}
+
+.tree-stats-inline strong {
+    color: var(--dtree-text);
+    font-weight: 600;
+}
+
+.tree-zoom-controls {
+    display: flex;
+    gap: 4px;
+}
+
+.tree-zoom-controls .btn {
+    padding: 2px 6px;
+    font-size: 11px;
+}
+
+/* Tree wrapper with pan/zoom */
+.tree-wrapper {
+    position: relative;
+    overflow: hidden;
+    border: 1px solid var(--dtree-border);
+    border-radius: 4px;
+    background: var(--dtree-bg);
+    cursor: grab;
+    height: 300px;
+}
+
+.tree-wrapper:active {
+    cursor: grabbing;
+}
+
+.tree-wrapper svg {
+    display: block;
+}
+
+.tree-controls-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 6px;
+}
+
+.tree-hint {
+    font-size: 10px;
+    color: var(--dtree-text-muted);
+}
+
+.tree-hint i {
+    margin-right: 4px;
+}
+
+.animation-controls {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.animation-controls .checkbox-label {
+    font-size: 11px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.animation-controls .speed-control {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 10px;
+    color: var(--dtree-text-muted);
+}
+
+.animation-controls .speed-control input[type="range"] {
+    width: 60px;
+    height: 4px;
+}
+
+/* Animation pulse effect on nodes */
+@keyframes node-pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.3); }
+    100% { transform: scale(1); }
+}
+
+.tree-node.animating circle {
+    animation: node-pulse 0.4s ease-in-out;
+}
+
+/* Animating decision display */
+.animating-decision {
+    display: inline-block;
+    font-family: 'SF Mono', Monaco, 'Courier New', monospace;
+    font-weight: 600;
+    color: var(--dtree-query-border);
+    animation: decision-fade 0.3s ease-in-out;
+}
+
+@keyframes decision-fade {
+    0% { opacity: 0; transform: translateY(-5px); }
+    100% { opacity: 1; transform: translateY(0); }
+}
+
+/* Tab pane styling */
+.tab-pane {
+    min-height: 350px;
+}
+
+/* ============================================
+   Responsive Adjustments
+   ============================================ */
+@media (max-width: 992px) {
+    .canvas-wrapper canvas {
+        max-width: 100%;
+        height: auto;
+    }
+
+    .tree-wrapper {
+        overflow-x: auto;
+    }
+
+    .split-dialog-content {
+        margin: 16px;
+        min-width: auto;
+        max-width: calc(100% - 32px);
+    }
+}
