@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="gruvbox-light">
+<html lang="en" data-theme="bluegold">
     <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -10,7 +10,7 @@
 	<title>Teaching and Learning Artificial Intelligence</title>
 
 	<!-- Theme CSS (toggleable) -->
-	<link id="theme-style" href="static/css/gruvbox-light.css" rel="stylesheet">
+	<link id="theme-style" href="static/css/bluegold.css" rel="stylesheet">
 	<script src="https://kit.fontawesome.com/9d2722956c.js" crossorigin="anonymous"></script>
 
 	<!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
@@ -144,18 +144,18 @@
         transition: transform 0.25s ease, background-color 0.25s ease;
         z-index: 1;
     }
-    [data-theme="gruvbox-light"] .theme-toggle-btn {
+    [data-theme="bluegold"] .theme-toggle-btn {
         background-color: #f2f6ff;
         border-color: rgba(15, 23, 42, 0.18);
     }
-    [data-theme="gruvbox-light"] .theme-toggle-btn .theme-toggle-handle {
+    [data-theme="bluegold"] .theme-toggle-btn .theme-toggle-handle {
         transform: translateX(0);
         background-color: #ffffff;
     }
-    [data-theme="gruvbox-light"] .theme-toggle-btn .theme-icon--sun {
+    [data-theme="bluegold"] .theme-toggle-btn .theme-icon--sun {
         opacity: 1;
     }
-    [data-theme="gruvbox-light"] .theme-toggle-btn .theme-icon--moon {
+    [data-theme="bluegold"] .theme-toggle-btn .theme-icon--moon {
         opacity: 0.35;
     }
     [data-theme="gruvbox-dark"] .theme-toggle-btn {
@@ -641,7 +641,7 @@
 	    var prefix = '';
 	    var themes = {
 	        'gruvbox-dark': prefix + 'static/css/gruvbox-dark.css',
-	        'gruvbox-light': prefix + 'static/css/gruvbox-light.css'
+	        'bluegold': prefix + 'static/css/bluegold.css'
 	    };
 	    var linkEl = document.getElementById('theme-style');
 	    var toggleBtn = document.getElementById('theme-toggle');
@@ -657,7 +657,7 @@
         }
         function updateNotebookFrames(theme) {
             var frames = document.querySelectorAll('iframe[data-src-dark][data-src-light]');
-            var attr = theme === 'gruvbox-light' ? 'data-src-light' : 'data-src-dark';
+            var attr = theme === 'bluegold' ? 'data-src-light' : 'data-src-dark';
             Array.prototype.forEach.call(frames, function(frame) {
                 var nextSrc = frame.getAttribute(attr);
                 if (nextSrc && frame.getAttribute('src') !== nextSrc) {
@@ -666,7 +666,7 @@
             });
         }
         function applyTheme(theme) {
-            var name = themes[theme] ? theme : 'gruvbox-light';
+            var name = themes[theme] ? theme : 'bluegold';
             linkEl.setAttribute('href', themes[name]);
             document.documentElement.setAttribute('data-theme', name);
             updateButton(name);
@@ -685,7 +685,7 @@
             updateNotebookFrames(event.detail || currentTheme);
         });
         toggleBtn.addEventListener('click', function() {
-            var nextTheme = currentTheme === 'gruvbox-dark' ? 'gruvbox-light' : 'gruvbox-dark';
+            var nextTheme = currentTheme === 'gruvbox-dark' ? 'bluegold' : 'gruvbox-dark';
             currentTheme = applyTheme(nextTheme);
             document.dispatchEvent(new CustomEvent('themechange', { detail: currentTheme }));
             try {
