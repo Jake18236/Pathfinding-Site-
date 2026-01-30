@@ -4,7 +4,6 @@ on:
   schedule:
     - cron: "0 */8 * * *"      # every 8 hours (midnight, 8am, 4pm UTC)
   workflow_dispatch: {}        # allow manual runs
-  # (no "push" trigger on purpose)
 
 concurrency:
   group: tweet-archiver
@@ -13,9 +12,9 @@ concurrency:
 jobs:
   archive:
     runs-on: ubuntu-latest
-    timeout-minutes: 5
+    timeout-minutes: 10
     permissions:
-      contents: write          # needed to commit MD/media and usage file
+      contents: write          # needed to commit MD/media
 
     steps:
       - name: Checkout
@@ -31,23 +30,39 @@ jobs:
           python -m pip install --upgrade pip
           pip install twarc requests python-slugify
 
-      - name: Twarc smoke test (token check)
+      - name: Verify secrets are set
         env:
-          TWARC_BEARER_TOKEN: ${{ secrets.TWITTER_BEARER_TOKEN }}
+          TWITTER_BEARER_TOKEN: ${{ secrets.TWITTER_BEARER_TOKEN }}
+          SHEETS_WEBHOOK_URL: ${{ secrets.SHEETS_WEBHOOK_URL }}
         run: |
-          test -n "$TWARC_BEARER_TOKEN" || (echo "TOKEN MISSING" && exit 1)
+          echo "Checking required secrets..."
+          if [ -z "$TWITTER_BEARER_TOKEN" ]; then
+            echo "::error::TWITTER_BEARER_TOKEN secret is not set"
+            exit 1
+          fi
+          if [ -z "$SHEETS_WEBHOOK_URL" ]; then
+            echo "::warning::SHEETS_WEBHOOK_URL secret is not set - archiver will skip"
+          fi
+          echo "Secrets verified."
 
-      - name: Run archiver (process_bookmarks.py)
+      - name: Process tweet queue
         env:
           SHEETS_WEBHOOK_URL: ${{ secrets.SHEETS_WEBHOOK_URL }}
           TWITTER_BEARER_TOKEN: ${{ secrets.TWITTER_BEARER_TOKEN }}
         run: |
+          echo "Starting tweet queue processor..."
           python scripts/process_bookmarks.py
+          echo "Tweet queue processing complete."
 
-      - name: Commit archived Markdown/media and counters
+      - name: Commit archived content
         run: |
           git config user.name "github-actions"
           git config user.email "noreply@github.com"
           git add -A
-          git commit -m "[skip ci] tweet-archiver: new items" || echo "Nothing to commit"
-          git push || true
+          if git diff --cached --quiet; then
+            echo "No new content to commit."
+          else
+            git commit -m "[skip ci] tweet-archiver: archived new items"
+            git push
+            echo "Committed and pushed new archived content."
+          fi

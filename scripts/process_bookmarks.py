@@ -1,4 +1,16 @@
 #!/usr/bin/env python3
+"""
+Process Bookmarks Queue - Claims items from Google Sheet queue and archives them.
+
+This script:
+1. Claims a pending item from the Google Sheet queue
+2. Calls archive_tweet.py to fetch and archive the tweet
+3. Marks the item as complete (or releases it for retry on failure)
+
+Requires:
+    - SHEETS_WEBHOOK_URL environment variable (Google Apps Script web app URL)
+    - TWITTER_BEARER_TOKEN environment variable (for archive_tweet.py)
+"""
 import json
 import os
 import pathlib
@@ -12,9 +24,10 @@ ARCHIVER = ROOT / "scripts" / "archive_tweet.py"
 WEBHOOK_URL = os.environ.get("SHEETS_WEBHOOK_URL")
 SHARED_SECRET = os.environ.get("QUEUE_SHARED_SECRET", "")
 
-MAX_PER_RUN = 1  # one item per run
+MAX_PER_RUN = 1  # Process one item per run to stay within API limits
 
 def post_json(url: str, payload: dict) -> dict:
+    """POST JSON to webhook and return response."""
     data = json.dumps(payload).encode("utf-8")
     req = urllib.request.Request(
         url,
@@ -22,12 +35,18 @@ def post_json(url: str, payload: dict) -> dict:
         headers={"Content-Type": "application/json"},
         method="POST",
     )
-    with urllib.request.urlopen(req, timeout=30) as resp:
-        text = resp.read().decode("utf-8")
     try:
+        with urllib.request.urlopen(req, timeout=30) as resp:
+            text = resp.read().decode("utf-8")
         return json.loads(text)
-    except Exception:
+    except urllib.error.HTTPError as e:
+        print(f"[error] HTTP {e.code}: {e.read().decode('utf-8', errors='replace')}", file=sys.stderr)
+        return {"error": str(e)}
+    except json.JSONDecodeError:
         return {"_raw": text}
+    except Exception as e:
+        print(f"[error] Request failed: {e}", file=sys.stderr)
+        return {"error": str(e)}
 
 def claim_one() -> dict | None:
     payload = {"action": "claim"}
@@ -77,43 +96,48 @@ def archive_url(url: str) -> dict | None:
 
 def main():
     if not WEBHOOK_URL:
-        print("No SHEETS_WEBHOOK_URL set; exiting.")
+        print("[info] No SHEETS_WEBHOOK_URL set; exiting.", file=sys.stderr)
         sys.exit(0)
 
+    # Verify Twitter token is set before trying to process
+    if not os.environ.get("TWITTER_BEARER_TOKEN"):
+        print("[error] TWITTER_BEARER_TOKEN not set; exiting.", file=sys.stderr)
+        sys.exit(1)
+
+    print(f"[info] Using webhook: {WEBHOOK_URL[:50]}...", file=sys.stderr)
     processed_count = 0
 
     for _ in range(MAX_PER_RUN):
         item = claim_one()
         if not item:
-            print("No queued items.")
+            print("[info] No queued items.", file=sys.stderr)
             break
 
         item_id = item.get("id")
         url = (item.get("url") or "").strip()
         if not url:
-            print(f"[warn] Claimed item {item_id} missing URL; releasing.")
+            print(f"[warn] Claimed item {item_id} missing URL; releasing.", file=sys.stderr)
             release_item(item_id)
             continue
 
-        print(f"Archiving: {url} (queue id {item_id})")
+        print(f"[info] Archiving: {url} (queue id {item_id})", file=sys.stderr)
 
         meta = archive_url(url)
         if not meta:
-            print(f"[warn] Archiving failed for {url}. Releasing queue item {item_id}.")
-            release_item(item_id)  # ← leave the checkbox unchecked, clear note
+            print(f"[warn] Archiving failed for {url}. Releasing queue item {item_id}.", file=sys.stderr)
+            release_item(item_id)
             continue
 
         try:
             sheet_meta = to_sheet_meta(meta)
-            complete_item(item_id, sheet_meta)  # ← checks the box & appends to Learning
+            complete_item(item_id, sheet_meta)
             processed_count += 1
-            print(f"Completed {url} → appended to Learning, marked DONE.")
+            print(f"[info] Completed: {url}", file=sys.stderr)
         except Exception as e:
-            print(f"[warn] Could not complete queue item {item_id}: {e}")
-            # Best-effort release so it can retry later:
+            print(f"[warn] Could not complete queue item {item_id}: {e}", file=sys.stderr)
             release_item(item_id)
 
-    print(f"Run finished. Processed {processed_count} item(s).")
+    print(f"[info] Run finished. Processed {processed_count} item(s).", file=sys.stderr)
 
 if __name__ == "__main__":
     main()

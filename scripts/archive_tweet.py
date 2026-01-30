@@ -1,73 +1,103 @@
 #!/usr/bin/env python3
+"""
+Tweet Archiver - Fetches a single tweet using twarc2 and saves as Markdown.
+
+Usage:
+    python scripts/archive_tweet.py <tweet_url>
+
+Requires:
+    - TWITTER_BEARER_TOKEN environment variable
+    - twarc2 installed (pip install twarc)
+    - python-slugify installed (pip install python-slugify)
+"""
 import json, subprocess, tempfile, shutil, pathlib, re, datetime, sys, os
 from slugify import slugify
 
-# ====== YOUR TREE ======
+# ====== OUTPUT DIRECTORIES ======
 MD_DIR   = pathlib.Path("static/md/tweets")         # Markdown output
 IMG_DIR  = pathlib.Path("static/img/tweets")        # images (jpg/png/gif)
 VID_DIR  = pathlib.Path("static/vid/tweets")        # videos (mp4)
 for d in (MD_DIR, IMG_DIR, VID_DIR):
     d.mkdir(parents=True, exist_ok=True)
-# =======================
+# ================================
 
-def run(cmd):
-    r = subprocess.run(cmd, capture_output=True, text=True)
-    if r.returncode != 0:
-        raise RuntimeError(f"Command failed: {' '.join(cmd)}\n{r.stderr}")
-    return r
-
-def run_check(cmd):
-    # run a command and fail with helpful stderr/stdout
-    r = subprocess.run(cmd, text=True, env=os.environ, capture_output=True)
-    if r.returncode != 0:
-        raise RuntimeError(f"Command failed: {' '.join(cmd)}\n{r.stderr or r.stdout}")
-    return r
+def get_bearer_token():
+    """Get Twitter bearer token from environment."""
+    token = os.environ.get("TWITTER_BEARER_TOKEN", "").strip()
+    if not token:
+        raise RuntimeError("TWITTER_BEARER_TOKEN environment variable not set")
+    return token
 
 def run_to_file(cmd, outpath: pathlib.Path):
-    # run a command that writes to stdout; save stdout to a file
+    """Run a command that writes to stdout; save stdout to a file."""
+    print(f"[debug] Running: {' '.join(cmd)}", file=sys.stderr)
     with open(outpath, "w", encoding="utf-8") as f:
         r = subprocess.run(cmd, text=True, env=os.environ, stdout=f, stderr=subprocess.PIPE)
     if r.returncode != 0:
         raise RuntimeError(f"Command failed: {' '.join(cmd)}\n{r.stderr}")
 
+def run_optional(cmd):
+    """Run a command that may fail (for optional operations like media download)."""
+    print(f"[debug] Running (optional): {' '.join(cmd)}", file=sys.stderr)
+    r = subprocess.run(cmd, text=True, env=os.environ, capture_output=True)
+    if r.returncode != 0:
+        print(f"[warn] Optional command failed: {' '.join(cmd)}\n{r.stderr}", file=sys.stderr)
+        return False
+    return True
+
 def iso_now():
     return datetime.datetime.utcnow().replace(microsecond=0).isoformat() + "Z"
 
 def tweet_id_from_url(url: str):
+    """Extract tweet ID from a Twitter/X URL."""
     m = re.search(r"/status/(\d+)", url)
     return m.group(1) if m else ""
 
 def extract_author(obj):
-    for key in ("author","user"):
+    """Extract author username from tweet object."""
+    for key in ("author", "user"):
         if key in obj and isinstance(obj[key], dict):
             u = obj[key].get("username") or obj[key].get("screen_name")
-            if u: return f"@{u}"
-    return f"@{obj.get('author_id','unknown')}"
+            if u:
+                return f"@{u}"
+    return f"@{obj.get('author_id', 'unknown')}"
 
-def fetch_thread(url: str, workdir: pathlib.Path):
-    raw_jsonl  = workdir / "thread.jsonl"
-    flat_jsonl = workdir / "thread_flat.jsonl"
+def fetch_tweet(url: str, workdir: pathlib.Path):
+    """
+    Fetch a single tweet using twarc2.
+
+    Note: On Twitter's free API tier, we can only fetch individual tweets,
+    not full conversations/threads. This is a limitation of the free tier.
+    """
+    raw_jsonl  = workdir / "tweet.jsonl"
+    flat_jsonl = workdir / "tweet_flat.jsonl"
+
+    bearer_token = get_bearer_token()
 
     tid = tweet_id_from_url(url) or url.strip()
     if not re.fullmatch(r"\d+", tid):
         raise RuntimeError(f"Could not extract numeric tweet ID from URL: {url}")
 
-    # Prefer the full conversation (writes to stdout, we capture to file)
-    # try:
-        # run_to_file(["twarc2", "conversation", tid], raw_jsonl)
-        # run_to_file(["twarc2", "--bearer-token", os.environ["TWITTER_BEARER_TOKEN"], "conversation", tid], raw_jsonl)
-    # except RuntimeError as e:
-        # print(f"[warn] conversation fetch failed, falling back to single tweet: {e}")
-    run_to_file(["twarc2", "--bearer-token", os.environ["TWITTER_BEARER_TOKEN"], "tweet", tid], raw_jsonl)
+    print(f"[info] Fetching tweet {tid}...", file=sys.stderr)
 
-    # Flatten: reads raw_jsonl, writes to stdout; capture to flat_jsonl
-    run_to_file(["twarc2", "--bearer-token", os.environ["TWITTER_BEARER_TOKEN"], "flatten", str(raw_jsonl)], flat_jsonl)
+    # Fetch single tweet (works on free tier)
+    run_to_file(["twarc2", "--bearer-token", bearer_token, "tweet", tid], raw_jsonl)
 
-    # Media: reads raw_jsonl and downloads to a directory
+    # Flatten the JSON for easier processing
+    run_to_file(["twarc2", "--bearer-token", bearer_token, "flatten", str(raw_jsonl)], flat_jsonl)
+
+    # Try to download media (non-fatal if it fails)
     tmp_media = workdir / "media"
     tmp_media.mkdir(exist_ok=True)
-    run_check(["twarc2", "--bearer-token", os.environ["TWITTER_BEARER_TOKEN"], "media", str(raw_jsonl), "--download-dir", str(tmp_media)])
+    media_success = run_optional([
+        "twarc2", "--bearer-token", bearer_token,
+        "media", str(raw_jsonl), "--download-dir", str(tmp_media)
+    ])
 
+    if not media_success:
+        print("[info] Media download skipped or failed (tweet may have no media)", file=sys.stderr)
+
+    # Move downloaded media to permanent locations
     moved = []
     for f in tmp_media.rglob("*"):
         if not f.is_file():
@@ -86,6 +116,7 @@ def fetch_thread(url: str, workdir: pathlib.Path):
             i += 1
         shutil.move(str(f), str(target))
         moved.append(target.name)
+        print(f"[info] Saved media: {target.name}", file=sys.stderr)
 
     return raw_jsonl, flat_jsonl, moved
 
@@ -157,15 +188,31 @@ def build_markdown(objs, url: str, local_media_files):
     return md_path, meta
 
 def archive(url: str):
+    """Archive a tweet to Markdown with media."""
+    print(f"[info] Archiving: {url}", file=sys.stderr)
+
     with tempfile.TemporaryDirectory() as td:
         workdir = pathlib.Path(td)
-        _, flat, local_media = fetch_thread(url, workdir)
+        _, flat, local_media = fetch_tweet(url, workdir)
         objs = read_jsonl(flat)
+
+        if not objs:
+            print(f"[warn] No tweet data found for {url}", file=sys.stderr)
+
         md_path, meta = build_markdown(objs, url, local_media)
-        print(json.dumps({"archived": meta, "md": str(md_path)}))  # for caller
+        print(f"[info] Created: {md_path}", file=sys.stderr)
+
+        # Output JSON for caller (process_bookmarks.py expects this on last line)
+        print(json.dumps({"archived": meta, "md": str(md_path)}))
 
 if __name__ == "__main__":
     if len(sys.argv) < 2:
-        print("Usage: python scripts/archive_tweet.py <tweet_or_thread_url>")
+        print("Usage: python scripts/archive_tweet.py <tweet_url>", file=sys.stderr)
+        print("Requires TWITTER_BEARER_TOKEN environment variable.", file=sys.stderr)
         sys.exit(1)
-    archive(sys.argv[1])
+
+    try:
+        archive(sys.argv[1])
+    except Exception as e:
+        print(f"[error] {e}", file=sys.stderr)
+        sys.exit(1)
