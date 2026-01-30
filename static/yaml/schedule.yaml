@@ -38,20 +38,21 @@
     topics: Linear Regression
     assignments:
     - Reading 05
-- name: Supervised Learning
+- name: Supervised Learning I
   days:
   - date: Mon 09/29
     topics: Perceptrons
 - name: Exam 01
   days:
   - date: Wed 10/01
-    topics: Review
+    topics: Review 01
   - date: Mon 10/06
     topics: Exam 01
     assignments:
-    - Exam 01 Practice Packet
+    - Practice Packet 01
+    - Practice Packet 01 Solutions
     - Exam 01
-- name: Supervised Learning
+- name: Supervised Learning II
   days:
   - date: Wed 10/08
     topics: Logistic Regression and Gradient Descent
@@ -60,14 +61,15 @@
   - date: Mon 10/13
     topics: SVMs and KNNs
     assignments:
-    - Homework 02
     - Reading 07
-- name: Unsupervised Learning
+- name: Unsupervised Learning I
   days:
   - date: Wed 10/15
     topics: Clustering
+    assignments:
+    - Homework 02
 - name: Fall Break
-- name: Dimensionality Reduction
+- name: Unsupervised Learning II
   days:
   - date: Mon 10/27
     topics: Dimensionality Reduction
@@ -77,16 +79,17 @@
   days:
   - date: Wed 10/29
     topics: Practicum - Exploratory Data Analysis
-- name: ML to DL
+- name: 'Unit 03: Deep Learning'
+- name: Foundations of Deep Learning
   days:
   - date: Mon 11/03
-    topics: Multi-Layer Perceptrons (FFNs)
+    topics: Feedforward Neural Networks
     assignments:
     - Homework 03
     - Reading 09
   - date: Wed 11/05
     topics: Gradient Descent and Backpropagation
-- name: Foundations of Deep Learning
+- name: Computer Vision
   days:
   - date: Mon 11/10
     topics: Convolutional Neural Networks
@@ -94,17 +97,16 @@
     - Reading 11
 - name: Midterm 02
   days:
-  - date: Mon 11/12
+  - date: Wed 11/12
     topics: Review
     assignments:
     - Reading 10
-  - date: Wed 11/17
+  - date: Mon 11/17
     topics: Exam 02
     assignments:
     - Exam 02 Practice Packet
     - Exam 02
-- name: 'Unit 03: Deep Learning'
-- name: Foundations of Deep Learning
+- name: Natural Language Processing
   days:
   - date: Wed 11/19
     topics: Recurrent Neural Networks
@@ -124,7 +126,7 @@
     assignments:
     - Reading 14
   - date: Wed 12/03
-    topics: LLMs and Agents (Guest Lecture)
+    topics: LLMs and Agents
   - date: Mon 12/08
     topics: Diffusion Models
     assignments:
