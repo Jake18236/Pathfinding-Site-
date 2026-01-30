@@ -10,33 +10,15 @@ permalink: "knn.html"
 extraScript: "static/js/knn.js"
 ---
 
-{% from "components/dataset-selector.njk" import datasetSelector %}
 {% from "components/edit-toolbar.njk" import editToolbar %}
 {% from "components/legend.njk" import legend %}
-{% from "components/playback-controls.njk" import playbackControls %}
-{% from "components/algorithm-options.njk" import algorithmOptions %}
-{% from "components/metrics-panel.njk" import metricsPanel %}
 {% from "components/info-tabs.njk" import infoTabs %}
 
 <link rel="stylesheet" href="static/css/knn.css">
 
-<!-- Dataset Selector Panel -->
-{{ datasetSelector(
-    datasets=[
-        {id: 'moons', label: 'Moons', title: 'Two interleaving half circles', active: true},
-        {id: 'circles', label: 'Circles', title: 'Concentric circles'},
-        {id: 'blobs', label: 'Blobs', title: 'Gaussian blobs'},
-        {id: 'linear', label: 'Linear', title: 'Linearly separable'},
-        {id: 'xor', label: 'XOR', title: 'XOR pattern'},
-        {id: 'spiral', label: 'Spiral', title: 'Two spirals'},
-        {id: 'custom', label: 'Custom', title: 'Draw your own'}
-    ],
-    defaultInfo='Two interleaving half circles - a classic non-linear classification problem'
-) }}
-
-<!-- Main Content: Canvas (left) + Controls/Info (right) -->
+<!-- Main Content: Canvas + Controls (left) + Info (right) -->
 <div class="row" id="main-content">
-    <!-- Left Column: Classification Canvas -->
+    <!-- Left Column: Classification Canvas + Controls -->
     <div class="col-md-7">
         <div class="panel panel-default">
             <div class="panel-heading">
@@ -64,6 +46,9 @@ extraScript: "static/js/knn.js"
                         <div class="spinner"></div>
                         <div class="loading-text">Computing boundaries...</div>
                     </div>
+                    <div id="click-overlay" class="click-overlay">
+                        <span>Click anywhere to classify</span>
+                    </div>
                 </div>
                 {{ legend(
                     items=[
@@ -77,51 +62,81 @@ extraScript: "static/js/knn.js"
             </div>
         </div>
 
-        <!-- Playback Controls Panel -->
-        {{ playbackControls(
-            buttons=[
-                {id: 'btn-play', icon: 'play', label: 'Play', style: 'success', title: 'Play classification animation', disabled: true},
-                {id: 'btn-pause', icon: 'pause', style: 'warning', title: 'Pause', disabled: true},
-                {id: 'btn-step-back', icon: 'step-backward', style: 'info', title: 'Step backward', disabled: true},
-                {id: 'btn-step-forward', icon: 'step-forward', style: 'info', title: 'Step forward', disabled: true},
-                {id: 'btn-reset', icon: 'refresh', style: 'danger', title: 'Reset classification'}
-            ],
-            statusId='playback-step',
-            statusText='Click anywhere to classify'
-        ) }}
+        <!-- Combined Controls Panel -->
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title"><i class="fa fa-sliders"></i> Controls</h3>
+            </div>
+            <div class="panel-body compact-panel knn-controls-panel">
+                <!-- Left: Algorithm Options -->
+                <div class="knn-options-col">
+                    <div class="knn-option-group">
+                        <div class="option-row">
+                            <label>Dataset:</label>
+                            <select id="dataset-select" class="form-control input-sm">
+                                <option value="moons" selected>Moons</option>
+                                <option value="circles">Circles</option>
+                                <option value="blobs">Blobs</option>
+                                <option value="linear">Linear</option>
+                                <option value="xor">XOR</option>
+                                <option value="spiral">Spiral</option>
+                                <option value="custom">Custom</option>
+                            </select>
+                        </div>
+                        <div class="option-row">
+                            <label>Distance:</label>
+                            <select id="distance-metric" class="form-control input-sm">
+                                <option value="euclidean" selected>Euclidean</option>
+                                <option value="manhattan">Manhattan</option>
+                                <option value="chebyshev">Chebyshev</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="knn-option-group">
+                        <div class="option-row">
+                            <label>K:</label>
+                            <div class="k-stepper">
+                                <button id="k-minus" class="btn btn-xs btn-default" title="Decrease K">−</button>
+                                <input type="text" id="k-value" class="k-input" value="3" readonly>
+                                <button id="k-plus" class="btn btn-xs btn-default" title="Increase K">+</button>
+                            </div>
+                        </div>
+                        <label class="checkbox-label"><input type="checkbox" id="show-boundaries"> Boundaries</label>
+                        <label class="checkbox-label"><input type="checkbox" id="weighted-knn"> Weighted</label>
+                    </div>
+                </div>
+                <!-- Right: Playback -->
+                <div class="knn-playback-col">
+                    <div class="btn-toolbar" role="toolbar">
+                        <button id="btn-play" class="btn btn-sm btn-success" title="Play" disabled>
+                            <i class="fa fa-play"></i>
+                        </button>
+                        <button id="btn-pause" class="btn btn-sm btn-warning" title="Pause" disabled>
+                            <i class="fa fa-pause"></i>
+                        </button>
+                        <button id="btn-step-back" class="btn btn-sm btn-info" title="Step back" disabled>
+                            <i class="fa fa-step-backward"></i>
+                        </button>
+                        <button id="btn-step-forward" class="btn btn-sm btn-info" title="Step forward" disabled>
+                            <i class="fa fa-step-forward"></i>
+                        </button>
+                        <button id="btn-reset" class="btn btn-sm btn-danger" title="Reset">
+                            <i class="fa fa-refresh"></i>
+                        </button>
+                    </div>
+                    <div class="speed-control">
+                        <i class="fa fa-tachometer"></i>
+                        <input type="range" id="speed-slider" min="1" max="10" value="5">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Hidden playback status for JS -->
+        <span id="playback-step" style="display:none;"></span>
     </div>
 
-    <!-- Right Column: Controls + Info -->
+    <!-- Right Column: Info -->
     <div class="col-md-5">
-        <!-- Algorithm Options Panel -->
-        {{ algorithmOptions(
-            options=[
-                {type: 'slider', label: 'K Value', id: 'k-slider', min: 1, max: 15, value: 3, valueId: 'k-value'},
-                {type: 'select', label: 'Distance Metric', id: 'distance-metric', options: [
-                    {value: 'euclidean', text: 'Euclidean', selected: true},
-                    {value: 'manhattan', text: 'Manhattan'},
-                    {value: 'chebyshev', text: 'Chebyshev'}
-                ]},
-                {type: 'checkbox', label: 'Show decision boundaries', id: 'show-boundaries'},
-                {type: 'checkbox', label: 'Weighted voting (1/distance)', id: 'weighted-knn'}
-            ]
-        ) }}
-
-        <!-- Metrics Panel -->
-        {{ metricsPanel(
-            title='Classification Result',
-            metrics=[
-                {icon: 'fa-crosshairs', label: 'Query Point', id: 'metric-query'},
-                {icon: 'fa-tag', label: 'Prediction', id: 'metric-prediction'},
-                {icon: 'fa-percent', label: 'Confidence', id: 'metric-confidence'},
-                {icon: 'fa-users', label: 'K Neighbors', id: 'metric-neighbors'}
-            ],
-            extraContent='<div id="vote-breakdown" class="vote-breakdown" style="display: none;">
-                <div class="vote-header">Vote Breakdown:</div>
-                <div id="vote-bars" class="vote-bars"></div>
-            </div>'
-        ) }}
-
         <!-- Tabbed Info Panel -->
         {{ infoTabs(
             tabs=[
