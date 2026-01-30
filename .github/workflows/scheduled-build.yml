@@ -26,15 +26,22 @@ jobs:
           path: source
           fetch-depth: 0
 
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: source/package-lock.json
+
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.11'
 
-      - name: Install dependencies
+      - name: Install Python dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install tornado markdown PyYAML python-dateutil requests nbconvert
+          pip install PyYAML python-dateutil requests
 
       - name: Checkout gh-pages (publish)
         uses: actions/checkout@v4
@@ -50,24 +57,30 @@ jobs:
             rsync -a publish/docs/static/img/book_cover_thumbnails/ source/static/img/book_cover_thumbnails/
           fi
 
-      - name: Build site
+      - name: Fetch external data
         working-directory: source
         env:
           COURSE_RESOURCES_CSV_URL: https://docs.google.com/spreadsheets/d/e/2PACX-1vQ0MhdIkphQZpu5C2sQ_1WhGdE8DLxxlVtRirER3_wLgUsli0wvjdq-rYQeStwf9ubSVeDaKDNUbYeh/pub?gid=518321558&single=true&output=csv
         run: |
-          mkdir -p static/csv static/img/book_cover_thumbnails
+          mkdir -p static/csv static/img/book_cover_thumbnails static/json
           curl -L -s "$COURSE_RESOURCES_CSV_URL" -o static/csv/resources.csv
           python3 scripts/fetch_book_covers.py \
             --resources static/csv/resources.csv \
             --dest static/img/book_cover_thumbnails \
             --size L \
             --pause 0.05
-          mkdir -p static/json
           python3 scripts/fetch_course_changelog.py \
             --config config/course_changelog.yaml \
             --out static/json/course_changelog.json \
             --limit 5
-          make clean && make build
+
+      - name: Install npm dependencies
+        working-directory: source
+        run: npm ci
+
+      - name: Build site with Eleventy
+        working-directory: source
+        run: npm run build
 
       - name: Sync built docs to gh-pages/docs
         run: |
