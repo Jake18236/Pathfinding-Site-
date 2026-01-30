@@ -28,10 +28,12 @@
     <div class="col-lg-3 col-md-6 col-sm-6 viz-card-wrapper" style="margin-bottom: 20px;" data-haystack="a* pathfinding search heuristics manhattan euclidean dijkstra grid optimal paths">
         <div class="viz-card">
             <a href="astar.html" class="viz-card-link">
-                <div class="viz-card-icon">
-                    <i class="fa fa-route"></i>
+                <div class="viz-card-header">
+                    <div class="viz-card-icon">
+                        <i class="fa fa-route"></i>
+                    </div>
+                    <h4 class="viz-card-title">A* Pathfinding</h4>
                 </div>
-                <h4 class="viz-card-title">A* Pathfinding</h4>
                 <p class="viz-card-description">
                     Visualize the A* search algorithm finding optimal paths through grids.
                     Compare heuristics like Manhattan, Euclidean, and Dijkstra.
@@ -48,10 +50,12 @@
     <div class="col-lg-3 col-md-6 col-sm-6 viz-card-wrapper" style="margin-bottom: 20px;" data-haystack="minimax alpha-beta pruning game theory adversarial tic-tac-toe nim game trees">
         <div class="viz-card">
             <a href="minimax.html" class="viz-card-link">
-                <div class="viz-card-icon">
-                    <i class="fa fa-gamepad"></i>
+                <div class="viz-card-header">
+                    <div class="viz-card-icon">
+                        <i class="fa fa-gamepad"></i>
+                    </div>
+                    <h4 class="viz-card-title">Minimax & Alpha-Beta</h4>
                 </div>
-                <h4 class="viz-card-title">Minimax & Alpha-Beta</h4>
                 <p class="viz-card-description">
                     Watch game trees expand with minimax and alpha-beta pruning.
                     Play Tic-Tac-Toe and Nim against optimal strategies.
@@ -68,10 +72,12 @@
     <div class="col-lg-3 col-md-6 col-sm-6 viz-card-wrapper" style="margin-bottom: 20px;" data-haystack="dimensionality reduction mnist cifar-10 pca t-sne umap cnn embeddings ml visualization machine learning">
         <div class="viz-card">
             <a href="mnist.html" class="viz-card-link">
-                <div class="viz-card-icon">
-                    <i class="fa fa-braille"></i>
+                <div class="viz-card-header">
+                    <div class="viz-card-icon">
+                        <i class="fa fa-braille"></i>
+                    </div>
+                    <h4 class="viz-card-title">Dimensionality Reduction</h4>
                 </div>
-                <h4 class="viz-card-title">Dimensionality Reduction</h4>
                 <p class="viz-card-description">
                     Project MNIST and CIFAR-10 into 2D using PCA, t-SNE, and UMAP.
                     Watch CNN embeddings evolve during training.
@@ -88,10 +94,12 @@
     <div class="col-lg-3 col-md-6 col-sm-6 viz-card-wrapper" style="margin-bottom: 20px;" data-haystack="constraint satisfaction csp shidoku sudoku backtracking ac-3 mrv mac arc consistency search trees">
         <div class="viz-card">
             <a href="shidoku.html" class="viz-card-link">
-                <div class="viz-card-icon">
-                    <i class="fa fa-puzzle-piece"></i>
+                <div class="viz-card-header">
+                    <div class="viz-card-icon">
+                        <i class="fa fa-puzzle-piece"></i>
+                    </div>
+                    <h4 class="viz-card-title">Constraint Satisfaction</h4>
                 </div>
-                <h4 class="viz-card-title">Constraint Satisfaction</h4>
                 <p class="viz-card-description">
                     Solve Shidoku (4x4 Sudoku) with backtracking, AC-3, MRV, and MAC.
                     Visualize search trees and arc consistency.
@@ -156,26 +164,33 @@ window.addEventListener("load", function() {
     color: inherit;
 }
 
+.viz-card-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 12px;
+}
+
 .viz-card-icon {
-    width: 56px;
-    height: 56px;
-    border-radius: 12px;
+    width: 40px;
+    height: 40px;
+    border-radius: 8px;
     background: #002b5c;
     display: flex;
     align-items: center;
     justify-content: center;
-    margin-bottom: 16px;
+    flex-shrink: 0;
 }
 
 .viz-card-icon i {
-    font-size: 24px;
+    font-size: 18px;
     color: #fff;
 }
 
 .viz-card-title {
     font-size: 1.1em;
     font-weight: 600;
-    margin: 0 0 10px 0;
+    margin: 0;
     color: #1a1a2e;
 }
 
