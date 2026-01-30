@@ -12,182 +12,242 @@ extraScript: "static/js/astar.js"
 
 <link rel="stylesheet" href="static/css/astar.css">
 
-<!-- Main Content: Grid (left 60%) + Controls/Info (right 40%) -->
+<!-- Main Content: Grid (left) + Info Tabs (right) -->
 <div class="row" id="main-content">
-    <!-- Left Column: Pathfinding Grid -->
+    <!-- Left Column: Pathfinding Grid + Options/Metrics -->
     <div class="col-md-7">
         <div class="panel panel-default">
-            <div class="panel-heading">
-                <div class="panel-heading-content">
-                    <div class="btn-group sample-input-tabs" role="group">
-                        <button type="button" class="btn btn-sm btn-default active" data-sample="easy" title="Simple direct path">Easy</button>
-                        <button type="button" class="btn btn-sm btn-default" data-sample="medium" title="Moderate obstacles">Medium</button>
-                        <button type="button" class="btn btn-sm btn-default" data-sample="hard" title="Complex maze">Hard</button>
-                        <button type="button" class="btn btn-sm btn-default" data-sample="maze" title="Classic maze">Maze</button>
-                        <button type="button" class="btn btn-sm btn-default" data-sample="nosolution" title="Blocked goal">No Solution</button>
-                    </div>
-                </div>
-            </div>
             <div class="panel-body grid-panel-body">
-                <div class="edit-toolbar">
-                    <div class="btn-group edit-mode-buttons" role="group">
-                        <button type="button" class="btn btn-sm btn-default active" data-mode="wall" title="Draw walls">
-                            <i class="fa fa-square"></i> Wall
+                <!-- Combined Toolbar: Sample select, Edit buttons, Playback controls -->
+                <div class="unified-toolbar">
+                    <div class="toolbar-left">
+                        <div class="sample-select-wrapper">
+                            <select id="sample-select" class="form-control input-sm">
+                                <optgroup label="Grid Maps">
+                                    <option value="easy" selected>Grid: Easy</option>
+                                    <option value="medium">Grid: Medium</option>
+                                    <option value="hard">Grid: Hard</option>
+                                    <option value="maze">Grid: Maze</option>
+                                    <option value="nosolution">Grid: No Solution</option>
+                                    <option value="custom">Grid: Custom</option>
+                                </optgroup>
+                                <optgroup label="Direct Graphs">
+                                    <option value="graph-simple">Graph: Simple</option>
+                                    <option value="graph-trap">Graph: Trap</option>
+                                    <option value="graph-custom">Graph: Custom</option>
+                                </optgroup>
+                            </select>
+                        </div>
+                        <!-- Grid edit buttons -->
+                        <div class="btn-group edit-mode-buttons grid-controls" role="group" id="edit-mode-buttons">
+                            <button type="button" class="btn btn-sm btn-default" data-mode="wall" title="Draw walls" disabled>
+                                <i class="fa fa-square"></i>
+                            </button>
+                            <button type="button" class="btn btn-sm btn-default" data-mode="start" title="Place start" disabled>
+                                <i class="fa fa-play-circle"></i>
+                            </button>
+                            <button type="button" class="btn btn-sm btn-default" data-mode="goal" title="Place goal" disabled>
+                                <i class="fa fa-flag-checkered"></i>
+                            </button>
+                            <button type="button" class="btn btn-sm btn-default" data-mode="erase" title="Erase cells" disabled>
+                                <i class="fa fa-eraser"></i>
+                            </button>
+                        </div>
+                        <button id="btn-clear-grid" class="btn btn-sm btn-danger grid-controls" title="Clear entire grid" disabled>
+                            <i class="fa fa-trash"></i>
                         </button>
-                        <button type="button" class="btn btn-sm btn-default" data-mode="start" title="Place start">
-                            <i class="fa fa-play-circle"></i> Start
-                        </button>
-                        <button type="button" class="btn btn-sm btn-default" data-mode="goal" title="Place goal">
-                            <i class="fa fa-flag-checkered"></i> Goal
-                        </button>
-                        <button type="button" class="btn btn-sm btn-default" data-mode="erase" title="Erase cells">
-                            <i class="fa fa-eraser"></i> Erase
+                        <!-- Graph edit buttons (hidden by default) -->
+                        <div class="btn-group graph-edit-buttons graph-controls" role="group" style="display: none;">
+                            <button type="button" class="btn btn-sm btn-default" data-mode="node" title="Add/edit node" disabled>
+                                <i class="fa fa-circle-o"></i>
+                            </button>
+                            <button type="button" class="btn btn-sm btn-default" data-mode="edge" title="Add edge" disabled>
+                                <i class="fa fa-long-arrow-right"></i>
+                            </button>
+                            <button type="button" class="btn btn-sm btn-default" data-mode="start" title="Set start" disabled>
+                                <i class="fa fa-play-circle"></i>
+                            </button>
+                            <button type="button" class="btn btn-sm btn-default" data-mode="goal" title="Set goal" disabled>
+                                <i class="fa fa-flag-checkered"></i>
+                            </button>
+                            <button type="button" class="btn btn-sm btn-default" data-mode="delete" title="Delete" disabled>
+                                <i class="fa fa-eraser"></i>
+                            </button>
+                        </div>
+                        <button id="btn-clear-graph" class="btn btn-sm btn-danger graph-controls" title="Clear graph" disabled style="display: none;">
+                            <i class="fa fa-trash"></i>
                         </button>
                     </div>
-                    <button id="btn-clear-grid" class="btn btn-sm btn-danger" title="Clear entire grid">
-                        <i class="fa fa-trash"></i> Clear
-                    </button>
+                    <div class="toolbar-right">
+                        <div class="btn-group playback-buttons" role="group">
+                            <button id="btn-solve" class="btn btn-sm btn-success" title="Run A* algorithm">
+                                <i class="fa fa-play"></i>
+                            </button>
+                            <button id="btn-pause" class="btn btn-sm btn-warning" title="Pause/Resume" disabled>
+                                <i class="fa fa-pause"></i>
+                            </button>
+                            <button id="btn-step-back" class="btn btn-sm btn-info" title="Step backward" disabled>
+                                <i class="fa fa-step-backward"></i>
+                            </button>
+                            <button id="btn-step" class="btn btn-sm btn-info" title="Step forward" disabled>
+                                <i class="fa fa-step-forward"></i>
+                            </button>
+                            <button id="btn-reset" class="btn btn-sm btn-danger" title="Reset visualization">
+                                <i class="fa fa-refresh"></i>
+                            </button>
+                        </div>
+                        <div class="speed-control-inline">
+                            <input type="range" id="speed-slider" min="1" max="10" value="9" title="Playback speed">
+                        </div>
+                    </div>
                 </div>
+
                 <div class="grid-wrapper">
+                    <!-- Grid visualization -->
                     <div id="pathfinding-grid" class="pathfinding-grid">
                         <!-- Grid cells generated by JavaScript -->
                     </div>
                     <svg id="heuristic-overlay" class="heuristic-overlay">
                         <!-- Heuristic visualization lines drawn here -->
                     </svg>
+                    <!-- Graph visualization (hidden by default) -->
+                    <div id="graph-visualization" class="graph-visualization" style="display: none;">
+                        <!-- SVG graph rendered by JavaScript -->
+                    </div>
                 </div>
-                <div class="grid-legend">
-                    <span class="legend-item"><span class="legend-color legend-start"></span> Start</span>
-                    <span class="legend-item"><span class="legend-color legend-goal"></span> Goal</span>
-                    <span class="legend-item"><span class="legend-color legend-wall"></span> Wall</span>
-                    <span class="legend-item"><span class="legend-color legend-open"></span> Open</span>
-                    <span class="legend-item"><span class="legend-color legend-closed"></span> Closed</span>
-                    <span class="legend-item"><span class="legend-color legend-current"></span> Current</span>
-                    <span class="legend-item"><span class="legend-color legend-path"></span> Path</span>
-                    <span class="legend-item"><span class="legend-line legend-heuristic"></span> h(n)</span>
-                </div>
-            </div>
-        </div>
 
-        <!-- Playback Controls Panel (under grid) -->
-        <div class="panel panel-default">
-            <div class="panel-body playback-panel-body">
-                <div class="playback-controls-row">
-                    <div class="btn-toolbar playback-buttons" role="toolbar">
-                        <button id="btn-solve" class="btn btn-success" title="Run A* algorithm">
-                            <i class="fa fa-play"></i> Solve
-                        </button>
-                        <button id="btn-pause" class="btn btn-warning" title="Pause/Resume" disabled>
-                            <i class="fa fa-pause"></i>
-                        </button>
-                        <button id="btn-step-back" class="btn btn-info" title="Step backward" disabled>
-                            <i class="fa fa-step-backward"></i>
-                        </button>
-                        <button id="btn-step" class="btn btn-info" title="Step forward" disabled>
-                            <i class="fa fa-step-forward"></i>
-                        </button>
-                        <button id="btn-reset" class="btn btn-danger" title="Reset visualization">
-                            <i class="fa fa-refresh"></i>
-                        </button>
+                <!-- Graph heuristics table (hidden by default) -->
+                <div id="graph-heuristics-panel" class="graph-heuristics-panel graph-controls" style="display: none;">
+                    <span class="heuristics-title">Node Heuristics (h-values)</span>
+                    <div id="graph-heuristics-table" class="heuristics-table">
+                        <!-- Populated by JavaScript -->
+                    </div>
+                </div>
+
+                <div class="grid-footer">
+                    <!-- Grid legend -->
+                    <div class="grid-legend grid-controls">
+                        <span class="legend-item"><span class="legend-color legend-start"></span> Start</span>
+                        <span class="legend-item"><span class="legend-color legend-goal"></span> Goal</span>
+                        <span class="legend-item"><span class="legend-color legend-wall"></span> Wall</span>
+                        <span class="legend-item"><span class="legend-color legend-open"></span> Frontier</span>
+                        <span class="legend-item"><span class="legend-color legend-closed"></span> Visited</span>
+                        <span class="legend-item"><span class="legend-color legend-path"></span> Path</span>
+                    </div>
+                    <!-- Graph legend (hidden by default) -->
+                    <div class="grid-legend graph-controls" style="display: none;">
+                        <span class="legend-item"><span class="legend-color legend-start"></span> Start</span>
+                        <span class="legend-item"><span class="legend-color legend-goal"></span> Goal</span>
+                        <span class="legend-item"><span class="legend-color legend-open"></span> Frontier</span>
+                        <span class="legend-item"><span class="legend-color legend-closed"></span> Visited</span>
+                        <span class="legend-item"><span class="legend-color legend-path"></span> Path</span>
                     </div>
                     <div class="playback-status">
                         <span id="playback-step">Step: 0 / 0</span>
                     </div>
-                    <div class="speed-control-inline">
-                        <label><i class="fa fa-tachometer"></i></label>
-                        <input type="range" id="speed-slider" min="1" max="10" value="9">
+                </div>
+            </div>
+        </div>
+
+        <!-- Algorithm Options + Metrics (side by side under grid) -->
+        <div class="row options-metrics-row">
+            <div class="col-sm-7">
+                <div class="panel panel-default compact-options-panel">
+                    <div class="panel-heading panel-heading-sm">
+                        <h3 class="panel-title"><i class="fa fa-cogs"></i> Algorithm Options</h3>
+                    </div>
+                    <div class="panel-body">
+                        <div class="options-grid">
+                            <div class="option-item">
+                                <label>Algorithm:</label>
+                                <select id="heuristic-select" class="form-control input-sm">
+                                    <option value="manhattan" selected>A* Manhattan</option>
+                                    <option value="euclidean">A* Euclidean</option>
+                                    <option value="chebyshev">A* Chebyshev</option>
+                                    <option value="dijkstra">Dijkstra (h=0)</option>
+                                    <option value="bfs">BFS</option>
+                                    <option value="dfs">DFS</option>
+                                </select>
+                            </div>
+                            <div class="option-item grid-controls">
+                                <label>Movement:</label>
+                                <select id="movement-mode" class="form-control input-sm">
+                                    <option value="grid" selected>4-Dir</option>
+                                    <option value="free">8-Dir</option>
+                                </select>
+                            </div>
+                            <div class="option-item">
+                                <label>Tie-break:</label>
+                                <select id="tiebreaker-select" class="form-control input-sm">
+                                    <option value="none">None</option>
+                                    <option value="highg" selected>High g</option>
+                                    <option value="lowg">Low g</option>
+                                </select>
+                            </div>
+                            <div class="option-item">
+                                <label>Weight:</label>
+                                <div class="weight-control">
+                                    <input type="range" id="heuristic-weight" min="1" max="3" step="0.1" value="1">
+                                    <span id="weight-value">1.0</span>
+                                </div>
+                            </div>
+                            <div class="option-item checkbox-item">
+                                <label class="checkbox-inline">
+                                    <input type="checkbox" id="show-values"> Show f/g/h
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-5">
+                <div class="panel panel-default compact-metrics-panel">
+                    <div class="panel-heading panel-heading-sm">
+                        <h3 class="panel-title"><i class="fa fa-bar-chart"></i> Metrics</h3>
+                    </div>
+                    <div class="panel-body">
+                        <div class="metrics-grid">
+                            <div class="metric-item">
+                                <span class="metric-label"><i class="fa fa-expand"></i> Explored</span>
+                                <span id="metric-expanded" class="metric-value">0</span>
+                            </div>
+                            <div class="metric-item">
+                                <span class="metric-label"><i class="fa fa-plus-square"></i> Discovered</span>
+                                <span id="metric-generated" class="metric-value">0</span>
+                            </div>
+                            <div class="metric-item">
+                                <span class="metric-label"><i class="fa fa-road"></i> Path Len</span>
+                                <span id="metric-path-length" class="metric-value">-</span>
+                            </div>
+                            <div class="metric-item">
+                                <span class="metric-label"><i class="fa fa-calculator"></i> Cost</span>
+                                <span id="metric-path-cost" class="metric-value">-</span>
+                            </div>
+                            <div class="metric-item metric-time">
+                                <span class="metric-label"><i class="fa fa-clock-o"></i> Time</span>
+                                <span id="metric-time" class="metric-value">0.00ms</span>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Right Column: Controls + Info Tabs -->
+    <!-- Right Column: Info Tabs -->
     <div class="col-md-5">
-        <!-- Algorithm Options Panel -->
-        <div class="panel panel-default">
-            <div class="panel-heading">
-                <h3 class="panel-title"><i class="fa fa-cogs"></i> Algorithm Options</h3>
-            </div>
-            <div class="panel-body compact-panel">
-                <div class="option-row">
-                    <label>Heuristic:</label>
-                    <select id="heuristic-select" class="form-control input-sm">
-                        <option value="manhattan" selected>Manhattan (default)</option>
-                        <option value="euclidean">Euclidean</option>
-                        <option value="chebyshev">Chebyshev</option>
-                        <option value="dijkstra">Dijkstra (h=0)</option>
-                    </select>
-                </div>
-                <div class="option-row">
-                    <label>Movement:</label>
-                    <select id="movement-mode" class="form-control input-sm">
-                        <option value="grid" selected>4-Directional (Grid)</option>
-                        <option value="free">8-Directional (Free Space)</option>
-                    </select>
-                </div>
-                <div class="option-row">
-                    <label class="checkbox-inline">
-                        <input type="checkbox" id="show-values">
-                        Show f/g/h values
-                    </label>
-                </div>
-                <div class="option-row">
-                    <label>Heuristic weight:</label>
-                    <div class="weight-control">
-                        <input type="range" id="heuristic-weight" min="1" max="3" step="0.1" value="1">
-                        <span id="weight-value">1.0</span>
-                    </div>
-                </div>
-                <div class="option-row">
-                    <label>Tie-breaker:</label>
-                    <select id="tiebreaker-select" class="form-control input-sm">
-                        <option value="none">None</option>
-                        <option value="highg" selected>Prefer higher g (default)</option>
-                        <option value="lowg">Prefer lower g</option>
-                    </select>
-                </div>
-            </div>
-        </div>
-
-        <!-- Metrics Panel -->
-        <div class="panel panel-default">
-            <div class="panel-heading">
-                <h3 class="panel-title"><i class="fa fa-bar-chart"></i> Metrics</h3>
-            </div>
-            <div class="panel-body compact-panel">
-                <table class="table table-condensed metrics-table">
-                    <tbody>
-                        <tr>
-                            <td><i class="fa fa-expand"></i> Explored</td>
-                            <td id="metric-expanded" class="text-right metric-value">0</td>
-                            <td><i class="fa fa-plus-square"></i> Discovered</td>
-                            <td id="metric-generated" class="text-right metric-value">0</td>
-                        </tr>
-                        <tr>
-                            <td><i class="fa fa-road"></i> Path Length</td>
-                            <td id="metric-path-length" class="text-right metric-value">-</td>
-                            <td><i class="fa fa-calculator"></i> Path Cost</td>
-                            <td id="metric-path-cost" class="text-right metric-value">-</td>
-                        </tr>
-                        <tr>
-                            <td><i class="fa fa-clock-o"></i> Time</td>
-                            <td id="metric-time" class="text-right metric-value" colspan="3">0.00ms</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-
         <!-- Tabbed Info Panel -->
-        <div class="panel panel-default">
+        <div class="panel panel-default info-panel">
             <div class="panel-heading">
                 <div class="btn-group info-panel-tabs" role="group">
                     <button type="button" class="btn btn-sm btn-default active" data-tab="about">
                         <i class="fa fa-info-circle"></i> About
                     </button>
+                    <button type="button" class="btn btn-sm btn-default" data-tab="pseudocode">
+                        <i class="fa fa-code"></i> Code
+                    </button>
                     <button type="button" class="btn btn-sm btn-default" data-tab="lists">
-                        <i class="fa fa-list"></i> Open/Closed
+                        <i class="fa fa-list"></i> Lists
                     </button>
                     <button type="button" class="btn btn-sm btn-default" data-tab="log">
                         <i class="fa fa-terminal"></i> Log
@@ -219,26 +279,58 @@ extraScript: "static/js/astar.js"
                     <p><strong>Free Space (8-dir):</strong> Use <em>Euclidean</em> or <em>Chebyshev</em> - they match diagonal movement costs.</p>
                     <ul class="algorithm-list">
                         <li><strong>Manhattan</strong> - |dx| + |dy|</li>
-                        <li><strong>Euclidean</strong> - sqrt(dx^2 + dy^2)</li>
+                        <li><strong>Euclidean</strong> - sqrt(dx² + dy²)</li>
                         <li><strong>Chebyshev</strong> - max(|dx|, |dy|)</li>
                         <li><strong>Dijkstra</strong> - h=0 (no heuristic)</li>
                     </ul>
-                    <p class="text-muted" style="font-size: 11px; margin-top: 8px;">
-                        Mismatched heuristics still find optimal paths but explore more nodes.
-                    </p>
+                    <h4><i class="fa fa-sitemap"></i> Other Algorithms</h4>
+                    <ul class="algorithm-list">
+                        <li><strong>BFS</strong> - Breadth-first search explores all nodes at depth d before d+1. Guarantees shortest path (by hop count).</li>
+                        <li><strong>DFS</strong> - Depth-first search explores as deep as possible before backtracking. Fast but does not guarantee shortest path.</li>
+                    </ul>
                 </div>
 
-                <!-- Open/Closed Lists Tab -->
+                <!-- Pseudocode Tab -->
+                <div id="tab-pseudocode" class="info-tab-content">
+                    <div class="pseudocode-container">
+                        <pre class="pseudocode"><code><span class="line" data-line="init"><span class="keyword">function</span> <span class="function">A*</span>(start, goal):</span>
+<span class="line" data-line="init-open">    openSet ← {start}</span>
+<span class="line" data-line="init-closed">    closedSet ← {}</span>
+<span class="line" data-line="init-g">    g[start] ← <span class="number">0</span></span>
+<span class="line" data-line="init-f">    f[start] ← h(start, goal)</span>
+<span class="line" data-line="while">    <span class="keyword">while</span> openSet <span class="keyword">is not</span> empty:</span>
+<span class="line" data-line="select">        current ← node in openSet with lowest f</span>
+<span class="line" data-line="goal-found">        <span class="keyword">if</span> current = goal:</span>
+<span class="line" data-line="return-path">            <span class="keyword">return</span> reconstructPath(current)</span>
+<span class="line" data-line="remove-open">        openSet.remove(current)</span>
+<span class="line" data-line="add-closed">        closedSet.add(current)</span>
+<span class="line" data-line="for-neighbor">        <span class="keyword">for each</span> neighbor <span class="keyword">of</span> current:</span>
+<span class="line" data-line="skip-closed">            <span class="keyword">if</span> neighbor <span class="keyword">in</span> closedSet: <span class="keyword">continue</span></span>
+<span class="line" data-line="tentative-g">            tentativeG ← g[current] + cost(current, neighbor)</span>
+<span class="line" data-line="if-better">            <span class="keyword">if</span> tentativeG &lt; g[neighbor]:</span>
+<span class="line" data-line="update-parent">                parent[neighbor] ← current</span>
+<span class="line" data-line="update-g">                g[neighbor] ← tentativeG</span>
+<span class="line" data-line="update-f">                f[neighbor] ← g[neighbor] + h(neighbor, goal)</span>
+<span class="line" data-line="add-to-open">                <span class="keyword">if</span> neighbor <span class="keyword">not in</span> openSet:</span>
+<span class="line" data-line="push-open">                    openSet.add(neighbor)</span>
+<span class="line" data-line="no-path">    <span class="keyword">return</span> <span class="string">"no path found"</span></span></code></pre>
+                    </div>
+                    <div class="pseudocode-legend">
+                        <span class="legend-active"><i class="fa fa-arrow-right"></i> Current step</span>
+                    </div>
+                </div>
+
+                <!-- Frontier/Visited Lists Tab -->
                 <div id="tab-lists" class="info-tab-content">
                     <div class="lists-container">
                         <div class="list-section">
-                            <h5><i class="fa fa-folder-open"></i> Open List <span id="open-count" class="badge">0</span></h5>
+                            <h5><i class="fa fa-folder-open"></i> Frontier <span id="open-count" class="badge">0</span></h5>
                             <div id="open-list" class="node-list">
                                 <div class="list-empty">No nodes yet</div>
                             </div>
                         </div>
                         <div class="list-section">
-                            <h5><i class="fa fa-folder"></i> Closed List <span id="closed-count" class="badge">0</span></h5>
+                            <h5><i class="fa fa-folder"></i> Visited <span id="closed-count" class="badge">0</span></h5>
                             <div id="closed-list" class="node-list">
                                 <div class="list-empty">No nodes yet</div>
                             </div>
@@ -256,7 +348,7 @@ extraScript: "static/js/astar.js"
                     <div id="execution-log" class="execution-log">
                         <div class="log-entry log-info">
                             <span class="log-icon"><i class="fa fa-info-circle"></i></span>
-                            <span class="log-message">Draw walls, place start/goal, then click Solve to begin.</span>
+                            <span class="log-message">Select Custom to draw, then click Solve.</span>
                         </div>
                     </div>
                 </div>
@@ -275,16 +367,16 @@ extraScript: "static/js/astar.js"
                                     <th>Heuristic</th>
                                     <th>Explored</th>
                                     <th>Discovered</th>
-                                    <th>Path Len</th>
-                                    <th>Path Cost</th>
-                                    <th>Time (ms)</th>
+                                    <th>Path</th>
+                                    <th>Cost</th>
+                                    <th>Time</th>
                                 </tr>
                             </thead>
                             <tbody></tbody>
                         </table>
                     </div>
                     <p class="compare-hint">
-                        <i class="fa fa-lightbulb-o"></i> Click a row to load that algorithm's visualization.
+                        <i class="fa fa-lightbulb-o"></i> Click a row to visualize.
                     </p>
                 </div>
             </div>

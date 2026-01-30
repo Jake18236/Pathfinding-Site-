@@ -79,6 +79,206 @@
         }
     };
 
+    // Sample direct graphs (non-grid)
+    const SAMPLE_GRAPHS = {
+        simple: {
+            name: 'Simple',
+            nodes: {
+                'St': { label: 'St', x: 200, y: 50, h: 7 },
+                'A':  { label: 'A',  x: 100, y: 180, h: 6 },
+                'B':  { label: 'B',  x: 300, y: 180, h: 4 },
+                'C':  { label: 'C',  x: 300, y: 320, h: 2 },
+                'Gl': { label: 'Gl', x: 100, y: 320, h: 0 }
+            },
+            edges: [
+                { from: 'St', to: 'A', cost: 1 },
+                { from: 'St', to: 'B', cost: 4 },
+                { from: 'A', to: 'B', cost: 2 },
+                { from: 'A', to: 'C', cost: 5 },
+                { from: 'A', to: 'Gl', cost: 12 },
+                { from: 'B', to: 'C', cost: 2 },
+                { from: 'C', to: 'Gl', cost: 3 }
+            ],
+            start: 'St',
+            goal: 'Gl'
+        },
+        trap: {
+            name: 'Trap',
+            nodes: {
+                'St': { label: 'St', x: 280, y: 200, h: 8 },
+                'A':  { label: 'A',  x: 380, y: 200, h: 3 },
+                'B':  { label: 'B',  x: 180, y: 280, h: 9 },
+                'C':  { label: 'C',  x: 180, y: 120, h: 9 },
+                'D':  { label: 'D',  x: 100, y: 200, h: 10 },
+                'E':  { label: 'E',  x: 40, y: 280, h: 11 },
+                'F':  { label: 'F',  x: 40, y: 120, h: 11 },
+                'G':  { label: 'G',  x: 100, y: 360, h: 12 },
+                'H':  { label: 'H',  x: 280, y: 40, h: 12 },
+                'Gl': { label: 'Gl', x: 480, y: 200, h: 0 }
+            },
+            edges: [
+                // Main path through A
+                { from: 'St', to: 'A', cost: 5 },
+                { from: 'A', to: 'Gl', cost: 5 },
+                // Trap cluster connections (all cost 1)
+                { from: 'St', to: 'B', cost: 1 },
+                { from: 'St', to: 'C', cost: 1 },
+                { from: 'B', to: 'D', cost: 1 },
+                { from: 'C', to: 'D', cost: 1 },
+                { from: 'D', to: 'E', cost: 1 },
+                { from: 'D', to: 'F', cost: 1 },
+                { from: 'D', to: 'B', cost: 1 },
+                { from: 'D', to: 'C', cost: 1 },
+                { from: 'E', to: 'F', cost: 1 },
+                { from: 'F', to: 'C', cost: 1 },
+                { from: 'E', to: 'B', cost: 1 },
+                { from: 'E', to: 'G', cost: 1 },
+                { from: 'F', to: 'H', cost: 1 }
+            ],
+            start: 'St',
+            goal: 'Gl'
+        }
+    };
+
+    // ============================================
+    // Direct Graph State (for non-grid graphs)
+    // ============================================
+
+    class DirectGraphState {
+        constructor() {
+            this.nodes = new Map(); // id -> {label, x, y, h}
+            this.edges = [];        // [{from, to, cost}]
+            this.start = null;      // node id
+            this.goal = null;       // node id
+            this.adjacencyList = new Map(); // id -> [{id, cost}]
+        }
+
+        clear() {
+            this.nodes.clear();
+            this.edges = [];
+            this.start = null;
+            this.goal = null;
+            this.adjacencyList.clear();
+        }
+
+        addNode(id, label, x, y, h = 0) {
+            this.nodes.set(id, { label, x, y, h });
+            if (!this.adjacencyList.has(id)) {
+                this.adjacencyList.set(id, []);
+            }
+        }
+
+        addEdge(from, to, cost) {
+            this.edges.push({ from, to, cost });
+            // Update adjacency list (directed)
+            if (!this.adjacencyList.has(from)) {
+                this.adjacencyList.set(from, []);
+            }
+            this.adjacencyList.get(from).push({ id: to, cost });
+        }
+
+        setStart(nodeId) {
+            this.start = nodeId;
+        }
+
+        setGoal(nodeId) {
+            this.goal = nodeId;
+        }
+
+        getNode(id) {
+            return this.nodes.get(id) || null;
+        }
+
+        getNeighbors(nodeId) {
+            return this.adjacencyList.get(nodeId) || [];
+        }
+
+        getHeuristic(nodeId) {
+            const node = this.nodes.get(nodeId);
+            return node ? node.h : 0;
+        }
+
+        updateNodeHeuristic(nodeId, h) {
+            const node = this.nodes.get(nodeId);
+            if (node) {
+                node.h = h;
+            }
+        }
+
+        clone() {
+            const copy = new DirectGraphState();
+            this.nodes.forEach((node, id) => {
+                copy.addNode(id, node.label, node.x, node.y, node.h);
+            });
+            this.edges.forEach(edge => {
+                copy.addEdge(edge.from, edge.to, edge.cost);
+            });
+            copy.start = this.start;
+            copy.goal = this.goal;
+            return copy;
+        }
+
+        loadSample(name) {
+            this.clear();
+            const sample = SAMPLE_GRAPHS[name];
+            if (!sample) return;
+
+            // Add nodes
+            Object.entries(sample.nodes).forEach(([id, node]) => {
+                this.addNode(id, node.label, node.x, node.y, node.h);
+            });
+
+            // Add edges
+            sample.edges.forEach(edge => {
+                this.addEdge(edge.from, edge.to, edge.cost);
+            });
+
+            this.start = sample.start;
+            this.goal = sample.goal;
+        }
+
+        getAllNodeIds() {
+            return Array.from(this.nodes.keys());
+        }
+
+        removeNode(nodeId) {
+            this.nodes.delete(nodeId);
+            this.adjacencyList.delete(nodeId);
+            // Remove edges involving this node
+            this.edges = this.edges.filter(e => e.from !== nodeId && e.to !== nodeId);
+            // Update adjacency lists of other nodes
+            this.adjacencyList.forEach((neighbors, id) => {
+                this.adjacencyList.set(id, neighbors.filter(n => n.id !== nodeId));
+            });
+            if (this.start === nodeId) this.start = null;
+            if (this.goal === nodeId) this.goal = null;
+        }
+
+        removeEdge(from, to) {
+            this.edges = this.edges.filter(e => !(e.from === from && e.to === to));
+            if (this.adjacencyList.has(from)) {
+                this.adjacencyList.set(from,
+                    this.adjacencyList.get(from).filter(n => n.id !== to)
+                );
+            }
+        }
+
+        updateNodePosition(nodeId, x, y) {
+            const node = this.nodes.get(nodeId);
+            if (node) {
+                node.x = x;
+                node.y = y;
+            }
+        }
+
+        updateNodeHeuristic(nodeId, h) {
+            const node = this.nodes.get(nodeId);
+            if (node) {
+                node.h = h;
+            }
+        }
+    }
+
     // ============================================
     // Priority Queue (Sorted Array - simpler, correct implementation)
     // ============================================
@@ -474,6 +674,648 @@
 
             return path;
         }
+
+        solveBFS(grid, options = {}) {
+            const { allowDiagonal = false } = options;
+            const startTime = performance.now();
+            const steps = [];
+            const metrics = {
+                nodesExpanded: 0,
+                nodesGenerated: 0,
+                pathLength: 0,
+                pathCost: 0,
+                time: 0
+            };
+
+            if (!grid.start || !grid.goal) {
+                return { success: false, path: [], steps, metrics, error: 'Missing start or goal' };
+            }
+
+            const { x: sx, y: sy } = grid.start;
+            const { x: gx, y: gy } = grid.goal;
+            const key = (x, y) => `${x},${y}`;
+
+            const queue = [{ x: sx, y: sy, g: 0 }];
+            const visited = new Map();
+            const cameFrom = new Map();
+
+            visited.set(key(sx, sy), { x: sx, y: sy, g: 0, h: 0, f: 0 });
+            metrics.nodesGenerated++;
+
+            steps.push({
+                type: STEP_INIT,
+                openList: [{ x: sx, y: sy, g: 0, h: 0, f: 0 }],
+                closedList: [],
+                current: null,
+                message: `Starting BFS from (${sx},${sy}) to (${gx},${gy})`,
+                metrics: { nodesExpanded: 0, nodesGenerated: 1, pathLength: null, pathCost: null }
+            });
+
+            const closedList = [];
+
+            while (queue.length > 0) {
+                const current = queue.shift();
+                const { x: cx, y: cy, g: cg } = current;
+                const currentKey = key(cx, cy);
+
+                metrics.nodesExpanded++;
+                closedList.push({ x: cx, y: cy, g: cg, h: 0, f: cg });
+
+                steps.push({
+                    type: STEP_EXPAND,
+                    current: { x: cx, y: cy, g: cg, h: 0, f: cg },
+                    openList: queue.map(n => ({ x: n.x, y: n.y, g: n.g, h: 0, f: n.g })),
+                    closedList: [...closedList],
+                    message: `Expanding (${cx},${cy}) at depth ${cg}`,
+                    metrics: { nodesExpanded: metrics.nodesExpanded, nodesGenerated: metrics.nodesGenerated, pathLength: null, pathCost: null }
+                });
+
+                if (cx === gx && cy === gy) {
+                    const path = this._reconstructPath(cameFrom, cx, cy);
+                    metrics.pathLength = path.length;
+                    metrics.pathCost = cg;
+                    metrics.time = performance.now() - startTime;
+
+                    steps.push({
+                        type: STEP_GOAL_FOUND,
+                        path: path,
+                        openList: queue.map(n => ({ x: n.x, y: n.y, g: n.g, h: 0, f: n.g })),
+                        closedList: [...closedList],
+                        message: `Goal found! Path length: ${path.length}, cost: ${cg}`,
+                        metrics: { nodesExpanded: metrics.nodesExpanded, nodesGenerated: metrics.nodesGenerated, pathLength: path.length, pathCost: cg }
+                    });
+
+                    return { success: true, path, steps, metrics };
+                }
+
+                const neighbors = grid.getNeighbors(cx, cy, allowDiagonal);
+                for (const neighbor of neighbors) {
+                    const { x: nx, y: ny, cost } = neighbor;
+                    const neighborKey = key(nx, ny);
+
+                    if (!visited.has(neighborKey)) {
+                        const ng = cg + cost;
+                        visited.set(neighborKey, { x: nx, y: ny, g: ng, h: 0, f: ng });
+                        cameFrom.set(neighborKey, { x: cx, y: cy });
+                        queue.push({ x: nx, y: ny, g: ng });
+                        metrics.nodesGenerated++;
+
+                        steps.push({
+                            type: STEP_ADD_TO_OPEN,
+                            node: { x: nx, y: ny, g: ng, h: 0, f: ng },
+                            openList: queue.map(n => ({ x: n.x, y: n.y, g: n.g, h: 0, f: n.g })),
+                            closedList: [...closedList],
+                            message: `Added (${nx},${ny}) to queue at depth ${ng}`,
+                            metrics: { nodesExpanded: metrics.nodesExpanded, nodesGenerated: metrics.nodesGenerated, pathLength: null, pathCost: null }
+                        });
+                    }
+                }
+            }
+
+            metrics.time = performance.now() - startTime;
+            steps.push({
+                type: STEP_NO_SOLUTION,
+                openList: [],
+                closedList: [...closedList],
+                message: 'No path found - goal is unreachable',
+                metrics: { nodesExpanded: metrics.nodesExpanded, nodesGenerated: metrics.nodesGenerated, pathLength: null, pathCost: null }
+            });
+
+            return { success: false, path: [], steps, metrics };
+        }
+
+        solveDFS(grid, options = {}) {
+            const { allowDiagonal = false } = options;
+            const startTime = performance.now();
+            const steps = [];
+            const metrics = {
+                nodesExpanded: 0,
+                nodesGenerated: 0,
+                pathLength: 0,
+                pathCost: 0,
+                time: 0
+            };
+
+            if (!grid.start || !grid.goal) {
+                return { success: false, path: [], steps, metrics, error: 'Missing start or goal' };
+            }
+
+            const { x: sx, y: sy } = grid.start;
+            const { x: gx, y: gy } = grid.goal;
+            const key = (x, y) => `${x},${y}`;
+
+            const stack = [{ x: sx, y: sy, g: 0 }];
+            const visited = new Set();
+            const cameFrom = new Map();
+
+            metrics.nodesGenerated++;
+
+            steps.push({
+                type: STEP_INIT,
+                openList: [{ x: sx, y: sy, g: 0, h: 0, f: 0 }],
+                closedList: [],
+                current: null,
+                message: `Starting DFS from (${sx},${sy}) to (${gx},${gy})`,
+                metrics: { nodesExpanded: 0, nodesGenerated: 1, pathLength: null, pathCost: null }
+            });
+
+            const closedList = [];
+
+            while (stack.length > 0) {
+                const current = stack.pop();
+                const { x: cx, y: cy, g: cg } = current;
+                const currentKey = key(cx, cy);
+
+                if (visited.has(currentKey)) continue;
+                visited.add(currentKey);
+
+                metrics.nodesExpanded++;
+                closedList.push({ x: cx, y: cy, g: cg, h: 0, f: cg });
+
+                steps.push({
+                    type: STEP_EXPAND,
+                    current: { x: cx, y: cy, g: cg, h: 0, f: cg },
+                    openList: stack.map(n => ({ x: n.x, y: n.y, g: n.g, h: 0, f: n.g })),
+                    closedList: [...closedList],
+                    message: `Expanding (${cx},${cy}) at depth ${cg}`,
+                    metrics: { nodesExpanded: metrics.nodesExpanded, nodesGenerated: metrics.nodesGenerated, pathLength: null, pathCost: null }
+                });
+
+                if (cx === gx && cy === gy) {
+                    const path = this._reconstructPath(cameFrom, cx, cy);
+                    metrics.pathLength = path.length;
+                    metrics.pathCost = cg;
+                    metrics.time = performance.now() - startTime;
+
+                    steps.push({
+                        type: STEP_GOAL_FOUND,
+                        path: path,
+                        openList: stack.map(n => ({ x: n.x, y: n.y, g: n.g, h: 0, f: n.g })),
+                        closedList: [...closedList],
+                        message: `Goal found! Path length: ${path.length}, cost: ${cg.toFixed(2)}`,
+                        metrics: { nodesExpanded: metrics.nodesExpanded, nodesGenerated: metrics.nodesGenerated, pathLength: path.length, pathCost: cg }
+                    });
+
+                    return { success: true, path, steps, metrics };
+                }
+
+                const neighbors = grid.getNeighbors(cx, cy, allowDiagonal);
+                // Reverse to maintain consistent ordering when popping from stack
+                for (const neighbor of neighbors.reverse()) {
+                    const { x: nx, y: ny, cost } = neighbor;
+                    const neighborKey = key(nx, ny);
+
+                    if (!visited.has(neighborKey)) {
+                        const ng = cg + cost;
+                        cameFrom.set(neighborKey, { x: cx, y: cy });
+                        stack.push({ x: nx, y: ny, g: ng });
+                        metrics.nodesGenerated++;
+
+                        steps.push({
+                            type: STEP_ADD_TO_OPEN,
+                            node: { x: nx, y: ny, g: ng, h: 0, f: ng },
+                            openList: stack.map(n => ({ x: n.x, y: n.y, g: n.g, h: 0, f: n.g })),
+                            closedList: [...closedList],
+                            message: `Added (${nx},${ny}) to stack`,
+                            metrics: { nodesExpanded: metrics.nodesExpanded, nodesGenerated: metrics.nodesGenerated, pathLength: null, pathCost: null }
+                        });
+                    }
+                }
+            }
+
+            metrics.time = performance.now() - startTime;
+            steps.push({
+                type: STEP_NO_SOLUTION,
+                openList: [],
+                closedList: [...closedList],
+                message: 'No path found - goal is unreachable',
+                metrics: { nodesExpanded: metrics.nodesExpanded, nodesGenerated: metrics.nodesGenerated, pathLength: null, pathCost: null }
+            });
+
+            return { success: false, path: [], steps, metrics };
+        }
+
+        // ============================================
+        // Graph Solver Methods (for DirectGraphState)
+        // ============================================
+
+        solveGraph(graph, options = {}) {
+            const { tiebreaker = 'none', weight = 1.0 } = options;
+            const startTime = performance.now();
+            const steps = [];
+            const metrics = {
+                nodesExpanded: 0,
+                nodesGenerated: 0,
+                pathLength: 0,
+                pathCost: 0,
+                time: 0
+            };
+
+            if (!graph.start || !graph.goal) {
+                return { success: false, path: [], steps, metrics, error: 'Missing start or goal' };
+            }
+
+            const startId = graph.start;
+            const goalId = graph.goal;
+
+            // Create comparator with tie-breaker
+            const compareFn = (a, b) => {
+                if (a.f !== b.f) return a.f - b.f;
+                if (tiebreaker === 'highg') return b.g - a.g;
+                if (tiebreaker === 'lowg') return a.g - b.g;
+                return 0;
+            };
+
+            const openSet = new PriorityQueue(compareFn);
+            // Override _key for graph nodes (use id instead of x,y)
+            openSet._key = (item) => item.id;
+
+            const closedSet = new Map();
+            const cameFrom = new Map();
+            const gScore = new Map();
+            const fScore = new Map();
+
+            // Initialize start node
+            const startH = graph.getHeuristic(startId) * weight;
+            gScore.set(startId, 0);
+            fScore.set(startId, startH);
+            openSet.push({ id: startId, g: 0, h: startH, f: startH });
+            metrics.nodesGenerated++;
+
+            // Record initial state
+            steps.push({
+                type: STEP_INIT,
+                openList: [{ id: startId, g: 0, h: startH, f: startH }],
+                closedList: [],
+                current: null,
+                message: `Starting A* from ${startId} to ${goalId}`,
+                metrics: { nodesExpanded: 0, nodesGenerated: 1, pathLength: null, pathCost: null },
+                isGraph: true
+            });
+
+            while (!openSet.isEmpty()) {
+                const current = openSet.pop();
+                const { id: cId, g: cg, h: ch, f: cf } = current;
+
+                // Skip if already in closed set
+                if (closedSet.has(cId)) continue;
+
+                // Add to closed set
+                closedSet.set(cId, { id: cId, g: cg, h: ch, f: cf });
+                metrics.nodesExpanded++;
+
+                // Record expansion
+                steps.push({
+                    type: STEP_EXPAND,
+                    current: { id: cId, g: cg, h: ch, f: cf },
+                    openList: openSet.toArray().map(n => ({ id: n.id, g: n.g, h: n.h, f: n.f })),
+                    closedList: Array.from(closedSet.values()),
+                    message: `Expanding ${cId} with f=${cf.toFixed(2)}, g=${cg.toFixed(2)}, h=${ch.toFixed(2)}`,
+                    metrics: { nodesExpanded: metrics.nodesExpanded, nodesGenerated: metrics.nodesGenerated, pathLength: null, pathCost: null },
+                    isGraph: true
+                });
+
+                // Check if goal reached
+                if (cId === goalId) {
+                    const path = this._reconstructGraphPath(cameFrom, cId);
+                    metrics.pathLength = path.length;
+                    metrics.pathCost = cg;
+                    metrics.time = performance.now() - startTime;
+
+                    steps.push({
+                        type: STEP_GOAL_FOUND,
+                        path: path,
+                        openList: openSet.toArray().map(n => ({ id: n.id, g: n.g, h: n.h, f: n.f })),
+                        closedList: Array.from(closedSet.values()),
+                        message: `Goal found! Path length: ${path.length}, cost: ${cg.toFixed(2)}`,
+                        metrics: { nodesExpanded: metrics.nodesExpanded, nodesGenerated: metrics.nodesGenerated, pathLength: path.length, pathCost: cg },
+                        isGraph: true
+                    });
+
+                    return { success: true, path, steps, metrics };
+                }
+
+                // Explore neighbors
+                const neighbors = graph.getNeighbors(cId);
+                for (const neighbor of neighbors) {
+                    const { id: nId, cost } = neighbor;
+
+                    // Skip if in closed set
+                    if (closedSet.has(nId)) continue;
+
+                    const tentativeG = cg + cost;
+                    const existingG = gScore.get(nId);
+
+                    // Record neighbor check
+                    steps.push({
+                        type: STEP_NEIGHBOR_CHECK,
+                        current: { id: cId, g: cg, h: ch, f: cf },
+                        neighbor: { id: nId },
+                        tentativeG: tentativeG,
+                        existingG: existingG !== undefined ? existingG : null,
+                        openList: openSet.toArray().map(n => ({ id: n.id, g: n.g, h: n.h, f: n.f })),
+                        closedList: Array.from(closedSet.values()),
+                        message: `Checking neighbor ${nId}: tentative g=${tentativeG.toFixed(2)}`,
+                        metrics: { nodesExpanded: metrics.nodesExpanded, nodesGenerated: metrics.nodesGenerated, pathLength: null, pathCost: null },
+                        isGraph: true
+                    });
+
+                    if (existingG === undefined || tentativeG < existingG) {
+                        const nh = graph.getHeuristic(nId) * weight;
+                        const nf = tentativeG + nh;
+
+                        cameFrom.set(nId, cId);
+                        gScore.set(nId, tentativeG);
+                        fScore.set(nId, nf);
+
+                        const newNode = { id: nId, g: tentativeG, h: nh, f: nf };
+
+                        if (existingG !== undefined) {
+                            openSet.updatePriority(newNode);
+                            steps.push({
+                                type: STEP_UPDATE_PATH,
+                                node: newNode,
+                                openList: openSet.toArray().map(n => ({ id: n.id, g: n.g, h: n.h, f: n.f })),
+                                closedList: Array.from(closedSet.values()),
+                                message: `Updated ${nId}: new g=${tentativeG.toFixed(2)}, f=${nf.toFixed(2)}`,
+                                metrics: { nodesExpanded: metrics.nodesExpanded, nodesGenerated: metrics.nodesGenerated, pathLength: null, pathCost: null },
+                                isGraph: true
+                            });
+                        } else {
+                            openSet.push(newNode);
+                            metrics.nodesGenerated++;
+                            steps.push({
+                                type: STEP_ADD_TO_OPEN,
+                                node: newNode,
+                                openList: openSet.toArray().map(n => ({ id: n.id, g: n.g, h: n.h, f: n.f })),
+                                closedList: Array.from(closedSet.values()),
+                                message: `Added ${nId} to open: f=${nf.toFixed(2)}, g=${tentativeG.toFixed(2)}, h=${nh.toFixed(2)}`,
+                                metrics: { nodesExpanded: metrics.nodesExpanded, nodesGenerated: metrics.nodesGenerated, pathLength: null, pathCost: null },
+                                isGraph: true
+                            });
+                        }
+                    }
+                }
+            }
+
+            // No solution found
+            metrics.time = performance.now() - startTime;
+            steps.push({
+                type: STEP_NO_SOLUTION,
+                openList: [],
+                closedList: Array.from(closedSet.values()),
+                message: 'No path found - goal is unreachable',
+                metrics: { nodesExpanded: metrics.nodesExpanded, nodesGenerated: metrics.nodesGenerated, pathLength: null, pathCost: null },
+                isGraph: true
+            });
+
+            return { success: false, path: [], steps, metrics };
+        }
+
+        solveGraphBFS(graph) {
+            const startTime = performance.now();
+            const steps = [];
+            const metrics = {
+                nodesExpanded: 0,
+                nodesGenerated: 0,
+                pathLength: 0,
+                pathCost: 0,
+                time: 0
+            };
+
+            if (!graph.start || !graph.goal) {
+                return { success: false, path: [], steps, metrics, error: 'Missing start or goal' };
+            }
+
+            const startId = graph.start;
+            const goalId = graph.goal;
+
+            const queue = [{ id: startId, g: 0 }];
+            const visited = new Map();
+            const cameFrom = new Map();
+
+            visited.set(startId, { id: startId, g: 0, h: 0, f: 0 });
+            metrics.nodesGenerated++;
+
+            steps.push({
+                type: STEP_INIT,
+                openList: [{ id: startId, g: 0, h: 0, f: 0 }],
+                closedList: [],
+                current: null,
+                message: `Starting BFS from ${startId} to ${goalId}`,
+                metrics: { nodesExpanded: 0, nodesGenerated: 1, pathLength: null, pathCost: null },
+                isGraph: true
+            });
+
+            const closedList = [];
+
+            while (queue.length > 0) {
+                const current = queue.shift();
+                const { id: cId, g: cg } = current;
+
+                metrics.nodesExpanded++;
+                closedList.push({ id: cId, g: cg, h: 0, f: cg });
+
+                steps.push({
+                    type: STEP_EXPAND,
+                    current: { id: cId, g: cg, h: 0, f: cg },
+                    openList: queue.map(n => ({ id: n.id, g: n.g, h: 0, f: n.g })),
+                    closedList: [...closedList],
+                    message: `Expanding ${cId} at depth ${cg}`,
+                    metrics: { nodesExpanded: metrics.nodesExpanded, nodesGenerated: metrics.nodesGenerated, pathLength: null, pathCost: null },
+                    isGraph: true
+                });
+
+                if (cId === goalId) {
+                    const path = this._reconstructGraphPath(cameFrom, cId);
+                    metrics.pathLength = path.length;
+                    metrics.pathCost = cg;
+                    metrics.time = performance.now() - startTime;
+
+                    steps.push({
+                        type: STEP_GOAL_FOUND,
+                        path: path,
+                        openList: queue.map(n => ({ id: n.id, g: n.g, h: 0, f: n.g })),
+                        closedList: [...closedList],
+                        message: `Goal found! Path length: ${path.length}, cost: ${cg}`,
+                        metrics: { nodesExpanded: metrics.nodesExpanded, nodesGenerated: metrics.nodesGenerated, pathLength: path.length, pathCost: cg },
+                        isGraph: true
+                    });
+
+                    return { success: true, path, steps, metrics };
+                }
+
+                const neighbors = graph.getNeighbors(cId);
+                for (const neighbor of neighbors) {
+                    const { id: nId, cost } = neighbor;
+
+                    if (!visited.has(nId)) {
+                        const ng = cg + cost;
+                        visited.set(nId, { id: nId, g: ng, h: 0, f: ng });
+                        cameFrom.set(nId, cId);
+                        queue.push({ id: nId, g: ng });
+                        metrics.nodesGenerated++;
+
+                        steps.push({
+                            type: STEP_ADD_TO_OPEN,
+                            node: { id: nId, g: ng, h: 0, f: ng },
+                            openList: queue.map(n => ({ id: n.id, g: n.g, h: 0, f: n.g })),
+                            closedList: [...closedList],
+                            message: `Added ${nId} to queue at depth ${ng}`,
+                            metrics: { nodesExpanded: metrics.nodesExpanded, nodesGenerated: metrics.nodesGenerated, pathLength: null, pathCost: null },
+                            isGraph: true
+                        });
+                    }
+                }
+            }
+
+            metrics.time = performance.now() - startTime;
+            steps.push({
+                type: STEP_NO_SOLUTION,
+                openList: [],
+                closedList: [...closedList],
+                message: 'No path found - goal is unreachable',
+                metrics: { nodesExpanded: metrics.nodesExpanded, nodesGenerated: metrics.nodesGenerated, pathLength: null, pathCost: null },
+                isGraph: true
+            });
+
+            return { success: false, path: [], steps, metrics };
+        }
+
+        solveGraphDFS(graph) {
+            const startTime = performance.now();
+            const steps = [];
+            const metrics = {
+                nodesExpanded: 0,
+                nodesGenerated: 0,
+                pathLength: 0,
+                pathCost: 0,
+                time: 0
+            };
+
+            if (!graph.start || !graph.goal) {
+                return { success: false, path: [], steps, metrics, error: 'Missing start or goal' };
+            }
+
+            const startId = graph.start;
+            const goalId = graph.goal;
+
+            const stack = [{ id: startId, g: 0 }];
+            const visited = new Set();
+            const cameFrom = new Map();
+
+            metrics.nodesGenerated++;
+
+            steps.push({
+                type: STEP_INIT,
+                openList: [{ id: startId, g: 0, h: 0, f: 0 }],
+                closedList: [],
+                current: null,
+                message: `Starting DFS from ${startId} to ${goalId}`,
+                metrics: { nodesExpanded: 0, nodesGenerated: 1, pathLength: null, pathCost: null },
+                isGraph: true
+            });
+
+            const closedList = [];
+
+            while (stack.length > 0) {
+                const current = stack.pop();
+                const { id: cId, g: cg } = current;
+
+                if (visited.has(cId)) continue;
+                visited.add(cId);
+
+                metrics.nodesExpanded++;
+                closedList.push({ id: cId, g: cg, h: 0, f: cg });
+
+                steps.push({
+                    type: STEP_EXPAND,
+                    current: { id: cId, g: cg, h: 0, f: cg },
+                    openList: stack.map(n => ({ id: n.id, g: n.g, h: 0, f: n.g })),
+                    closedList: [...closedList],
+                    message: `Expanding ${cId} at depth ${cg}`,
+                    metrics: { nodesExpanded: metrics.nodesExpanded, nodesGenerated: metrics.nodesGenerated, pathLength: null, pathCost: null },
+                    isGraph: true
+                });
+
+                if (cId === goalId) {
+                    const path = this._reconstructGraphPath(cameFrom, cId);
+                    metrics.pathLength = path.length;
+                    metrics.pathCost = cg;
+                    metrics.time = performance.now() - startTime;
+
+                    steps.push({
+                        type: STEP_GOAL_FOUND,
+                        path: path,
+                        openList: stack.map(n => ({ id: n.id, g: n.g, h: 0, f: n.g })),
+                        closedList: [...closedList],
+                        message: `Goal found! Path length: ${path.length}, cost: ${cg.toFixed(2)}`,
+                        metrics: { nodesExpanded: metrics.nodesExpanded, nodesGenerated: metrics.nodesGenerated, pathLength: path.length, pathCost: cg },
+                        isGraph: true
+                    });
+
+                    return { success: true, path, steps, metrics };
+                }
+
+                const neighbors = graph.getNeighbors(cId);
+                // Reverse to maintain consistent ordering when popping from stack
+                for (const neighbor of [...neighbors].reverse()) {
+                    const { id: nId, cost } = neighbor;
+
+                    if (!visited.has(nId)) {
+                        const ng = cg + cost;
+                        cameFrom.set(nId, cId);
+                        stack.push({ id: nId, g: ng });
+                        metrics.nodesGenerated++;
+
+                        steps.push({
+                            type: STEP_ADD_TO_OPEN,
+                            node: { id: nId, g: ng, h: 0, f: ng },
+                            openList: stack.map(n => ({ id: n.id, g: n.g, h: 0, f: n.g })),
+                            closedList: [...closedList],
+                            message: `Added ${nId} to stack`,
+                            metrics: { nodesExpanded: metrics.nodesExpanded, nodesGenerated: metrics.nodesGenerated, pathLength: null, pathCost: null },
+                            isGraph: true
+                        });
+                    }
+                }
+            }
+
+            metrics.time = performance.now() - startTime;
+            steps.push({
+                type: STEP_NO_SOLUTION,
+                openList: [],
+                closedList: [...closedList],
+                message: 'No path found - goal is unreachable',
+                metrics: { nodesExpanded: metrics.nodesExpanded, nodesGenerated: metrics.nodesGenerated, pathLength: null, pathCost: null },
+                isGraph: true
+            });
+
+            return { success: false, path: [], steps, metrics };
+        }
+
+        solveGraphDijkstra(graph, options = {}) {
+            // Dijkstra is A* with h=0 for all nodes
+            // For graphs, we override the heuristic to always return 0
+            const originalGetHeuristic = graph.getHeuristic.bind(graph);
+            graph.getHeuristic = () => 0;
+            const result = this.solveGraph(graph, { ...options, weight: 1.0 });
+            graph.getHeuristic = originalGetHeuristic;
+            return result;
+        }
+
+        _reconstructGraphPath(cameFrom, nodeId) {
+            const path = [{ id: nodeId }];
+            let current = nodeId;
+
+            while (cameFrom.has(current)) {
+                const prev = cameFrom.get(current);
+                path.unshift({ id: prev });
+                current = prev;
+            }
+
+            return path;
+        }
     }
 
     // ============================================
@@ -490,6 +1332,8 @@
             this.currentHeuristic = 'manhattan';
             this.cellSize = 28; // Default cell size, updated on init
             this.gridGap = 1;
+            this.editingEnabled = false; // Start with editing disabled
+            this.simulationRunning = false;
             this.initGrid();
             this.initEventListeners();
         }
@@ -551,6 +1395,7 @@
 
             // Mouse events for drawing
             container.addEventListener('mousedown', (e) => {
+                if (!this.editingEnabled || this.simulationRunning) return;
                 if (e.target.classList.contains('grid-cell') || e.target.closest('.grid-cell')) {
                     this.isDrawing = true;
                     this.handleCellClick(e);
@@ -558,6 +1403,7 @@
             });
 
             container.addEventListener('mousemove', (e) => {
+                if (!this.editingEnabled || this.simulationRunning) return;
                 if (this.isDrawing) {
                     this.handleCellClick(e);
                 }
@@ -570,6 +1416,7 @@
             // Edit mode buttons
             document.querySelectorAll('.edit-mode-buttons .btn').forEach(btn => {
                 btn.addEventListener('click', () => {
+                    if (!this.editingEnabled || this.simulationRunning) return;
                     document.querySelectorAll('.edit-mode-buttons .btn').forEach(b => b.classList.remove('active'));
                     btn.classList.add('active');
                     this.editMode = btn.dataset.mode;
@@ -578,6 +1425,7 @@
 
             // Clear grid button
             document.getElementById('btn-clear-grid')?.addEventListener('click', () => {
+                if (!this.editingEnabled || this.simulationRunning) return;
                 this.grid.clear();
                 this.nodeValues.clear();
                 this.renderGrid();
@@ -749,8 +1597,9 @@
                     }
                 }
 
-                // Draw heuristic line from current node to goal
-                if (step.current && goal && step.type !== STEP_GOAL_FOUND && step.type !== STEP_NO_SOLUTION) {
+                // Draw heuristic line from current node to goal (only for algorithms that use a heuristic)
+                const noHeuristicAlgorithms = ['bfs', 'dfs', 'dijkstra'];
+                if (step.current && goal && step.type !== STEP_GOAL_FOUND && step.type !== STEP_NO_SOLUTION && !noHeuristicAlgorithms.includes(this.currentHeuristic)) {
                     this.drawHeuristicLine(step.current, goal, step.current.h);
                 }
             }
@@ -854,8 +1703,9 @@
                         cell.classList.add('hover-highlight');
                     }
 
-                    // Draw heuristic line if we have goal and h value
-                    if (goal && !isNaN(h)) {
+                    // Draw heuristic line if we have goal and h value (only for algorithms that use a heuristic)
+                    const noHeuristicAlgorithms = ['bfs', 'dfs', 'dijkstra'];
+                    if (goal && !isNaN(h) && !noHeuristicAlgorithms.includes(this.currentHeuristic)) {
                         this.drawHeuristicLine({ x, y }, goal, h);
                     }
 
@@ -921,6 +1771,99 @@
 
         setHeuristic(heuristic) {
             this.currentHeuristic = heuristic;
+        }
+
+        setEditingEnabled(enabled) {
+            this.editingEnabled = enabled;
+            const editButtons = document.querySelectorAll('#edit-mode-buttons .btn');
+            const clearBtn = document.getElementById('btn-clear-grid');
+            const grid = document.getElementById('pathfinding-grid');
+
+            editButtons.forEach(btn => {
+                btn.disabled = !enabled || this.simulationRunning;
+            });
+            if (clearBtn) {
+                clearBtn.disabled = !enabled || this.simulationRunning;
+            }
+            if (grid) {
+                grid.classList.toggle('editing-disabled', !enabled || this.simulationRunning);
+            }
+
+            // Set the first edit button as active when enabling
+            if (enabled && !this.simulationRunning) {
+                const firstBtn = document.querySelector('#edit-mode-buttons .btn[data-mode="wall"]');
+                if (firstBtn) {
+                    editButtons.forEach(b => b.classList.remove('active'));
+                    firstBtn.classList.add('active');
+                    this.editMode = 'wall';
+                }
+            }
+        }
+
+        setSimulationRunning(running) {
+            this.simulationRunning = running;
+            const editButtons = document.querySelectorAll('#edit-mode-buttons .btn');
+            const clearBtn = document.getElementById('btn-clear-grid');
+            const sampleSelect = document.getElementById('sample-select');
+            const grid = document.getElementById('pathfinding-grid');
+
+            editButtons.forEach(btn => {
+                btn.disabled = !this.editingEnabled || running;
+            });
+            if (clearBtn) {
+                clearBtn.disabled = !this.editingEnabled || running;
+            }
+            if (sampleSelect) {
+                sampleSelect.disabled = running;
+            }
+            if (grid) {
+                grid.classList.toggle('editing-disabled', !this.editingEnabled || running);
+            }
+        }
+
+        // Update pseudocode highlighting based on step type
+        updatePseudocode(stepType) {
+            const pseudocodeContainer = document.querySelector('.pseudocode');
+            if (!pseudocodeContainer) return;
+
+            // Clear all active lines
+            pseudocodeContainer.querySelectorAll('.line').forEach(line => {
+                line.classList.remove('active');
+            });
+
+            // Map step types to pseudocode line data-line values
+            const stepToLines = {
+                [STEP_INIT]: ['init', 'init-open', 'init-closed', 'init-g', 'init-f'],
+                [STEP_EXPAND]: ['while', 'select', 'remove-open', 'add-closed'],
+                [STEP_NEIGHBOR_CHECK]: ['for-neighbor', 'skip-closed', 'tentative-g'],
+                [STEP_ADD_TO_OPEN]: ['if-better', 'update-parent', 'update-g', 'update-f', 'add-to-open', 'push-open'],
+                [STEP_UPDATE_PATH]: ['if-better', 'update-parent', 'update-g', 'update-f'],
+                [STEP_GOAL_FOUND]: ['goal-found', 'return-path'],
+                [STEP_NO_SOLUTION]: ['no-path']
+            };
+
+            const linesToHighlight = stepToLines[stepType] || [];
+            linesToHighlight.forEach(lineId => {
+                const line = pseudocodeContainer.querySelector(`.line[data-line="${lineId}"]`);
+                if (line) {
+                    line.classList.add('active');
+                }
+            });
+
+            // Scroll to first active line
+            const firstActive = pseudocodeContainer.querySelector('.line.active');
+            if (firstActive) {
+                firstActive.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+        }
+
+        clearPseudocode() {
+            const pseudocodeContainer = document.querySelector('.pseudocode');
+            if (!pseudocodeContainer) return;
+
+            pseudocodeContainer.querySelectorAll('.line').forEach(line => {
+                line.classList.remove('active');
+            });
         }
 
         // Calculate cell center position in pixels
@@ -1115,6 +2058,796 @@
     }
 
     // ============================================
+    // Graph UI Controller (SVG-based)
+    // ============================================
+
+    class GraphUIController {
+        constructor(graph) {
+            this.graph = graph;
+            this.svgContainer = null;
+            this.nodeElements = new Map();
+            this.edgeElements = new Map();
+            this.nodeRadius = 25;
+            this.editMode = 'node'; // 'node', 'edge', 'start', 'goal', 'delete'
+            this.editingEnabled = false;
+            this.simulationRunning = false;
+            this.edgeSourceNode = null; // For edge creation
+            this.showValues = false;
+            this.nodeValues = new Map();
+            // Track visualization state to persist across re-renders
+            this.pathEdges = new Set();  // edge keys that are part of path
+            this.nodeStates = new Map(); // nodeId -> 'open'|'closed'|'current'|'path'
+            this.initGraph();
+            this.initEventListeners();
+        }
+
+        initGraph() {
+            const container = document.getElementById('graph-visualization');
+            if (!container) return;
+
+            // Clear existing content
+            container.innerHTML = '';
+
+            // Create SVG element
+            const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+            svg.setAttribute('width', '100%');
+            svg.setAttribute('height', '100%');
+            svg.setAttribute('viewBox', '0 0 550 400');
+            svg.classList.add('graph-svg');
+            container.appendChild(svg);
+            this.svgContainer = svg;
+
+            // Create layers for proper z-ordering
+            const edgeLayer = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+            edgeLayer.setAttribute('class', 'edge-layer');
+            svg.appendChild(edgeLayer);
+
+            const nodeLayer = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+            nodeLayer.setAttribute('class', 'node-layer');
+            svg.appendChild(nodeLayer);
+
+            // Create arrow marker for directed edges (smaller arrows)
+            const defs = document.createElementNS('http://www.w3.org/2000/svg', 'defs');
+            defs.innerHTML = `
+                <marker id="arrowhead" markerWidth="6" markerHeight="4" refX="5" refY="2" orient="auto">
+                    <polygon points="0 0, 6 2, 0 4" fill="#999" />
+                </marker>
+                <marker id="arrowhead-path" markerWidth="6" markerHeight="4" refX="5" refY="2" orient="auto">
+                    <polygon points="0 0, 6 2, 0 4" fill="#28a745" />
+                </marker>
+                <marker id="arrowhead-frontier" markerWidth="6" markerHeight="4" refX="5" refY="2" orient="auto">
+                    <polygon points="0 0, 6 2, 0 4" fill="#ffc107" />
+                </marker>
+            `;
+            svg.insertBefore(defs, svg.firstChild);
+
+            // Render the graph nodes and edges
+            this.renderGraph();
+        }
+
+        renderGraph() {
+            if (!this.svgContainer) return;
+
+            const edgeLayer = this.svgContainer.querySelector('.edge-layer');
+            const nodeLayer = this.svgContainer.querySelector('.node-layer');
+
+            // Clear existing elements
+            edgeLayer.innerHTML = '';
+            nodeLayer.innerHTML = '';
+            this.nodeElements.clear();
+            this.edgeElements.clear();
+
+            // Render edges first (so they appear behind nodes)
+            this.graph.edges.forEach((edge, index) => {
+                const fromNode = this.graph.getNode(edge.from);
+                const toNode = this.graph.getNode(edge.to);
+                if (!fromNode || !toNode) return;
+
+                // Calculate edge endpoints (offset from node centers to account for radius)
+                const dx = toNode.x - fromNode.x;
+                const dy = toNode.y - fromNode.y;
+                const dist = Math.sqrt(dx * dx + dy * dy);
+                const offsetX = (dx / dist) * this.nodeRadius;
+                const offsetY = (dy / dist) * this.nodeRadius;
+
+                const x1 = fromNode.x + offsetX;
+                const y1 = fromNode.y + offsetY;
+                const x2 = toNode.x - offsetX - 2; // Small offset for arrowhead
+                const y2 = toNode.y - offsetY - (dy / dist) * 2;
+
+                // Create edge line
+                const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+                line.setAttribute('x1', x1);
+                line.setAttribute('y1', y1);
+                line.setAttribute('x2', x2);
+                line.setAttribute('y2', y2);
+                line.setAttribute('class', 'graph-edge');
+                line.setAttribute('marker-end', 'url(#arrowhead)');
+                line.setAttribute('data-from', edge.from);
+                line.setAttribute('data-to', edge.to);
+                edgeLayer.appendChild(line);
+
+                // Create cost label
+                const midX = (fromNode.x + toNode.x) / 2;
+                const midY = (fromNode.y + toNode.y) / 2;
+
+                // Offset label perpendicular to edge
+                const perpX = -dy / dist * 12;
+                const perpY = dx / dist * 12;
+
+                const label = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+                label.setAttribute('x', midX + perpX);
+                label.setAttribute('y', midY + perpY);
+                label.setAttribute('class', 'graph-edge-label');
+                label.textContent = edge.cost;
+                edgeLayer.appendChild(label);
+
+                this.edgeElements.set(`${edge.from}->${edge.to}`, { line, label });
+            });
+
+            // Render nodes
+            this.graph.nodes.forEach((node, id) => {
+                const group = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+                group.setAttribute('class', 'graph-node-group');
+                group.setAttribute('data-id', id);
+                group.setAttribute('transform', `translate(${node.x}, ${node.y})`);
+
+                // Node circle
+                const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+                circle.setAttribute('r', this.nodeRadius);
+                circle.setAttribute('class', 'graph-node');
+
+                // Apply special styling for start/goal
+                if (id === this.graph.start) {
+                    circle.classList.add('start');
+                } else if (id === this.graph.goal) {
+                    circle.classList.add('goal');
+                }
+
+                group.appendChild(circle);
+
+                // Node label
+                const label = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+                label.setAttribute('class', 'graph-node-label');
+                label.setAttribute('text-anchor', 'middle');
+                label.setAttribute('dominant-baseline', 'middle');
+                label.textContent = node.label;
+                group.appendChild(label);
+
+                // Values display (f/g/h) - shown below node
+                if (this.showValues) {
+                    const values = this.nodeValues.get(id);
+                    if (values) {
+                        const valuesText = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+                        valuesText.setAttribute('class', 'graph-node-values');
+                        valuesText.setAttribute('text-anchor', 'middle');
+                        valuesText.setAttribute('y', this.nodeRadius + 15);
+                        valuesText.textContent = `f=${values.f.toFixed(1)} g=${values.g.toFixed(1)} h=${values.h.toFixed(1)}`;
+                        group.appendChild(valuesText);
+                    }
+                }
+
+                // Heuristic value display (always shown for graph mode)
+                const hText = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+                hText.setAttribute('class', 'graph-node-heuristic');
+                hText.setAttribute('text-anchor', 'middle');
+                hText.setAttribute('y', -this.nodeRadius - 5);
+                hText.textContent = `h=${node.h}`;
+                group.appendChild(hText);
+
+                nodeLayer.appendChild(group);
+                this.nodeElements.set(id, { group, circle, label });
+            });
+
+            // Re-apply visualization state (for path edges and node states)
+            this.applyVisualizationState();
+        }
+
+        applyVisualizationState() {
+            // Apply node states
+            this.nodeStates.forEach((state, nodeId) => {
+                const elem = this.nodeElements.get(nodeId);
+                if (elem && nodeId !== this.graph.start && nodeId !== this.graph.goal) {
+                    elem.circle.classList.add(state);
+                }
+            });
+
+            // Apply path edge states
+            this.pathEdges.forEach(edgeKey => {
+                const edgeElem = this.edgeElements.get(edgeKey);
+                if (edgeElem) {
+                    edgeElem.line.classList.add('path-edge');
+                    edgeElem.line.setAttribute('marker-end', 'url(#arrowhead-path)');
+                }
+            });
+        }
+
+        initEventListeners() {
+            const container = document.getElementById('graph-visualization');
+            if (!container) return;
+
+            // Node click handling
+            container.addEventListener('click', (e) => {
+                if (this.simulationRunning) return;
+
+                const nodeGroup = e.target.closest('.graph-node-group');
+                const edge = e.target.closest('.graph-edge');
+
+                if (nodeGroup && this.editingEnabled) {
+                    const nodeId = nodeGroup.getAttribute('data-id');
+                    this.handleNodeClick(nodeId);
+                } else if (edge && this.editingEnabled && this.editMode === 'delete') {
+                    const from = edge.getAttribute('data-from');
+                    const to = edge.getAttribute('data-to');
+                    this.graph.removeEdge(from, to);
+                    this.renderGraph();
+                } else if (!nodeGroup && !edge && this.editingEnabled && this.editMode === 'node') {
+                    // Click on empty space - add new node
+                    const rect = this.svgContainer.getBoundingClientRect();
+                    const viewBox = this.svgContainer.viewBox.baseVal;
+                    const scaleX = viewBox.width / rect.width;
+                    const scaleY = viewBox.height / rect.height;
+                    const x = (e.clientX - rect.left) * scaleX;
+                    const y = (e.clientY - rect.top) * scaleY;
+
+                    const nodeId = this.generateNodeId();
+                    const h = prompt(`Enter heuristic value for node ${nodeId}:`, '0');
+                    if (h !== null) {
+                        this.graph.addNode(nodeId, nodeId, x, y, parseFloat(h) || 0);
+                        this.renderGraph();
+                    }
+                }
+            });
+
+            // Node dragging
+            let draggedNode = null;
+            let dragOffset = { x: 0, y: 0 };
+
+            container.addEventListener('mousedown', (e) => {
+                if (!this.editingEnabled || this.simulationRunning) return;
+
+                const nodeGroup = e.target.closest('.graph-node-group');
+                if (nodeGroup && this.editMode !== 'edge') {
+                    const nodeId = nodeGroup.getAttribute('data-id');
+                    const node = this.graph.getNode(nodeId);
+                    if (node) {
+                        draggedNode = nodeId;
+                        const rect = this.svgContainer.getBoundingClientRect();
+                        const viewBox = this.svgContainer.viewBox.baseVal;
+                        const scaleX = viewBox.width / rect.width;
+                        const scaleY = viewBox.height / rect.height;
+                        dragOffset.x = node.x - (e.clientX - rect.left) * scaleX;
+                        dragOffset.y = node.y - (e.clientY - rect.top) * scaleY;
+                    }
+                }
+            });
+
+            document.addEventListener('mousemove', (e) => {
+                if (draggedNode && this.editingEnabled && !this.simulationRunning) {
+                    const rect = this.svgContainer.getBoundingClientRect();
+                    const viewBox = this.svgContainer.viewBox.baseVal;
+                    const scaleX = viewBox.width / rect.width;
+                    const scaleY = viewBox.height / rect.height;
+                    const x = (e.clientX - rect.left) * scaleX + dragOffset.x;
+                    const y = (e.clientY - rect.top) * scaleY + dragOffset.y;
+                    this.graph.updateNodePosition(draggedNode, x, y);
+                    this.renderGraph();
+                }
+            });
+
+            document.addEventListener('mouseup', () => {
+                draggedNode = null;
+            });
+
+            // Edit mode buttons
+            document.querySelectorAll('.graph-edit-buttons .btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    if (!this.editingEnabled || this.simulationRunning) return;
+                    document.querySelectorAll('.graph-edit-buttons .btn').forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    this.editMode = btn.dataset.mode;
+                    this.edgeSourceNode = null; // Reset edge creation
+                });
+            });
+
+            // Clear graph button
+            document.getElementById('btn-clear-graph')?.addEventListener('click', () => {
+                if (!this.editingEnabled || this.simulationRunning) return;
+                this.graph.clear();
+                this.nodeValues.clear();
+                this.renderGraph();
+            });
+
+            // Show values checkbox
+            document.getElementById('show-values')?.addEventListener('change', (e) => {
+                this.showValues = e.target.checked;
+                this.renderGraph();
+            });
+        }
+
+        handleNodeClick(nodeId) {
+            switch (this.editMode) {
+                case 'start':
+                    this.graph.setStart(nodeId);
+                    this.renderGraph();
+                    break;
+                case 'goal':
+                    this.graph.setGoal(nodeId);
+                    this.renderGraph();
+                    break;
+                case 'delete':
+                    this.graph.removeNode(nodeId);
+                    this.renderGraph();
+                    break;
+                case 'edge':
+                    if (this.edgeSourceNode === null) {
+                        this.edgeSourceNode = nodeId;
+                        // Highlight source node
+                        const elem = this.nodeElements.get(nodeId);
+                        if (elem) elem.circle.classList.add('edge-source');
+                    } else if (this.edgeSourceNode !== nodeId) {
+                        const cost = prompt(`Enter edge cost from ${this.edgeSourceNode} to ${nodeId}:`, '1');
+                        if (cost !== null) {
+                            this.graph.addEdge(this.edgeSourceNode, nodeId, parseFloat(cost) || 1);
+                        }
+                        // Clear source highlight
+                        const elem = this.nodeElements.get(this.edgeSourceNode);
+                        if (elem) elem.circle.classList.remove('edge-source');
+                        this.edgeSourceNode = null;
+                        this.renderGraph();
+                    }
+                    break;
+                case 'node':
+                    // Click on existing node in node mode - edit heuristic
+                    const node = this.graph.getNode(nodeId);
+                    if (node) {
+                        const newH = prompt(`Enter new heuristic value for ${nodeId}:`, node.h.toString());
+                        if (newH !== null) {
+                            this.graph.updateNodeHeuristic(nodeId, parseFloat(newH) || 0);
+                            this.renderGraph();
+                        }
+                    }
+                    break;
+            }
+        }
+
+        generateNodeId() {
+            const existing = this.graph.getAllNodeIds();
+            const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+            for (const letter of letters) {
+                if (!existing.includes(letter)) return letter;
+            }
+            // Fallback to numbered nodes
+            let i = 1;
+            while (existing.includes(`N${i}`)) i++;
+            return `N${i}`;
+        }
+
+        renderStep(step, path, goalId) {
+            if (!step || !step.isGraph) return;
+
+            // Clear stored visualization state
+            this.nodeStates.clear();
+            this.pathEdges.clear();
+
+            // Reset all node states
+            this.nodeElements.forEach((elem, id) => {
+                elem.circle.classList.remove('open', 'closed', 'current', 'path');
+            });
+
+            // Reset all edge states
+            this.edgeElements.forEach(elem => {
+                elem.line.classList.remove('path-edge');
+                elem.line.setAttribute('marker-end', 'url(#arrowhead)');
+            });
+
+            // Apply closed list styling
+            if (step.closedList) {
+                for (const node of step.closedList) {
+                    const elem = this.nodeElements.get(node.id);
+                    if (elem && node.id !== this.graph.start && node.id !== this.graph.goal) {
+                        elem.circle.classList.add('closed');
+                        this.nodeStates.set(node.id, 'closed');
+                    }
+                    // Store values
+                    this.nodeValues.set(node.id, { g: node.g, h: node.h, f: node.f });
+                }
+            }
+
+            // Apply open list styling
+            if (step.openList) {
+                for (const node of step.openList) {
+                    const elem = this.nodeElements.get(node.id);
+                    if (elem && node.id !== this.graph.start && node.id !== this.graph.goal && !elem.circle.classList.contains('closed')) {
+                        elem.circle.classList.add('open');
+                        this.nodeStates.set(node.id, 'open');
+                    }
+                    // Store values
+                    this.nodeValues.set(node.id, { g: node.g, h: node.h, f: node.f });
+                }
+            }
+
+            // Highlight current node
+            if (step.current) {
+                const elem = this.nodeElements.get(step.current.id);
+                if (elem && step.current.id !== this.graph.start && step.current.id !== this.graph.goal) {
+                    elem.circle.classList.remove('open', 'closed');
+                    elem.circle.classList.add('current');
+                    this.nodeStates.set(step.current.id, 'current');
+                }
+            }
+
+            // Highlight path
+            if (step.path) {
+                for (let i = 0; i < step.path.length; i++) {
+                    const node = step.path[i];
+                    const elem = this.nodeElements.get(node.id);
+                    if (elem && node.id !== this.graph.start && node.id !== this.graph.goal) {
+                        elem.circle.classList.remove('open', 'closed', 'current');
+                        elem.circle.classList.add('path');
+                        this.nodeStates.set(node.id, 'path');
+                    }
+
+                    // Highlight path edges
+                    if (i < step.path.length - 1) {
+                        const nextNode = step.path[i + 1];
+                        const edgeKey = `${node.id}->${nextNode.id}`;
+                        const edgeElem = this.edgeElements.get(edgeKey);
+                        if (edgeElem) {
+                            edgeElem.line.classList.add('path-edge');
+                            edgeElem.line.setAttribute('marker-end', 'url(#arrowhead-path)');
+                            this.pathEdges.add(edgeKey);
+                        }
+                    }
+                }
+            }
+
+            // Re-render to show values if enabled (state will be reapplied)
+            if (this.showValues) {
+                this.renderGraph();
+            }
+        }
+
+        updateLists(openList, closedList, goalId) {
+            // Similar to grid version but for graph nodes
+            const openContainer = document.getElementById('open-list');
+            const closedContainer = document.getElementById('closed-list');
+            const openCount = document.getElementById('open-count');
+            const closedCount = document.getElementById('closed-count');
+
+            if (openContainer) {
+                if (openList.length === 0) {
+                    openContainer.innerHTML = '<div class="list-empty">No nodes yet</div>';
+                } else {
+                    openContainer.innerHTML = openList.map(node => `
+                        <div class="list-item" data-id="${node.id}" data-g="${node.g}" data-h="${node.h}" data-f="${node.f}">
+                            <span class="list-item-coord">${node.id}</span>
+                            <span class="list-item-values">f=${node.f.toFixed(1)} g=${node.g.toFixed(1)} h=${node.h.toFixed(1)}</span>
+                        </div>
+                    `).join('');
+                }
+            }
+
+            if (closedContainer) {
+                if (closedList.length === 0) {
+                    closedContainer.innerHTML = '<div class="list-empty">No nodes yet</div>';
+                } else {
+                    closedContainer.innerHTML = closedList.map(node => `
+                        <div class="list-item" data-id="${node.id}" data-g="${node.g}" data-h="${node.h}" data-f="${node.f}">
+                            <span class="list-item-coord">${node.id}</span>
+                            <span class="list-item-values">f=${node.f.toFixed(1)} g=${node.g.toFixed(1)} h=${node.h.toFixed(1)}</span>
+                        </div>
+                    `).join('');
+                }
+            }
+
+            if (openCount) openCount.textContent = openList.length;
+            if (closedCount) closedCount.textContent = closedList.length;
+        }
+
+        updateMetrics(metrics) {
+            document.getElementById('metric-expanded').textContent = metrics.nodesExpanded ?? 0;
+            document.getElementById('metric-generated').textContent = metrics.nodesGenerated ?? 0;
+            document.getElementById('metric-path-length').textContent = metrics.pathLength ?? '-';
+            document.getElementById('metric-path-cost').textContent = metrics.pathCost !== null && metrics.pathCost !== undefined
+                ? metrics.pathCost.toFixed(2) : '-';
+            document.getElementById('metric-time').textContent = metrics.time !== undefined
+                ? `${metrics.time.toFixed(2)}ms` : '0.00ms';
+        }
+
+        clearLog() {
+            const log = document.getElementById('execution-log');
+            if (log) {
+                log.innerHTML = `
+                    <div class="log-entry log-info">
+                        <span class="log-icon"><i class="fa fa-info-circle"></i></span>
+                        <span class="log-message">Select a sample graph or create custom, then click Solve.</span>
+                    </div>
+                `;
+            }
+            // Clear visualization state
+            this.nodeStates.clear();
+            this.pathEdges.clear();
+            this.nodeValues.clear();
+        }
+
+        addLogEntry(message, type = 'info') {
+            const log = document.getElementById('execution-log');
+            if (!log) return;
+
+            const iconMap = {
+                info: 'fa-info-circle',
+                expand: 'fa-expand',
+                add: 'fa-plus',
+                update: 'fa-refresh',
+                success: 'fa-check-circle',
+                error: 'fa-times-circle'
+            };
+
+            const entry = document.createElement('div');
+            entry.className = `log-entry log-${type}`;
+            entry.innerHTML = `
+                <span class="log-icon"><i class="fa ${iconMap[type] || 'fa-info-circle'}"></i></span>
+                <span class="log-message">${message}</span>
+            `;
+            log.appendChild(entry);
+            log.scrollTop = log.scrollHeight;
+        }
+
+        setEditingEnabled(enabled) {
+            this.editingEnabled = enabled;
+            const editButtons = document.querySelectorAll('.graph-edit-buttons .btn');
+            const clearBtn = document.getElementById('btn-clear-graph');
+            const container = document.getElementById('graph-visualization');
+
+            editButtons.forEach(btn => {
+                btn.disabled = !enabled || this.simulationRunning;
+            });
+            if (clearBtn) {
+                clearBtn.disabled = !enabled || this.simulationRunning;
+            }
+            if (container) {
+                container.classList.toggle('editing-disabled', !enabled || this.simulationRunning);
+            }
+
+            if (enabled && !this.simulationRunning) {
+                const firstBtn = document.querySelector('.graph-edit-buttons .btn[data-mode="node"]');
+                if (firstBtn) {
+                    editButtons.forEach(b => b.classList.remove('active'));
+                    firstBtn.classList.add('active');
+                    this.editMode = 'node';
+                }
+            }
+        }
+
+        setSimulationRunning(running) {
+            this.simulationRunning = running;
+            const editButtons = document.querySelectorAll('.graph-edit-buttons .btn');
+            const clearBtn = document.getElementById('btn-clear-graph');
+            const sampleSelect = document.getElementById('sample-select');
+            const container = document.getElementById('graph-visualization');
+
+            editButtons.forEach(btn => {
+                btn.disabled = !this.editingEnabled || running;
+            });
+            if (clearBtn) {
+                clearBtn.disabled = !this.editingEnabled || running;
+            }
+            if (sampleSelect) {
+                sampleSelect.disabled = running;
+            }
+            if (container) {
+                container.classList.toggle('editing-disabled', !this.editingEnabled || running);
+            }
+        }
+
+        updatePseudocode(stepType) {
+            // Same as grid version - pseudocode is generic
+            const pseudocodeContainer = document.querySelector('.pseudocode');
+            if (!pseudocodeContainer) return;
+
+            pseudocodeContainer.querySelectorAll('.line').forEach(line => {
+                line.classList.remove('active');
+            });
+
+            const stepToLines = {
+                [STEP_INIT]: ['init', 'init-open', 'init-closed', 'init-g', 'init-f'],
+                [STEP_EXPAND]: ['while', 'select', 'remove-open', 'add-closed'],
+                [STEP_NEIGHBOR_CHECK]: ['for-neighbor', 'skip-closed', 'tentative-g'],
+                [STEP_ADD_TO_OPEN]: ['if-better', 'update-parent', 'update-g', 'update-f', 'add-to-open', 'push-open'],
+                [STEP_UPDATE_PATH]: ['if-better', 'update-parent', 'update-g', 'update-f'],
+                [STEP_GOAL_FOUND]: ['goal-found', 'return-path'],
+                [STEP_NO_SOLUTION]: ['no-path']
+            };
+
+            const linesToHighlight = stepToLines[stepType] || [];
+            linesToHighlight.forEach(lineId => {
+                const line = pseudocodeContainer.querySelector(`.line[data-line="${lineId}"]`);
+                if (line) {
+                    line.classList.add('active');
+                }
+            });
+
+            const firstActive = pseudocodeContainer.querySelector('.line.active');
+            if (firstActive) {
+                firstActive.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+        }
+
+        clearPseudocode() {
+            const pseudocodeContainer = document.querySelector('.pseudocode');
+            if (!pseudocodeContainer) return;
+
+            pseudocodeContainer.querySelectorAll('.line').forEach(line => {
+                line.classList.remove('active');
+            });
+        }
+
+        // No-op for graph mode (no heuristic line to draw)
+        clearHeuristicLine() {
+            // Graph mode doesn't draw heuristic lines
+        }
+
+        // For grid interface compatibility - but don't re-render during playback
+        // as it would wipe out the algorithm state visualization
+        renderGrid() {
+            // Only re-render if not in simulation (playback would wipe state)
+            if (!this.simulationRunning) {
+                this.renderGraph();
+            }
+        }
+
+        // Compute shortest path costs from each node to goal using reverse Dijkstra
+        computeOptimalCostsToGoal() {
+            const goal = this.graph.goal;
+            if (!goal) return {};
+
+            // Build reverse adjacency list (edges pointing TO each node)
+            const reverseAdj = new Map();
+            this.graph.nodes.forEach((_, id) => reverseAdj.set(id, []));
+            this.graph.edges.forEach(edge => {
+                reverseAdj.get(edge.to).push({ id: edge.from, cost: edge.cost });
+            });
+
+            // Dijkstra from goal using reverse edges
+            const dist = {};
+            this.graph.nodes.forEach((_, id) => dist[id] = Infinity);
+            dist[goal] = 0;
+
+            const pq = [{ id: goal, cost: 0 }];
+            const visited = new Set();
+
+            while (pq.length > 0) {
+                pq.sort((a, b) => a.cost - b.cost);
+                const { id: current, cost } = pq.shift();
+
+                if (visited.has(current)) continue;
+                visited.add(current);
+
+                // Check reverse neighbors (nodes that can reach current)
+                for (const { id: neighbor, cost: edgeCost } of reverseAdj.get(current)) {
+                    const newDist = cost + edgeCost;
+                    if (newDist < dist[neighbor]) {
+                        dist[neighbor] = newDist;
+                        pq.push({ id: neighbor, cost: newDist });
+                    }
+                }
+            }
+
+            return dist;
+        }
+
+        // Check which heuristics are inadmissible or inconsistent
+        checkHeuristicQuality() {
+            const optimalCosts = this.computeOptimalCostsToGoal();
+            const issues = {}; // nodeId -> { inadmissible: bool, inconsistent: bool, reason: string }
+
+            this.graph.nodes.forEach((node, id) => {
+                const h = node.h;
+                const optimal = optimalCosts[id];
+                issues[id] = { inadmissible: false, inconsistent: false, reasons: [] };
+
+                // Check admissibility: h(n) <= h*(n) (actual cost to goal)
+                if (optimal !== Infinity && h > optimal) {
+                    issues[id].inadmissible = true;
+                    issues[id].reasons.push(`h(${node.label})=${h} > optimal cost ${optimal.toFixed(1)}`);
+                }
+
+                // Check consistency: h(n) <= cost(n,n') + h(n') for all neighbors
+                const neighbors = this.graph.getNeighbors(id);
+                for (const { id: neighborId, cost } of neighbors) {
+                    const neighborNode = this.graph.getNode(neighborId);
+                    if (neighborNode) {
+                        const neighborH = neighborNode.h;
+                        if (h > cost + neighborH) {
+                            issues[id].inconsistent = true;
+                            issues[id].reasons.push(`h(${node.label})=${h} > ${cost}+h(${neighborNode.label})=${cost + neighborH}`);
+                        }
+                    }
+                }
+            });
+
+            return issues;
+        }
+
+        renderHeuristicsTable() {
+            const container = document.getElementById('graph-heuristics-table');
+            if (!container) return;
+
+            const nodes = Array.from(this.graph.nodes.entries());
+            const issues = this.checkHeuristicQuality();
+
+            // Sort: start first, then alphabetically, goal last
+            nodes.sort((a, b) => {
+                if (a[0] === this.graph.start) return -1;
+                if (b[0] === this.graph.start) return 1;
+                if (a[0] === this.graph.goal) return 1;
+                if (b[0] === this.graph.goal) return -1;
+                return a[0].localeCompare(b[0]);
+            });
+
+            container.innerHTML = nodes.map(([id, node]) => {
+                const isStart = id === this.graph.start;
+                const isGoal = id === this.graph.goal;
+                const issue = issues[id] || {};
+
+                // Determine CSS class: inadmissible > inconsistent > start/goal
+                let extraClass = '';
+                let title = '';
+                if (issue.inadmissible) {
+                    extraClass = 'inadmissible';
+                    title = 'Inadmissible: ' + issue.reasons.join('; ');
+                } else if (issue.inconsistent) {
+                    extraClass = 'inconsistent';
+                    title = 'Inconsistent: ' + issue.reasons.join('; ');
+                } else if (isStart) {
+                    extraClass = 'start';
+                    title = 'Start node';
+                } else if (isGoal) {
+                    extraClass = 'goal';
+                    title = 'Goal always has h=0';
+                } else {
+                    title = 'Heuristic estimate to goal';
+                }
+
+                const disabled = isGoal ? 'disabled' : '';
+
+                return `
+                    <div class="heuristic-item ${extraClass}">
+                        <label>${node.label}:</label>
+                        <input type="number"
+                               data-node="${id}"
+                               value="${node.h}"
+                               min="0"
+                               step="1"
+                               ${disabled}
+                               title="${title}">
+                    </div>
+                `;
+            }).join('');
+        }
+
+        getHeuristicsFromTable() {
+            const inputs = document.querySelectorAll('#graph-heuristics-table input');
+            const heuristics = {};
+            inputs.forEach(input => {
+                const nodeId = input.dataset.node;
+                const value = parseFloat(input.value) || 0;
+                heuristics[nodeId] = value;
+            });
+            return heuristics;
+        }
+
+        applyHeuristics(heuristics) {
+            for (const [nodeId, h] of Object.entries(heuristics)) {
+                this.graph.updateNodeHeuristic(nodeId, h);
+            }
+            // Re-render to update h= labels on nodes
+            this.renderGraph();
+        }
+    }
+
+    // ============================================
     // Playback Controller
     // ============================================
 
@@ -1193,6 +2926,7 @@
             this.currentStepIndex = -1;
             this.goal = null;
             this.ui.clearHeuristicLine();
+            this.ui.clearPseudocode();
             this.ui.renderGrid();
             this.updateStepDisplay();
         }
@@ -1216,6 +2950,9 @@
                 if (step.metrics) {
                     this.ui.updateMetrics(step.metrics);
                 }
+
+                // Update pseudocode highlighting
+                this.ui.updatePseudocode(step.type);
 
                 // Log the step
                 const logType = this.getLogType(step.type);
@@ -1254,10 +2991,20 @@
 
     class AStarApp {
         constructor() {
+            // Grid mode components
             this.grid = new GridState();
             this.solver = new AStarSolver();
             this.ui = new UIController(this.grid);
             this.playback = new PlaybackController(this.ui);
+
+            // Graph mode components
+            this.graphState = new DirectGraphState();
+            this.graphUI = new GraphUIController(this.graphState);
+            this.graphPlayback = new PlaybackController(this.graphUI);
+
+            // Mode tracking
+            this.isGraphMode = false;
+
             this.currentResult = null;
             this.comparisonResults = new Map();
 
@@ -1266,13 +3013,18 @@
         }
 
         initEventListeners() {
-            // Sample input buttons
-            document.querySelectorAll('.sample-input-tabs .btn').forEach(btn => {
-                btn.addEventListener('click', () => {
-                    document.querySelectorAll('.sample-input-tabs .btn').forEach(b => b.classList.remove('active'));
-                    btn.classList.add('active');
-                    this.loadSample(btn.dataset.sample);
-                });
+            // Sample input dropdown
+            document.getElementById('sample-select')?.addEventListener('change', (e) => {
+                const value = e.target.value;
+                if (value === 'custom') {
+                    this.enableCustomMode();
+                } else if (value === 'graph-custom') {
+                    this.enableGraphCustomMode();
+                } else if (value.startsWith('graph-')) {
+                    this.loadGraphSample(value.replace('graph-', ''));
+                } else {
+                    this.loadSample(value);
+                }
             });
 
             // Solve button
@@ -1280,25 +3032,28 @@
 
             // Pause button
             document.getElementById('btn-pause')?.addEventListener('click', () => {
-                if (this.playback.isPlaying) {
-                    this.playback.pause();
+                const playback = this.isGraphMode ? this.graphPlayback : this.playback;
+                if (playback.isPlaying) {
+                    playback.pause();
                     document.getElementById('btn-pause').innerHTML = '<i class="fa fa-play"></i>';
                 } else {
-                    this.playback.play();
+                    playback.play();
                     document.getElementById('btn-pause').innerHTML = '<i class="fa fa-pause"></i>';
                 }
             });
 
             // Step buttons
             document.getElementById('btn-step')?.addEventListener('click', () => {
-                this.playback.pause();
-                this.playback.stepForward();
+                const playback = this.isGraphMode ? this.graphPlayback : this.playback;
+                playback.pause();
+                playback.stepForward();
                 document.getElementById('btn-pause').innerHTML = '<i class="fa fa-play"></i>';
             });
 
             document.getElementById('btn-step-back')?.addEventListener('click', () => {
-                this.playback.pause();
-                this.playback.stepBackward();
+                const playback = this.isGraphMode ? this.graphPlayback : this.playback;
+                playback.pause();
+                playback.stepBackward();
                 document.getElementById('btn-pause').innerHTML = '<i class="fa fa-play"></i>';
             });
 
@@ -1307,7 +3062,9 @@
 
             // Speed slider
             document.getElementById('speed-slider')?.addEventListener('input', (e) => {
-                this.playback.setSpeed(parseInt(e.target.value));
+                const speed = parseInt(e.target.value);
+                this.playback.setSpeed(speed);
+                this.graphPlayback.setSpeed(speed);
             });
 
             // Movement mode dropdown - auto-select appropriate heuristic
@@ -1363,22 +3120,138 @@
                     this.loadComparisonResult(row.dataset.heuristic);
                 }
             });
+
+            // Auto-apply heuristics when input changes (graph mode)
+            document.getElementById('graph-heuristics-table')?.addEventListener('input', (e) => {
+                if (e.target.tagName === 'INPUT') {
+                    this.applyGraphHeuristics();
+                }
+            });
         }
 
         loadSample(name) {
+            this.switchToGridMode();
             this.reset();
+            this.ui.setEditingEnabled(false);
+            this.ui.setSimulationRunning(false);
             this.grid.loadSample(name);
             this.ui.renderGrid();
             // Auto-populate comparison table
             this.runComparison();
         }
 
+        enableCustomMode() {
+            this.switchToGridMode();
+            this.reset();
+            this.ui.setSimulationRunning(false);
+            this.grid.clear();
+            this.ui.setEditingEnabled(true);
+            this.ui.renderGrid();
+            // Clear comparison table
+            const tbody = document.querySelector('#comparison-table tbody');
+            if (tbody) tbody.innerHTML = '';
+        }
+
+        loadGraphSample(name) {
+            this.switchToGraphMode();
+            this.resetGraph();
+            this.graphUI.setEditingEnabled(false);
+            this.graphUI.setSimulationRunning(false);
+            this.graphState.loadSample(name);
+            this.graphUI.initGraph();
+            this.graphUI.renderHeuristicsTable();
+            // Auto-populate comparison table
+            this.runComparison();
+        }
+
+        enableGraphCustomMode() {
+            this.switchToGraphMode();
+            this.resetGraph();
+            this.graphUI.setSimulationRunning(false);
+            this.graphState.clear();
+            this.graphUI.setEditingEnabled(true);
+            this.graphUI.initGraph();
+            this.graphUI.renderHeuristicsTable();
+            // Clear comparison table
+            const tbody = document.querySelector('#comparison-table tbody');
+            if (tbody) tbody.innerHTML = '';
+        }
+
+        applyGraphHeuristics() {
+            // Get heuristics from the table and apply to graph state
+            const heuristics = this.graphUI.getHeuristicsFromTable();
+            this.graphUI.applyHeuristics(heuristics);
+            // Reset and re-run comparison
+            this.resetGraph();
+            this.graphUI.renderHeuristicsTable();
+            this.runComparison();
+        }
+
+        switchToGridMode() {
+            if (!this.isGraphMode) return;
+            this.isGraphMode = false;
+
+            // Show grid visualization, hide graph
+            document.getElementById('pathfinding-grid')?.style.setProperty('display', '');
+            document.getElementById('heuristic-overlay')?.style.setProperty('display', '');
+            document.getElementById('graph-visualization')?.style.setProperty('display', 'none');
+
+            // Show grid controls, hide graph controls
+            document.querySelectorAll('.grid-controls').forEach(el => el.style.display = '');
+            document.querySelectorAll('.graph-controls').forEach(el => el.style.display = 'none');
+
+            // Reset graph playback
+            this.graphPlayback.reset();
+        }
+
+        switchToGraphMode() {
+            if (this.isGraphMode) return;
+            this.isGraphMode = true;
+
+            // Hide grid visualization, show graph
+            document.getElementById('pathfinding-grid')?.style.setProperty('display', 'none');
+            document.getElementById('heuristic-overlay')?.style.setProperty('display', 'none');
+            document.getElementById('graph-visualization')?.style.setProperty('display', '');
+
+            // Hide grid controls, show graph controls
+            document.querySelectorAll('.grid-controls').forEach(el => el.style.display = 'none');
+            document.querySelectorAll('.graph-controls').forEach(el => el.style.display = '');
+
+            // Reset grid playback
+            this.playback.reset();
+        }
+
+        resetGraph() {
+            this.graphPlayback.reset();
+            this.graphUI.clearLog();
+            this.graphUI.setSimulationRunning(false);
+            this.graphUI.initGraph();
+            this.graphUI.updateMetrics({});
+            this.graphUI.updateLists([], []);
+
+            // Disable controls
+            document.getElementById('btn-pause').disabled = true;
+            document.getElementById('btn-pause').innerHTML = '<i class="fa fa-pause"></i>';
+            document.getElementById('btn-step').disabled = true;
+            document.getElementById('btn-step-back').disabled = true;
+        }
+
         solve() {
+            if (this.isGraphMode) {
+                this.solveGraph();
+            } else {
+                this.solveGrid();
+            }
+        }
+
+        solveGrid() {
             if (!this.grid.start || !this.grid.goal) {
                 alert('Please place both a start and goal position.');
                 return;
             }
 
+            // Lock editing during simulation
+            this.ui.setSimulationRunning(true);
             this.ui.clearLog();
 
             const movementMode = document.getElementById('movement-mode')?.value || 'grid';
@@ -1392,7 +3265,14 @@
             // Set heuristic on UI for visualization
             this.ui.setHeuristic(options.heuristic);
 
-            this.currentResult = this.solver.solve(this.grid, options);
+            // Choose solve method based on algorithm selection
+            if (options.heuristic === 'bfs') {
+                this.currentResult = this.solver.solveBFS(this.grid, options);
+            } else if (options.heuristic === 'dfs') {
+                this.currentResult = this.solver.solveDFS(this.grid, options);
+            } else {
+                this.currentResult = this.solver.solve(this.grid, options);
+            }
             this.playback.loadSteps(this.currentResult.steps, this.grid.goal);
 
             // Enable controls
@@ -1405,10 +3285,54 @@
             this.playback.play();
         }
 
+        solveGraph() {
+            if (!this.graphState.start || !this.graphState.goal) {
+                alert('Please set both a start and goal node.');
+                return;
+            }
+
+            // Lock editing during simulation
+            this.graphUI.setSimulationRunning(true);
+            this.graphUI.clearLog();
+
+            const algorithm = document.getElementById('heuristic-select')?.value || 'manhattan';
+
+            // Choose solve method based on algorithm selection
+            if (algorithm === 'bfs') {
+                this.currentResult = this.solver.solveGraphBFS(this.graphState);
+            } else if (algorithm === 'dfs') {
+                this.currentResult = this.solver.solveGraphDFS(this.graphState);
+            } else if (algorithm === 'dijkstra') {
+                this.currentResult = this.solver.solveGraphDijkstra(this.graphState);
+            } else {
+                // A* variants all use the same graph solver (uses node heuristics)
+                this.currentResult = this.solver.solveGraph(this.graphState);
+            }
+            this.graphPlayback.loadSteps(this.currentResult.steps, this.graphState.goal);
+
+            // Enable controls
+            document.getElementById('btn-pause').disabled = false;
+            document.getElementById('btn-step').disabled = false;
+            document.getElementById('btn-step-back').disabled = false;
+
+            // Start playback
+            document.getElementById('btn-pause').innerHTML = '<i class="fa fa-pause"></i>';
+            this.graphPlayback.play();
+        }
+
         reset() {
+            if (this.isGraphMode) {
+                this.resetGraph();
+            } else {
+                this.resetGrid();
+            }
+        }
+
+        resetGrid() {
             this.playback.reset();
             this.ui.nodeValues.clear();
             this.ui.clearHeuristicLine();
+            this.ui.setSimulationRunning(false);
             this.ui.renderGrid();
             this.ui.updateMetrics({});
             this.ui.updateLists([], []);
@@ -1422,6 +3346,14 @@
         }
 
         runComparison() {
+            if (this.isGraphMode) {
+                this.runGraphComparison();
+            } else {
+                this.runGridComparison();
+            }
+        }
+
+        runGridComparison() {
             if (!this.grid.start || !this.grid.goal) {
                 // Clear comparison table if no start/goal
                 const tbody = document.querySelector('#comparison-table tbody');
@@ -1430,7 +3362,7 @@
             }
 
             this.comparisonResults.clear();
-            const heuristics = ['manhattan', 'euclidean', 'chebyshev', 'dijkstra'];
+            const algorithms = ['manhattan', 'euclidean', 'chebyshev', 'dijkstra', 'bfs', 'dfs'];
             const movementMode = document.getElementById('movement-mode')?.value || 'grid';
             const allowDiagonal = movementMode === 'free';
             const tiebreaker = document.getElementById('tiebreaker-select')?.value || 'none';
@@ -1438,12 +3370,60 @@
 
             const results = [];
 
-            for (const heuristic of heuristics) {
-                const result = this.solver.solve(this.grid, { heuristic, allowDiagonal, tiebreaker, weight });
-                this.comparisonResults.set(heuristic, result);
+            for (const algorithm of algorithms) {
+                let result;
+                if (algorithm === 'bfs') {
+                    result = this.solver.solveBFS(this.grid, { allowDiagonal });
+                } else if (algorithm === 'dfs') {
+                    result = this.solver.solveDFS(this.grid, { allowDiagonal });
+                } else {
+                    result = this.solver.solve(this.grid, { heuristic: algorithm, allowDiagonal, tiebreaker, weight });
+                }
+                this.comparisonResults.set(algorithm, result);
 
                 results.push({
-                    heuristic,
+                    heuristic: algorithm,
+                    expanded: result.metrics.nodesExpanded,
+                    generated: result.metrics.nodesGenerated,
+                    pathLength: result.success ? result.metrics.pathLength : null,
+                    pathCost: result.success ? result.metrics.pathCost : null,
+                    time: result.metrics.time,
+                    success: result.success
+                });
+            }
+
+            this.renderComparisonTable(results);
+        }
+
+        runGraphComparison() {
+            if (!this.graphState.start || !this.graphState.goal) {
+                // Clear comparison table if no start/goal
+                const tbody = document.querySelector('#comparison-table tbody');
+                if (tbody) tbody.innerHTML = '';
+                return;
+            }
+
+            this.comparisonResults.clear();
+            // For graphs, only A* (with node heuristics), Dijkstra, BFS, DFS make sense
+            const algorithms = ['astar', 'dijkstra', 'bfs', 'dfs'];
+
+            const results = [];
+
+            for (const algorithm of algorithms) {
+                let result;
+                if (algorithm === 'bfs') {
+                    result = this.solver.solveGraphBFS(this.graphState);
+                } else if (algorithm === 'dfs') {
+                    result = this.solver.solveGraphDFS(this.graphState);
+                } else if (algorithm === 'dijkstra') {
+                    result = this.solver.solveGraphDijkstra(this.graphState);
+                } else {
+                    result = this.solver.solveGraph(this.graphState);
+                }
+                this.comparisonResults.set(algorithm, result);
+
+                results.push({
+                    heuristic: algorithm,
                     expanded: result.metrics.nodesExpanded,
                     generated: result.metrics.nodesGenerated,
                     pathLength: result.success ? result.metrics.pathLength : null,
@@ -1500,24 +3480,41 @@
                 row.classList.toggle('selected-row', row.dataset.heuristic === heuristic);
             });
 
-            // Update heuristic dropdown and UI
+            // Update heuristic dropdown
             const select = document.getElementById('heuristic-select');
-            if (select) select.value = heuristic;
-            this.ui.setHeuristic(heuristic);
+            if (select && !this.isGraphMode) select.value = heuristic;
 
-            // Load the result
-            this.currentResult = result;
-            this.playback.loadSteps(result.steps, this.grid.goal);
-            this.ui.clearLog();
+            if (this.isGraphMode) {
+                // Load the result for graph mode
+                this.currentResult = result;
+                this.graphPlayback.loadSteps(result.steps, this.graphState.goal);
+                this.graphUI.clearLog();
 
-            // Enable controls
-            document.getElementById('btn-pause').disabled = false;
-            document.getElementById('btn-step').disabled = false;
-            document.getElementById('btn-step-back').disabled = false;
+                // Enable controls
+                document.getElementById('btn-pause').disabled = false;
+                document.getElementById('btn-step').disabled = false;
+                document.getElementById('btn-step-back').disabled = false;
 
-            // Go to last step to show final state (metrics will update from step)
-            if (result.steps.length > 0) {
-                this.playback.goToStep(result.steps.length - 1);
+                // Go to last step to show final state
+                if (result.steps.length > 0) {
+                    this.graphPlayback.goToStep(result.steps.length - 1);
+                }
+            } else {
+                // Load the result for grid mode
+                this.ui.setHeuristic(heuristic);
+                this.currentResult = result;
+                this.playback.loadSteps(result.steps, this.grid.goal);
+                this.ui.clearLog();
+
+                // Enable controls
+                document.getElementById('btn-pause').disabled = false;
+                document.getElementById('btn-step').disabled = false;
+                document.getElementById('btn-step-back').disabled = false;
+
+                // Go to last step to show final state
+                if (result.steps.length > 0) {
+                    this.playback.goToStep(result.steps.length - 1);
+                }
             }
         }
     }
