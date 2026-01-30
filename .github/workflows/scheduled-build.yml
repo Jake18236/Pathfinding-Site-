@@ -99,6 +99,9 @@ jobs:
           # Copy built site to root of gh-pages
           cp -r source/docs/* publish/
 
+          # Add .nojekyll to bypass Jekyll processing
+          touch publish/.nojekyll
+
           # Restore CNAME
           if [ -f /tmp/CNAME ]; then cp /tmp/CNAME publish/CNAME; fi
 
