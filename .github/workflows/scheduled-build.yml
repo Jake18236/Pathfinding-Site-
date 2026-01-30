@@ -69,6 +69,10 @@ jobs:
             --dest static/img/book_cover_thumbnails \
             --size L \
             --pause 0.05
+          python3 scripts/fetch_course_changelog.py \
+            --config static/yaml/course_changelog.yaml \
+            --out static/json/course_changelog.json \
+            --limit 5
 
       - name: Install npm dependencies
         working-directory: source
