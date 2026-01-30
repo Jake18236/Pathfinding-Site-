@@ -45,6 +45,27 @@
     "display_name": "CSE 30124 \u00b7 Introduction to Artificial Intelligence",
     "entries": [
       {
+        "message": "Merge pull request #2 from wtheisen/claude/dtree-visualizer-Ws0Or",
+        "author": "wtheisen",
+        "date_iso": "2026-01-30T01:48:50Z",
+        "date_display": "Jan 30, 2026",
+        "url": "https://github.com/wtheisen/nd-cse-30124/commit/1502417e512487e9c8ef2952c9249256263573d3"
+      },
+      {
+        "message": "Add Design Mode to Decision Tree Visualizer",
+        "author": "Claude",
+        "date_iso": "2026-01-30T01:16:01Z",
+        "date_display": "Jan 30, 2026",
+        "url": "https://github.com/wtheisen/nd-cse-30124/commit/c607c91299630723046f5177ed6d09685e0451f1"
+      },
+      {
+        "message": "Add Decision Tree Visualizer",
+        "author": "Claude",
+        "date_iso": "2026-01-30T00:51:25Z",
+        "date_display": "Jan 30, 2026",
+        "url": "https://github.com/wtheisen/nd-cse-30124/commit/683f34755445b8e296f33496eda55d13eb15201e"
+      },
+      {
         "message": "Merge pull request #1 from wtheisen/claude/plan-knn-visualization-Ws0Or",
         "author": "wtheisen",
         "date_iso": "2026-01-30T00:46:16Z",
@@ -57,27 +78,6 @@
         "date_iso": "2026-01-30T00:38:06Z",
         "date_display": "Jan 30, 2026",
         "url": "https://github.com/wtheisen/nd-cse-30124/commit/fc3085771c5cf3187e7d97925b8701646fbd460e"
-      },
-      {
-        "message": "Add KNN Classification Visualizer",
-        "author": "Claude",
-        "date_iso": "2026-01-30T00:37:29Z",
-        "date_display": "Jan 30, 2026",
-        "url": "https://github.com/wtheisen/nd-cse-30124/commit/69824a159fc91d45640f72c1b6442b1340b5e95e"
-      },
-      {
-        "message": "Add KNN visualization plan document",
-        "author": "Claude",
-        "date_iso": "2026-01-29T23:58:44Z",
-        "date_display": "Jan 29, 2026",
-        "url": "https://github.com/wtheisen/nd-cse-30124/commit/b5edc397666c4b9348aa085798458079caf2a7d4"
-      },
-      {
-        "message": "Add Dimensionality Reduction Visualizer for MNIST/CIFAR-10",
-        "author": "wtheisen",
-        "date_iso": "2026-01-29T22:59:44Z",
-        "date_display": "Jan 29, 2026",
-        "url": "https://github.com/wtheisen/nd-cse-30124/commit/35d12b09037088ecce184bbfef3ee9eb4f914075"
       }
     ]
   }
