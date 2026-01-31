@@ -1,0 +1,132 @@
+---
+layout: base.njk
+title: Bayesian Belief Network Visualizer
+icon: fa-diagram-project
+navigation:
+  - name: "Home"
+    link: "index.html"
+    icon: "fa-home"
+permalink: "bbn.html"
+extraScript: "static/js/bbn.js"
+tags: visualization
+cardTitle: "Bayesian Networks"
+cardIcon: fa-diagram-project
+cardDescription: "Explore probabilistic graphical models. Edit conditional probability tables and compute posterior probabilities given evidence."
+cardTags:
+  - Probabilistic
+  - Inference
+cardHaystack: "bayesian belief network bbn probabilistic graphical model cpt conditional probability inference evidence posterior bayes"
+cardOrder: 7
+---
+
+{% from "components/legend.njk" import legend %}
+{% from "components/info-tabs.njk" import infoTabs %}
+
+<link rel="stylesheet" href="static/css/bbn.css">
+
+<!-- Main Content: Network (2/3) + Side Panel (1/3) -->
+<div class="row" id="main-content">
+    <!-- Network Graph -->
+    <div class="col-md-8">
+        <div class="panel panel-default bbn-panel">
+            <div class="panel-heading">
+                <h3 class="panel-title">
+                    <i class="fa fa-diagram-project"></i> Belief Network
+                    <span class="bbn-header-controls pull-right">
+                        <span id="bbn-nodes" class="bbn-node-count">0 nodes</span>
+                        <select id="network-select" class="bbn-network-select">
+                            <option value="alarm" selected>Alarm Network</option>
+                            <option value="student">Student Network</option>
+                            <option value="sprinkler">Rain/Sprinkler</option>
+                        </select>
+                    </span>
+                </h3>
+            </div>
+            <div class="panel-body bbn-panel-body">
+                <div class="bbn-canvas-wrapper">
+                    <canvas id="bbn-canvas" width="700" height="500"></canvas>
+                    <div id="bbn-tooltip" class="bbn-tooltip"></div>
+                </div>
+            </div>
+            <div class="panel-footer bbn-footer">
+                <div class="bbn-footer-row">
+                    <div class="bbn-evidence-section">
+                        <span class="bbn-evidence-label">Evidence:</span>
+                        <div id="evidence-list" class="evidence-list-inline">
+                            <span class="text-muted">None</span>
+                        </div>
+                    </div>
+                    <button id="btn-reset" class="btn btn-sm btn-danger" title="Clear Evidence">
+                        <i class="fa fa-rotate-left"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Side Panel -->
+    <div class="col-md-4">
+        {{ infoTabs(
+            tabs=[
+                {id: 'about', icon: 'fa-info-circle', label: 'About', active: true, content: '
+<h4>Bayesian Networks</h4>
+<p>A <strong>Bayesian network</strong> is a probabilistic graphical model representing random variables and their conditional dependencies via a directed acyclic graph.</p>
+
+<h5>How to Use</h5>
+<ol>
+    <li><strong>Set Evidence:</strong> Click a value label (left side) to observe that value</li>
+    <li><strong>Query:</strong> Click a percentage (right side) to see how it was calculated</li>
+    <li>Watch posteriors update as you add evidence</li>
+</ol>
+
+<h5>Key Concepts</h5>
+<ul>
+    <li><strong>CPT</strong>: Conditional Probability Table (given values in each node)</li>
+    <li><strong>Evidence</strong>: Observed values (green/red highlighting)</li>
+    <li><strong>Posterior</strong>: P(Query | Evidence) - computed via inference</li>
+</ul>
+                '},
+                {id: 'examples', icon: 'fa-lightbulb', label: 'Try It', content: '
+<h4>Things to Try</h4>
+
+<h5>Alarm Network</h5>
+<p>A burglar or earthquake triggers an alarm, which may cause John and Mary to call.</p>
+<ul>
+    <li>Set John Calls = True. Watch P(Burglary) increase.</li>
+    <li>Also set Mary Calls = True. P(Burglary) increases more!</li>
+    <li>Now set Earthquake = True. P(Burglary) drops (explaining away).</li>
+</ul>
+
+<h5>Rain/Sprinkler</h5>
+<p>Classic "explaining away" example.</p>
+<ul>
+    <li>Set Wet Grass = True. Both P(Rain) and P(Sprinkler) increase.</li>
+    <li>Now set Rain = True. P(Sprinkler) decreases!</li>
+</ul>
+                '}
+            ]
+        ) }}
+    </div>
+</div>
+
+<!-- Calculation Panel (Full Width Below) -->
+<div class="row">
+    <div class="col-md-12">
+        <div class="panel panel-default bbn-calc-panel" id="calc-panel">
+            <div class="panel-heading">
+                <h3 class="panel-title">
+                    <i class="fa fa-calculator"></i> <span id="calc-title">Inference Calculation</span>
+                </h3>
+            </div>
+            <div class="panel-body">
+                <div id="no-calc-selected" class="calc-placeholder">
+                    <i class="fa fa-mouse-pointer"></i>
+                    Click a <strong>percentage value</strong> in any node to see how that posterior probability is computed
+                </div>
+                <div id="calc-content" style="display: none;">
+                    <!-- Calculation visualization will be inserted here -->
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
