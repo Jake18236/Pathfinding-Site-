@@ -67,20 +67,23 @@
    ============================================ */
 
 .scatter-panel-body {
-    padding: 15px !important;
+    padding: 0 !important;
     text-align: center;
 }
 
 .scatter-wrapper {
     position: relative;
-    display: inline-block;
+    display: block;
+    width: 100%;
 }
 
 #scatter-canvas {
     display: block;
+    width: 100%;
+    height: auto;
     background-color: var(--mnist-canvas-bg);
-    border: 2px solid var(--mnist-border);
-    border-radius: 4px;
+    border: none;
+    border-radius: 0;
     cursor: crosshair;
 }
 

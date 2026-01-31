@@ -24,93 +24,26 @@
 </div>
 
 <div class="row" id="viz-card-container">
-    <!-- A* Pathfinding -->
-    <div class="col-lg-3 col-md-6 col-sm-6 viz-card-wrapper" style="margin-bottom: 20px;" data-haystack="a* pathfinding search heuristics manhattan euclidean dijkstra grid optimal paths">
+    {% for viz in collections.visualizations %}
+    <div class="col-lg-3 col-md-6 col-sm-6 viz-card-wrapper" style="margin-bottom: 20px;" data-haystack="{{ viz.data.cardHaystack }}">
         <div class="viz-card">
-            <a href="astar.html" class="viz-card-link">
+            <a href="{{ viz.url | replace(r/^\//, '') }}" class="viz-card-link">
                 <div class="viz-card-header">
                     <div class="viz-card-icon">
-                        <i class="fa fa-route"></i>
+                        <i class="fa {{ viz.data.cardIcon }}"></i>
                     </div>
-                    <h4 class="viz-card-title">A* Pathfinding</h4>
+                    <h4 class="viz-card-title">{{ viz.data.cardTitle }}</h4>
                 </div>
-                <p class="viz-card-description">
-                    Visualize the A* search algorithm finding optimal paths through grids.
-                    Compare heuristics like Manhattan, Euclidean, and Dijkstra.
-                </p>
+                <p class="viz-card-description">{{ viz.data.cardDescription }}</p>
                 <div class="viz-card-tags">
-                    <span class="viz-tag">Search</span>
-                    <span class="viz-tag">Heuristics</span>
+                    {% for tag in viz.data.cardTags %}
+                    <span class="viz-tag">{{ tag }}</span>
+                    {% endfor %}
                 </div>
             </a>
         </div>
     </div>
-
-    <!-- Minimax & Alpha-Beta -->
-    <div class="col-lg-3 col-md-6 col-sm-6 viz-card-wrapper" style="margin-bottom: 20px;" data-haystack="minimax alpha-beta pruning game theory adversarial tic-tac-toe nim game trees">
-        <div class="viz-card">
-            <a href="minimax.html" class="viz-card-link">
-                <div class="viz-card-header">
-                    <div class="viz-card-icon">
-                        <i class="fa fa-gamepad"></i>
-                    </div>
-                    <h4 class="viz-card-title">Minimax & Alpha-Beta</h4>
-                </div>
-                <p class="viz-card-description">
-                    Watch game trees expand with minimax and alpha-beta pruning.
-                    Play Tic-Tac-Toe and Nim against optimal strategies.
-                </p>
-                <div class="viz-card-tags">
-                    <span class="viz-tag">Game Theory</span>
-                    <span class="viz-tag">Adversarial</span>
-                </div>
-            </a>
-        </div>
-    </div>
-
-    <!-- Dimensionality Reduction -->
-    <div class="col-lg-3 col-md-6 col-sm-6 viz-card-wrapper" style="margin-bottom: 20px;" data-haystack="dimensionality reduction mnist cifar-10 pca t-sne umap cnn embeddings ml visualization machine learning">
-        <div class="viz-card">
-            <a href="mnist.html" class="viz-card-link">
-                <div class="viz-card-header">
-                    <div class="viz-card-icon">
-                        <i class="fa fa-braille"></i>
-                    </div>
-                    <h4 class="viz-card-title">Dimensionality Reduction</h4>
-                </div>
-                <p class="viz-card-description">
-                    Project MNIST and CIFAR-10 into 2D using PCA, t-SNE, and UMAP.
-                    Watch CNN embeddings evolve during training.
-                </p>
-                <div class="viz-card-tags">
-                    <span class="viz-tag">ML</span>
-                    <span class="viz-tag">Visualization</span>
-                </div>
-            </a>
-        </div>
-    </div>
-
-    <!-- Constraint Satisfaction -->
-    <div class="col-lg-3 col-md-6 col-sm-6 viz-card-wrapper" style="margin-bottom: 20px;" data-haystack="constraint satisfaction csp shidoku sudoku backtracking ac-3 mrv mac arc consistency search trees">
-        <div class="viz-card">
-            <a href="shidoku.html" class="viz-card-link">
-                <div class="viz-card-header">
-                    <div class="viz-card-icon">
-                        <i class="fa fa-puzzle-piece"></i>
-                    </div>
-                    <h4 class="viz-card-title">Constraint Satisfaction</h4>
-                </div>
-                <p class="viz-card-description">
-                    Solve Shidoku (4x4 Sudoku) with backtracking, AC-3, MRV, and MAC.
-                    Visualize search trees and arc consistency.
-                </p>
-                <div class="viz-card-tags">
-                    <span class="viz-tag">CSP</span>
-                    <span class="viz-tag">Backtracking</span>
-                </div>
-            </a>
-        </div>
-    </div>
+    {% endfor %}
 </div>
 
 <script>

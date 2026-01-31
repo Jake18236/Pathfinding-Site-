@@ -5,9 +5,18 @@ icon: fa-project-diagram
 navigation:
   - name: "Home"
     link: "index.html"
-    icon: "fa-gavel"
+    icon: "fa-home"
 permalink: "knn.html"
 extraScript: "static/js/knn.js"
+tags: visualization
+cardTitle: "K-Nearest Neighbors"
+cardIcon: fa-project-diagram
+cardDescription: "Explore the KNN algorithm with interactive classification. Add training points, adjust K, and visualize decision boundaries."
+cardTags:
+  - Classification
+  - ML
+cardHaystack: "knn k-nearest neighbors classification machine learning decision boundaries voting"
+cardOrder: 3
 ---
 
 {% from "components/edit-toolbar.njk" import editToolbar %}
@@ -50,6 +59,8 @@ extraScript: "static/js/knn.js"
                         <span>Click anywhere to classify</span>
                     </div>
                 </div>
+            </div>
+            <div class="panel-footer legend-footer">
                 {{ legend(
                     items=[
                         {class: 'class-0', label: 'Class 1'},

@@ -133,6 +133,13 @@ module.exports = function(eleventyConfig) {
     return TYPE_ICONS[type.toLowerCase()] || 'fa-solid fa-paperclip';
   });
 
+  // ===== COLLECTIONS =====
+  // Visualization collection - auto-discovers all pages tagged "visualization"
+  eleventyConfig.addCollection("visualizations", function(collectionApi) {
+    return collectionApi.getFilteredByTag("visualization")
+      .sort((a, b) => (a.data.cardOrder || 99) - (b.data.cardOrder || 99));
+  });
+
   // ===== SHORTCODES =====
   // Markdown rendering shortcode
   eleventyConfig.addPairedShortcode("markdown", function(content) {

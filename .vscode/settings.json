@@ -1,5 +1,24 @@
 {
-    "workbench.colorCustomizations": {},
+    "workbench.colorCustomizations": {
+        "activityBar.background": "#342E07",
+        "activityBar.activeBackground": "#342E07",
+        "activityBar.activeBorder": "#070D34",
+        "activityBar.foreground": "#FDFBEE",
+        "activityBar.inactiveForeground": "#FDFBEE99",
+        "activityBarBadge.background": "#070D34",
+        "activityBarBadge.foreground": "#FDFBEE",
+        "titleBar.activeBackground": "#49400A",
+        "titleBar.activeForeground": "#FDFBEE",
+        "titleBar.inactiveBackground": "#49400A99",
+        "titleBar.inactiveForeground": "#FDFBEE99",
+        "sash.hoverBorder": "#342E07",
+        "commandCenter.border": "#FDFBEE99",
+        "statusBar.background": "#49400A",
+        "statusBar.foreground": "#FDFBEE",
+        "statusBarItem.hoverBackground": "#413A09",
+        "statusBarItem.remoteBackground": "#49400A",
+        "statusBarItem.remoteForeground": "#FDFBEE"
+    },
     "makefile.configureOnOpen": false,
     "python-envs.defaultEnvManager": "ms-python.python:system",
     "python-envs.pythonProjects": []

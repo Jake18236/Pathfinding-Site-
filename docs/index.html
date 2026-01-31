@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="gruvbox-light">
+<html lang="en" data-theme="bluegold">
     <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -10,7 +10,7 @@
 	<title>Teaching and Learning Artificial Intelligence</title>
 
 	<!-- Theme CSS (toggleable) -->
-	<link id="theme-style" href="static/css/gruvbox-light.css" rel="stylesheet">
+	<link id="theme-style" href="static/css/bluegold.css" rel="stylesheet">
 	<script src="https://kit.fontawesome.com/9d2722956c.js" crossorigin="anonymous"></script>
 
 	<!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
@@ -144,18 +144,18 @@
         transition: transform 0.25s ease, background-color 0.25s ease;
         z-index: 1;
     }
-    [data-theme="gruvbox-light"] .theme-toggle-btn {
+    [data-theme="bluegold"] .theme-toggle-btn {
         background-color: #f2f6ff;
         border-color: rgba(15, 23, 42, 0.18);
     }
-    [data-theme="gruvbox-light"] .theme-toggle-btn .theme-toggle-handle {
+    [data-theme="bluegold"] .theme-toggle-btn .theme-toggle-handle {
         transform: translateX(0);
         background-color: #ffffff;
     }
-    [data-theme="gruvbox-light"] .theme-toggle-btn .theme-icon--sun {
+    [data-theme="bluegold"] .theme-toggle-btn .theme-icon--sun {
         opacity: 1;
     }
-    [data-theme="gruvbox-light"] .theme-toggle-btn .theme-icon--moon {
+    [data-theme="bluegold"] .theme-toggle-btn .theme-icon--moon {
         opacity: 0.35;
     }
     [data-theme="gruvbox-dark"] .theme-toggle-btn {
@@ -403,6 +403,317 @@
         </div>
     </div>
 </div>
+
+
+<div class="row">
+    <div class="page-header">
+        <h2 id="visualizations"><i class="fa-solid fa-eye"></i> Interactive Visualizations</h2>
+    </div>
+</div>
+
+<div class="row">
+    <p style="margin-bottom: 24px;">
+        Explore core AI algorithms through interactive visualizations. These tools are designed to help
+        you understand how fundamental algorithms work by watching them execute step-by-step.
+    </p>
+</div>
+
+<div class="row">
+    <div class="col-sm-12">
+        <div class="form-group" style="margin-bottom: 20px;">
+            <label for="viz-search" class="sr-only">Search visualizations</label>
+            <div class="input-group">
+                <span class="input-group-addon"><i class="fa fa-search"></i></span>
+                <input type="text" id="viz-search" class="form-control" placeholder="Search visualizations by title, description, or tags&hellip;">
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row" id="viz-card-container">
+    
+    <div class="col-lg-3 col-md-6 col-sm-6 viz-card-wrapper" style="margin-bottom: 20px;" data-haystack="a* pathfinding search heuristics manhattan euclidean dijkstra grid optimal paths">
+        <div class="viz-card">
+            <a href="astar.html" class="viz-card-link">
+                <div class="viz-card-header">
+                    <div class="viz-card-icon">
+                        <i class="fa fa-route"></i>
+                    </div>
+                    <h4 class="viz-card-title">A* Pathfinding</h4>
+                </div>
+                <p class="viz-card-description">Visualize the A* search algorithm finding optimal paths through grids. Compare heuristics like Manhattan, Euclidean, and Dijkstra.</p>
+                <div class="viz-card-tags">
+                    
+                    <span class="viz-tag">Search</span>
+                    
+                    <span class="viz-tag">Heuristics</span>
+                    
+                </div>
+            </a>
+        </div>
+    </div>
+    
+    <div class="col-lg-3 col-md-6 col-sm-6 viz-card-wrapper" style="margin-bottom: 20px;" data-haystack="minimax alpha-beta pruning game theory adversarial tic-tac-toe nim game trees">
+        <div class="viz-card">
+            <a href="minimax.html" class="viz-card-link">
+                <div class="viz-card-header">
+                    <div class="viz-card-icon">
+                        <i class="fa fa-gamepad"></i>
+                    </div>
+                    <h4 class="viz-card-title">Minimax &amp; Alpha-Beta</h4>
+                </div>
+                <p class="viz-card-description">Watch game trees expand with minimax and alpha-beta pruning. Play Tic-Tac-Toe and Nim against optimal strategies.</p>
+                <div class="viz-card-tags">
+                    
+                    <span class="viz-tag">Game Theory</span>
+                    
+                    <span class="viz-tag">Adversarial</span>
+                    
+                </div>
+            </a>
+        </div>
+    </div>
+    
+    <div class="col-lg-3 col-md-6 col-sm-6 viz-card-wrapper" style="margin-bottom: 20px;" data-haystack="knn k-nearest neighbors classification machine learning decision boundaries voting">
+        <div class="viz-card">
+            <a href="knn.html" class="viz-card-link">
+                <div class="viz-card-header">
+                    <div class="viz-card-icon">
+                        <i class="fa fa-project-diagram"></i>
+                    </div>
+                    <h4 class="viz-card-title">K-Nearest Neighbors</h4>
+                </div>
+                <p class="viz-card-description">Explore the KNN algorithm with interactive classification. Add training points, adjust K, and visualize decision boundaries.</p>
+                <div class="viz-card-tags">
+                    
+                    <span class="viz-tag">Classification</span>
+                    
+                    <span class="viz-tag">ML</span>
+                    
+                </div>
+            </a>
+        </div>
+    </div>
+    
+    <div class="col-lg-3 col-md-6 col-sm-6 viz-card-wrapper" style="margin-bottom: 20px;" data-haystack="decision tree classification machine learning splits gini entropy information gain">
+        <div class="viz-card">
+            <a href="dtree.html" class="viz-card-link">
+                <div class="viz-card-header">
+                    <div class="viz-card-icon">
+                        <i class="fa fa-sitemap"></i>
+                    </div>
+                    <h4 class="viz-card-title">Decision Tree</h4>
+                </div>
+                <p class="viz-card-description">Build and visualize decision trees for classification. Watch how splits partition the feature space and explore tree structure.</p>
+                <div class="viz-card-tags">
+                    
+                    <span class="viz-tag">Classification</span>
+                    
+                    <span class="viz-tag">ML</span>
+                    
+                </div>
+            </a>
+        </div>
+    </div>
+    
+    <div class="col-lg-3 col-md-6 col-sm-6 viz-card-wrapper" style="margin-bottom: 20px;" data-haystack="dimensionality reduction mnist cifar-10 pca t-sne umap cnn embeddings ml visualization machine learning">
+        <div class="viz-card">
+            <a href="mnist.html" class="viz-card-link">
+                <div class="viz-card-header">
+                    <div class="viz-card-icon">
+                        <i class="fa fa-braille"></i>
+                    </div>
+                    <h4 class="viz-card-title">Dimensionality Reduction</h4>
+                </div>
+                <p class="viz-card-description">Project MNIST and CIFAR-10 into 2D using PCA, t-SNE, and UMAP. Watch CNN embeddings evolve during training.</p>
+                <div class="viz-card-tags">
+                    
+                    <span class="viz-tag">ML</span>
+                    
+                    <span class="viz-tag">Visualization</span>
+                    
+                </div>
+            </a>
+        </div>
+    </div>
+    
+    <div class="col-lg-3 col-md-6 col-sm-6 viz-card-wrapper" style="margin-bottom: 20px;" data-haystack="constraint satisfaction csp shidoku sudoku backtracking ac-3 mrv mac arc consistency search trees">
+        <div class="viz-card">
+            <a href="shidoku.html" class="viz-card-link">
+                <div class="viz-card-header">
+                    <div class="viz-card-icon">
+                        <i class="fa fa-puzzle-piece"></i>
+                    </div>
+                    <h4 class="viz-card-title">Constraint Satisfaction</h4>
+                </div>
+                <p class="viz-card-description">Solve Shidoku (4x4 Sudoku) with backtracking, AC-3, MRV, and MAC. Visualize search trees and arc consistency.</p>
+                <div class="viz-card-tags">
+                    
+                    <span class="viz-tag">CSP</span>
+                    
+                    <span class="viz-tag">Backtracking</span>
+                    
+                </div>
+            </a>
+        </div>
+    </div>
+    
+    <div class="col-lg-3 col-md-6 col-sm-6 viz-card-wrapper" style="margin-bottom: 20px;" data-haystack="bayesian belief network bbn probabilistic graphical model cpt conditional probability inference evidence posterior bayes">
+        <div class="viz-card">
+            <a href="bbn.html" class="viz-card-link">
+                <div class="viz-card-header">
+                    <div class="viz-card-icon">
+                        <i class="fa fa-diagram-project"></i>
+                    </div>
+                    <h4 class="viz-card-title">Bayesian Networks</h4>
+                </div>
+                <p class="viz-card-description">Explore probabilistic graphical models. Edit conditional probability tables and compute posterior probabilities given evidence.</p>
+                <div class="viz-card-tags">
+                    
+                    <span class="viz-tag">Probabilistic</span>
+                    
+                    <span class="viz-tag">Inference</span>
+                    
+                </div>
+            </a>
+        </div>
+    </div>
+    
+</div>
+
+<script>
+window.addEventListener("load", function() {
+    if (window.jQuery) {
+        var $vizContainer = window.jQuery('#viz-card-container');
+        var $vizCards = window.jQuery('.viz-card-wrapper');
+        window.jQuery('#viz-search').on('input', function() {
+            var term = window.jQuery(this).val().toLowerCase().trim();
+            $vizCards.each(function() {
+                var $card = window.jQuery(this);
+                var haystack = ($card.data('haystack') || '').toString();
+                var fallback = $card.text().toLowerCase();
+                var matches = term === '' || haystack.indexOf(term) !== -1 || fallback.indexOf(term) !== -1;
+                $card.toggle(matches);
+            });
+        });
+    }
+});
+</script>
+
+<style>
+.viz-card {
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    background: #fff;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.viz-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12);
+}
+
+.viz-card-link {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    padding: 20px;
+    text-decoration: none;
+    color: inherit;
+}
+
+.viz-card-link:hover,
+.viz-card-link:focus {
+    text-decoration: none;
+    color: inherit;
+}
+
+.viz-card-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 12px;
+}
+
+.viz-card-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 8px;
+    background: #002b5c;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.viz-card-icon i {
+    font-size: 18px;
+    color: #fff;
+}
+
+.viz-card-title {
+    font-size: 1.1em;
+    font-weight: 600;
+    margin: 0;
+    color: #1a1a2e;
+}
+
+.viz-card-description {
+    font-size: 0.88em;
+    color: #666;
+    line-height: 1.5;
+    margin: 0 0 14px 0;
+    flex: 1;
+}
+
+.viz-card-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: auto;
+}
+
+.viz-tag {
+    font-size: 0.72em;
+    padding: 3px 8px;
+    border-radius: 4px;
+    background: #f0f0f5;
+    color: #555;
+    font-weight: 500;
+}
+
+/* Dark theme support */
+[data-theme="gruvbox-dark"] .viz-card {
+    background: #282828;
+    border-color: #504945;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+[data-theme="gruvbox-dark"] .viz-card:hover {
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+}
+
+[data-theme="gruvbox-dark"] .viz-card-title {
+    color: #ebdbb2;
+}
+
+[data-theme="gruvbox-dark"] .viz-card-description {
+    color: #a89984;
+}
+
+[data-theme="gruvbox-dark"] .viz-tag {
+    background: #3c3836;
+    color: #bdae93;
+}
+
+[data-theme="gruvbox-dark"] .viz-card-icon {
+    background: #458588;
+}
+</style>
 
 
 <div class="row">
@@ -813,6 +1124,7 @@
 	<!-- Placed at the end of the document so the pages load faster -->
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+	<!-- Shared visualization library modules (load before visualization scripts) -->
 	
 	<script>
 	(function() {
@@ -820,7 +1132,7 @@
 	    var prefix = '';
 	    var themes = {
 	        'gruvbox-dark': prefix + 'static/css/gruvbox-dark.css',
-	        'gruvbox-light': prefix + 'static/css/gruvbox-light.css'
+	        'bluegold': prefix + 'static/css/bluegold.css'
 	    };
 	    var linkEl = document.getElementById('theme-style');
 	    var toggleBtn = document.getElementById('theme-toggle');
@@ -836,7 +1148,7 @@
         }
         function updateNotebookFrames(theme) {
             var frames = document.querySelectorAll('iframe[data-src-dark][data-src-light]');
-            var attr = theme === 'gruvbox-light' ? 'data-src-light' : 'data-src-dark';
+            var attr = theme === 'bluegold' ? 'data-src-light' : 'data-src-dark';
             Array.prototype.forEach.call(frames, function(frame) {
                 var nextSrc = frame.getAttribute(attr);
                 if (nextSrc && frame.getAttribute('src') !== nextSrc) {
@@ -845,7 +1157,7 @@
             });
         }
         function applyTheme(theme) {
-            var name = themes[theme] ? theme : 'gruvbox-light';
+            var name = themes[theme] ? theme : 'bluegold';
             linkEl.setAttribute('href', themes[name]);
             document.documentElement.setAttribute('data-theme', name);
             updateButton(name);
@@ -864,7 +1176,7 @@
             updateNotebookFrames(event.detail || currentTheme);
         });
         toggleBtn.addEventListener('click', function() {
-            var nextTheme = currentTheme === 'gruvbox-dark' ? 'gruvbox-light' : 'gruvbox-dark';
+            var nextTheme = currentTheme === 'gruvbox-dark' ? 'bluegold' : 'gruvbox-dark';
             currentTheme = applyTheme(nextTheme);
             document.dispatchEvent(new CustomEvent('themechange', { detail: currentTheme }));
             try {
