@@ -1,0 +1,681 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="bluegold">
+    <head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta name="description" content="">
+	<meta name="author" content="">
+
+	<title>Teaching and Learning Artificial Intelligence</title>
+
+	<!-- Theme CSS (toggleable) -->
+	<link id="theme-style" href="static/css/bluegold.css" rel="stylesheet">
+	<script src="https://kit.fontawesome.com/9d2722956c.js" crossorigin="anonymous"></script>
+
+	<!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+	<!--[if lt IE 9]>
+	<script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+	<script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+	<![endif]-->
+
+	<style>
+	body {
+	    padding: 10px;
+	}
+	.resource-list {
+	    list-style: none;
+	    padding-left: 0;
+	    margin-bottom: 1.25em;
+	}
+	.resource-credit {
+	    margin-left: 0.5em;
+	    font-size: 0.85em;
+	    color: #777;
+	    font-style: italic;
+	}
+	.resource-credit::before {
+	    content: "\2014";
+	    margin-right: 0.35em;
+	}
+	.teaser-row {
+	    position: relative;
+	    padding-right: 42%;
+	}
+	.teaser-row .teaser-text {
+	    margin-right: 0;
+	}
+	.teaser-row .teaser-image-col {
+	    position: absolute;
+	    right: 0;
+	    top: 0;
+	    height: 100%;
+	    width: 41.66666667%;
+	    display: flex;
+	    align-items: center;
+	    justify-content: center;
+	    padding-left: 15px;
+	    box-sizing: border-box;
+	}
+	.teaser-row .teaser-image {
+	    max-height: 100%;
+	    width: auto;
+	    max-width: 100%;
+	    object-fit: contain;
+	}
+	@media (max-width: 991px) {
+	    .teaser-row {
+	        padding-right: 0;
+	    }
+	    .teaser-row .teaser-image-col {
+	        position: static;
+	        height: auto;
+	        width: 100%;
+	        padding-left: 0;
+	        margin-top: 1em;
+	    }
+	    .teaser-row .teaser-image {
+	        max-height: 320px;
+	    }
+	}
+#library-card-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    margin-top: 10px;
+    max-height: 540px;
+    overflow-y: auto;
+    padding-right: 8px;
+}
+.library-card-wrapper {
+    flex: 1 1 calc(20% - 16px);
+    max-width: calc(20% - 16px);
+    min-width: 180px;
+    display: flex;
+    max-height: 100%;
+}
+    .theme-toggle-btn {
+        position: relative;
+        display: inline-flex;
+        align-items: center;
+        justify-content: space-between;
+        width: 54px;
+        height: 28px;
+        margin-top: 8px;
+        margin-left: 12px;
+        padding: 0 8px;
+        border-radius: 999px;
+        border: 1px solid rgba(15, 23, 42, 0.18);
+        background-color: #f2f6ff;
+        cursor: pointer;
+        transition: background-color 0.25s ease, border-color 0.25s ease;
+    }
+    .theme-toggle-btn:focus {
+        outline: none;
+        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.35);
+    }
+    .theme-toggle-btn .theme-icon,
+    .theme-toggle-btn .theme-toggle-handle {
+        pointer-events: none;
+    }
+    .theme-toggle-btn .theme-icon {
+        font-size: 0.85em;
+        opacity: 0.5;
+        transition: opacity 0.25s ease;
+        position: relative;
+        z-index: 2;
+    }
+    .theme-toggle-btn .theme-icon--sun {
+        color: #f59e0b;
+        opacity: 1;
+    }
+    .theme-toggle-btn .theme-icon--moon {
+        color: #c084fc;
+    }
+    .theme-toggle-btn .theme-toggle-handle {
+        position: absolute;
+        top: 2px;
+        left: 2px;
+        width: 24px;
+        height: 24px;
+        border-radius: 50%;
+        background-color: #ffffff;
+        box-shadow: 0 1px 4px rgba(0, 0, 0, 0.15);
+        transition: transform 0.25s ease, background-color 0.25s ease;
+        z-index: 1;
+    }
+    [data-theme="bluegold"] .theme-toggle-btn {
+        background-color: #f2f6ff;
+        border-color: rgba(15, 23, 42, 0.18);
+    }
+    [data-theme="bluegold"] .theme-toggle-btn .theme-toggle-handle {
+        transform: translateX(0);
+        background-color: #ffffff;
+    }
+    [data-theme="bluegold"] .theme-toggle-btn .theme-icon--sun {
+        opacity: 1;
+    }
+    [data-theme="bluegold"] .theme-toggle-btn .theme-icon--moon {
+        opacity: 0.35;
+    }
+    [data-theme="gruvbox-dark"] .theme-toggle-btn {
+        background-color: #3c3836;
+        border-color: #665c54;
+        color: #ebdbb2;
+    }
+    [data-theme="gruvbox-dark"] .theme-toggle-btn .theme-toggle-handle {
+        transform: translateX(26px);
+        background-color: #1d2021;
+    }
+    [data-theme="gruvbox-dark"] .theme-toggle-btn .theme-icon--sun {
+        opacity: 0.35;
+    }
+    [data-theme="gruvbox-dark"] .theme-toggle-btn .theme-icon--moon {
+        opacity: 1;
+    }
+	.library-card {
+	    display: flex;
+	    flex-direction: column;
+	    width: 100%;
+	    border-radius: 6px;
+	    border: 1px solid #ddd;
+	    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+	    overflow: hidden;
+	    background-color: #fff;
+	    color: #333;
+	}
+	.library-card-cover {
+	    aspect-ratio: 2 / 3;
+	    width: 100%;
+	    min-height: 220px;
+	    max-height: 320px;
+	    background-color: #f7f7f7;
+	    display: grid;
+	    place-items: center;
+	    overflow: hidden;
+	    padding: 6px;
+	}
+	.library-card-cover img {
+	    width: 100%;
+	    height: 100%;
+	    object-fit: contain;
+	    background-color: transparent;
+	}
+	.library-card-body {
+	    flex: 1 1 auto;
+	    display: flex;
+	    flex-direction: column;
+	}
+	.library-card-title {
+	    margin-top: 0;
+	    font-size: 0.95em;
+	    line-height: 1.35;
+	    min-height: 2.7em;
+	}
+	.library-card-meta {
+	    font-size: 0.82em;
+	    color: #555;
+	    margin-bottom: 6px;
+	}
+	.library-card-footer {
+	    display: flex;
+	    align-items: center;
+	    justify-content: space-between;
+	    font-size: 0.78em;
+	}
+	[data-theme="gruvbox-dark"] .library-card {
+	    border-color: #504945;
+	    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.45);
+	    background-color: #282828;
+	    color: #ebdbb2;
+	}
+	[data-theme="gruvbox-dark"] .library-card-cover {
+	    background-color: #32302f;
+	}
+	[data-theme="gruvbox-dark"] .library-card-body {
+	    color: #ebdbb2;
+	}
+	[data-theme="gruvbox-dark"] .library-card-footer {
+	    color: #d5c4a1;
+	}
+	[data-theme="gruvbox-dark"] .library-card-title,
+	[data-theme="gruvbox-dark"] .library-card-meta {
+	    color: #d5c4a1;
+	}
+	.embed-responsive {
+ 	    border-radius: 8px;
+ 	    border: 1px solid rgba(30, 41, 59, 0.18);
+ 	    box-shadow: 0 6px 16px rgba(15, 23, 42, 0.08);
+ 	    overflow: hidden;
+ 	    margin-bottom: 18px;
+	}
+	.course-embed {
+	    background-color: #ffffff;
+	    position: relative;
+	    cursor: pointer;
+	}
+	.course-embed iframe {
+	    pointer-events: none;
+	}
+	.course-embed__overlay {
+	    position: absolute;
+	    inset: 0;
+	    z-index: 2;
+	    display: block;
+	    border-radius: inherit;
+	    text-decoration: none;
+	    color: inherit;
+	    transition: background-color 0.2s ease;
+	}
+	.course-embed__overlay:hover,
+	.course-embed__overlay:focus {
+	    background-color: rgba(15, 23, 42, 0.15);
+	    outline: none;
+	}
+	.course-embed__overlay:focus {
+	    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.35);
+	}
+	.course-title-link {
+	    color: inherit;
+	    text-decoration: none;
+	}
+	.course-title-link:hover,
+	.course-title-link:focus {
+	    text-decoration: underline;
+	}
+	[data-theme="gruvbox-dark"] .embed-responsive {
+	    border-color: #665c54;
+	    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.25);
+	    background-color: rgba(40, 40, 40, 0.9);
+	}
+	[data-theme="gruvbox-dark"] .course-embed {
+	    background-color: rgba(40, 40, 40, 0.9);
+	}
+	[data-theme="gruvbox-dark"] .course-embed__overlay:hover,
+	[data-theme="gruvbox-dark"] .course-embed__overlay:focus {
+	    background-color: rgba(235, 219, 178, 0.12);
+	}
+	[data-theme="gruvbox-dark"] .course-embed__overlay:focus {
+	    box-shadow: 0 0 0 3px rgba(235, 219, 178, 0.25);
+	}
+	</style>
+    </head>
+    <body>
+	<div class="container">
+
+	    <div class="row">
+		<div class="page-header">
+		    <button type="button" class="theme-toggle-btn pull-right" id="theme-toggle" role="switch" aria-checked="false" aria-label="Switch to dark theme">
+			<span class="theme-icon theme-icon--sun"><i class="fa-solid fa-sun"></i></span>
+			<span class="theme-icon theme-icon--moon"><i class="fa-solid fa-moon"></i></span>
+			<span class="theme-toggle-handle"></span>
+		    </button>
+		    <ul class="nav nav-pills pull-right">
+			
+			<li><a href="#courses"><i class="fa fa-chalkboard-user"></i> <span class="visible-md-inline visible-lg-inline">Courses</span></a></li>
+			
+			<li><a href="#learning"><i class="fa fa-brain"></i> <span class="visible-md-inline visible-lg-inline">Learning</span></a></li>
+			
+			<li><a href="#library"><i class="fa fa-book"></i> <span class="visible-md-inline visible-lg-inline">Library</span></a></li>
+			
+		    </ul>
+		    <h1><i class="fa fa-rocket"></i> Teaching and Learning Artificial Intelligence</h1>
+		</div>
+	    </div>
+
+		
+
+
+
+
+<link rel="stylesheet" href="static/css/markov.css">
+
+<!-- Main Content: Chain Visualization (2/3) + Side Panel (1/3) -->
+<div class="row" id="main-content">
+    <!-- Markov Chain Graph -->
+    <div class="col-md-8">
+        <div class="panel panel-default markov-panel">
+            <div class="panel-heading">
+                <h3 class="panel-title">
+                    <i class="fa fa-random"></i> Markov Chain
+                    <span class="markov-header-controls pull-right">
+                        <span id="markov-state-count" class="markov-state-count">0 states</span>
+                        <select id="preset-select" class="markov-preset-select">
+                            <option value="weather" selected>Weather Model</option>
+                            <option value="pagerank">PageRank</option>
+                            <option value="gambler">Gambler's Ruin</option>
+                            <option value="drunkard">Drunkard Walk</option>
+                        </select>
+                    </span>
+                </h3>
+            </div>
+            <div class="panel-body markov-panel-body">
+                <div class="markov-canvas-wrapper">
+                    <canvas id="markov-canvas" width="700" height="400"></canvas>
+                </div>
+            </div>
+            <div class="panel-footer markov-footer">
+                <div class="markov-footer-row">
+                    <div class="markov-playback-section">
+                        
+<div class="panel panel-default">
+    <div class="panel-body playback-panel-body">
+        <div class="playback-controls-row">
+            <div class="btn-toolbar playback-buttons" role="toolbar">
+                
+                <button id="btn-step-back"
+                        class="btn btn-default"
+                        title="Step Back"
+                        disabled>
+                    <i class="fa fa-step-backward"></i>
+                </button>
+                
+                <button id="btn-play"
+                        class="btn btn-success"
+                        title="Start Simulation"
+                        >
+                    <i class="fa fa-play"></i>
+                </button>
+                
+                <button id="btn-pause"
+                        class="btn btn-warning"
+                        title="Pause"
+                        disabled>
+                    <i class="fa fa-pause"></i>
+                </button>
+                
+                <button id="btn-step-forward"
+                        class="btn btn-default"
+                        title="Step Forward"
+                        disabled>
+                    <i class="fa fa-step-forward"></i>
+                </button>
+                
+                <button id="btn-reset"
+                        class="btn btn-danger"
+                        title="Reset"
+                        >
+                    <i class="fa fa-refresh"></i>
+                </button>
+                
+            </div>
+            
+            
+            <div class="speed-control-inline">
+                <label><i class="fa fa-tachometer"></i></label>
+                <input type="range" id="speed-slider" min="1" max="10" value="5">
+            </div>
+            
+        </div>
+    </div>
+</div>
+
+                    </div>
+                    <div class="markov-step-section">
+                        <span id="step-display" class="step-display">Step: 0 / 0</span>
+                        <div class="markov-steps-input">
+                            <label for="num-steps">Steps:</label>
+                            <input type="number" id="num-steps" value="50" min="10" max="500" step="10">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Distribution Histogram -->
+        <div class="panel panel-default markov-histogram-panel">
+            <div class="panel-heading">
+                <h3 class="panel-title">
+                    <i class="fa fa-bar-chart"></i> Distribution
+                    <span class="markov-convergence-section pull-right">
+                        <span id="convergence-indicator" class="convergence-indicator"></span>
+                    </span>
+                </h3>
+            </div>
+            <div class="panel-body">
+                <div id="histogram-container" class="histogram-container">
+                    <canvas id="histogram-canvas" width="700" height="150"></canvas>
+                </div>
+                <div class="histogram-legend">
+                    <span class="histogram-legend-item">
+                        <span class="legend-color empirical"></span> Empirical (visit frequency)
+                    </span>
+                    <span class="histogram-legend-item">
+                        <span class="legend-color stationary"></span> Stationary (theoretical)
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Side Panel -->
+    <div class="col-md-4">
+        
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <div class="btn-group info-panel-tabs" role="group">
+            
+            <button type="button"
+                    class="btn btn-sm btn-default active"
+                    data-tab="about">
+                <i class="fa fa-info-circle"></i> About
+            </button>
+            
+            <button type="button"
+                    class="btn btn-sm btn-default"
+                    data-tab="matrix">
+                <i class="fa fa-table"></i> Matrix
+            </button>
+            
+            <button type="button"
+                    class="btn btn-sm btn-default"
+                    data-tab="examples">
+                <i class="fa fa-lightbulb"></i> Try It
+            </button>
+            
+        </div>
+    </div>
+    <div class="panel-body info-panel-body">
+        
+        <div id="tab-about" class="info-tab-content active">
+            
+<h4>Markov Chains</h4>
+<p>A <strong>Markov chain</strong> is a stochastic process where the probability of transitioning to any state depends only on the current state (memoryless property).</p>
+
+<h5>How to Use</h5>
+<ol>
+    <li><strong>Select a preset:</strong> Choose from different example chains</li>
+    <li><strong>Click Play:</strong> Watch the random walk simulation</li>
+    <li><strong>Observe convergence:</strong> See how visit frequencies approach the stationary distribution</li>
+</ol>
+
+<h5>Key Concepts</h5>
+<ul>
+    <li><strong>Transition Probability:</strong> P(next state | current state)</li>
+    <li><strong>Stationary Distribution:</strong> Long-run proportion of time in each state</li>
+    <li><strong>Ergodic:</strong> Chain that converges to unique stationary distribution</li>
+</ul>
+                
+        </div>
+        
+        <div id="tab-matrix" class="info-tab-content">
+            
+<h4>Transition Matrix</h4>
+<p>The transition matrix P where P[i,j] = probability of going from state i to state j.</p>
+<div id="matrix-container" class="matrix-container">
+    <p class="text-muted">Select a preset to see the transition matrix.</p>
+</div>
+
+<div id="ergodic-status" class="ergodic-status">
+</div>
+                
+        </div>
+        
+        <div id="tab-examples" class="info-tab-content">
+            
+<h4>Things to Try</h4>
+
+<h5>Weather Model</h5>
+<p>Simple 2-state model: Sunny and Rainy days.</p>
+<ul>
+    <li>Watch how quickly it converges to ~67% Sunny, ~33% Rainy</li>
+    <li>Notice the self-loops (staying in same state)</li>
+</ul>
+
+<h5>PageRank</h5>
+<p>4-page web graph simulating random web surfer.</p>
+<ul>
+    <li>Pages with more incoming links get higher visit frequency</li>
+    <li>This is how Google ranks web pages!</li>
+</ul>
+
+<h5>Gambler's Ruin</h5>
+<p>Random walk with absorbing states at $0 and $3.</p>
+<ul>
+    <li>Notice: once you hit $0 or $3, you stay there forever</li>
+    <li>These are "absorbing states"</li>
+</ul>
+
+<h5>Drunkard Walk</h5>
+<p>Symmetric random walk on a line.</p>
+<ul>
+    <li>Equal probability of moving left or right</li>
+    <li>Converges to uniform distribution</li>
+</ul>
+                
+        </div>
+        
+    </div>
+</div>
+
+
+        <!-- Status Panel -->
+        <div class="panel panel-default markov-status-panel">
+            <div class="panel-heading">
+                <h3 class="panel-title">
+                    <i class="fa fa-info"></i> Status
+                </h3>
+            </div>
+            <div class="panel-body">
+                <div id="playback-status" class="playback-status">
+                    Click <strong>Play</strong> to start the random walk simulation.
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+	    <div class="row">
+		<hr/>
+
+		<footer class="text-center">
+		    <p class="text-muted">
+		    <small>
+		    Built using
+		    <a href="https://www.11ty.dev/">Eleventy</a>,
+		    <a href="http://twitter.github.com/bootstrap/">Bootstrap</a>,
+		    <a href="http://fortawesome.github.com/Font-Awesome/">Font Awesome</a>, and
+		    <a href="https://nodejs.org/">Node.js</a>.
+		    <br/>
+		    &copy; 2022 <a href="http://www.nd.edu">University of Notre Dame</a>
+		    </small>
+		    </p>
+		</footer>
+	    </div>
+
+	</div> <!-- /container -->
+
+	<!-- Bootstrap core JavaScript
+	================================================== -->
+	<!-- Placed at the end of the document so the pages load faster -->
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+	<!-- Shared visualization library modules (load before visualization scripts) -->
+	
+	<script type="module">
+		// Load shared modules and expose them globally for IIFE-based visualizations
+		import { PlaybackController } from './static/js/lib/playback-controller.js';
+		import { ThemeManager } from './static/js/lib/theme-manager.js';
+		import { Quadtree } from './static/js/lib/quadtree.js';
+		import { setupHiDPICanvas, resetCanvasTransform, clearCanvas } from './static/js/lib/canvas-utils.js';
+		import { TreeLayoutEngine } from './static/js/lib/tree-layout.js';
+
+		window.VizLib = {
+			PlaybackController,
+			ThemeManager,
+			Quadtree,
+			setupHiDPICanvas,
+			resetCanvasTransform,
+			clearCanvas,
+			TreeLayoutEngine
+		};
+
+		// Signal that VizLib is ready
+		window.dispatchEvent(new CustomEvent('vizlib-ready'));
+	</script>
+	<script src="static/js/markov.js"></script>
+	
+	<script>
+	(function() {
+	    var STORAGE_KEY = 'ai-landing-theme';
+	    var prefix = '';
+	    var themes = {
+	        'gruvbox-dark': prefix + 'static/css/gruvbox-dark.css',
+	        'bluegold': prefix + 'static/css/bluegold.css'
+	    };
+	    var linkEl = document.getElementById('theme-style');
+	    var toggleBtn = document.getElementById('theme-toggle');
+	    if (!linkEl || !toggleBtn) {
+	        return;
+	    }
+        function updateButton(theme) {
+            var isDark = theme === 'gruvbox-dark';
+            var label = isDark ? 'Switch to light theme' : 'Switch to dark theme';
+            toggleBtn.setAttribute('aria-label', label);
+            toggleBtn.setAttribute('title', label);
+            toggleBtn.setAttribute('aria-checked', isDark ? 'true' : 'false');
+        }
+        function updateNotebookFrames(theme) {
+            var frames = document.querySelectorAll('iframe[data-src-dark][data-src-light]');
+            var attr = theme === 'bluegold' ? 'data-src-light' : 'data-src-dark';
+            Array.prototype.forEach.call(frames, function(frame) {
+                var nextSrc = frame.getAttribute(attr);
+                if (nextSrc && frame.getAttribute('src') !== nextSrc) {
+                    frame.setAttribute('src', nextSrc);
+                }
+            });
+        }
+        function applyTheme(theme) {
+            var name = themes[theme] ? theme : 'bluegold';
+            linkEl.setAttribute('href', themes[name]);
+            document.documentElement.setAttribute('data-theme', name);
+            updateButton(name);
+            updateNotebookFrames(name);
+            return name;
+        }
+	    var savedTheme = (function() {
+	        try {
+	            return localStorage.getItem(STORAGE_KEY);
+	        } catch (err) {
+	            return null;
+	        }
+    })();
+        var currentTheme = applyTheme(savedTheme);
+        document.addEventListener('themechange', function(event) {
+            updateNotebookFrames(event.detail || currentTheme);
+        });
+        toggleBtn.addEventListener('click', function() {
+            var nextTheme = currentTheme === 'gruvbox-dark' ? 'bluegold' : 'gruvbox-dark';
+            currentTheme = applyTheme(nextTheme);
+            document.dispatchEvent(new CustomEvent('themechange', { detail: currentTheme }));
+            try {
+                localStorage.setItem(STORAGE_KEY, currentTheme);
+            } catch (err) {
+                /* ignore write errors */
+            }
+        });
+	})();
+	</script>
+    </body>
+</html>

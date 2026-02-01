@@ -1,0 +1,369 @@
+/* Markov Chain Visualization Styles */
+
+/* CSS Custom Properties for theming */
+:root {
+    --markov-bg: #ffffff;
+    --markov-canvas-bg: #fafafa;
+    --markov-border: #dee2e6;
+    --markov-text: #333333;
+
+    /* Node colors */
+    --markov-node-bg: #ffffff;
+    --markov-node-border: #90a4ae;
+    --markov-node-text: #333333;
+    --markov-current: #4caf50;
+    --markov-current-text: #ffffff;
+    --markov-target: #ff9800;
+
+    /* Edge colors */
+    --markov-edge: #607d8b;
+    --markov-edge-highlight: #ff9800;
+    --markov-edge-text: #455a64;
+
+    /* Distribution histogram */
+    --markov-histogram: #2196f3;
+    --markov-stationary: #9c27b0;
+
+    /* Convergence indicator */
+    --markov-converged: #4caf50;
+    --markov-not-converged: #ff9800;
+
+    /* Matrix */
+    --markov-matrix-header: #f5f5f5;
+    --markov-matrix-nonzero: rgba(33, 150, 243, 0.1);
+}
+
+[data-theme="gruvbox-dark"] {
+    --markov-bg: #282828;
+    --markov-canvas-bg: #1d2021;
+    --markov-border: #504945;
+    --markov-text: #ebdbb2;
+
+    /* Node colors */
+    --markov-node-bg: #3c3836;
+    --markov-node-border: #665c54;
+    --markov-node-text: #ebdbb2;
+    --markov-current: #b8bb26;
+    --markov-current-text: #1d2021;
+    --markov-target: #fe8019;
+
+    /* Edge colors */
+    --markov-edge: #928374;
+    --markov-edge-highlight: #fe8019;
+    --markov-edge-text: #a89984;
+
+    /* Distribution histogram */
+    --markov-histogram: #83a598;
+    --markov-stationary: #d3869b;
+
+    /* Convergence indicator */
+    --markov-converged: #b8bb26;
+    --markov-not-converged: #fe8019;
+
+    /* Matrix */
+    --markov-matrix-header: #3c3836;
+    --markov-matrix-nonzero: rgba(131, 165, 152, 0.2);
+}
+
+[data-theme="gruvbox-light"] {
+    --markov-bg: #fbf1c7;
+    --markov-canvas-bg: #f9f5d7;
+    --markov-border: #d5c4a1;
+    --markov-text: #3c3836;
+
+    /* Node colors */
+    --markov-node-bg: #fbf1c7;
+    --markov-node-border: #928374;
+    --markov-node-text: #3c3836;
+    --markov-current: #98971a;
+    --markov-current-text: #fbf1c7;
+    --markov-target: #d65d0e;
+
+    /* Edge colors */
+    --markov-edge: #7c6f64;
+    --markov-edge-highlight: #d65d0e;
+    --markov-edge-text: #665c54;
+
+    /* Distribution histogram */
+    --markov-histogram: #458588;
+    --markov-stationary: #b16286;
+
+    /* Convergence indicator */
+    --markov-converged: #98971a;
+    --markov-not-converged: #d65d0e;
+
+    /* Matrix */
+    --markov-matrix-header: #ebdbb2;
+    --markov-matrix-nonzero: rgba(69, 133, 136, 0.15);
+}
+
+/* Main panel */
+.markov-panel {
+    margin-bottom: 15px;
+}
+
+.markov-panel-body {
+    padding: 10px;
+    background-color: var(--markov-canvas-bg);
+}
+
+/* Header controls */
+.markov-header-controls {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.markov-state-count {
+    font-size: 11px;
+    font-weight: normal;
+    opacity: 0.7;
+    margin-right: 10px;
+}
+
+.markov-preset-select {
+    font-size: 12px;
+    padding: 2px 6px;
+    border: 1px solid var(--markov-border);
+    border-radius: 3px;
+    background-color: var(--markov-bg);
+    color: var(--markov-text);
+    cursor: pointer;
+}
+
+.markov-preset-select:focus {
+    outline: none;
+    border-color: var(--markov-current);
+}
+
+/* Canvas wrapper */
+.markov-canvas-wrapper {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#markov-canvas {
+    background-color: var(--markov-canvas-bg);
+    border-radius: 4px;
+    cursor: default;
+}
+
+/* Footer */
+.markov-footer {
+    padding: 8px 15px;
+}
+
+.markov-footer-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 15px;
+    flex-wrap: wrap;
+}
+
+.markov-playback-section {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.markov-step-section {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.step-display {
+    font-family: monospace;
+    font-size: 0.9em;
+    color: var(--markov-text);
+}
+
+.markov-steps-input {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.markov-steps-input label {
+    font-size: 0.85em;
+    color: var(--markov-text);
+    margin: 0;
+}
+
+.markov-steps-input input {
+    width: 70px;
+    padding: 2px 6px;
+    font-size: 0.85em;
+    border: 1px solid var(--markov-border);
+    border-radius: 3px;
+    background-color: var(--markov-bg);
+    color: var(--markov-text);
+}
+
+/* Histogram panel */
+.markov-histogram-panel {
+    margin-bottom: 15px;
+}
+
+.histogram-container {
+    position: relative;
+}
+
+#histogram-canvas {
+    width: 100%;
+    height: 150px;
+    background-color: var(--markov-canvas-bg);
+    border-radius: 4px;
+}
+
+.histogram-legend {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    margin-top: 10px;
+    font-size: 0.85em;
+    color: var(--markov-text);
+}
+
+.histogram-legend-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.legend-color {
+    width: 14px;
+    height: 14px;
+    border-radius: 2px;
+}
+
+.legend-color.empirical {
+    background-color: var(--markov-histogram);
+}
+
+.legend-color.stationary {
+    background-color: var(--markov-stationary);
+}
+
+/* Convergence indicator */
+.markov-convergence-section {
+    display: flex;
+    align-items: center;
+}
+
+.convergence-indicator {
+    font-size: 0.85em;
+    padding: 2px 8px;
+    border-radius: 4px;
+}
+
+.convergence-indicator.converged {
+    background-color: rgba(76, 175, 80, 0.15);
+    color: var(--markov-converged);
+}
+
+.convergence-indicator.not-converged {
+    background-color: rgba(255, 152, 0, 0.15);
+    color: var(--markov-not-converged);
+}
+
+/* Matrix container */
+.matrix-container {
+    overflow-x: auto;
+    margin-bottom: 15px;
+}
+
+.transition-matrix {
+    width: 100%;
+    font-size: 0.85em;
+    border-collapse: collapse;
+    margin-bottom: 10px;
+}
+
+.transition-matrix th,
+.transition-matrix td {
+    padding: 6px 8px;
+    text-align: center;
+    border: 1px solid var(--markov-border);
+    color: var(--markov-text);
+}
+
+.transition-matrix th {
+    background-color: var(--markov-matrix-header);
+    font-weight: 600;
+}
+
+.transition-matrix td.nonzero {
+    background-color: var(--markov-matrix-nonzero);
+    font-weight: 500;
+}
+
+.transition-matrix td.zero {
+    opacity: 0.4;
+}
+
+.transition-matrix td.self-loop {
+    background-color: rgba(76, 175, 80, 0.1);
+}
+
+/* Ergodic status indicators */
+.ergodic-status {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 10px;
+    padding-top: 10px;
+    border-top: 1px solid var(--markov-border);
+}
+
+.ergodic-status span {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 0.85em;
+    padding: 2px 8px;
+    border-radius: 4px;
+    background-color: var(--markov-bg);
+    border: 1px solid var(--markov-border);
+}
+
+.ergodic-status .check {
+    color: var(--markov-converged);
+    border-color: var(--markov-converged);
+    background-color: rgba(76, 175, 80, 0.1);
+}
+
+.ergodic-status .x {
+    color: #f44336;
+    border-color: #f44336;
+    background-color: rgba(244, 67, 54, 0.1);
+}
+
+/* Status panel */
+.markov-status-panel .panel-body {
+    min-height: 60px;
+}
+
+.playback-status {
+    font-size: 0.9em;
+    color: var(--markov-text);
+    line-height: 1.5;
+}
+
+/* Info tabs adjustments */
+.tab-content h5 {
+    margin-top: 15px;
+    margin-bottom: 8px;
+}
+
+.tab-content ul,
+.tab-content ol {
+    padding-left: 20px;
+}
+
+.tab-content li {
+    margin-bottom: 4px;
+}
