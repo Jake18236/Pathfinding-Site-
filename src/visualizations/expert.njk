@@ -1,0 +1,201 @@
+---
+layout: base.njk
+title: Expert Systems Visualizer
+icon: fa-brain
+navigation:
+  - name: "Home"
+    link: "index.html"
+    icon: "fa-home"
+permalink: "expert.html"
+extraScript: "static/js/expert.js"
+tags: visualization
+cardTitle: "Expert Systems"
+cardIcon: fa-brain
+cardDescription: "Learn forward and backward chaining inference. Watch rules fire step-by-step and see how conclusions are derived from facts."
+cardTags:
+  - Inference
+  - Knowledge
+cardHaystack: "expert systems forward chaining backward chaining inference rules knowledge base facts conclusions if then"
+cardOrder: 8
+---
+
+{% from "components/legend.njk" import legend %}
+{% from "components/info-tabs.njk" import infoTabs %}
+
+<link rel="stylesheet" href="static/css/expert.css">
+
+<!-- Main Content: Canvas (7/12) + Info Tabs (5/12) -->
+<div class="row" id="main-content">
+    <!-- Left Column: Inference Engine Canvas -->
+    <div class="col-md-7">
+        <div class="panel panel-default expert-panel">
+            <div class="panel-heading">
+                <div class="expert-toolbar">
+                    <div class="toolbar-left">
+                        <select id="kb-select" class="form-control input-sm">
+                            <option value="animal" selected>Animal Identification</option>
+                            <option value="medical">Medical Diagnosis</option>
+                            <option value="troubleshoot">Computer Troubleshooting</option>
+                        </select>
+                        <div class="btn-group mode-toggle" role="group">
+                            <button type="button" class="btn btn-sm btn-default active" data-mode="forward">
+                                <i class="fa fa-arrow-right"></i> Forward
+                            </button>
+                            <button type="button" class="btn btn-sm btn-default" data-mode="backward">
+                                <i class="fa fa-arrow-left"></i> Backward
+                            </button>
+                        </div>
+                        <select id="goal-select" class="form-control input-sm goal-select" style="display: none;">
+                            <option value="">Select Goal...</option>
+                        </select>
+                        <div id="goal-indicator" class="goal-indicator" style="display: none;">
+                            <i class="fa fa-bullseye"></i>
+                            <span id="goal-indicator-text">Proving: ?</span>
+                        </div>
+                    </div>
+                    <div class="toolbar-right">
+                        <div class="btn-group playback-buttons" role="group">
+                            <button id="btn-run" class="btn btn-sm btn-success" title="Run inference">
+                                <i class="fa fa-play"></i>
+                            </button>
+                            <button id="btn-pause" class="btn btn-sm btn-warning" title="Pause" disabled>
+                                <i class="fa fa-pause"></i>
+                            </button>
+                            <button id="btn-step-back" class="btn btn-sm btn-info" title="Step back" disabled>
+                                <i class="fa fa-step-backward"></i>
+                            </button>
+                            <button id="btn-step" class="btn btn-sm btn-info" title="Step forward" disabled>
+                                <i class="fa fa-step-forward"></i>
+                            </button>
+                            <button id="btn-reset" class="btn btn-sm btn-danger" title="Reset">
+                                <i class="fa fa-rotate-left"></i>
+                            </button>
+                        </div>
+                        <div class="speed-control-inline">
+                            <input type="range" id="speed-slider" min="1" max="10" value="5" title="Playback speed">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="panel-body canvas-panel-body">
+                <div class="canvas-wrapper">
+                    <canvas id="expert-canvas" width="700" height="450"></canvas>
+                </div>
+            </div>
+            <div class="panel-footer expert-footer">
+                <div class="footer-row">
+                    {{ legend(
+                        items=[
+                            {class: 'rule-inactive', label: 'Rule'},
+                            {class: 'rule-evaluating', label: 'Evaluating'},
+                            {class: 'rule-fired', label: 'Fired'},
+                            {class: 'fact-initial', label: 'Initial'},
+                            {class: 'fact-derived', label: 'Derived'},
+                            {class: 'fact-unknown', label: 'Unknown'}
+                        ],
+                        className='expert-legend'
+                    ) }}
+                    <div class="playback-status">
+                        <span id="playback-step">Step: 0 / 0</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Working Memory Panel -->
+        <div class="panel panel-default working-memory-panel">
+            <div class="panel-heading">
+                <h3 class="panel-title">
+                    <i class="fa fa-database"></i> Working Memory
+                    <button id="btn-clear-facts" class="btn btn-xs btn-danger pull-right" title="Clear all facts">
+                        <i class="fa fa-trash"></i>
+                    </button>
+                </h3>
+            </div>
+            <div class="panel-body working-memory-body">
+                <div id="facts-container" class="facts-container">
+                    <span class="text-muted no-facts-msg">No facts set. Add facts below to begin.</span>
+                </div>
+                <div class="add-fact-row">
+                    <select id="fact-select" class="form-control input-sm">
+                        <option value="">+ Add Fact...</option>
+                    </select>
+                    <div id="fact-value-toggle" class="btn-group fact-value-toggle" role="group" style="display: none;">
+                        <button type="button" class="btn btn-xs btn-success" data-value="true">True</button>
+                        <button type="button" class="btn btn-xs btn-danger" data-value="false">False</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Right Column: Info Tabs -->
+    <div class="col-md-5">
+        {{ infoTabs(
+            tabs=[
+                {id: 'about', icon: 'fa-info-circle', label: 'About', active: true, content: '
+<h4><i class="fa fa-brain"></i> Expert Systems</h4>
+<p>
+    <strong>Expert Systems</strong> are AI programs that emulate human expert decision-making
+    using a <em>knowledge base</em> of IF-THEN rules and an <em>inference engine</em>.
+</p>
+
+<h5><i class="fa fa-arrow-right"></i> Forward Chaining</h5>
+<p>
+    <strong>Data-driven</strong> inference. Start with known facts and repeatedly apply rules
+    to derive new facts until no more rules can fire.
+</p>
+
+<h5><i class="fa fa-arrow-left"></i> Backward Chaining</h5>
+<p>
+    <strong>Goal-driven</strong> inference. Start with a goal and work backward,
+    finding rules that could prove it and recursively proving their conditions.
+</p>
+
+<h5><i class="fa fa-keyboard"></i> How to Use</h5>
+<ol class="how-to-list">
+    <li>Select an example knowledge base</li>
+    <li>Add initial facts in Working Memory</li>
+    <li>Choose Forward or Backward mode</li>
+    <li>Click <i class="fa fa-play"></i> to watch inference step-by-step</li>
+</ol>
+                '},
+                {id: 'rules', icon: 'fa-list', label: 'Rules', content: '
+<h4><i class="fa fa-list"></i> Knowledge Base Rules</h4>
+<div id="rules-list" class="rules-list">
+    <p class="text-muted">Select a knowledge base to view its rules.</p>
+</div>
+                '},
+                {id: 'try', icon: 'fa-lightbulb', label: 'Try It', content: '
+<h4><i class="fa fa-flask"></i> Experiments</h4>
+
+<h5>Animal Identification</h5>
+<ul class="try-list">
+    <li>Set <code>has_hair=T</code>, <code>eats_meat=T</code>, <code>has_stripes=T</code></li>
+    <li>Run forward chaining to identify a <strong>Tiger</strong></li>
+    <li>Watch: hair &rarr; mammal &rarr; carnivore &rarr; tiger</li>
+</ul>
+
+<h5>Compare Inference Modes</h5>
+<ul class="try-list">
+    <li>Clear facts and switch to <strong>Backward</strong> mode</li>
+    <li>Select <strong>tiger</strong> as the goal</li>
+    <li>Watch it work backward to find what facts are needed</li>
+</ul>
+
+<h5>Medical Diagnosis</h5>
+<ul class="try-list">
+    <li>Set <code>fever=T</code>, <code>body_aches=T</code>, <code>fatigue=T</code></li>
+    <li>Forward chain to diagnose <strong>Flu</strong></li>
+</ul>
+
+<h5>Computer Troubleshooting</h5>
+<ul class="try-list">
+    <li>Set <code>power_on=T</code>, <code>screen_on=F</code>, <code>fan_running=T</code></li>
+    <li>Diagnose a <strong>Display Issue</strong></li>
+</ul>
+                '}
+            ]
+        ) }}
+    </div>
+</div>

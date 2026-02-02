@@ -1,0 +1,702 @@
+/**
+ * Expert Systems Visualization Styles
+ *
+ * Styles for the forward/backward chaining inference visualization.
+ */
+
+/* ============================================
+   CSS Custom Properties
+   ============================================ */
+:root {
+    /* Rule card colors */
+    --expert-rule-bg: #ffffff;
+    --expert-rule-border: #dee2e6;
+    --expert-rule-text: #333333;
+    --expert-rule-header-bg: #f8f9fa;
+
+    /* Rule states */
+    --expert-rule-evaluating-bg: #fff3cd;
+    --expert-rule-evaluating-border: #ffc107;
+    --expert-rule-fired-bg: #d4edda;
+    --expert-rule-fired-border: #28a745;
+    --expert-rule-failed-bg: #f8d7da;
+    --expert-rule-failed-border: #dc3545;
+
+    /* Fact badge colors */
+    --expert-fact-bg: #e3f2fd;
+    --expert-fact-border: #2196f3;
+    --expert-fact-true-bg: #d4edda;
+    --expert-fact-true-border: #28a745;
+    --expert-fact-false-bg: #f8d7da;
+    --expert-fact-false-border: #dc3545;
+    --expert-fact-derived-bg: #e8f5e9;
+    --expert-fact-derived-border: #4caf50;
+    --expert-fact-unknown-bg: #fff3e0;
+    --expert-fact-unknown-border: #ff9800;
+
+    /* Inference chain edges */
+    --expert-edge-color: #6c757d;
+    --expert-edge-active: #ffc107;
+    --expert-edge-fired: #28a745;
+
+    /* Goal tree (backward chaining) */
+    --expert-goal-bg: #fff9c4;
+    --expert-goal-border: #fbc02d;
+    --expert-subgoal-bg: #e3f2fd;
+    --expert-subgoal-border: #1976d2;
+}
+
+[data-theme="gruvbox-dark"] {
+    /* Rule card colors */
+    --expert-rule-bg: #282828;
+    --expert-rule-border: #504945;
+    --expert-rule-text: #ebdbb2;
+    --expert-rule-header-bg: #3c3836;
+
+    /* Rule states */
+    --expert-rule-evaluating-bg: rgba(250, 189, 47, 0.3);
+    --expert-rule-evaluating-border: #fabd2f;
+    --expert-rule-fired-bg: rgba(184, 187, 38, 0.3);
+    --expert-rule-fired-border: #b8bb26;
+    --expert-rule-failed-bg: rgba(251, 73, 52, 0.3);
+    --expert-rule-failed-border: #fb4934;
+
+    /* Fact badge colors */
+    --expert-fact-bg: rgba(131, 165, 152, 0.3);
+    --expert-fact-border: #83a598;
+    --expert-fact-true-bg: rgba(184, 187, 38, 0.3);
+    --expert-fact-true-border: #b8bb26;
+    --expert-fact-false-bg: rgba(251, 73, 52, 0.3);
+    --expert-fact-false-border: #fb4934;
+    --expert-fact-derived-bg: rgba(142, 192, 124, 0.3);
+    --expert-fact-derived-border: #8ec07c;
+    --expert-fact-unknown-bg: rgba(254, 128, 25, 0.3);
+    --expert-fact-unknown-border: #fe8019;
+
+    /* Inference chain edges */
+    --expert-edge-color: #928374;
+    --expert-edge-active: #fabd2f;
+    --expert-edge-fired: #b8bb26;
+
+    /* Goal tree */
+    --expert-goal-bg: rgba(250, 189, 47, 0.3);
+    --expert-goal-border: #fabd2f;
+    --expert-subgoal-bg: rgba(131, 165, 152, 0.3);
+    --expert-subgoal-border: #83a598;
+}
+
+/* ============================================
+   Panel & Toolbar Layout
+   ============================================ */
+.expert-panel .panel-heading {
+    padding: 8px 12px !important;
+}
+
+.expert-panel .canvas-wrapper {
+    overflow-x: auto;
+    overflow-y: hidden;
+}
+
+.expert-toolbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.toolbar-left,
+.toolbar-right {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.toolbar-left select {
+    max-width: 180px;
+}
+
+.goal-select {
+    max-width: 140px;
+}
+
+/* Mode toggle active state */
+.mode-toggle .btn.active {
+    background-color: var(--viz-active-bg);
+    border-color: var(--viz-active-border);
+    color: var(--viz-text);
+}
+
+[data-theme="gruvbox-dark"] .mode-toggle .btn.active {
+    background-color: rgba(250, 189, 47, 0.3);
+    border-color: #fabd2f;
+    color: #ebdbb2;
+}
+
+/* ============================================
+   Footer & Legend
+   ============================================ */
+.expert-footer {
+    padding: 8px 15px !important;
+}
+
+.footer-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.expert-legend {
+    display: flex;
+    gap: 12px;
+    font-size: 11px;
+    flex-wrap: wrap;
+}
+
+/* Legend color swatches */
+.legend-color.rule-inactive {
+    background-color: var(--expert-rule-bg);
+    border: 2px solid var(--expert-rule-border);
+}
+
+.legend-color.rule-evaluating {
+    background-color: var(--expert-rule-evaluating-bg);
+    border: 2px solid var(--expert-rule-evaluating-border);
+}
+
+.legend-color.rule-fired {
+    background-color: var(--expert-rule-fired-bg);
+    border: 2px solid var(--expert-rule-fired-border);
+}
+
+.legend-color.fact-initial {
+    background-color: var(--expert-fact-bg);
+    border: 2px solid var(--expert-fact-border);
+}
+
+.legend-color.fact-derived {
+    background-color: var(--expert-fact-derived-bg);
+    border: 2px dashed var(--expert-fact-derived-border);
+}
+
+.legend-color.fact-unknown {
+    background-color: var(--expert-fact-unknown-bg);
+    border: 2px solid var(--expert-fact-unknown-border);
+}
+
+/* ============================================
+   Working Memory Panel
+   ============================================ */
+.working-memory-panel .panel-heading {
+    padding: 8px 12px !important;
+}
+
+.working-memory-panel .panel-title {
+    font-size: 13px;
+    margin: 0;
+}
+
+.working-memory-body {
+    padding: 10px 15px !important;
+}
+
+.facts-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 12px;
+    min-height: 32px;
+    align-items: center;
+}
+
+.no-facts-msg {
+    font-size: 12px;
+}
+
+/* Fact badges */
+.fact-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 4px 10px;
+    border-radius: 16px;
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border: 1px solid;
+}
+
+.fact-badge.true {
+    background-color: var(--expert-fact-true-bg);
+    border-color: var(--expert-fact-true-border);
+    color: var(--expert-fact-true-border);
+}
+
+.fact-badge.false {
+    background-color: var(--expert-fact-false-bg);
+    border-color: var(--expert-fact-false-border);
+    color: var(--expert-fact-false-border);
+}
+
+.fact-badge.derived {
+    background-color: var(--expert-fact-derived-bg);
+    border-style: dashed;
+    border-color: var(--expert-fact-derived-border);
+    color: var(--expert-fact-derived-border);
+}
+
+.fact-badge.unknown {
+    background-color: var(--expert-fact-unknown-bg);
+    border-color: var(--expert-fact-unknown-border);
+    color: var(--expert-fact-unknown-border);
+    animation: pulse-unknown 1.5s ease-in-out infinite;
+}
+
+@keyframes pulse-unknown {
+    0%, 100% {
+        box-shadow: 0 0 0 0 rgba(255, 152, 0, 0.4);
+    }
+    50% {
+        box-shadow: 0 0 0 6px rgba(255, 152, 0, 0);
+    }
+}
+
+.fact-badge:hover {
+    filter: brightness(0.95);
+}
+
+.fact-badge .fact-label {
+    font-weight: 600;
+}
+
+.fact-badge .fact-value {
+    font-family: var(--viz-mono-font);
+    font-weight: bold;
+}
+
+.fact-badge .fact-remove {
+    margin-left: 4px;
+    opacity: 0.6;
+    font-size: 10px;
+}
+
+.fact-badge:hover .fact-remove {
+    opacity: 1;
+}
+
+/* Add fact controls */
+.add-fact-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.add-fact-row select {
+    max-width: 200px;
+}
+
+.fact-value-toggle {
+    display: flex;
+    gap: 4px;
+}
+
+.fact-value-toggle .btn {
+    min-width: 50px;
+}
+
+/* ============================================
+   Rules List (in Info Tab)
+   ============================================ */
+.rules-list {
+    max-height: 360px;
+    overflow-y: auto;
+}
+
+.rule-item {
+    padding: 10px 12px;
+    margin-bottom: 8px;
+    border: 1px solid var(--viz-border);
+    border-radius: 4px;
+    background-color: var(--viz-bg);
+    font-size: 12px;
+    transition: all 0.2s ease;
+}
+
+.rule-item:last-child {
+    margin-bottom: 0;
+}
+
+.rule-item-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 6px;
+}
+
+.rule-item-left {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.rule-item-id {
+    font-weight: bold;
+    font-family: var(--viz-mono-font);
+    color: var(--viz-text);
+}
+
+.rule-priority-badge {
+    font-size: 9px;
+    font-weight: bold;
+    padding: 2px 5px;
+    border-radius: 3px;
+    background-color: var(--viz-hover-bg);
+    color: var(--viz-text-muted);
+    font-family: var(--viz-mono-font);
+}
+
+.rule-status-icon {
+    font-size: 12px;
+    min-width: 16px;
+    text-align: center;
+}
+
+.rule-status-icon.pending::before {
+    content: '⏸';
+    opacity: 0.4;
+}
+
+.rule-status-icon.evaluating::before {
+    content: '▶';
+    color: var(--expert-rule-evaluating-border);
+}
+
+.rule-status-icon.fired::before {
+    content: '✓';
+    color: var(--expert-rule-fired-border);
+}
+
+.rule-status-icon.failed::before {
+    content: '✗';
+    color: var(--expert-rule-failed-border);
+}
+
+.rule-item-name {
+    font-size: 11px;
+    color: var(--viz-text-muted);
+}
+
+.rule-item-body {
+    font-family: var(--viz-mono-font);
+    font-size: 11px;
+    color: var(--viz-text-muted);
+    line-height: 1.5;
+}
+
+.rule-keyword {
+    color: #d73a49;
+    font-weight: bold;
+}
+
+[data-theme="gruvbox-dark"] .rule-keyword {
+    color: #fb4934;
+}
+
+.rule-fact {
+    color: #6f42c1;
+}
+
+[data-theme="gruvbox-dark"] .rule-fact {
+    color: #d3869b;
+}
+
+.rule-value {
+    color: #22863a;
+    font-weight: bold;
+}
+
+[data-theme="gruvbox-dark"] .rule-value {
+    color: #b8bb26;
+}
+
+/* Rule states in the list */
+.rule-item.fired {
+    border-color: var(--expert-rule-fired-border);
+    background-color: var(--expert-rule-fired-bg);
+}
+
+.rule-item.evaluating {
+    border-color: var(--expert-rule-evaluating-border);
+    background-color: var(--expert-rule-evaluating-bg);
+    animation: pulse-evaluate 1s ease-in-out infinite;
+}
+
+.rule-item.failed {
+    border-color: var(--expert-rule-failed-border);
+    background-color: var(--expert-rule-failed-bg);
+}
+
+/* ============================================
+   Try It Section
+   ============================================ */
+.try-list {
+    padding-left: 18px;
+    font-size: 12px;
+    margin-bottom: 12px;
+}
+
+.try-list li {
+    margin-bottom: 6px;
+    line-height: 1.4;
+}
+
+.try-list code {
+    padding: 2px 5px;
+    font-size: 11px;
+    background-color: var(--viz-hover-bg);
+}
+
+/* How to list */
+.how-to-list {
+    padding-left: 18px;
+    font-size: 12px;
+}
+
+.how-to-list li {
+    margin-bottom: 4px;
+}
+
+/* ============================================
+   Canvas Message Display
+   ============================================ */
+.canvas-message {
+    position: absolute;
+    bottom: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 8px 16px;
+    background-color: rgba(0, 0, 0, 0.7);
+    color: #fff;
+    border-radius: 4px;
+    font-size: 12px;
+    font-family: var(--viz-mono-font);
+    max-width: 80%;
+    text-align: center;
+    z-index: 10;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.canvas-message.visible {
+    opacity: 1;
+}
+
+/* ============================================
+   Inference Animation
+   ============================================ */
+@keyframes pulse-evaluate {
+    0%, 100% {
+        box-shadow: 0 0 0 0 rgba(255, 193, 7, 0.4);
+    }
+    50% {
+        box-shadow: 0 0 0 8px rgba(255, 193, 7, 0);
+    }
+}
+
+@keyframes glow-derive {
+    0% {
+        box-shadow: 0 0 5px var(--expert-fact-derived-border);
+    }
+    100% {
+        box-shadow: 0 0 15px var(--expert-fact-derived-border);
+    }
+}
+
+.fact-badge.deriving {
+    animation: glow-derive 0.5s ease-in-out alternate infinite;
+}
+
+/* ============================================
+   Backward Chaining Goal Display
+   ============================================ */
+.goal-indicator {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 12px;
+    background-color: var(--expert-goal-bg);
+    border: 2px solid var(--expert-goal-border);
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: 600;
+    white-space: nowrap;
+    max-width: 250px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.goal-indicator i {
+    color: var(--expert-goal-border);
+    flex-shrink: 0;
+}
+
+#goal-indicator-text {
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* ============================================
+   User Input Prompt (for backward chaining)
+   ============================================ */
+.user-input-prompt {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: var(--viz-bg);
+    border: 2px solid var(--viz-warning-border);
+    border-radius: 8px;
+    padding: 20px;
+    text-align: center;
+    z-index: 20;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+    min-width: 250px;
+}
+
+.user-input-prompt h4 {
+    margin: 0 0 12px 0;
+    font-size: 14px;
+    color: var(--viz-text);
+}
+
+.user-input-prompt p {
+    margin: 0 0 16px 0;
+    font-size: 13px;
+    color: var(--viz-text-muted);
+}
+
+.user-input-prompt .btn-group {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+}
+
+.user-input-prompt .btn {
+    min-width: 80px;
+}
+
+/* ============================================
+   Derivation Tooltip
+   ============================================ */
+.derivation-tooltip {
+    position: fixed;
+    z-index: 1000;
+    background-color: var(--viz-bg);
+    border: 1px solid var(--viz-border);
+    border-radius: 6px;
+    padding: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    max-width: 280px;
+    font-size: 12px;
+}
+
+.derivation-tooltip-header {
+    font-weight: bold;
+    font-size: 14px;
+    margin-bottom: 8px;
+    padding-bottom: 6px;
+    border-bottom: 1px solid var(--viz-border);
+    color: var(--viz-text);
+}
+
+.derivation-tooltip-value {
+    margin-bottom: 6px;
+    color: var(--viz-text);
+}
+
+.derivation-tooltip-rule {
+    margin-bottom: 6px;
+    color: var(--viz-text-muted);
+}
+
+.derivation-tooltip-conditions {
+    font-weight: 600;
+    margin-bottom: 4px;
+    color: var(--viz-text);
+}
+
+.derivation-tooltip-list {
+    margin: 0;
+    padding-left: 0;
+    list-style: none;
+}
+
+.derivation-tooltip-list li {
+    padding: 2px 0;
+    color: var(--viz-text-muted);
+}
+
+.derivation-tooltip-list .cond-icon {
+    display: inline-block;
+    width: 16px;
+    font-weight: bold;
+}
+
+.derivation-tooltip-list .cond-icon.ok {
+    color: var(--expert-fact-true-border);
+}
+
+.derivation-tooltip-list .cond-icon.fail {
+    color: var(--expert-fact-false-border);
+}
+
+.derivation-tooltip-source {
+    color: var(--viz-text-muted);
+    font-style: italic;
+}
+
+/* ============================================
+   Responsive Adjustments
+   ============================================ */
+@media (max-width: 992px) {
+    .expert-toolbar {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .toolbar-left,
+    .toolbar-right {
+        justify-content: center;
+    }
+
+    .toolbar-left select {
+        max-width: none;
+        flex: 1;
+    }
+}
+
+@media (max-width: 768px) {
+    .footer-row {
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .expert-legend {
+        justify-content: center;
+    }
+
+    .facts-container {
+        justify-content: center;
+    }
+
+    .add-fact-row {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .add-fact-row select {
+        max-width: none;
+    }
+}
