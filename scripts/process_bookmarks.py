@@ -83,10 +83,9 @@ def to_sheet_meta(arch_meta: dict) -> dict:
     }
 
 def archive_to_sheets(meta: dict) -> None:
-    """Archive tweet to Google Sheets Resources tab via webhook."""
-    # Parse the tweet date to get year for export_id
+    """Archive tweet to Google Sheets Learning tab via webhook."""
+    # Parse the tweet date
     tweet_date = meta.get("date", "")[:10]  # YYYY-MM-DD
-    year = tweet_date[:4] if tweet_date else "2025"
 
     # Build media paths as JSON
     images = meta.get("images", [])
@@ -98,7 +97,6 @@ def archive_to_sheets(meta: dict) -> None:
 
     payload = {
         "action": "archive",
-        "export_id": f"learning-{year}",
         "name": meta.get("name") or "",
         "type": "thread" if "Thread" in (meta.get("title") or "") else "tweet",
         "link": meta.get("url") or "",

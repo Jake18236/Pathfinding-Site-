@@ -18,7 +18,7 @@
 // IMPORTANT: Replace with your Google Sheet ID (from the URL: docs.google.com/spreadsheets/d/SHEET_ID/edit)
 const SHEET_ID = 'YOUR_SHEET_ID_HERE';
 const SHEET_NAME = 'Queue';
-const RESOURCES_SHEET_NAME = 'Resources'; // Tab for archived tweets
+const RESOURCES_SHEET_NAME = 'Learning'; // Tab for archived tweets (same as learning resources)
 const VALID_URL_PATTERNS = [
   /^https?:\/\/(www\.)?(twitter\.com|x\.com)\/\w+\/status\/\d+/i,
   /^https?:\/\/(mobile\.)?(twitter\.com|x\.com)\/\w+\/status\/\d+/i
@@ -236,13 +236,14 @@ function failItem(id, errorMsg, secret) {
 }
 
 /**
- * Archive a tweet to the Resources sheet
- * Expected data: { export_id, name, type, link, author, date_added, notes, media }
+ * Archive a tweet to the Learning sheet
+ * Expected data: { name, author, type, link, date_added, notes, media }
+ * Learning sheet columns: id | Read | Date Added | Name | Author | Type | Link | (notes) | (media)
  */
 function archiveToResources(data) {
   const sheet = SpreadsheetApp.openById(SHEET_ID).getSheetByName(RESOURCES_SHEET_NAME);
   if (!sheet) {
-    return jsonResponse({ error: 'Resources sheet not found. Create a tab named "Resources" with headers: export_id, name, type, link, author, date_added, cover, checked_out, rating, notes, media' }, 500);
+    return jsonResponse({ error: 'Learning sheet not found' }, 500);
   }
 
   const link = data.link || '';
@@ -250,25 +251,27 @@ function archiveToResources(data) {
     return jsonResponse({ error: 'Missing link parameter' }, 400);
   }
 
-  // Check for duplicates by link
+  // Check for duplicates by link (column G, index 6)
   const existingData = sheet.getDataRange().getValues();
   for (let i = 1; i < existingData.length; i++) {
-    if (existingData[i][3] === link) { // link is column 4 (index 3)
+    if (existingData[i][6] === link) {
       return jsonResponse({ status: 'duplicate', message: 'Tweet already archived' });
     }
   }
 
-  // Append row: export_id, name, type, link, author, date_added, cover, checked_out, rating, notes, media
+  // Generate slug-style id from name
+  const name = data.name || 'tweet';
+  const id = name.toLowerCase().replace(/[^a-z0-9]+/g, '-').substring(0, 30);
+
+  // Append row: id | Read | Date Added | Name | Author | Type | Link | notes | media
   const row = [
-    data.export_id || '',
-    data.name || '',
+    id,
+    false, // Read checkbox
+    data.date_added || '',
+    name,
+    data.author || '',
     data.type || 'tweet',
     link,
-    data.author || '',
-    data.date_added || '',
-    '', // cover
-    '', // checked_out
-    '', // rating
     data.notes || '',
     data.media || ''
   ];
