@@ -66,12 +66,19 @@ def download_media_from_tweet(tweet_obj: dict, tweet_id: str, tmp_dir: pathlib.P
     """Extract media URLs from tweet object and download them."""
     downloaded = []
 
+    if not isinstance(tweet_obj, dict):
+        return downloaded
+
     # Look for media in attachments
     attachments = tweet_obj.get("attachments", {})
-    media_keys = attachments.get("media_keys", [])
+    if not isinstance(attachments, dict):
+        attachments = {}
 
     # Also check includes.media for the actual media objects
     includes = tweet_obj.get("includes", {})
+    if not isinstance(includes, dict):
+        includes = {}
+
     media_list = includes.get("media", [])
 
     # If no includes, check if media is directly on the tweet (flattened format)
@@ -82,7 +89,13 @@ def download_media_from_tweet(tweet_obj: dict, tweet_id: str, tmp_dir: pathlib.P
     if not media_list:
         media_list = attachments.get("media", [])
 
+    # Ensure media_list is actually a list
+    if not isinstance(media_list, list):
+        media_list = []
+
     for media in media_list:
+        if not isinstance(media, dict):
+            continue
         media_type = media.get("type", "")
         url = None
         ext = ".jpg"
@@ -113,7 +126,17 @@ def download_media_from_tweet(tweet_obj: dict, tweet_id: str, tmp_dir: pathlib.P
                 filepath = tmp_dir / filename
 
                 print(f"[info] Downloading media: {url[:80]}...", file=sys.stderr)
-                urllib.request.urlretrieve(url, filepath)
+
+                # Use proper headers to avoid 403 errors from Twitter/X CDN
+                req = urllib.request.Request(url, headers={
+                    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+                    'Referer': 'https://x.com/',
+                    'Accept': 'image/webp,image/apng,image/*,*/*;q=0.8',
+                })
+                with urllib.request.urlopen(req) as response:
+                    with open(filepath, 'wb') as out_file:
+                        out_file.write(response.read())
+
                 downloaded.append(filepath)
                 print(f"[info] Downloaded: {filename}", file=sys.stderr)
             except Exception as e:

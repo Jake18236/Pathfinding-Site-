@@ -255,13 +255,12 @@ function archiveToResources(data) {
     }
   }
 
-  // Generate slug-style id from name
   const name = data.name || 'tweet';
-  const id = name.toLowerCase().replace(/[^a-z0-9]+/g, '-').substring(0, 30);
 
   // Append row: id | Read | Date Added | Name | Author | Type | Link | Rating | Notes | Checked Out | Student | Media
+  // Leave id (column A) empty - there's a formula in the sheet that will generate it
   const row = [
-    id,                      // A: id
+    '',                      // A: id (left empty for formula)
     false,                   // B: Read checkbox
     data.date_added || '',   // C: Date Added
     name,                    // D: Name
