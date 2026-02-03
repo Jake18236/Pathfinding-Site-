@@ -147,7 +147,7 @@ function claimItem(secret) {
 }
 
 /**
- * Mark an item as completed
+ * Mark an item as completed and remove from queue
  */
 function completeItem(id, meta, secret) {
   if (!id) {
@@ -160,17 +160,13 @@ function completeItem(id, meta, secret) {
   }
 
   const data = sheet.getDataRange().getValues();
-  const now = new Date().toISOString();
 
   for (let i = 1; i < data.length; i++) {
     if (data[i][0] === id) {
       const row = i + 1;
-      sheet.getRange(row, 3).setValue('done');
-      sheet.getRange(row, 6).setValue(now);
-      if (meta) {
-        sheet.getRange(row, 7).setValue(JSON.stringify(meta));
-      }
-      return jsonResponse({ status: 'completed', id: id });
+      // Delete the row since it's now archived in the Learning sheet
+      sheet.deleteRow(row);
+      return jsonResponse({ status: 'completed', id: id, deleted: true });
     }
   }
 
@@ -238,7 +234,7 @@ function failItem(id, errorMsg, secret) {
 /**
  * Archive a tweet to the Learning sheet
  * Expected data: { name, author, type, link, date_added, notes, media }
- * Learning sheet columns: id | Read | Date Added | Name | Author | Type | Link | (notes) | (media)
+ * Learning sheet columns: id | Read | Date Added | Name | Author | Type | Link | Rating | Notes | Checked Out | Student | Media
  */
 function archiveToResources(data) {
   const sheet = SpreadsheetApp.openById(SHEET_ID).getSheetByName(RESOURCES_SHEET_NAME);
@@ -263,17 +259,20 @@ function archiveToResources(data) {
   const name = data.name || 'tweet';
   const id = name.toLowerCase().replace(/[^a-z0-9]+/g, '-').substring(0, 30);
 
-  // Append row: id | Read | Date Added | Name | Author | Type | Link | notes | media
+  // Append row: id | Read | Date Added | Name | Author | Type | Link | Rating | Notes | Checked Out | Student | Media
   const row = [
-    id,
-    false, // Read checkbox
-    data.date_added || '',
-    name,
-    data.author || '',
-    data.type || 'tweet',
-    link,
-    data.notes || '',
-    data.media || ''
+    id,                      // A: id
+    false,                   // B: Read checkbox
+    data.date_added || '',   // C: Date Added
+    name,                    // D: Name
+    data.author || '',       // E: Author
+    data.type || 'tweet',    // F: Type
+    link,                    // G: Link
+    '',                      // H: Rating (empty for tweets)
+    data.notes || '',        // I: Notes
+    false,                   // J: Checked Out (empty for tweets)
+    '',                      // K: Student (empty for tweets)
+    data.media || ''         // L: Media
   ];
 
   sheet.appendRow(row);

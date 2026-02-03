@@ -53,6 +53,15 @@ def tweet_id_from_url(url: str):
     m = re.search(r"/status/(\d+)", url)
     return m.group(1) if m else ""
 
+def find_existing_media(tweet_id: str) -> list[str]:
+    """Check if media already exists for this tweet ID."""
+    existing = []
+    for directory in (IMG_DIR, VID_DIR):
+        for f in directory.glob(f"*{tweet_id}*"):
+            if f.is_file():
+                existing.append(f.name)
+    return existing
+
 def extract_author(obj):
     """Extract author username from tweet object."""
     for key in ("author", "user"):
@@ -78,6 +87,11 @@ def fetch_tweet(url: str, workdir: pathlib.Path):
     if not re.fullmatch(r"\d+", tid):
         raise RuntimeError(f"Could not extract numeric tweet ID from URL: {url}")
 
+    # Check if media already exists for this tweet
+    existing_media = find_existing_media(tid)
+    if existing_media:
+        print(f"[info] Found existing media for tweet {tid}: {existing_media}", file=sys.stderr)
+
     print(f"[info] Fetching tweet {tid}...", file=sys.stderr)
 
     # Fetch single tweet (works on free tier)
@@ -85,6 +99,11 @@ def fetch_tweet(url: str, workdir: pathlib.Path):
 
     # Flatten the JSON for easier processing
     run_to_file(["twarc2", "--bearer-token", bearer_token, "flatten", str(raw_jsonl)], flat_jsonl)
+
+    # Skip media download if we already have media for this tweet
+    if existing_media:
+        print(f"[info] Skipping media download - already have {len(existing_media)} file(s)", file=sys.stderr)
+        return raw_jsonl, flat_jsonl, existing_media
 
     # Try to download media (non-fatal if it fails)
     tmp_media = workdir / "media"

@@ -118,7 +118,30 @@ def archive_to_sheets(meta: dict) -> None:
     else:
         print(f"[warn] Failed to archive to Sheets: {res}", file=sys.stderr)
 
-def archive_url(url: str) -> dict | None:
+# Patterns that indicate temporary/retryable errors (rate limits, network issues)
+RETRYABLE_PATTERNS = [
+    "429",
+    "rate limit",
+    "too many requests",
+    "timeout",
+    "connection",
+    "temporarily",
+    "try again",
+]
+
+def is_retryable_error(stderr: str) -> bool:
+    """Check if the error message indicates a temporary/retryable failure."""
+    stderr_lower = stderr.lower()
+    return any(pattern in stderr_lower for pattern in RETRYABLE_PATTERNS)
+
+def archive_url(url: str) -> tuple[dict | None, bool]:
+    """
+    Archive a tweet URL.
+
+    Returns:
+        (meta, is_retryable): meta dict if successful, None if failed.
+                             is_retryable is True if failure was temporary (rate limit, etc.)
+    """
     proc = subprocess.run(
         ["python", str(ARCHIVER), url],
         capture_output=True,
@@ -127,15 +150,16 @@ def archive_url(url: str) -> dict | None:
     )
     if proc.returncode != 0:
         print(f"[error] archiver failed ({proc.returncode})\nSTDERR:\n{proc.stderr}", file=sys.stderr)
-        return None
+        retryable = is_retryable_error(proc.stderr)
+        return None, retryable
 
     try:
         last_line = proc.stdout.strip().splitlines()[-1]
         obj = json.loads(last_line)
-        return obj.get("archived")
+        return obj.get("archived"), False
     except Exception as e:
         print(f"[error] could not parse archiver output: {e}\nSTDOUT:\n{proc.stdout}", file=sys.stderr)
-        return None
+        return None, False
 
 def main():
     if not WEBHOOK_URL:
@@ -165,10 +189,14 @@ def main():
 
         print(f"[info] Archiving: {url} (queue id {item_id})", file=sys.stderr)
 
-        meta = archive_url(url)
+        meta, is_retryable = archive_url(url)
         if not meta:
-            print(f"[warn] Archiving failed for {url}. Marking as failed (won't retry).", file=sys.stderr)
-            fail_item(item_id, "Archive failed - tweet may be deleted or protected")
+            if is_retryable:
+                print(f"[warn] Archiving failed for {url} due to rate limit or temporary error. Releasing for retry.", file=sys.stderr)
+                release_item(item_id)
+            else:
+                print(f"[warn] Archiving failed for {url}. Marking as failed (won't retry).", file=sys.stderr)
+                fail_item(item_id, "Archive failed - tweet may be deleted or protected")
             continue
 
         try:
