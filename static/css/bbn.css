@@ -1,13 +1,20 @@
-/* Bayesian Belief Network Styles */
+/**
+ * Bayesian Belief Network Styles
+ *
+ * Visualization-specific styles only. Common styles are in visualizations.css.
+ */
 
-/* CSS Custom Properties for theming */
+/* ============================================
+   BBN-Specific CSS Custom Properties
+   ============================================ */
 :root {
-    --bbn-bg: #ffffff;
-    --bbn-canvas-bg: #fafafa;
-    --bbn-border: #dee2e6;
-    --bbn-text: #333333;
+    /* Core colors - reference shared */
+    --bbn-bg: var(--viz-bg);
+    --bbn-canvas-bg: var(--viz-canvas-bg);
+    --bbn-border: var(--viz-border);
+    --bbn-text: var(--viz-text);
 
-    /* Node colors - grey header with navy text */
+    /* Node colors */
     --bbn-node-bg: #ffffff;
     --bbn-node-border: #dee2e6;
     --bbn-node-header: #f5f5f5;
@@ -25,8 +32,8 @@
     --bbn-evidence-false-text: #c62828;
 
     /* Selected node - light blue */
-    --bbn-selected-bg: #e3f2fd;
-    --bbn-selected-border: #2196f3;
+    --bbn-selected-bg: var(--viz-info-bg);
+    --bbn-selected-border: var(--viz-info-border);
     --bbn-selected-text: #1565c0;
 
     /* Edge colors */
@@ -48,31 +55,23 @@
 }
 
 [data-theme="gruvbox-dark"] {
-    --bbn-bg: #282828;
-    --bbn-canvas-bg: #1d2021;
-    --bbn-border: #504945;
-    --bbn-text: #ebdbb2;
-
-    /* Node colors - dark header with light text */
     --bbn-node-bg: #3c3836;
     --bbn-node-border: #504945;
     --bbn-node-header: #1d2021;
     --bbn-node-header-text: #ebdbb2;
     --bbn-node-text: #ebdbb2;
 
-    /* Evidence True - green */
+    /* Evidence True */
     --bbn-evidence-true-bg: rgba(184, 187, 38, 0.25);
     --bbn-evidence-true-border: #b8bb26;
     --bbn-evidence-true-text: #b8bb26;
 
-    /* Evidence False - red */
+    /* Evidence False */
     --bbn-evidence-false-bg: rgba(251, 73, 52, 0.25);
     --bbn-evidence-false-border: #fb4934;
     --bbn-evidence-false-text: #fb4934;
 
-    /* Selected node - blue */
-    --bbn-selected-bg: rgba(131, 165, 152, 0.3);
-    --bbn-selected-border: #83a598;
+    /* Selected node */
     --bbn-selected-text: #83a598;
 
     /* Edge colors */
@@ -93,7 +92,9 @@
     --bbn-cpt-input-border: #504945;
 }
 
-/* Main panel */
+/* ============================================
+   Main Panel
+   ============================================ */
 .bbn-panel {
     margin-bottom: 15px;
 }
@@ -109,7 +110,9 @@
     opacity: 0.7;
 }
 
-/* Header controls */
+/* ============================================
+   Header Controls
+   ============================================ */
 .bbn-header-controls {
     display: flex;
     align-items: center;
@@ -138,7 +141,9 @@
     border-color: var(--bbn-selected-border);
 }
 
-/* Canvas wrapper */
+/* ============================================
+   Canvas
+   ============================================ */
 .bbn-canvas-wrapper {
     position: relative;
     display: flex;
@@ -152,7 +157,9 @@
     cursor: pointer;
 }
 
-/* Tooltip */
+/* ============================================
+   Tooltip
+   ============================================ */
 .bbn-tooltip {
     position: absolute;
     display: none;
@@ -172,24 +179,18 @@
 }
 
 /* Legend dots */
-.bbn-dot-normal {
-    background-color: var(--bbn-node-border);
-}
-
-.bbn-dot-evidence {
-    background-color: var(--bbn-evidence-border);
-}
-
-.bbn-dot-query {
-    background-color: var(--bbn-query-border);
-}
+.bbn-dot-normal { background-color: var(--bbn-node-border); }
+.bbn-dot-evidence { background-color: var(--bbn-evidence-true-border); }
+.bbn-dot-query { background-color: var(--bbn-selected-border); }
 
 .bbn-legend-bar {
     margin: 0;
     padding: 0;
 }
 
-/* Footer with mode selector and clear button */
+/* ============================================
+   Footer
+   ============================================ */
 .bbn-footer {
     padding: 8px 15px;
 }
@@ -224,7 +225,9 @@
     margin-right: 4px;
 }
 
-/* Inline evidence list */
+/* ============================================
+   Inline Evidence List
+   ============================================ */
 .evidence-list-inline {
     display: flex;
     align-items: center;
@@ -270,22 +273,11 @@
     color: #dc3545;
 }
 
-/* CPT Panel */
+/* ============================================
+   CPT Panel
+   ============================================ */
 .cpt-panel-body {
     min-height: 150px;
-}
-
-.no-node-message {
-    text-align: center;
-    padding: 30px;
-    color: var(--bbn-text);
-    opacity: 0.6;
-}
-
-.no-node-message i {
-    display: block;
-    font-size: 2em;
-    margin-bottom: 10px;
 }
 
 .no-node-message-inline {
@@ -299,7 +291,9 @@
     margin-right: 6px;
 }
 
-/* CPT Table */
+/* ============================================
+   CPT Table
+   ============================================ */
 .cpt-table {
     font-size: 0.85em;
     margin-bottom: 10px;
@@ -360,7 +354,9 @@
     color: var(--bbn-text);
 }
 
-/* Evidence list */
+/* ============================================
+   Evidence List
+   ============================================ */
 .evidence-list {
     display: flex;
     flex-wrap: wrap;
@@ -370,8 +366,8 @@
 .evidence-tag {
     display: inline-flex;
     align-items: center;
-    background-color: var(--bbn-evidence-bg);
-    border: 1px solid var(--bbn-evidence-border);
+    background-color: var(--bbn-selected-bg);
+    border: 1px solid var(--bbn-selected-border);
     border-radius: 4px;
     padding: 4px 8px;
     font-size: 0.85em;
@@ -383,7 +379,7 @@
 }
 
 .evidence-tag-value {
-    color: var(--bbn-evidence-text);
+    color: var(--bbn-selected-text);
 }
 
 .evidence-tag-remove {
@@ -398,16 +394,9 @@
     color: #dc3545;
 }
 
-/* Info tabs */
-.info-tab-content {
-    display: none;
-}
-
-.info-tab-content.active {
-    display: block;
-}
-
-/* Info tabs adjustments */
+/* ============================================
+   Info Tabs Override
+   ============================================ */
 .tab-content pre {
     font-size: 0.85em;
     background-color: var(--bbn-cpt-header-bg);
@@ -420,7 +409,9 @@
     color: var(--bbn-node-text);
 }
 
-/* Calculation panel styles */
+/* ============================================
+   Calculation Section
+   ============================================ */
 .calc-section {
     margin-bottom: 15px;
     padding-bottom: 10px;
@@ -501,6 +492,9 @@
     color: var(--bbn-node-header-text);
 }
 
+/* ============================================
+   Calculation Table
+   ============================================ */
 .calc-table {
     width: 100%;
     font-size: 0.85em;
@@ -520,7 +514,7 @@
 }
 
 .calc-table td:last-child {
-    font-family: monospace;
+    font-family: var(--viz-mono-font);
     text-align: right;
 }
 
@@ -535,7 +529,7 @@
 }
 
 .calc-with-numbers {
-    font-family: monospace;
+    font-family: var(--viz-mono-font);
     font-style: normal !important;
     color: var(--bbn-text);
     opacity: 0.9;
@@ -555,24 +549,9 @@
     margin: 4px 0;
 }
 
-.calc-term {
-    margin: 6px 0;
-    padding: 4px 0;
-    border-bottom: 1px dashed var(--bbn-border);
-}
-
-.calc-term:last-of-type {
-    border-bottom: none;
-}
-
-.calc-term-label {
-    font-size: 0.85em;
-    font-weight: 600;
-    color: var(--bbn-node-header-text);
-    margin-bottom: 2px;
-}
-
-/* Evidence dropdown menu */
+/* ============================================
+   Evidence Dropdown Menu
+   ============================================ */
 .evidence-dropdown {
     position: absolute;
     background-color: var(--bbn-bg);
@@ -617,7 +596,7 @@
 }
 
 /* ============================================
-   Visual Calculation Panel (Full Width Below)
+   Visual Calculation Panel
    ============================================ */
 .bbn-calc-panel {
     margin-top: 15px;
@@ -641,7 +620,7 @@
     margin-bottom: 10px;
 }
 
-/* Main calculation layout - horizontal flow */
+/* Main calculation layout */
 .calc-visual {
     display: flex;
     flex-direction: column;
@@ -714,7 +693,9 @@
     color: var(--bbn-selected-text);
 }
 
-/* Factor chain - horizontal multiplication */
+/* ============================================
+   Factor Chain
+   ============================================ */
 .calc-factor-chain {
     display: flex;
     align-items: stretch;
@@ -760,7 +741,7 @@
 }
 
 .calc-factor-value {
-    font-family: 'SF Mono', Monaco, 'Courier New', monospace;
+    font-family: var(--viz-mono-font);
     font-size: 1.1em;
     font-weight: 600;
     color: var(--bbn-selected-text);
@@ -782,7 +763,7 @@
     color: var(--bbn-evidence-true-text);
 }
 
-/* Operator between factors */
+/* Operators */
 .calc-operator {
     display: flex;
     align-items: center;
@@ -793,7 +774,6 @@
     padding: 0 5px;
 }
 
-/* Equals and result */
 .calc-equals {
     display: flex;
     align-items: center;
@@ -820,13 +800,15 @@
 }
 
 .calc-chain-result-value {
-    font-family: 'SF Mono', Monaco, 'Courier New', monospace;
+    font-family: var(--viz-mono-font);
     font-size: 1.3em;
     font-weight: bold;
     color: var(--bbn-selected-text);
 }
 
-/* Summation section for hidden variables */
+/* ============================================
+   Summation Section
+   ============================================ */
 .calc-summation {
     padding: 15px;
     background-color: var(--bbn-cpt-header-bg);
@@ -892,7 +874,6 @@
     font-weight: 600;
 }
 
-/* Selected (clicked) sum term */
 .calc-sum-term[data-assignment].selected {
     border-left-color: #ff9800;
     background-color: rgba(255, 152, 0, 0.2);
@@ -913,7 +894,6 @@
     font-size: 12px;
 }
 
-/* Hint text for hoverable terms */
 .calc-sum-terms::before {
     content: "Hover or click a combination to preview it in the network";
     display: block;
@@ -932,14 +912,14 @@
 }
 
 .calc-sum-term-factors {
-    font-family: 'SF Mono', Monaco, 'Courier New', monospace;
+    font-family: var(--viz-mono-font);
     font-size: 0.85em;
     color: var(--bbn-text);
     flex: 1;
 }
 
 .calc-sum-term-result {
-    font-family: 'SF Mono', Monaco, 'Courier New', monospace;
+    font-family: var(--viz-mono-font);
     font-size: 0.9em;
     font-weight: 600;
     color: var(--bbn-text);
@@ -963,13 +943,15 @@
 }
 
 .calc-sum-total-value {
-    font-family: 'SF Mono', Monaco, 'Courier New', monospace;
+    font-family: var(--viz-mono-font);
     font-size: 1.1em;
     font-weight: bold;
     color: var(--bbn-selected-text);
 }
 
-/* Normalization section */
+/* ============================================
+   Normalization Section
+   ============================================ */
 .calc-normalization {
     display: flex;
     align-items: center;
@@ -987,7 +969,7 @@
 
 .calc-norm-numerator,
 .calc-norm-denominator {
-    font-family: 'SF Mono', Monaco, 'Courier New', monospace;
+    font-family: var(--viz-mono-font);
     font-size: 1em;
     padding: 4px 12px;
 }
@@ -1014,7 +996,9 @@
     border-radius: 8px;
 }
 
-/* Color coding legend */
+/* ============================================
+   Calculation Legend
+   ============================================ */
 .calc-legend {
     display: flex;
     gap: 20px;
@@ -1052,7 +1036,9 @@
     border-color: var(--bbn-selected-border);
 }
 
-/* Section headers */
+/* ============================================
+   Section Headers
+   ============================================ */
 .calc-section-header {
     display: flex;
     align-items: center;
@@ -1072,7 +1058,9 @@
     opacity: 0.7;
 }
 
-/* Mathematical notation styles */
+/* ============================================
+   Mathematical Notation
+   ============================================ */
 .math-formula {
     font-family: 'Times New Roman', 'Cambria Math', Georgia, serif;
     font-size: 1.1em;
@@ -1193,7 +1181,9 @@
     padding: 4px 8px 2px;
 }
 
-/* General formula display */
+/* ============================================
+   General Formula Display
+   ============================================ */
 .calc-general-formula {
     background: linear-gradient(135deg, var(--bbn-cpt-header-bg) 0%, rgba(33, 150, 243, 0.05) 100%);
     border: 1px solid var(--bbn-border);
@@ -1226,7 +1216,7 @@
     font-size: 1.2em;
 }
 
-/* Highlighted and dimmed terms in normalization */
+/* Highlighted and dimmed terms */
 .calc-term-highlight {
     font-weight: bold;
     color: var(--bbn-selected-text);
@@ -1236,7 +1226,9 @@
     opacity: 0.6;
 }
 
-/* Expanded formula with fractions */
+/* ============================================
+   Expanded Formula
+   ============================================ */
 .calc-expanded-formula {
     display: flex;
     align-items: center;
@@ -1278,7 +1270,7 @@
 
 .calc-expanded-num.calc-numeric,
 .calc-expanded-den.calc-numeric {
-    font-family: 'SF Mono', Monaco, 'Courier New', monospace;
+    font-family: var(--viz-mono-font);
     font-size: 0.95em;
 }
 
@@ -1286,16 +1278,15 @@
     padding-top: 4px;
 }
 
-/* More terms indicator */
 .calc-more-terms {
     opacity: 0.6;
     font-style: italic;
 }
 
-/* Term with subscript for normalization display */
+/* Term with subscript */
 .calc-term-with-sub {
     display: inline-block;
-    font-family: 'SF Mono', Monaco, 'Courier New', monospace;
+    font-family: var(--viz-mono-font);
     font-size: 0.95em;
 }
 
@@ -1307,19 +1298,21 @@
     opacity: 0.8;
 }
 
-/* Simplified fraction styling */
+/* Simplified fraction */
 .calc-simplified-frac {
     font-weight: bold;
 }
 
 .calc-simplified-frac .calc-expanded-num,
 .calc-simplified-frac .calc-expanded-den {
-    font-family: 'SF Mono', Monaco, 'Courier New', monospace;
+    font-family: var(--viz-mono-font);
     font-size: 1.1em;
     font-weight: 600;
 }
 
-/* Normalization header with toggle buttons */
+/* ============================================
+   Normalization Header
+   ============================================ */
 .calc-norm-header {
     display: flex;
     align-items: center;
@@ -1333,6 +1326,58 @@
     font-size: 1.1em;
 }
 
+/* ============================================
+   View Toggle Button
+   ============================================ */
+.calc-view-toggle {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 6px 12px;
+    font-size: 0.85em;
+    border: 1px solid var(--bbn-border);
+    background: var(--bbn-bg);
+    color: var(--bbn-text);
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+.calc-view-toggle:hover {
+    background: var(--bbn-cpt-hover-bg);
+    border-color: var(--bbn-selected-border);
+}
+
+.calc-view-toggle .toggle-symbolic {
+    font-family: 'Times New Roman', Georgia, serif;
+    font-style: italic;
+    font-weight: 600;
+    opacity: 1;
+}
+
+.calc-view-toggle .toggle-numeric {
+    font-family: var(--viz-mono-font);
+    font-size: 0.9em;
+    opacity: 0.4;
+}
+
+.calc-view-toggle.numeric-active {
+    background: var(--bbn-selected-bg);
+    border-color: var(--bbn-selected-border);
+}
+
+.calc-view-toggle.numeric-active .toggle-symbolic {
+    opacity: 0.4;
+}
+
+.calc-view-toggle.numeric-active .toggle-numeric {
+    opacity: 1;
+    color: var(--bbn-selected-text);
+}
+
+/* ============================================
+   Toggle Buttons (Legacy)
+   ============================================ */
 .calc-norm-toggles {
     display: flex;
     gap: 4px;
@@ -1368,7 +1413,9 @@
     display: block;
 }
 
-/* Fraction display */
+/* ============================================
+   Fraction Display
+   ============================================ */
 .calc-frac-display {
     display: flex;
     flex-direction: column;
@@ -1376,6 +1423,27 @@
     padding: 12px 16px;
     background: var(--bbn-cpt-header-bg);
     border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.15s ease;
+}
+
+.calc-frac-display:hover {
+    background-color: var(--bbn-cpt-hover-bg);
+}
+
+.frac-compressed,
+.frac-expanded {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+}
+
+.frac-expand-hint {
+    font-size: 0.75em;
+    color: var(--viz-text-muted);
+    margin-top: 6px;
+    opacity: 0.7;
 }
 
 .calc-frac-num {
@@ -1389,8 +1457,47 @@
     text-align: center;
 }
 
+/* Expandable fraction sections */
+.calc-frac-expandable {
+    cursor: pointer;
+    border-radius: 4px;
+    transition: background-color 0.15s ease;
+}
+
+.calc-frac-expandable:hover {
+    background-color: var(--bbn-cpt-hover-bg);
+}
+
+.calc-frac-expandable .frac-level-0,
+.calc-frac-expandable .frac-level-1 {
+    font-family: 'Times New Roman', Georgia, serif;
+    font-size: 1.1em;
+}
+
+.calc-frac-expandable .frac-level-0 .math-italic,
+.calc-frac-expandable .frac-level-1 .math-italic,
+.calc-frac-expandable .frac-level-0 .math-var,
+.calc-frac-expandable .frac-level-1 .math-var {
+    font-style: italic;
+}
+
+.calc-frac-expandable .frac-level-0 .math-var,
+.calc-frac-expandable .frac-level-1 .math-var {
+    font-weight: 500;
+}
+
+.calc-frac-expandable .frac-level-0 .math-val,
+.calc-frac-expandable .frac-level-1 .math-val {
+    font-style: normal;
+}
+
+.calc-frac-expandable .frac-level-0 .math-sum,
+.calc-frac-expandable .frac-level-1 .math-sum {
+    font-size: 1.2em;
+}
+
 .calc-frac-numeric {
-    font-family: 'SF Mono', Monaco, 'Courier New', monospace;
+    font-family: var(--viz-mono-font);
     font-size: 0.9em;
 }
 
@@ -1399,25 +1506,60 @@
     font-size: 0.95em;
 }
 
-/* Term styling */
+/* ============================================
+   Term Styling
+   ============================================ */
 .calc-term {
-    display: inline;
+    display: inline-block;
     white-space: nowrap;
+    padding: 2px 4px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.15s ease;
+    margin: 0;
+    border-bottom: none;
+}
+
+.calc-term:hover {
+    background: var(--bbn-cpt-hover-bg);
+}
+
+.calc-term.selected {
+    background: var(--bbn-selected-bg);
+    box-shadow: 0 0 0 2px var(--bbn-selected-border);
 }
 
 .calc-term sub {
     font-family: 'Times New Roman', Georgia, serif;
     font-style: italic;
     font-size: 0.7em;
-    opacity: 0.8;
+    opacity: 0.7;
+    margin-left: 1px;
 }
 
-.calc-term.highlight {
-    color: var(--bbn-selected-text);
-    font-weight: 600;
+.calc-term .term-symbolic {
+    font-family: 'Times New Roman', Georgia, serif;
 }
 
-/* Clickable expandable terms */
+/* Numeric terms */
+.calc-numeric-term {
+    font-family: var(--viz-mono-font);
+    font-size: 0.9em;
+}
+
+/* View switching */
+.view-symbolic {
+    font-family: 'Times New Roman', Georgia, serif;
+}
+
+.view-numeric {
+    font-family: var(--viz-mono-font);
+    font-size: 0.95em;
+}
+
+/* ============================================
+   Expandable Terms
+   ============================================ */
 .calc-term-expandable {
     display: inline-block;
     cursor: pointer;
@@ -1426,7 +1568,7 @@
     background: var(--bbn-bg);
     border: 1px solid transparent;
     transition: all 0.15s ease;
-    font-family: 'SF Mono', Monaco, 'Courier New', monospace;
+    font-family: var(--viz-mono-font);
     font-size: 0.9em;
 }
 
@@ -1454,7 +1596,6 @@
     margin-left: 1px;
 }
 
-/* Expanded modes have different styling */
 .calc-term-expandable.mode-numeric,
 .calc-term-expandable.mode-symbolic {
     background: var(--bbn-cpt-header-bg);
@@ -1468,12 +1609,10 @@
     border-color: var(--bbn-selected-border);
 }
 
-/* Selected term (for network highlighting) */
 .calc-term-expandable.selected {
     box-shadow: 0 0 0 2px var(--bbn-selected-border);
 }
 
-/* Symbolic terms use serif font */
 .calc-term-expandable .term-symbolic {
     font-family: 'Times New Roman', Georgia, serif;
     font-size: 0.95em;
@@ -1495,7 +1634,9 @@
     margin-left: auto;
 }
 
-/* Result row */
+/* ============================================
+   Result Row
+   ============================================ */
 .calc-norm-result-row {
     display: flex;
     align-items: center;
@@ -1511,7 +1652,7 @@
 }
 
 .calc-frac-inline {
-    font-family: 'SF Mono', Monaco, 'Courier New', monospace;
+    font-family: var(--viz-mono-font);
     font-weight: 600;
 }
 
@@ -1530,7 +1671,6 @@
     border: 2px solid var(--bbn-selected-border);
 }
 
-/* Math dot for multiplication */
 .math-dot {
     padding: 0 2px;
     font-weight: bold;

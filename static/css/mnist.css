@@ -1,71 +1,41 @@
-/* MNIST Dimensionality Reduction Visualizer Styles */
+/**
+ * MNIST Dimensionality Reduction Visualizer Styles
+ *
+ * Visualization-specific styles only. Common styles are in visualizations.css.
+ * Digit colors use shared --viz-class-* variables (0-9).
+ */
 
-/* CSS Custom Properties for theming */
+/* ============================================
+   MNIST-Specific CSS Custom Properties
+   ============================================ */
 :root {
-    /* Background and layout */
-    --mnist-bg: #ffffff;
-    --mnist-border: #cccccc;
-    --mnist-text: #333333;
-    --mnist-muted: #6c757d;
-    --mnist-hover-bg: #f0f0f0;
-    --mnist-axis: #cccccc;
-    --mnist-canvas-bg: #fafafa;
-
-    /* Digit colors (ColorBrewer Set1 - colorblind friendly) */
-    --mnist-digit-0: #e41a1c;
-    --mnist-digit-1: #377eb8;
-    --mnist-digit-2: #4daf4a;
-    --mnist-digit-3: #984ea3;
-    --mnist-digit-4: #ff7f00;
-    --mnist-digit-5: #c4a000;
-    --mnist-digit-6: #a65628;
-    --mnist-digit-7: #f781bf;
-    --mnist-digit-8: #999999;
-    --mnist-digit-9: #17becf;
+    /* Digit colors - map to shared class colors */
+    --mnist-digit-0: var(--viz-class-0);
+    --mnist-digit-1: var(--viz-class-1);
+    --mnist-digit-2: var(--viz-class-2);
+    --mnist-digit-3: var(--viz-class-3);
+    --mnist-digit-4: var(--viz-class-4);
+    --mnist-digit-5: var(--viz-class-5);
+    --mnist-digit-6: var(--viz-class-6);
+    --mnist-digit-7: var(--viz-class-7);
+    --mnist-digit-8: var(--viz-class-8);
+    --mnist-digit-9: var(--viz-class-9);
 
     /* Tooltip */
     --mnist-tooltip-bg: #ffffff;
     --mnist-tooltip-border: #333333;
     --mnist-tooltip-shadow: rgba(0, 0, 0, 0.15);
-
-    /* Active/highlight states */
-    --mnist-active-bg: #d4edda;
-    --mnist-active-border: #28a745;
 }
 
 [data-theme="gruvbox-dark"] {
-    --mnist-bg: #282828;
-    --mnist-border: #504945;
-    --mnist-text: #ebdbb2;
-    --mnist-muted: #a89984;
-    --mnist-hover-bg: #3c3836;
-    --mnist-axis: #504945;
-    --mnist-canvas-bg: #1d2021;
-
-    /* Gruvbox-adjusted digit colors */
-    --mnist-digit-0: #fb4934;
-    --mnist-digit-1: #83a598;
-    --mnist-digit-2: #b8bb26;
-    --mnist-digit-3: #d3869b;
-    --mnist-digit-4: #fe8019;
-    --mnist-digit-5: #fabd2f;
-    --mnist-digit-6: #d65d0e;
-    --mnist-digit-7: #d3869b;
-    --mnist-digit-8: #928374;
-    --mnist-digit-9: #8ec07c;
-
     --mnist-tooltip-bg: #32302f;
     --mnist-tooltip-border: #ebdbb2;
     --mnist-tooltip-shadow: rgba(0, 0, 0, 0.4);
-
-    --mnist-active-bg: rgba(184, 187, 38, 0.3);
-    --mnist-active-border: #b8bb26;
 }
 
 /* ============================================
    Scatter Plot Container
    ============================================ */
-
 .scatter-panel-body {
     padding: 0 !important;
     text-align: center;
@@ -81,7 +51,7 @@
     display: block;
     width: 100%;
     height: auto;
-    background-color: var(--mnist-canvas-bg);
+    background-color: var(--viz-canvas-bg);
     border: none;
     border-radius: 0;
     cursor: crosshair;
@@ -90,7 +60,6 @@
 /* ============================================
    Algorithm Tabs
    ============================================ */
-
 .algorithm-tabs {
     display: flex;
     width: 100%;
@@ -104,9 +73,9 @@
 }
 
 .algorithm-tabs .btn.active {
-    background-color: var(--mnist-active-bg);
-    border-color: var(--mnist-active-border);
-    color: var(--mnist-text);
+    background-color: var(--viz-active-bg);
+    border-color: var(--viz-active-border);
+    color: var(--viz-text);
 }
 
 [data-theme="gruvbox-dark"] .algorithm-tabs .btn.active {
@@ -118,7 +87,6 @@
 /* ============================================
    Digit Legend
    ============================================ */
-
 .digit-legend {
     margin-top: 15px;
     display: flex;
@@ -128,36 +96,30 @@
     font-size: 12px;
 }
 
-.legend-item {
-    display: flex;
-    align-items: center;
-    gap: 5px;
-    color: var(--mnist-text);
+.digit-legend .legend-item {
     cursor: pointer;
     padding: 2px 6px;
     border-radius: 3px;
     transition: background-color 0.15s ease;
 }
 
-.legend-item:hover {
-    background-color: var(--mnist-hover-bg);
+.digit-legend .legend-item:hover {
+    background-color: var(--viz-hover-bg);
 }
 
-.legend-item.dimmed {
+.digit-legend .legend-item.dimmed {
     opacity: 0.4;
 }
 
-.legend-color {
+.digit-legend .legend-color {
     width: 14px;
     height: 14px;
     border-radius: 50%;
-    border: 1px solid var(--mnist-border);
 }
 
 /* ============================================
    Tooltip for Digit Image
    ============================================ */
-
 .digit-tooltip {
     position: fixed;
     z-index: 1000;
@@ -179,14 +141,14 @@
     display: block;
     image-rendering: pixelated;
     image-rendering: crisp-edges;
-    border: 1px solid var(--mnist-border);
+    border: 1px solid var(--viz-border);
     background-color: #000;
 }
 
 .tooltip-label {
     margin-top: 8px;
     text-align: center;
-    color: var(--mnist-text);
+    color: var(--viz-text);
 }
 
 .tooltip-digit {
@@ -197,69 +159,22 @@
 
 .tooltip-coords {
     display: block;
-    font-family: 'Menlo', 'Monaco', 'Consolas', monospace;
+    font-family: var(--viz-mono-font);
     font-size: 10px;
-    color: var(--mnist-muted);
+    color: var(--viz-text-muted);
     margin-top: 4px;
 }
 
 /* ============================================
    Metrics Panel
    ============================================ */
-
 .metrics-panel-body {
     padding: 8px 15px !important;
-}
-
-.metrics-table {
-    margin-bottom: 0;
-    font-size: 12px;
-}
-
-.metrics-table td {
-    padding: 4px 6px;
-}
-
-.metrics-table td:nth-child(odd) {
-    white-space: nowrap;
-}
-
-.metrics-table .metric-value {
-    font-family: 'Menlo', 'Monaco', 'Consolas', monospace;
-    font-weight: bold;
-    min-width: 40px;
 }
 
 /* ============================================
    Display Options Panel
    ============================================ */
-
-.compact-panel {
-    padding: 10px 15px !important;
-}
-
-.option-row {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    margin-bottom: 8px;
-}
-
-.option-row:last-child {
-    margin-bottom: 0;
-}
-
-.option-row label:first-child {
-    min-width: 70px;
-    margin: 0;
-    font-size: 12px;
-}
-
-.option-row .checkbox-inline {
-    margin: 0;
-    font-size: 12px;
-}
-
 .size-control {
     display: flex;
     align-items: center;
@@ -276,14 +191,13 @@
     min-width: 32px;
     font-size: 12px;
     font-weight: bold;
-    color: var(--mnist-text);
+    color: var(--viz-text);
     text-align: right;
 }
 
 /* ============================================
    Digit Filter Panel
    ============================================ */
-
 .digit-filter-grid {
     display: grid;
     grid-template-columns: repeat(5, 1fr);
@@ -301,8 +215,8 @@
 
 .digit-toggle:not(.active) {
     opacity: 0.3;
-    background-color: var(--mnist-muted) !important;
-    border-color: var(--mnist-muted) !important;
+    background-color: var(--viz-text-muted) !important;
+    border-color: var(--viz-text-muted) !important;
 }
 
 .digit-toggle.active {
@@ -321,139 +235,12 @@
 }
 
 /* ============================================
-   Info Panel Tabs
-   ============================================ */
-
-.info-panel-tabs {
-    display: flex;
-    width: 100%;
-}
-
-.info-panel-tabs .btn {
-    flex: 1;
-    border-radius: 0;
-    font-size: 11px;
-    padding: 6px 4px;
-}
-
-.info-panel-tabs .btn.active {
-    background-color: var(--mnist-active-bg);
-    border-color: var(--mnist-active-border);
-    color: var(--mnist-text);
-}
-
-[data-theme="gruvbox-dark"] .info-panel-tabs .btn.active {
-    background-color: rgba(250, 189, 47, 0.3);
-    border-color: #fabd2f;
-    color: #ebdbb2;
-}
-
-.info-panel-body {
-    padding: 0 !important;
-    min-height: 280px;
-}
-
-.info-tab-content {
-    display: none;
-    padding: 15px;
-    height: 100%;
-}
-
-.info-tab-content.active {
-    display: block;
-}
-
-/* About Tab */
-#tab-about h4,
-#tab-algorithms h4 {
-    margin-top: 12px;
-    margin-bottom: 8px;
-    font-size: 14px;
-}
-
-#tab-about h4:first-child,
-#tab-algorithms h4:first-child {
-    margin-top: 0;
-}
-
-#tab-about p,
-#tab-algorithms p {
-    font-size: 12px;
-    margin-bottom: 8px;
-}
-
-.interaction-list {
-    padding-left: 18px;
-    margin-bottom: 10px;
-    font-size: 12px;
-}
-
-.interaction-list li {
-    margin-bottom: 4px;
-}
-
-/* Compare Tab */
-#comparison-table {
-    margin-bottom: 0;
-    font-size: 11px;
-}
-
-#comparison-table th {
-    background-color: var(--mnist-hover-bg);
-    text-align: center;
-    color: var(--mnist-text);
-    padding: 5px 6px;
-    font-size: 10px;
-}
-
-#comparison-table td {
-    text-align: center;
-    color: var(--mnist-text);
-    padding: 4px 6px;
-}
-
-#comparison-table td:first-child {
-    text-align: left;
-    font-weight: 500;
-}
-
-#comparison-table tr {
-    cursor: pointer;
-    transition: background-color 0.15s ease;
-}
-
-#comparison-table tbody tr:hover {
-    background-color: var(--mnist-hover-bg);
-}
-
-#comparison-table tr.selected-row {
-    outline: 2px solid var(--mnist-active-border);
-    outline-offset: -2px;
-}
-
-#comparison-table tr.selected-row td:first-child {
-    background-color: var(--mnist-active-bg);
-}
-
-.compare-hint {
-    margin-top: 10px;
-    font-size: 11px;
-    color: var(--mnist-muted);
-    font-style: italic;
-}
-
-.compare-hint i {
-    color: var(--mnist-active-border);
-}
-
-/* ============================================
    Highlight State
    ============================================ */
-
 .highlight-info {
     margin-top: 10px;
     padding: 8px 12px;
-    background-color: var(--mnist-hover-bg);
+    background-color: var(--viz-hover-bg);
     border-radius: 4px;
     font-size: 12px;
     text-align: center;
@@ -474,51 +261,8 @@
 }
 
 /* ============================================
-   Loading State
-   ============================================ */
-
-.loading-overlay {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: rgba(255, 255, 255, 0.9);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    z-index: 100;
-    border-radius: 4px;
-}
-
-[data-theme="gruvbox-dark"] .loading-overlay {
-    background-color: rgba(40, 40, 40, 0.9);
-}
-
-.loading-overlay .spinner {
-    width: 40px;
-    height: 40px;
-    border: 4px solid var(--mnist-border);
-    border-top-color: var(--mnist-active-border);
-    border-radius: 50%;
-    animation: spin 1s linear infinite;
-}
-
-@keyframes spin {
-    to { transform: rotate(360deg); }
-}
-
-.loading-overlay .loading-text {
-    margin-top: 12px;
-    font-size: 14px;
-    color: var(--mnist-text);
-}
-
-/* ============================================
    Data Source Panel
    ============================================ */
-
 .data-source-panel {
     padding: 12px 15px !important;
 }
@@ -530,7 +274,7 @@
     gap: 15px;
     margin-bottom: 12px;
     padding-bottom: 12px;
-    border-bottom: 1px solid var(--mnist-border);
+    border-bottom: 1px solid var(--viz-border);
 }
 
 .dataset-selector > label {
@@ -544,9 +288,9 @@
 }
 
 .dataset-selector .btn-group .btn.active {
-    background-color: var(--mnist-active-bg);
-    border-color: var(--mnist-active-border);
-    color: var(--mnist-text);
+    background-color: var(--viz-active-bg);
+    border-color: var(--viz-active-border);
+    color: var(--viz-text);
 }
 
 [data-theme="gruvbox-dark"] .dataset-selector .btn-group .btn.active {
@@ -573,9 +317,9 @@
 }
 
 .data-source-toggle .btn-group .btn.active {
-    background-color: var(--mnist-active-bg);
-    border-color: var(--mnist-active-border);
-    color: var(--mnist-text);
+    background-color: var(--viz-active-bg);
+    border-color: var(--viz-active-border);
+    color: var(--viz-text);
 }
 
 [data-theme="gruvbox-dark"] .data-source-toggle .btn-group .btn.active {
@@ -586,17 +330,16 @@
 
 .data-source-info {
     font-size: 11px;
-    color: var(--mnist-muted);
+    color: var(--viz-text-muted);
 }
 
 /* ============================================
    Training Timeline
    ============================================ */
-
 .training-timeline {
     margin-top: 12px;
     padding-top: 12px;
-    border-top: 1px solid var(--mnist-border);
+    border-top: 1px solid var(--viz-border);
 }
 
 .timeline-header {
@@ -610,19 +353,19 @@
 .timeline-label {
     font-size: 12px;
     font-weight: 500;
-    color: var(--mnist-text);
+    color: var(--viz-text);
 }
 
 .epoch-display,
 .accuracy-display {
     font-size: 12px;
-    color: var(--mnist-muted);
+    color: var(--viz-text-muted);
 }
 
 .epoch-display strong,
 .accuracy-display strong {
-    color: var(--mnist-text);
-    font-family: 'Menlo', 'Monaco', 'Consolas', monospace;
+    color: var(--viz-text);
+    font-family: var(--viz-mono-font);
 }
 
 .timeline-controls {
@@ -655,22 +398,22 @@
 
 .epoch-marker {
     font-size: 10px;
-    color: var(--mnist-muted);
+    color: var(--viz-text-muted);
     cursor: pointer;
     padding: 2px 4px;
     border-radius: 3px;
     transition: all 0.15s ease;
-    font-family: 'Menlo', 'Monaco', 'Consolas', monospace;
+    font-family: var(--viz-mono-font);
 }
 
 .epoch-marker:hover {
-    background-color: var(--mnist-hover-bg);
-    color: var(--mnist-text);
+    background-color: var(--viz-hover-bg);
+    color: var(--viz-text);
 }
 
 .epoch-marker.active {
-    background-color: var(--mnist-active-bg);
-    color: var(--mnist-active-border);
+    background-color: var(--viz-active-bg);
+    color: var(--viz-active-border);
     font-weight: bold;
 }
 
@@ -682,18 +425,17 @@
 .timeline-hint {
     margin-top: 20px;
     font-size: 11px;
-    color: var(--mnist-muted);
+    color: var(--viz-text-muted);
     font-style: italic;
 }
 
 .timeline-hint i {
-    color: var(--mnist-active-border);
+    color: var(--viz-active-border);
 }
 
 /* ============================================
    Responsive Adjustments
    ============================================ */
-
 @media (max-width: 992px) {
     #scatter-canvas {
         width: 100%;
@@ -723,17 +465,12 @@
         padding: 3px 0;
     }
 
-    .info-panel-tabs .btn {
-        font-size: 10px;
-        padding: 5px 3px;
-    }
-
     .digit-legend {
         font-size: 10px;
         gap: 6px;
     }
 
-    .legend-color {
+    .digit-legend .legend-color {
         width: 12px;
         height: 12px;
     }
@@ -742,19 +479,5 @@
 @media (max-width: 480px) {
     .digit-filter-grid {
         grid-template-columns: repeat(5, 1fr);
-    }
-
-    .option-row {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 5px;
-    }
-
-    .option-row label:first-child {
-        min-width: auto;
-    }
-
-    .size-control {
-        width: 100%;
     }
 }

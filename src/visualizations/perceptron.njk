@@ -1,0 +1,208 @@
+---
+layout: base.njk
+title: Perceptron Learning Visualizer
+icon: fa-bullseye
+navigation:
+  - name: "Home"
+    link: "index.html"
+    icon: "fa-home"
+permalink: "perceptron.html"
+extraScript: "static/js/perceptron.js"
+tags: visualization
+cardTitle: "Perceptron Learning"
+cardIcon: fa-bullseye
+cardDescription: "Watch a perceptron learn a linear decision boundary step-by-step. Explore convergence and failure on non-separable data."
+cardTags:
+  - Classification
+  - Linear Models
+cardHaystack: "perceptron linear classifier learning rule decision boundary weights bias convergence non-separable"
+cardOrder: 9
+---
+
+{% from "components/legend.njk" import legend %}
+{% from "components/info-tabs.njk" import infoTabs %}
+{% from "components/metrics-panel.njk" import metricsPanel %}
+
+<link rel="stylesheet" href="static/css/perceptron.css">
+
+<div class="row" id="main-content">
+    <!-- Left Column: Canvas + Controls -->
+    <div class="col-md-7">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <div class="panel-heading-content">
+                    <span class="panel-title-text"><i class="fa fa-bullseye"></i> Classification Space</span>
+                </div>
+            </div>
+            <div class="panel-body canvas-panel-body">
+                <div class="canvas-wrapper">
+                    <canvas id="perceptron-canvas" width="560" height="480"></canvas>
+                    <div id="click-overlay" class="click-overlay" style="display: none;">
+                        <span>Press Play to train</span>
+                    </div>
+                </div>
+            </div>
+            <div class="panel-footer legend-footer">
+                {{ legend(
+                    items=[
+                        {class: 'class-0', label: 'Class 0'},
+                        {class: 'class-1', label: 'Class 1'},
+                        {class: 'misclassified', label: 'Misclassified'},
+                        {class: 'boundary-line', label: 'Boundary', type: 'line'},
+                        {class: 'weight-vector', label: 'Weight Vector', type: 'line'},
+                        {class: 'margin-line', label: 'Margin', type: 'line'}
+                    ]
+                ) }}
+            </div>
+        </div>
+
+        <!-- Controls Panel -->
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title"><i class="fa fa-sliders"></i> Controls</h3>
+            </div>
+            <div class="panel-body compact-panel perceptron-controls-panel">
+                <div class="perceptron-options-col">
+                    <div class="perceptron-option-group">
+                        <div class="option-row">
+                            <label>Dataset:</label>
+                            <select id="dataset-select" class="form-control input-sm">
+                                <option value="linear" selected>Linearly Separable</option>
+                                <option value="moons">Moons (Non-separable)</option>
+                                <option value="xor">XOR (Non-separable)</option>
+                                <option value="blobs">Blobs</option>
+                            </select>
+                        </div>
+                        <div class="option-row">
+                            <label>Init:</label>
+                            <select id="init-select" class="form-control input-sm">
+                                <option value="zero" selected>Zero</option>
+                                <option value="random">Random</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="perceptron-option-group">
+                        <div class="option-row">
+                            <label>LR:</label>
+                            <input type="range" id="lr-slider" min="0.01" max="1" step="0.01" value="0.2">
+                            <span id="lr-value" class="range-value">0.20</span>
+                        </div>
+                        <div class="option-row">
+                            <label>Epochs:</label>
+                            <div class="stepper-control">
+                                <button id="epochs-minus" class="btn btn-xs btn-default" title="Decrease epochs">−</button>
+                                <input type="text" id="epochs-value" class="stepper-input" value="5" readonly>
+                                <button id="epochs-plus" class="btn btn-xs btn-default" title="Increase epochs">+</button>
+                            </div>
+                        </div>
+                        <label class="checkbox-label"><input type="checkbox" id="shuffle-toggle" checked> Shuffle each epoch</label>
+                    </div>
+                    <div class="perceptron-option-group">
+                        <label class="checkbox-label"><input type="checkbox" id="show-boundary" checked> Show boundary</label>
+                        <label class="checkbox-label"><input type="checkbox" id="show-vector" checked> Show weight vector</label>
+                        <label class="checkbox-label"><input type="checkbox" id="show-margin"> Show margin</label>
+                    </div>
+                </div>
+
+                <div class="perceptron-playback-col">
+                    <div class="btn-toolbar" role="toolbar">
+                        <button id="btn-play" class="btn btn-sm btn-success" title="Play">
+                            <i class="fa fa-play"></i>
+                        </button>
+                        <button id="btn-pause" class="btn btn-sm btn-warning" title="Pause" disabled>
+                            <i class="fa fa-pause"></i>
+                        </button>
+                        <button id="btn-step-back" class="btn btn-sm btn-info" title="Step back" disabled>
+                            <i class="fa fa-step-backward"></i>
+                        </button>
+                        <button id="btn-step-forward" class="btn btn-sm btn-info" title="Step forward" disabled>
+                            <i class="fa fa-step-forward"></i>
+                        </button>
+                        <button id="btn-reset" class="btn btn-sm btn-danger" title="Reset">
+                            <i class="fa fa-refresh"></i>
+                        </button>
+                    </div>
+                    <div class="speed-control">
+                        <i class="fa fa-tachometer"></i>
+                        <input type="range" id="speed-slider" min="1" max="10" value="6">
+                    </div>
+                    <div class="playback-status">
+                        <span id="playback-step">Step: 0 / 0</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Right Column: Info + Metrics -->
+    <div class="col-md-5">
+        {{ infoTabs(
+            tabs=[
+                {id: 'about', icon: 'fa-info-circle', label: 'About', active: true, content: '
+                    <h4><i class="fa fa-bullseye"></i> Perceptron</h4>
+                    <p>
+                        The perceptron is a linear classifier that learns a separating line by adjusting
+                        weights after each mistake. It converges on linearly separable data, but will
+                        keep oscillating on non-separable datasets.
+                    </p>
+                    <h4><i class="fa fa-mouse-pointer"></i> How to Use</h4>
+                    <ul class="interaction-list">
+                        <li><strong>Press Play</strong> to train step-by-step</li>
+                        <li><strong>Adjust learning rate</strong> to change update size</li>
+                        <li><strong>Switch datasets</strong> to see convergence vs. failure</li>
+                        <li><strong>Toggle margin/vector</strong> for geometric intuition</li>
+                    </ul>
+                '},
+                {id: 'algorithm', icon: 'fa-book', label: 'Algorithm', content: '
+                    <h4><i class="fa fa-cogs"></i> Training Loop</h4>
+                    <ol class="algorithm-steps">
+                        <li>Compute activation <code>a = w·x + b</code></li>
+                        <li>Predict <code>ŷ = sign(a)</code></li>
+                        <li>If wrong, update <code>w ← w + η(y - ŷ)x</code></li>
+                        <li>Redraw the boundary</li>
+                    </ol>
+                    <p class="note">
+                        On non-separable data, mistakes never reach zero.
+                    </p>
+                '},
+                {id: 'steps', icon: 'fa-list-ol', label: 'Step List', content: '
+                    <h4><i class="fa fa-list-ol"></i> Current Step</h4>
+                    <ol class="algo-step-list">
+                        <li id="step-activation">Activation: compute <code>w·x + b</code></li>
+                        <li id="step-prediction">Prediction: classify the sample</li>
+                        <li id="step-update">Update: adjust weights if needed</li>
+                        <li id="step-redraw">Redraw: update boundary and metrics</li>
+                    </ol>
+                '},
+                {id: 'math', icon: 'fa-superscript', label: 'Math', content: '
+                    <h4><i class="fa fa-superscript"></i> Decision Boundary</h4>
+                    <p>
+                        The boundary is the line where <code>w·x + b = 0</code>. The weight vector <code>w</code>
+                        is normal to the line. The margin is proportional to <code>1 / ||w||</code>.
+                    </p>
+                '}
+            ]
+        ) }}
+
+        {{ metricsPanel(
+            title='Metrics',
+            metrics=[
+                {icon: 'fa-repeat', label: 'Epoch', id: 'metric-epoch', default: '0'},
+                {icon: 'fa-step-forward', label: 'Step', id: 'metric-step', default: '0'},
+                {icon: 'fa-exclamation-triangle', label: 'Mistakes', id: 'metric-mistakes', default: '0'},
+                {icon: 'fa-check-circle', label: 'Accuracy', id: 'metric-accuracy', default: '0%'},
+                {icon: 'fa-sliders', label: 'Weights', id: 'metric-weights', default: '[-, -]'},
+                {icon: 'fa-dot-circle-o', label: 'Bias', id: 'metric-bias', default: '0.00'},
+                {icon: 'fa-info-circle', label: 'Status', id: 'metric-status', default: 'Ready'}
+            ],
+            extraContent='
+                <div class="sample-metrics">
+                    <div><span class="sample-label">Sample:</span> <span id="metric-sample">-</span></div>
+                    <div><span class="sample-label">Activation:</span> <span id="metric-activation">-</span></div>
+                    <div><span class="sample-label">Prediction:</span> <span id="metric-prediction">-</span></div>
+                    <div><span class="sample-label">Target:</span> <span id="metric-target">-</span></div>
+                </div>
+            '
+        ) }}
+    </div>
+</div>

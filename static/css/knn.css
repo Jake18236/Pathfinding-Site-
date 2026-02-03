@@ -1,23 +1,22 @@
 /**
  * KNN Classification Visualizer Styles
  *
- * Uses semantic color variables with light/dark theme support.
- * Colors for classes 0-2 match ThemeManager categorical palette.
+ * Visualization-specific styles only. Common styles are in visualizations.css.
+ * Colors for classes 0-2 use shared --viz-class-* variables.
  */
 
 /* ============================================
-   CSS Custom Properties - Light Theme (default)
+   KNN-Specific CSS Custom Properties
    ============================================ */
 :root {
-    /* Class colors - from ThemeManager categorical palette */
-    --knn-class-0: #e41a1c;
-    --knn-class-1: #377eb8;
-    --knn-class-2: #4daf4a;
+    /* Reuse shared class colors */
+    --knn-class-0: var(--viz-class-0);
+    --knn-class-1: var(--viz-class-1);
+    --knn-class-2: var(--viz-class-2);
 
-    /* Query point styling */
-    --knn-query-bg: #ffd700;
-    --knn-query-border: #b8860b;
-    --knn-query-size: 14px;
+    /* Query point - reuse shared */
+    --knn-query-bg: var(--viz-query-bg);
+    --knn-query-border: var(--viz-query-border);
 
     /* Neighbor visualization */
     --knn-neighbor-line: rgba(0, 0, 0, 0.5);
@@ -26,58 +25,21 @@
     /* Decision boundary */
     --knn-boundary-opacity: 0.2;
 
-    /* UI colors */
-    --knn-bg: #ffffff;
-    --knn-text: #333333;
-    --knn-text-muted: #6c757d;
-    --knn-border: #dee2e6;
-    --knn-hover-bg: #f8f9fa;
-
-    /* Vote bars */
+    /* Vote bars - use shared bg */
     --knn-vote-bar-bg: #e9ecef;
 }
 
-/* ============================================
-   Dark Theme Overrides
-   ============================================ */
 [data-theme="gruvbox-dark"] {
-    /* Class colors - Gruvbox dark palette */
-    --knn-class-0: #fb4934;
-    --knn-class-1: #83a598;
-    --knn-class-2: #b8bb26;
-
-    /* Query point - Gruvbox yellow */
-    --knn-query-bg: #fabd2f;
-    --knn-query-border: #d79921;
-
     /* Neighbor lines - lighter for dark bg */
     --knn-neighbor-line: rgba(235, 219, 178, 0.6);
-
-    /* UI colors - Gruvbox */
-    --knn-bg: #282828;
-    --knn-text: #ebdbb2;
-    --knn-text-muted: #a89984;
-    --knn-border: #504945;
-    --knn-hover-bg: #3c3836;
 
     /* Vote bars */
     --knn-vote-bar-bg: #3c3836;
 }
 
 /* ============================================
-   Canvas Container
+   Canvas Styling
    ============================================ */
-.canvas-panel-body {
-    padding: 0 !important;
-}
-
-.canvas-wrapper {
-    position: relative;
-    display: block;
-    line-height: 0;
-    width: 100%;
-}
-
 #knn-canvas,
 #boundary-canvas {
     border: none;
@@ -99,110 +61,20 @@
     cursor: crosshair;
 }
 
-/* Legend Footer */
-.legend-footer {
-    padding: 8px 15px !important;
-    text-align: center;
-    background: var(--knn-bg);
-    border-top: 1px solid var(--knn-border);
-}
-
-/* ============================================
-   Loading Overlay
-   ============================================ */
-.loading-overlay {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.6);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    z-index: 10;
-    border-radius: 4px;
-}
-
-.spinner {
-    width: 40px;
-    height: 40px;
-    border: 4px solid rgba(255, 255, 255, 0.3);
-    border-top-color: #fff;
-    border-radius: 50%;
-    animation: spin 0.8s linear infinite;
-}
-
-@keyframes spin {
-    to { transform: rotate(360deg); }
-}
-
-.loading-text {
-    color: #fff;
-    margin-top: 12px;
-    font-size: 14px;
-}
-
-/* ============================================
-   Legend Colors
-   ============================================ */
-.legend-color.class-0 {
-    background-color: var(--knn-class-0);
-}
-
-.legend-color.class-1 {
-    background-color: var(--knn-class-1);
-}
-
-.legend-color.class-2 {
-    background-color: var(--knn-class-2);
-}
-
-/* Vote indicator dots in legend */
-.vote-indicator {
-    display: inline-flex;
-    gap: 2px;
-    margin-left: 6px;
-    vertical-align: middle;
-}
-
-.vote-dot {
-    width: 6px;
-    height: 6px;
-    border-radius: 50%;
-    background-color: currentColor;
-    opacity: 0.8;
-}
-
-.legend-color.query-point {
-    background-color: var(--knn-query-bg);
-    border: 2px solid var(--knn-query-border);
-    box-sizing: border-box;
-}
-
-.legend-line.neighbor-line {
-    background-color: var(--knn-neighbor-line);
-    height: 2px;
-    width: 20px;
-    display: inline-block;
-    vertical-align: middle;
-}
-
 /* ============================================
    Vote Breakdown
    ============================================ */
 .vote-breakdown {
     margin-top: 12px;
     padding-top: 12px;
-    border-top: 1px solid var(--knn-border);
+    border-top: 1px solid var(--viz-border);
 }
 
 .vote-header {
     font-weight: 600;
     margin-bottom: 8px;
     font-size: 12px;
-    color: var(--knn-text-muted);
+    color: var(--viz-text-muted);
     text-transform: uppercase;
     letter-spacing: 0.5px;
 }
@@ -271,13 +143,6 @@
     overflow-y: auto;
 }
 
-.neighbors-list .list-empty {
-    color: var(--knn-text-muted);
-    font-style: italic;
-    padding: 12px;
-    text-align: center;
-}
-
 .neighbor-item {
     display: flex;
     justify-content: space-between;
@@ -285,7 +150,7 @@
     padding: 6px 10px;
     margin: 3px 0;
     border-radius: 4px;
-    font-family: 'SF Mono', Monaco, 'Courier New', monospace;
+    font-family: var(--viz-mono-font);
     font-size: 11px;
     cursor: pointer;
     transition: background-color 0.15s ease;
@@ -293,7 +158,7 @@
 }
 
 .neighbor-item:hover {
-    background-color: var(--knn-hover-bg);
+    background-color: var(--viz-hover-bg);
 }
 
 .neighbor-item.class-0 { border-left-color: var(--knn-class-0); }
@@ -318,139 +183,43 @@
 .neighbor-class.class-2 { background-color: var(--knn-class-2); }
 
 .neighbor-distance {
-    color: var(--knn-text-muted);
+    color: var(--viz-text-muted);
     min-width: 60px;
     text-align: right;
 }
 
 .neighbor-coords {
-    color: var(--knn-text-muted);
+    color: var(--viz-text-muted);
     font-size: 10px;
 }
 
 /* ============================================
-   Comparison Table
+   Legend Neighbor Line
    ============================================ */
-.compare-controls {
-    margin-bottom: 12px;
-}
-
-.compare-table-container {
-    max-height: 200px;
-    overflow-y: auto;
-}
-
-#comparison-table {
-    font-size: 11px;
-}
-
-#comparison-table th,
-#comparison-table td {
-    text-align: center;
-    vertical-align: middle;
-    padding: 6px 8px;
-}
-
-#comparison-table .best-value {
-    background-color: rgba(40, 167, 69, 0.15);
-    font-weight: 600;
-}
-
-#comparison-table .current-config {
-    background-color: rgba(0, 123, 255, 0.1);
-}
-
-.compare-empty td {
-    color: var(--knn-text-muted);
-    font-style: italic;
-}
-
-.compare-hint {
-    margin-top: 8px;
-    font-size: 11px;
-    color: var(--knn-text-muted);
-}
-
-/* ============================================
-   Edit Toolbar Adjustments
-   ============================================ */
-.edit-toolbar {
-    display: none;
-}
-
-.edit-toolbar.active {
-    display: flex;
-}
-
-/* Class selector colors */
-.class-selector .btn[data-class="0"].active {
-    background-color: var(--knn-class-0);
-    border-color: var(--knn-class-0);
-    color: #fff;
-}
-
-.class-selector .btn[data-class="1"].active {
-    background-color: var(--knn-class-1);
-    border-color: var(--knn-class-1);
-    color: #fff;
-}
-
-.class-selector .btn[data-class="2"].active {
-    background-color: var(--knn-class-2);
-    border-color: var(--knn-class-2);
-    color: #fff;
-}
-
-/* ============================================
-   Metrics Panel Prediction Colors
-   ============================================ */
-.prediction-badge {
+.legend-line.neighbor-line {
+    background-color: var(--knn-neighbor-line);
+    height: 2px;
+    width: 20px;
     display: inline-block;
-    padding: 2px 8px;
-    border-radius: 3px;
-    font-weight: 600;
-    color: #fff;
-}
-
-.prediction-badge.class-0 { background-color: var(--knn-class-0); }
-.prediction-badge.class-1 { background-color: var(--knn-class-1); }
-.prediction-badge.class-2 { background-color: var(--knn-class-2); }
-
-/* ============================================
-   Algorithm Steps List
-   ============================================ */
-.algorithm-steps {
-    padding-left: 20px;
-}
-
-.algorithm-steps li {
-    margin-bottom: 6px;
-}
-
-.formula-list {
-    list-style: none;
-    padding-left: 0;
-}
-
-.formula-list li {
-    margin-bottom: 4px;
-    font-family: 'SF Mono', Monaco, 'Courier New', monospace;
-    font-size: 12px;
-}
-
-.formula-list li strong {
-    font-family: inherit;
+    vertical-align: middle;
 }
 
 /* ============================================
-   Interaction List
+   Vote indicator dots in legend
    ============================================ */
-.interaction-list {
-    padding-left: 20px;
+.vote-indicator {
+    display: inline-flex;
+    gap: 2px;
+    margin-left: 6px;
+    vertical-align: middle;
 }
 
-.interaction-list li {
-    margin-bottom: 4px;
+.vote-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background-color: currentColor;
+    opacity: 0.8;
 }
 
 /* ============================================
@@ -542,11 +311,11 @@
     text-align: center;
     font-size: 12px;
     font-weight: 600;
-    border: 1px solid var(--knn-border);
+    border: 1px solid var(--viz-border);
     border-radius: 3px;
     padding: 2px 4px;
-    background: var(--knn-bg);
-    color: var(--knn-text);
+    background: var(--viz-bg);
+    color: var(--viz-text);
 }
 
 .knn-options-col .checkbox-label {
@@ -560,7 +329,7 @@
     flex-direction: column;
     align-items: center;
     gap: 8px;
-    border-left: 1px solid var(--knn-border);
+    border-left: 1px solid var(--viz-border);
     padding-left: 20px;
 }
 
@@ -578,7 +347,7 @@
     align-items: center;
     gap: 6px;
     font-size: 11px;
-    color: var(--knn-text-muted);
+    color: var(--viz-text-muted);
     width: 100%;
 }
 
@@ -587,22 +356,17 @@
 }
 
 /* ============================================
-   Info Panel Tabs
-   ============================================ */
-.info-tab-content {
-    display: none;
-}
-
-.info-tab-content.active {
-    display: block;
-}
-
-/* ============================================
    Responsive Adjustments
    ============================================ */
 @media (max-width: 992px) {
-    .canvas-wrapper canvas {
-        max-width: 100%;
-        height: auto;
+    .knn-controls-panel {
+        flex-direction: column;
+    }
+
+    .knn-playback-col {
+        border-left: none;
+        border-top: 1px solid var(--viz-border);
+        padding-left: 0;
+        padding-top: 15px;
     }
 }

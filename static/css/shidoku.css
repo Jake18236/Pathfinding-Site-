@@ -1,12 +1,24 @@
-/* Shidoku CSP Solver Styles */
+/**
+ * Shidoku CSP Solver Styles
+ *
+ * Visualization-specific styles only. Common styles are in visualizations.css.
+ * Colors reference shared --viz-* variables where applicable.
+ */
 
-/* CSS Custom Properties for theming */
+/* ============================================
+   Shidoku-Specific CSS Custom Properties
+   ============================================ */
 :root {
-    --shidoku-bg: #ffffff;
-    --shidoku-border: #333333;
+    /* Map to shared variables */
+    --shidoku-bg: var(--viz-bg);
+    --shidoku-border: var(--viz-border);
+    --shidoku-cell-bg: var(--viz-bg);
+    --shidoku-text: var(--viz-text);
+    --shidoku-domain-text: var(--viz-text-muted);
+    --shidoku-hover-bg: var(--viz-hover-bg);
+
+    /* Shidoku-specific: box borders, cell states */
     --shidoku-box-border: #000000;
-    --shidoku-cell-bg: #ffffff;
-    --shidoku-text: #333333;
     --shidoku-fixed-bg: #e9ecef;
     --shidoku-fixed-text: #495057;
     --shidoku-assigned-bg: #d4edda;
@@ -18,16 +30,10 @@
     --shidoku-conflict-bg: #f8d7da;
     --shidoku-conflict-border: #dc3545;
     --shidoku-pruned-color: #dc3545;
-    --shidoku-domain-text: #6c757d;
-    --shidoku-hover-bg: #f8f9fa;
 }
 
 [data-theme="gruvbox-dark"] {
-    --shidoku-bg: #282828;
-    --shidoku-border: #665c54;
     --shidoku-box-border: #ebdbb2;
-    --shidoku-cell-bg: #32302f;
-    --shidoku-text: #ebdbb2;
     --shidoku-fixed-bg: #3c3836;
     --shidoku-fixed-text: #d5c4a1;
     --shidoku-assigned-bg: rgba(184, 187, 38, 0.3);
@@ -39,8 +45,6 @@
     --shidoku-conflict-bg: rgba(251, 73, 52, 0.3);
     --shidoku-conflict-border: #fb4934;
     --shidoku-pruned-color: #fb4934;
-    --shidoku-domain-text: #a89984;
-    --shidoku-hover-bg: #504945;
 }
 
 /* Grid Container */
@@ -480,17 +484,9 @@
     color: var(--shidoku-domain-text);
 }
 
-/* Metrics Table */
-.metrics-table {
-    margin-bottom: 0;
-}
-
-.metrics-table td:first-child {
-    width: 70%;
-}
-
+/* Metrics Table - uses shared .metrics-table from visualizations.css */
 .metric-value {
-    font-family: 'Menlo', 'Monaco', 'Consolas', monospace;
+    font-family: var(--viz-mono-font);
     font-weight: bold;
     min-width: 60px;
 }
@@ -516,17 +512,7 @@
     color: var(--shidoku-domain-text);
 }
 
-/* Info Panel Tabs */
-.info-panel-tabs {
-    display: flex;
-    width: 100%;
-}
-
-.info-panel-tabs .btn {
-    flex: 1;
-    border-radius: 0;
-}
-
+/* Info Panel Tabs - uses shared .info-panel-tabs from visualizations.css */
 .info-panel-tabs .btn.active {
     background-color: var(--shidoku-examining-bg);
     border-color: var(--shidoku-examining-border);
@@ -572,19 +558,9 @@
     color: #ebdbb2;
 }
 
+/* Info panel body - uses shared .info-panel-body from visualizations.css */
 .info-panel-body {
-    padding: 0 !important;
     min-height: 450px;
-}
-
-.info-tab-content {
-    display: none;
-    padding: 15px;
-    height: 100%;
-}
-
-.info-tab-content.active {
-    display: block;
 }
 
 /* About Tab */
@@ -653,7 +629,7 @@
     cursor: default;
 }
 
-/* Playback buttons */
+/* Playback buttons - extends shared .playback-controls from visualizations.css */
 .playback-buttons {
     display: flex;
     gap: 5px;
@@ -663,23 +639,6 @@
 .playback-buttons .btn {
     flex: 1;
     padding: 6px 8px;
-}
-
-.speed-control-inline {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
-
-.speed-control-inline label {
-    margin: 0;
-    font-size: 12px;
-    white-space: nowrap;
-}
-
-.speed-control-inline input[type="range"] {
-    flex: 1;
-    margin: 0;
 }
 
 /* Metrics table compact */
@@ -700,36 +659,15 @@
     min-width: 40px;
 }
 
-/* Execution Log */
+/* Execution Log - extends shared .execution-log from visualizations.css */
 .execution-log {
-    max-height: 300px;
-    overflow-y: auto;
-    font-family: 'Menlo', 'Monaco', 'Consolas', monospace;
-    font-size: 12px;
     background-color: var(--shidoku-cell-bg);
-    border: 1px solid var(--shidoku-border);
-    border-radius: 4px;
-    padding: 10px;
+    border-color: var(--shidoku-border);
 }
 
 .log-entry {
-    padding: 4px 8px;
-    margin: 2px 0;
-    border-radius: 3px;
-    display: flex;
     flex-direction: column;
     gap: 4px;
-}
-
-.log-icon {
-    flex-shrink: 0;
-    width: 16px;
-    text-align: center;
-}
-
-.log-message {
-    flex-grow: 1;
-    word-wrap: break-word;
 }
 
 .log-entry.log-info {
@@ -904,7 +842,7 @@
 }
 
 .tree-node-label {
-    font-family: 'Menlo', 'Monaco', 'Consolas', monospace;
+    font-family: var(--viz-mono-font);
     font-size: 9px;
     text-anchor: middle;
     fill: var(--shidoku-domain-text);
@@ -977,7 +915,7 @@
 
 /* Values in mini-grid */
 .tree-grid-value {
-    font-family: 'Menlo', 'Monaco', 'Consolas', monospace;
+    font-family: var(--viz-mono-font);
     font-size: 9px;
     text-anchor: middle;
     fill: var(--shidoku-text);
@@ -1039,7 +977,7 @@
     background-color: var(--shidoku-fixed-bg);
     border: 1px solid var(--shidoku-border);
     border-radius: 4px;
-    font-family: 'Menlo', 'Monaco', 'Consolas', monospace;
+    font-family: var(--viz-mono-font);
     font-size: 11px;
     color: var(--shidoku-text);
     pointer-events: none;
@@ -1197,6 +1135,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    font-family: var(--viz-mono-font);
     font-size: 10px;
     font-weight: bold;
     color: var(--shidoku-text);
@@ -1262,7 +1201,7 @@
 
 #comparison-table td {
     text-align: center;
-    font-family: 'Menlo', 'Monaco', 'Consolas', monospace;
+    font-family: var(--viz-mono-font);
     color: var(--shidoku-text);
     padding: 5px 8px;
 }

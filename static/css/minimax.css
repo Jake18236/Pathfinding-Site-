@@ -1,6 +1,12 @@
-/* Minimax & Alpha-Beta Pruning Visualizer Styles */
+/**
+ * Minimax & Alpha-Beta Pruning Visualizer Styles
+ *
+ * Visualization-specific styles only. Common styles are in visualizations.css.
+ */
 
-/* CSS Custom Properties for theming */
+/* ============================================
+   Minimax-Specific CSS Custom Properties
+   ============================================ */
 :root {
     /* Node type colors */
     --minimax-max-bg: #e3f2fd;
@@ -9,12 +15,12 @@
     --minimax-min-border: #c2185b;
 
     /* State colors */
-    --minimax-current-bg: #fff9c4;
+    --minimax-current-bg: var(--viz-warning-bg);
     --minimax-current-border: #f9a825;
-    --minimax-pruned-bg: #ffebee;
+    --minimax-pruned-bg: var(--viz-danger-bg);
     --minimax-pruned-border: #c62828;
-    --minimax-optimal-bg: #e8f5e9;
-    --minimax-optimal-border: #2e7d32;
+    --minimax-optimal-bg: var(--viz-success-bg);
+    --minimax-optimal-border: var(--viz-success-border);
     --minimax-evaluated-bg: #f5f5f5;
     --minimax-evaluated-border: #9e9e9e;
     --minimax-selected-bg: #e1f5fe;
@@ -25,13 +31,13 @@
     --minimax-beta-color: #c62828;
 
     /* Game board colors */
-    --minimax-cell-bg: #ffffff;
-    --minimax-cell-border: #333333;
-    --minimax-cell-hover: #f0f0f0;
+    --minimax-cell-bg: var(--viz-bg);
+    --minimax-cell-border: var(--viz-border);
+    --minimax-cell-hover: var(--viz-hover-bg);
     --minimax-x-color: #1976d2;
     --minimax-o-color: #c2185b;
-    --minimax-text: #333333;
-    --minimax-domain-text: #6c757d;
+    --minimax-text: var(--viz-text);
+    --minimax-domain-text: var(--viz-text-muted);
 
     /* Nim colors */
     --minimax-nim-object: #8d6e63;
@@ -45,12 +51,8 @@
     --minimax-min-bg: rgba(211, 134, 155, 0.3);
     --minimax-min-border: #d3869b;
 
-    --minimax-current-bg: rgba(250, 189, 47, 0.3);
     --minimax-current-border: #fabd2f;
-    --minimax-pruned-bg: rgba(251, 73, 52, 0.3);
     --minimax-pruned-border: #fb4934;
-    --minimax-optimal-bg: rgba(184, 187, 38, 0.3);
-    --minimax-optimal-border: #b8bb26;
     --minimax-evaluated-bg: rgba(168, 153, 132, 0.2);
     --minimax-evaluated-border: #a89984;
     --minimax-selected-bg: rgba(131, 165, 152, 0.4);
@@ -59,13 +61,8 @@
     --minimax-alpha-color: #83a598;
     --minimax-beta-color: #fb4934;
 
-    --minimax-cell-bg: #32302f;
-    --minimax-cell-border: #665c54;
-    --minimax-cell-hover: #504945;
     --minimax-x-color: #83a598;
     --minimax-o-color: #d3869b;
-    --minimax-text: #ebdbb2;
-    --minimax-domain-text: #a89984;
 
     --minimax-nim-object: #d5c4a1;
     --minimax-nim-object-hover: #ebdbb2;
@@ -73,9 +70,8 @@
 }
 
 /* ============================================
-   Controls Bar (Top)
+   Controls Bar
    ============================================ */
-
 .controls-panel {
     margin-bottom: 15px;
 }
@@ -126,7 +122,7 @@
 }
 
 .depth-display {
-    font-family: 'Menlo', 'Monaco', 'Consolas', monospace;
+    font-family: var(--viz-mono-font);
     font-weight: bold;
     font-size: 14px;
     min-width: 20px;
@@ -151,7 +147,6 @@
 /* ============================================
    Main Tree Panel
    ============================================ */
-
 .tree-panel {
     margin-bottom: 15px;
 }
@@ -183,7 +178,13 @@
     border-bottom: 1px solid var(--minimax-cell-border);
 }
 
-/* Tree loading progress - Multi-phase UI */
+[data-theme="gruvbox-dark"] .game-tree-container-main {
+    background-color: #1d2021;
+}
+
+/* ============================================
+   Tree Loading Progress
+   ============================================ */
 .tree-loading-container {
     display: flex;
     flex-direction: column;
@@ -251,7 +252,7 @@
 
 .phase-status {
     font-size: 11px;
-    font-family: monospace;
+    font-family: var(--viz-mono-font);
     color: #666;
     min-width: 80px;
     text-align: right;
@@ -280,7 +281,9 @@
     background: #4caf50;
 }
 
-/* Depth line overlay */
+/* ============================================
+   Depth Line Overlay
+   ============================================ */
 .depth-line-overlay {
     position: absolute;
     left: 0;
@@ -307,10 +310,7 @@
     border-radius: 3px;
 }
 
-[data-theme="gruvbox-dark"] .game-tree-container-main {
-    background-color: #1d2021;
-}
-
+/* Tree SVG */
 .game-tree-svg {
     width: 100%;
     height: 100%;
@@ -321,40 +321,9 @@
     cursor: grabbing;
 }
 
-/* Tree controls bar at bottom of tree panel */
-.tree-controls-bar {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 8px 15px;
-    background-color: var(--minimax-evaluated-bg);
-    border-top: 1px solid var(--minimax-cell-border);
-}
-
-[data-theme="gruvbox-dark"] .tree-controls-bar {
-    background-color: #282828;
-}
-
-.tree-legend-bar {
-    display: flex;
-    gap: 15px;
-    font-size: 11px;
-}
-
-.tree-legend-item {
-    display: flex;
-    align-items: center;
-    gap: 5px;
-    color: var(--minimax-domain-text);
-}
-
-.tree-legend-dot {
-    width: 14px;
-    height: 14px;
-    border-radius: 2px;
-    border: 2px solid;
-}
-
+/* ============================================
+   Tree Legend Bar (Uses shared but with overrides)
+   ============================================ */
 .tree-dot-max {
     background-color: var(--minimax-max-bg);
     border-color: var(--minimax-max-border);
@@ -375,32 +344,9 @@
     border-color: var(--minimax-optimal-border);
 }
 
-.tree-zoom-controls {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    font-size: 12px;
-    color: var(--minimax-domain-text);
-}
-
-.tree-zoom-controls input[type="range"] {
-    width: 80px;
-    height: 4px;
-    cursor: pointer;
-}
-
 /* ============================================
    Tree Node Styling
    ============================================ */
-
-.tree-node {
-    cursor: pointer;
-}
-
-.tree-node:hover .tree-node-bg {
-    filter: brightness(1.1);
-}
-
 .tree-node-bg {
     stroke-width: 2;
     rx: 3;
@@ -441,7 +387,7 @@
     filter: drop-shadow(0 0 6px var(--minimax-selected-border));
 }
 
-/* Nodes beyond depth limit - greyed out */
+/* Nodes beyond depth limit */
 .tree-node-bg.beyond-depth-node {
     fill: var(--minimax-evaluated-bg);
     stroke: var(--minimax-evaluated-border);
@@ -452,10 +398,7 @@
     opacity: 0.4;
 }
 
-.tree-node.beyond-depth .tree-grid-value {
-    opacity: 0.5;
-}
-
+.tree-node.beyond-depth .tree-grid-value,
 .tree-node.beyond-depth .tree-node-value {
     opacity: 0.5;
 }
@@ -520,7 +463,7 @@
 
 /* Node value label */
 .tree-node-value {
-    font-family: 'Menlo', 'Monaco', 'Consolas', monospace;
+    font-family: var(--viz-mono-font);
     font-size: 10px;
     font-weight: bold;
     text-anchor: middle;
@@ -541,7 +484,7 @@
 
 /* Alpha-Beta labels */
 .tree-alpha-beta-label {
-    font-family: 'Menlo', 'Monaco', 'Consolas', monospace;
+    font-family: var(--viz-mono-font);
     font-size: 8px;
     text-anchor: middle;
     pointer-events: none;
@@ -555,14 +498,7 @@
     fill: var(--minimax-beta-color);
 }
 
-/* Tree edges */
-.tree-edge {
-    fill: none;
-    stroke: var(--minimax-cell-border);
-    stroke-width: 2;
-    opacity: 0.6;
-}
-
+/* Tree edges - use shared but with overrides */
 .tree-edge.optimal {
     stroke: var(--minimax-optimal-border);
     stroke-width: 3;
@@ -598,43 +534,17 @@
 }
 
 .depth-limit-label {
-    font-family: 'Menlo', 'Monaco', 'Consolas', monospace;
+    font-family: var(--viz-mono-font);
     font-size: 11px;
     fill: var(--minimax-pruned-border);
     opacity: 0.8;
 }
 
-/* Tree tooltip */
-.tree-tooltip {
-    position: absolute;
-    padding: 8px 12px;
-    background-color: var(--minimax-cell-bg);
-    border: 1px solid var(--minimax-cell-border);
-    border-radius: 4px;
-    font-family: 'Menlo', 'Monaco', 'Consolas', monospace;
-    font-size: 11px;
-    color: var(--minimax-text);
-    pointer-events: none;
-    opacity: 0;
-    transition: opacity 0.15s ease;
-    z-index: 100;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
-    max-width: 220px;
-}
-
-.tree-tooltip.visible {
-    opacity: 1;
-}
-
+/* ============================================
+   Tree Tooltip Override
+   ============================================ */
 .tree-tooltip-title {
-    font-weight: bold;
-    margin-bottom: 4px;
     color: var(--minimax-current-border);
-}
-
-.tree-tooltip-info {
-    color: var(--minimax-domain-text);
-    line-height: 1.4;
 }
 
 .tree-tooltip-alpha {
@@ -645,26 +555,13 @@
     color: var(--minimax-beta-color);
 }
 
-/* Empty state message */
-.tree-empty-message {
-    fill: var(--minimax-domain-text);
-    font-size: 14px;
-}
-
-[data-theme="gruvbox-dark"] .tree-tooltip {
-    box-shadow: 0 2px 8px rgba(0,0,0,0.4);
-}
-
 /* ============================================
    Side Panel - Board Preview
    ============================================ */
-
 .game-container {
     padding: 10px 0;
 }
 
-/* Smaller preview grid for side panel */
-/* Selected node board preview */
 .selected-board-preview {
     text-align: center;
     margin-bottom: 15px;
@@ -795,7 +692,6 @@
 /* ============================================
    Nim Game (Side Panel Preview)
    ============================================ */
-
 .preview-piles {
     display: flex;
     justify-content: center;
@@ -838,7 +734,6 @@
 /* ============================================
    Game Status
    ============================================ */
-
 .game-status {
     margin-top: 10px;
     display: flex;
@@ -894,7 +789,6 @@
 /* ============================================
    Node Details Panel
    ============================================ */
-
 .node-details-body {
     padding: 12px 15px !important;
     min-height: 150px;
@@ -924,7 +818,7 @@
 .node-detail-value {
     font-size: 12px;
     font-weight: bold;
-    font-family: 'Menlo', 'Monaco', 'Consolas', monospace;
+    font-family: var(--viz-mono-font);
 }
 
 .node-detail-value.alpha-value {
@@ -959,51 +853,9 @@
     color: var(--minimax-optimal-border);
 }
 
-.no-node-message {
-    text-align: center;
-    padding: 30px 15px;
-    color: var(--minimax-domain-text);
-    font-size: 13px;
-}
-
-.no-node-message i {
-    display: block;
-    font-size: 24px;
-    margin-bottom: 10px;
-    opacity: 0.5;
-}
-
-/* ============================================
-   Metrics Panel
-   ============================================ */
-
-.compact-panel {
-    padding: 10px 15px !important;
-}
-
-.metrics-table {
-    margin-bottom: 0;
-    font-size: 12px;
-}
-
-.metrics-table td {
-    padding: 4px 6px;
-}
-
-.metrics-table td:nth-child(odd) {
-    white-space: nowrap;
-}
-
-.metrics-table .metric-value {
-    font-family: 'Menlo', 'Monaco', 'Consolas', monospace;
-    font-weight: bold;
-    min-width: 40px;
-}
-
 /* ============================================
    Heuristic Function Panel
    ============================================ */
-
 .heuristic-panel {
     padding: 12px 15px !important;
 }
@@ -1056,7 +908,7 @@
 .heuristic-input {
     width: 60px;
     padding: 4px 8px;
-    font-family: 'Menlo', 'Monaco', 'Consolas', monospace;
+    font-family: var(--viz-mono-font);
     font-size: 12px;
     text-align: right;
     border: 1px solid var(--minimax-cell-border);
@@ -1083,16 +935,7 @@
     display: block;
 }
 
-.algorithm-list {
-    padding-left: 20px;
-    margin-bottom: 10px;
-    font-size: 13px;
-}
-
-.algorithm-list li {
-    margin-bottom: 4px;
-}
-
+/* Text utility classes */
 .max-text {
     color: var(--minimax-max-border);
     font-weight: bold;
@@ -1116,7 +959,6 @@
 /* ============================================
    Responsive Adjustments
    ============================================ */
-
 @media (max-width: 992px) {
     .controls-row {
         gap: 12px;

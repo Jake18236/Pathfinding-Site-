@@ -11,6 +11,10 @@
 
 	<!-- Theme CSS (toggleable) -->
 	<link id="theme-style" href="{{ prefix | default('') }}static/css/bluegold.css" rel="stylesheet">
+	{% if extraScript %}
+	<!-- Shared visualization styles -->
+	<link rel="stylesheet" href="{{ prefix | default('') }}static/css/visualizations.css">
+	{% endif %}
 	<script src="https://kit.fontawesome.com/9d2722956c.js" crossorigin="anonymous"></script>
 
 	<!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->

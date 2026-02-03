@@ -2,7 +2,7 @@
  * Site metadata for the AI landing page
  */
 module.exports = {
-  title: "Teaching and Learning Artificial Intelligence",
+  title: "Exploring Artificial Intelligence",
   icon: "fa-rocket",
   navigation: [
     { name: "Courses", link: "#courses", icon: "fa-chalkboard-user" },

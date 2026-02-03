@@ -1409,6 +1409,13 @@
 
             const { nodeId, valueIndex } = this.selectedPosterior;
             const node = this.network.nodes.find(n => n.id === nodeId);
+            if (!node) {
+                // Node not found - clear selected posterior and show no calc message
+                this.selectedPosterior = null;
+                if (noCalcMsg) noCalcMsg.style.display = 'block';
+                if (calcContent) calcContent.style.display = 'none';
+                return;
+            }
             const queryValue = node.values[valueIndex];
             const posterior = this.posteriors.get(nodeId);
             const posteriorProb = posterior ? posterior[valueIndex] : 0;
@@ -1436,10 +1443,53 @@
                 return assignment;
             };
 
-            // Handle clickable term expansion and network highlighting
-            const expandableTerms = container.querySelectorAll('.calc-term-expandable');
-            expandableTerms.forEach(term => {
-                // Hover: preview assignment in network
+            // Handle symbolic/numeric toggle button
+            const toggleBtn = container.querySelector('.calc-view-toggle');
+            const formula = container.querySelector('.calc-norm-formula');
+            if (toggleBtn && formula) {
+                toggleBtn.addEventListener('click', () => {
+                    const currentView = toggleBtn.dataset.view || 'symbolic';
+                    const newView = currentView === 'symbolic' ? 'numeric' : 'symbolic';
+
+                    toggleBtn.dataset.view = newView;
+                    formula.dataset.view = newView;
+
+                    // Toggle all view spans
+                    formula.querySelectorAll('.view-symbolic').forEach(el => {
+                        el.style.display = newView === 'symbolic' ? 'inline' : 'none';
+                    });
+                    formula.querySelectorAll('.view-numeric').forEach(el => {
+                        el.style.display = newView === 'numeric' ? 'inline' : 'none';
+                    });
+
+                    // Update button appearance
+                    toggleBtn.classList.toggle('numeric-active', newView === 'numeric');
+                });
+            }
+
+            // Handle fraction click to expand/collapse
+            const fracDisplay = container.querySelector('.calc-frac-display');
+            if (fracDisplay) {
+                fracDisplay.addEventListener('click', (e) => {
+                    // Don't toggle if clicking on term (for hover highlighting)
+                    if (e.target.closest('.calc-term')) return;
+
+                    const isExpanded = fracDisplay.dataset.expanded === 'true';
+                    fracDisplay.dataset.expanded = !isExpanded;
+
+                    const compressed = fracDisplay.querySelector('.frac-compressed');
+                    const expanded = fracDisplay.querySelector('.frac-expanded');
+                    const hint = fracDisplay.querySelector('.frac-expand-hint');
+
+                    if (compressed) compressed.style.display = isExpanded ? 'block' : 'none';
+                    if (expanded) expanded.style.display = isExpanded ? 'none' : 'block';
+                    if (hint) hint.textContent = isExpanded ? 'click to expand' : 'click to collapse';
+                });
+            }
+
+            // Handle term hover for network highlighting
+            const terms = container.querySelectorAll('.calc-term[data-assignment]');
+            terms.forEach(term => {
                 term.addEventListener('mouseenter', () => {
                     const assignmentStr = term.dataset.assignment;
                     if (assignmentStr) {
@@ -1449,58 +1499,28 @@
                 });
 
                 term.addEventListener('mouseleave', () => {
-                    // Only clear if not selected
                     if (!this.selectedSumTerm) {
                         this.previewAssignment = null;
                         this.render();
                     }
                 });
 
-                // Click: cycle through modes AND toggle selection for network highlighting
-                term.addEventListener('click', (e) => {
-                    e.stopPropagation();
-
-                    // Toggle selection state
+                term.addEventListener('click', () => {
                     const assignmentStr = term.dataset.assignment;
-                    const wasSelected = term.classList.contains('selected');
+                    if (!assignmentStr) return;
 
-                    // Deselect all other terms
-                    expandableTerms.forEach(t => t.classList.remove('selected'));
+                    const wasSelected = term.classList.contains('selected');
+                    terms.forEach(t => t.classList.remove('selected'));
 
                     if (wasSelected) {
-                        // Deselect
                         this.selectedSumTerm = null;
                         this.previewAssignment = null;
                     } else {
-                        // Select this term
                         term.classList.add('selected');
                         const assignment = parseAssignment(assignmentStr);
                         this.selectedSumTerm = { assignment, element: term };
                         this.previewAssignment = assignment;
                     }
-
-                    // Cycle through modes: symbolic -> numeric -> compact -> symbolic
-                    const currentMode = term.dataset.mode || 'symbolic';
-                    const modes = ['symbolic', 'numeric', 'compact'];
-                    const currentIndex = modes.indexOf(currentMode);
-                    const nextMode = modes[(currentIndex + 1) % modes.length];
-
-                    // Update mode
-                    term.dataset.mode = nextMode;
-
-                    // Show/hide the appropriate spans
-                    const compactSpan = term.querySelector('.term-compact');
-                    const numericSpan = term.querySelector('.term-numeric');
-                    const symbolicSpan = term.querySelector('.term-symbolic');
-
-                    compactSpan.style.display = nextMode === 'compact' ? 'inline' : 'none';
-                    numericSpan.style.display = nextMode === 'numeric' ? 'inline' : 'none';
-                    symbolicSpan.style.display = nextMode === 'symbolic' ? 'inline' : 'none';
-
-                    // Update visual state
-                    term.classList.remove('mode-compact', 'mode-numeric', 'mode-symbolic');
-                    term.classList.add(`mode-${nextMode}`);
-
                     this.render();
                 });
             });
@@ -1777,13 +1797,13 @@
             const numeratorTerms = termDetails.filter(t => t.queryValueIndex === valueIndex);
             const denominatorTerms = termDetails;
 
-            // Generate unique ID for this normalization section
-            const normId = `norm-${Date.now()}`;
+            const queryVarAbbrev = this.getVarAbbrev(node.name);
+            const queryValAbbrev = this.getValueAbbrevDisplay(queryValue);
 
-            // Show Bayes theorem formula header (no toggle buttons - terms are clickable)
+            // Show Bayes theorem formula header with toggle button
             html += `<div class="calc-norm-header">`;
             html += `<span class="calc-norm-query math-formula">`;
-            html += `<span class="math-italic">Pr</span>(<span class="math-var">${this.getVarAbbrev(node.name)}</span> = <span class="math-val">${this.getValueAbbrevDisplay(queryValue)}</span>`;
+            html += `<span class="math-italic">Pr</span>(<span class="math-var">${queryVarAbbrev}</span> = <span class="math-val">${queryValAbbrev}</span>`;
             if (this.evidence.size > 0) {
                 html += ` <span class="math-given">|</span> `;
                 const evidenceTerms = [];
@@ -1795,12 +1815,14 @@
             }
             html += `)`;
             html += `</span>`;
-            html += `<span class="calc-norm-hint">click terms to expand</span>`;
+            html += `<button class="calc-view-toggle" data-view="symbolic" title="Toggle symbolic/numeric view">`;
+            html += `<span class="toggle-symbolic">𝑥</span><span class="toggle-numeric">123</span>`;
+            html += `</button>`;
             html += `</div>`;
 
-            // Main formula container with clickable terms
-            html += `<div class="calc-norm-formula" id="${normId}">`;
-            html += this.renderClickableFraction(numeratorTerms, denominatorTerms, valueIndex);
+            // Main formula container
+            html += `<div class="calc-norm-formula" data-view="symbolic">`;
+            html += this.renderFraction(node, queryValue, valueIndex, numeratorTerms, denominatorTerms, unnormalized, sumProb);
             html += `</div>`;
 
             // Final result row
@@ -1816,51 +1838,99 @@
             return html;
         }
 
-        renderClickableFraction(numeratorTerms, denominatorTerms, valueIndex) {
-            let html = `<div class="calc-frac-display">`;
+        renderFraction(node, queryValue, valueIndex, numeratorTerms, denominatorTerms, unnormalized, sumProb) {
+            const queryVarAbbrev = this.getVarAbbrev(node.name);
+            const queryValAbbrev = this.getValueAbbrevDisplay(queryValue);
 
-            // Numerator
+            let html = `<div class="calc-frac-display" data-expanded="false">`;
+
+            // === COMPRESSED VIEW (default) ===
+            html += `<div class="frac-compressed">`;
+
+            // Compressed Symbolic numerator: P(Q=q, E) or P(Q=q)
+            const numCompressedSym = this.evidence.size > 0
+                ? `<span class="math-italic">P</span>(<span class="math-var">${queryVarAbbrev}</span>=<span class="math-val">${queryValAbbrev}</span>, <span class="math-var">E</span>)`
+                : `<span class="math-italic">P</span>(<span class="math-var">${queryVarAbbrev}</span>=<span class="math-val">${queryValAbbrev}</span>)`;
+
+            // Compressed Symbolic denominator: P(E) or Σ P(Q)
+            let denCompressedSym;
+            if (this.evidence.size > 0) {
+                denCompressedSym = `<span class="math-italic">P</span>(<span class="math-var">E</span>)`;
+            } else {
+                denCompressedSym = `<span class="math-sum">Σ</span><sub><span class="math-var">${queryVarAbbrev}</span></sub> <span class="math-italic">P</span>(<span class="math-var">${queryVarAbbrev}</span>)`;
+            }
+
+            // Compressed Numeric values
+            const numProb = unnormalized[valueIndex];
+            const numCompressedNum = `<span class="calc-numeric-term">${numProb.toPrecision(4)}</span>`;
+            const denCompressedNum = `<span class="calc-numeric-term">${sumProb.toPrecision(4)}</span>`;
+
+            // Numerator (compressed)
             html += `<div class="calc-frac-num">`;
-            html += numeratorTerms.map((t, i) => this.renderClickableTerm(t, valueIndex, `num-${i}`)).join(' <span class="calc-plus">+</span> ');
+            html += `<span class="view-symbolic">${numCompressedSym}</span>`;
+            html += `<span class="view-numeric" style="display:none">${numCompressedNum}</span>`;
             html += `</div>`;
 
-            // Denominator
+            // Denominator (compressed)
             html += `<div class="calc-frac-den">`;
-            html += denominatorTerms.map((t, i) => this.renderClickableTerm(t, valueIndex, `den-${i}`)).join(' <span class="calc-plus">+</span> ');
+            html += `<span class="view-symbolic">${denCompressedSym}</span>`;
+            html += `<span class="view-numeric" style="display:none">${denCompressedNum}</span>`;
             html += `</div>`;
+
+            html += `</div>`; // end frac-compressed
+
+            // === EXPANDED VIEW (hidden by default) ===
+            html += `<div class="frac-expanded" style="display:none">`;
+
+            // Expanded numerator - show individual terms with subscripts
+            html += `<div class="calc-frac-num">`;
+            html += `<span class="view-symbolic">`;
+            html += numeratorTerms.map(term => this.buildSymbolicTerm(term)).join(' · ');
+            html += `</span>`;
+            html += `<span class="view-numeric" style="display:none">`;
+            html += numeratorTerms.map(term => `<span class="calc-term" data-assignment="${term.assignmentData}">${term.numericExpr}</span>`).join(' × ');
+            html += `</span>`;
+            html += `</div>`;
+
+            // Expanded denominator - show sum of all terms
+            html += `<div class="calc-frac-den">`;
+            html += `<span class="view-symbolic">`;
+            const denTermsGrouped = [];
+            const valueGroups = {};
+            denominatorTerms.forEach(term => {
+                if (!valueGroups[term.queryValueIndex]) {
+                    valueGroups[term.queryValueIndex] = [];
+                }
+                valueGroups[term.queryValueIndex].push(term);
+            });
+            Object.values(valueGroups).forEach(group => {
+                denTermsGrouped.push(group.map(term => this.buildSymbolicTerm(term)).join(' · '));
+            });
+            html += denTermsGrouped.join(' + ');
+            html += `</span>`;
+            html += `<span class="view-numeric" style="display:none">`;
+            const denNumericGrouped = [];
+            Object.values(valueGroups).forEach(group => {
+                denNumericGrouped.push(group.map(term => `<span class="calc-term" data-assignment="${term.assignmentData}">${term.numericExpr}</span>`).join(' × '));
+            });
+            html += denNumericGrouped.join(' + ');
+            html += `</span>`;
+            html += `</div>`;
+
+            html += `</div>`; // end frac-expanded
+
+            // Click hint
+            html += `<div class="frac-expand-hint">click to expand</div>`;
 
             html += `</div>`;
             return html;
         }
 
-        renderClickableTerm(term, valueIndex, termId) {
-            const isHighlight = term.queryValueIndex === valueIndex;
-            const highlightClass = isHighlight ? ' highlight' : '';
-
-            // Escape HTML for data attributes
-            const numericEscaped = term.numericExpr.replace(/"/g, '&quot;');
-            const symbolicEscaped = term.symbolicExpr.replace(/"/g, '&quot;');
-
-            // Each term has three views: symbolic (default), numeric, compact
-            // Data attributes store the views and assignment for network highlighting
-            let html = `<span class="calc-term-expandable mode-symbolic${highlightClass}"
-                data-mode="symbolic"
-                data-compact="${term.prob.toPrecision(4)}"
-                data-numeric="${numericEscaped}"
-                data-symbolic="${symbolicEscaped}"
-                data-subscript="${term.subscript}"
-                data-assignment="${term.assignmentData}"
-                title="Click to cycle views">`;
-
-            // Compact view (hidden by default)
-            html += `<span class="term-compact" style="display:none">${term.prob.toPrecision(4)}</span>`;
-            // Numeric view (hidden)
-            html += `<span class="term-numeric" style="display:none">${term.numericExpr}</span>`;
-            // Symbolic view (visible by default)
+        buildSymbolicTerm(term) {
+            // Build a symbolic term like P(B=T|A=T) with subscript
+            let html = `<span class="calc-term" data-assignment="${term.assignmentData}">`;
             html += `<span class="term-symbolic">${term.symbolicExpr}</span>`;
-            // Subscript always visible
             html += `<sub>${term.subscript}</sub>`;
-
             html += `</span>`;
             return html;
         }
