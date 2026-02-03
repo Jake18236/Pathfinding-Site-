@@ -69,6 +69,13 @@ def release_item(item_id: int | str) -> None:
         payload["secret"] = SHARED_SECRET
     _ = post_json(WEBHOOK_URL, payload)
 
+def fail_item(item_id: int | str, error_msg: str = "") -> None:
+    """Mark item as failed - won't be retried."""
+    payload = {"action": "fail", "id": item_id, "error": error_msg}
+    if SHARED_SECRET:
+        payload["secret"] = SHARED_SECRET
+    _ = post_json(WEBHOOK_URL, payload)
+
 def to_sheet_meta(arch_meta: dict) -> dict:
     return {
         "name":   arch_meta.get("name") or arch_meta.get("title") or "",
@@ -186,8 +193,8 @@ def main():
 
         meta = archive_url(url)
         if not meta:
-            print(f"[warn] Archiving failed for {url}. Releasing queue item {item_id}.", file=sys.stderr)
-            release_item(item_id)
+            print(f"[warn] Archiving failed for {url}. Marking as failed (won't retry).", file=sys.stderr)
+            fail_item(item_id, "Archive failed - tweet may be deleted or protected")
             continue
 
         try:

@@ -48,6 +48,8 @@ function doPost(e) {
         return completeItem(data.id, data.meta, data.secret);
       case 'release':
         return releaseItem(data.id, data.secret);
+      case 'fail':
+        return failItem(data.id, data.error, data.secret);
       default:
         return jsonResponse({ error: 'Unknown action' }, 400);
     }
@@ -191,6 +193,37 @@ function releaseItem(id, secret) {
       sheet.getRange(row, 3).setValue('pending');
       sheet.getRange(row, 5).setValue(''); // Clear claimed_at
       return jsonResponse({ status: 'released', id: id });
+    }
+  }
+
+  return jsonResponse({ error: 'Item not found' }, 404);
+}
+
+/**
+ * Mark an item as failed (won't be retried)
+ */
+function failItem(id, errorMsg, secret) {
+  if (!id) {
+    return jsonResponse({ error: 'Missing id parameter' }, 400);
+  }
+
+  const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(SHEET_NAME);
+  if (!sheet) {
+    return jsonResponse({ error: 'Queue sheet not found' }, 500);
+  }
+
+  const data = sheet.getDataRange().getValues();
+  const now = new Date().toISOString();
+
+  for (let i = 1; i < data.length; i++) {
+    if (data[i][0] === id) {
+      const row = i + 1;
+      sheet.getRange(row, 3).setValue('failed');
+      sheet.getRange(row, 6).setValue(now);
+      if (errorMsg) {
+        sheet.getRange(row, 7).setValue(JSON.stringify({ error: errorMsg }));
+      }
+      return jsonResponse({ status: 'failed', id: id });
     }
   }
 
