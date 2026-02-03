@@ -10,7 +10,7 @@ Requires:
     - twarc2 installed (pip install twarc)
     - python-slugify installed (pip install python-slugify)
 """
-import json, subprocess, tempfile, shutil, pathlib, re, datetime, sys, os
+import json, subprocess, tempfile, shutil, pathlib, re, datetime, sys, os, urllib.request
 from slugify import slugify
 
 # ====== OUTPUT DIRECTORIES ======
@@ -62,6 +62,65 @@ def find_existing_media(tweet_id: str) -> list[str]:
                 existing.append(f.name)
     return existing
 
+def download_media_from_tweet(tweet_obj: dict, tweet_id: str, tmp_dir: pathlib.Path) -> list[pathlib.Path]:
+    """Extract media URLs from tweet object and download them."""
+    downloaded = []
+
+    # Look for media in attachments
+    attachments = tweet_obj.get("attachments", {})
+    media_keys = attachments.get("media_keys", [])
+
+    # Also check includes.media for the actual media objects
+    includes = tweet_obj.get("includes", {})
+    media_list = includes.get("media", [])
+
+    # If no includes, check if media is directly on the tweet (flattened format)
+    if not media_list:
+        media_list = tweet_obj.get("media", [])
+
+    # Also check for attachments.media (another possible location)
+    if not media_list:
+        media_list = attachments.get("media", [])
+
+    for media in media_list:
+        media_type = media.get("type", "")
+        url = None
+        ext = ".jpg"
+
+        if media_type == "photo":
+            url = media.get("url")
+            ext = ".jpg"
+        elif media_type == "video" or media_type == "animated_gif":
+            # Videos have variants, pick the highest bitrate mp4
+            variants = media.get("variants", [])
+            best_variant = None
+            best_bitrate = -1
+            for v in variants:
+                if v.get("content_type") == "video/mp4":
+                    bitrate = v.get("bit_rate", 0)
+                    if bitrate > best_bitrate:
+                        best_bitrate = bitrate
+                        best_variant = v
+            if best_variant:
+                url = best_variant.get("url")
+                ext = ".mp4"
+
+        if url:
+            try:
+                # Generate filename with tweet_id for easy lookup
+                media_key = media.get("media_key", "unknown")
+                filename = f"{tweet_id}_{media_key}{ext}"
+                filepath = tmp_dir / filename
+
+                print(f"[info] Downloading media: {url[:80]}...", file=sys.stderr)
+                urllib.request.urlretrieve(url, filepath)
+                downloaded.append(filepath)
+                print(f"[info] Downloaded: {filename}", file=sys.stderr)
+            except Exception as e:
+                print(f"[warn] Failed to download media: {e}", file=sys.stderr)
+
+    return downloaded
+
 def extract_author(obj):
     """Extract author username from tweet object."""
     for key in ("author", "user"):
@@ -105,16 +164,22 @@ def fetch_tweet(url: str, workdir: pathlib.Path):
         print(f"[info] Skipping media download - already have {len(existing_media)} file(s)", file=sys.stderr)
         return raw_jsonl, flat_jsonl, existing_media
 
-    # Try to download media (non-fatal if it fails)
+    # Try to download media from tweet data (non-fatal if it fails)
     tmp_media = workdir / "media"
     tmp_media.mkdir(exist_ok=True)
-    media_success = run_optional([
-        "twarc2", "--bearer-token", bearer_token,
-        "media", str(raw_jsonl), "--download-dir", str(tmp_media)
-    ])
 
-    if not media_success:
-        print("[info] Media download skipped or failed (tweet may have no media)", file=sys.stderr)
+    # Read raw tweet data to extract media URLs
+    try:
+        with open(raw_jsonl, "r", encoding="utf-8") as f:
+            for line in f:
+                if line.strip():
+                    tweet_data = json.loads(line)
+                    download_media_from_tweet(tweet_data, tid, tmp_media)
+                    # Also check nested data structure
+                    if "data" in tweet_data:
+                        download_media_from_tweet(tweet_data["data"], tid, tmp_media)
+    except Exception as e:
+        print(f"[warn] Error extracting media URLs: {e}", file=sys.stderr)
 
     # Move downloaded media to permanent locations
     moved = []
@@ -216,17 +281,57 @@ def build_markdown(objs, url: str, local_media_files):
     }
     return md_path, meta
 
+def read_raw_tweet(path):
+    """Try to extract tweet data from raw twarc2 output (before flatten)."""
+    objs = []
+    try:
+        with open(path, "r", encoding="utf-8") as f:
+            content = f.read()
+            print(f"[debug] Raw tweet file contents ({len(content)} bytes): {content[:500]}...", file=sys.stderr)
+
+        with open(path, "r", encoding="utf-8") as f:
+            for line in f:
+                if line.strip():
+                    data = json.loads(line)
+                    # Check for API errors
+                    if "errors" in data:
+                        for err in data["errors"]:
+                            print(f"[error] Twitter API error: {err.get('detail', err)}", file=sys.stderr)
+                    # twarc2 tweet output has {"data": {...tweet...}, "includes": {...}}
+                    if "data" in data and isinstance(data["data"], dict):
+                        tweet = data["data"]
+                        # Merge in includes for author info
+                        if "includes" in data:
+                            tweet["includes"] = data["includes"]
+                            # Try to get author from includes.users
+                            users = data["includes"].get("users", [])
+                            if users:
+                                tweet["author"] = users[0]
+                        objs.append(tweet)
+                    elif "text" in data:
+                        # Already flat format
+                        objs.append(data)
+    except Exception as e:
+        print(f"[warn] Error reading raw tweet: {e}", file=sys.stderr)
+    return objs
+
 def archive(url: str):
     """Archive a tweet to Markdown with media."""
     print(f"[info] Archiving: {url}", file=sys.stderr)
 
     with tempfile.TemporaryDirectory() as td:
         workdir = pathlib.Path(td)
-        _, flat, local_media = fetch_tweet(url, workdir)
+        raw, flat, local_media = fetch_tweet(url, workdir)
         objs = read_jsonl(flat)
 
+        # If flatten produced nothing, try reading raw output
         if not objs:
-            print(f"[warn] No tweet data found for {url}", file=sys.stderr)
+            print(f"[info] Flatten produced no output, trying raw data...", file=sys.stderr)
+            objs = read_raw_tweet(raw)
+
+        if not objs:
+            print(f"[error] No tweet data found for {url}", file=sys.stderr)
+            raise RuntimeError(f"Could not fetch tweet data for {url}")
 
         md_path, meta = build_markdown(objs, url, local_media)
         print(f"[info] Created: {md_path}", file=sys.stderr)
