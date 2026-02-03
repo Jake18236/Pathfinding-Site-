@@ -128,6 +128,7 @@ function loadResourcesFromCSV(text) {
     const checkedOut = toBool(bestOf(row, 'checked_out', 'checkedout', 'status'));
     const rating = bestOf(row, 'rating', 'stars', 'score');
     const notes = bestOf(row, 'notes', 'description', 'summary');
+    const media = bestOf(row, 'media');
 
     // Skip rows without export_id or name
     if (!exportId || !name) continue;
@@ -152,6 +153,7 @@ function loadResourcesFromCSV(text) {
     if (checkedOut) entry.checked_out = true;
     if (rating) entry.rating = rating;
     if (notes) entry.notes = notes;
+    if (media) entry.media = media;
 
     if (!out[exportId]) out[exportId] = [];
     out[exportId].push(entry);

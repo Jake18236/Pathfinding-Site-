@@ -148,8 +148,13 @@ def archive_url(url: str) -> tuple[dict | None, bool]:
         text=True,
         check=False,
     )
+
+    # Always print archiver logs so we can see what happened
+    if proc.stderr:
+        print(proc.stderr, file=sys.stderr)
+
     if proc.returncode != 0:
-        print(f"[error] archiver failed ({proc.returncode})\nSTDERR:\n{proc.stderr}", file=sys.stderr)
+        print(f"[error] archiver failed ({proc.returncode})", file=sys.stderr)
         retryable = is_retryable_error(proc.stderr)
         return None, retryable
 
