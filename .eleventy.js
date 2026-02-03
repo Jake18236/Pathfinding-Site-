@@ -115,6 +115,16 @@ module.exports = function(eleventyConfig) {
     return 0;
   });
 
+  // Parse JSON string filter (for tweet media field)
+  eleventyConfig.addFilter("parseJson", function(str) {
+    if (!str) return null;
+    try {
+      return JSON.parse(str);
+    } catch (e) {
+      return null;
+    }
+  });
+
   // Type icon mapping
   const TYPE_ICONS = {
     'book': 'fa-solid fa-book',

@@ -217,3 +217,65 @@ footer p {
 .modal-footer {
   border-color: #665c54 !important;
 }
+
+/* Tweet card styles */
+.tweet-card {
+  display: block !important;
+  padding: 16px !important;
+  border-left: 3px solid #1da1f2 !important;
+  margin-bottom: 8px;
+}
+
+.tweet-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.tweet-author {
+  font-weight: bold;
+  color: #83a598 !important;
+}
+
+.tweet-date {
+  font-size: 0.85em;
+  margin-left: auto;
+}
+
+.tweet-content {
+  margin-bottom: 12px;
+  line-height: 1.5;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+}
+
+.tweet-media {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.tweet-image {
+  max-width: 100%;
+  max-height: 300px;
+  border-radius: 8px;
+  border: 1px solid #504945;
+  object-fit: contain;
+}
+
+.tweet-footer {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.tweet-link {
+  font-size: 0.85em;
+  color: #bdae93 !important;
+}
+
+.tweet-link:hover {
+  color: #1da1f2 !important;
+}

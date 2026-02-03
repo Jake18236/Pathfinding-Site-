@@ -175,6 +175,13 @@ def build_markdown(objs, url: str, local_media_files):
 
     md_path.write_text("\n".join(lines), encoding="utf-8")
 
+    # Get full tweet text (combine all tweets if thread)
+    full_text = "\n\n".join((o.get("text","") or "").strip() for o in objs)
+
+    # Categorize media files
+    images = [f for f in local_media_files if not f.lower().endswith(('.mp4', '.mov', '.m4v'))]
+    videos = [f for f in local_media_files if f.lower().endswith(('.mp4', '.mov', '.m4v'))]
+
     meta = {
         "url": url,
         "author": author,
@@ -184,6 +191,9 @@ def build_markdown(objs, url: str, local_media_files):
         "md_path": str(md_path),
         "media_count": len(local_media_files),
         "tweet_id": tweet_id_from_url(url),
+        "text": full_text,
+        "images": images,
+        "videos": videos,
     }
     return md_path, meta
 

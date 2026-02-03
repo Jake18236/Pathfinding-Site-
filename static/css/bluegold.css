@@ -6988,3 +6988,65 @@ h6:hover a.headerlink:hover{
 .topic-row-odd {
   background-color: #ffffff;
 }
+
+/* Tweet card styles */
+.tweet-card {
+  display: block !important;
+  padding: 16px !important;
+  border-left: 3px solid #1da1f2 !important;
+  margin-bottom: 8px;
+}
+
+.tweet-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.tweet-author {
+  font-weight: bold;
+  color: #4e73df !important;
+}
+
+.tweet-date {
+  font-size: 0.85em;
+  margin-left: auto;
+}
+
+.tweet-content {
+  margin-bottom: 12px;
+  line-height: 1.5;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+}
+
+.tweet-media {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.tweet-image {
+  max-width: 100%;
+  max-height: 300px;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+  object-fit: contain;
+}
+
+.tweet-footer {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.tweet-link {
+  font-size: 0.85em;
+  color: #888 !important;
+}
+
+.tweet-link:hover {
+  color: #1da1f2 !important;
+}

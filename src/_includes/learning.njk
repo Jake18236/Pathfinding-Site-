@@ -1,3 +1,63 @@
+{# Macro to render a single learning item - handles both regular items and tweets #}
+{% macro renderItem(item) %}
+    {% set display_name = item.name | default('') | trim %}
+    {% set icon_class = item.type | typeIcon %}
+    {% set is_tweet = item.type == 'tweet' or item.type == 'thread' %}
+
+    {% if is_tweet %}
+        {# Tweet/Thread inline card #}
+        <li class="list-group-item tweet-card">
+            <div class="tweet-header">
+                <i class="{{ icon_class }}" style="margin-right: 8px; color: #1da1f2;"></i>
+                <a href="{{ item.link }}" target="_blank" rel="noopener" class="tweet-author">{{ item.author | default('') | trim }}</a>
+                <span class="tweet-date text-muted">{{ item.date_added_display }}</span>
+            </div>
+            <div class="tweet-content">
+                {{ item.notes | default(display_name) }}
+            </div>
+            {% if item.media %}
+                {% set media_data = item.media | parseJson %}
+                {% if media_data and media_data.images and media_data.images.length > 0 %}
+                    <div class="tweet-media">
+                        {% for img in media_data.images %}
+                            <img src="/static/img/tweets/{{ img }}" alt="Tweet media" class="tweet-image" loading="lazy">
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            {% endif %}
+            <div class="tweet-footer">
+                <a href="{{ item.link }}" target="_blank" rel="noopener" class="tweet-link">
+                    <i class="fa-solid fa-arrow-up-right-from-square"></i> View original
+                </a>
+            </div>
+        </li>
+    {% else %}
+        {# Regular item #}
+        <li class="list-group-item" style="display: flex; align-items: center; justify-content: space-between;">
+            <div style="display: flex; align-items: center;">
+                <i class="{{ icon_class }}" style="margin-right: 10px; color: #4e73df;"></i>
+                <div>
+                    {% if item.link %}
+                        <a href="{{ item.link }}">{{ display_name }}</a>
+                    {% else %}
+                        {{ display_name }}
+                    {% endif %}
+                    {% if item.author or item.student %}
+                        <div class="text-muted" style="font-size: 0.85em;">
+                            {{ item.author | default(item.student) | trim }}
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="text-muted" style="font-size: 0.85em;">
+                {% if item.date_added_display %}
+                    {{ item.date_added_display }}
+                {% endif %}
+            </div>
+        </li>
+    {% endif %}
+{% endmacro %}
+
 <div class="row">
     <div class="page-header">
         <h2 id="learning"><i class="fa-solid fa-brain"></i> Learning</h2>
@@ -41,30 +101,7 @@
                         <div id="{{ year_slug }}" class="panel-collapse collapse {{ collapse_class }}" role="tabpanel" aria-labelledby="{{ year_slug }}-heading">
                             <ul class="list-group" style="margin-bottom: 0;">
                             {% for item in preview_list %}
-                                {% set display_name = item.name | default('') | trim %}
-                                {% set icon_class = item.type | typeIcon %}
-                                <li class="list-group-item" style="display: flex; align-items: center; justify-content: space-between;">
-                                    <div style="display: flex; align-items: center;">
-                                        <i class="{{ icon_class }}" style="margin-right: 10px; color: #4e73df;"></i>
-                                        <div>
-                                            {% if item.link %}
-                                                <a href="{{ item.link }}">{{ display_name }}</a>
-                                            {% else %}
-                                                {{ display_name }}
-                                            {% endif %}
-                                            {% if item.author or item.student %}
-                                                <div class="text-muted" style="font-size: 0.85em;">
-                                                    {{ item.author | default(item.student) | trim }}
-                                                </div>
-                                            {% endif %}
-                                        </div>
-                                    </div>
-                                    <div class="text-muted" style="font-size: 0.85em;">
-                                        {% if item.date_added_display %}
-                                            {{ item.date_added_display }}
-                                        {% endif %}
-                                    </div>
-                                </li>
+                                {{ renderItem(item) }}
                             {% endfor %}
                             {% if preview_list | length == 0 %}
                                 <li class="list-group-item text-muted">No learning resources recorded for {{ year }}.</li>
@@ -80,30 +117,7 @@
                                 <div class="collapse" id="{{ year_slug }}-full" style="margin-top: 10px;">
                                     <ul class="list-group" style="margin-bottom: 0;">
                                     {% for item in remaining_list %}
-                                        {% set display_name = item.name | default('') | trim %}
-                                        {% set icon_class = item.type | typeIcon %}
-                                        <li class="list-group-item" style="display: flex; align-items: center; justify-content: space-between;">
-                                            <div style="display: flex; align-items: center;">
-                                                <i class="{{ icon_class }}" style="margin-right: 10px; color: #4e73df;"></i>
-                                                <div>
-                                                    {% if item.link %}
-                                                        <a href="{{ item.link }}">{{ display_name }}</a>
-                                                    {% else %}
-                                                        {{ display_name }}
-                                                    {% endif %}
-                                                    {% if item.author or item.student %}
-                                                        <div class="text-muted" style="font-size: 0.85em;">
-                                                            {{ item.author | default(item.student) | trim }}
-                                                        </div>
-                                                    {% endif %}
-                                                </div>
-                                            </div>
-                                            <div class="text-muted" style="font-size: 0.85em;">
-                                                {% if item.date_added_display %}
-                                                    {{ item.date_added_display }}
-                                                {% endif %}
-                                            </div>
-                                        </li>
+                                        {{ renderItem(item) }}
                                     {% endfor %}
                                     </ul>
                                 </div>
@@ -120,30 +134,7 @@
             <div class="col-sm-12">
                 <ul class="list-group">
                 {% for item in sorted_learning %}
-                    {% set display_name = item.name | default('') | trim %}
-                    {% set icon_class = item.type | typeIcon %}
-                    <li class="list-group-item" style="display: flex; align-items: center; justify-content: space-between;">
-                        <div style="display: flex; align-items: center;">
-                            <i class="{{ icon_class }}" style="margin-right: 10px; color: #4e73df;"></i>
-                            <div>
-                                {% if item.link %}
-                                    <a href="{{ item.link }}">{{ display_name }}</a>
-                                {% else %}
-                                    {{ display_name }}
-                                {% endif %}
-                                {% if item.author or item.student %}
-                                    <div class="text-muted" style="font-size: 0.85em;">
-                                        {{ item.author | default(item.student) | trim }}
-                                    </div>
-                                {% endif %}
-                            </div>
-                        </div>
-                        <div class="text-muted" style="font-size: 0.85em;">
-                            {% if item.date_added_display %}
-                                {{ item.date_added_display }}
-                            {% endif %}
-                        </div>
-                    </li>
+                    {{ renderItem(item) }}
                 {% endfor %}
                 </ul>
             </div>

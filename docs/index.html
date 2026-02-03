@@ -7,7 +7,7 @@
 	<meta name="description" content="">
 	<meta name="author" content="">
 
-	<title>Teaching and Learning Artificial Intelligence</title>
+	<title>Exploring Artificial Intelligence</title>
 
 	<!-- Theme CSS (toggleable) -->
 	<link id="theme-style" href="static/css/bluegold.css" rel="stylesheet">
@@ -315,12 +315,14 @@
 			
 			<li><a href="#courses"><i class="fa fa-chalkboard-user"></i> <span class="visible-md-inline visible-lg-inline">Courses</span></a></li>
 			
+			<li><a href="#visualizations"><i class="fa fa-chart-line"></i> <span class="visible-md-inline visible-lg-inline">Visualizations</span></a></li>
+			
 			<li><a href="#learning"><i class="fa fa-brain"></i> <span class="visible-md-inline visible-lg-inline">Learning</span></a></li>
 			
 			<li><a href="#library"><i class="fa fa-book"></i> <span class="visible-md-inline visible-lg-inline">Library</span></a></li>
 			
 		    </ul>
-		    <h1><i class="fa fa-rocket"></i> Teaching and Learning Artificial Intelligence</h1>
+		    <h1><i class="fa fa-rocket"></i> Exploring Artificial Intelligence</h1>
 		</div>
 	    </div>
 
@@ -344,71 +346,7 @@
 
 <div class="row">
     <div class="page-header">
-        <h2 id="courses"><i class="fa-solid fa-chalkboard-user"></i> Courses</h2>
-    </div>
-</div>
-
-<div class="row">
-    <div class="col-md-6 col-sm-12" style="margin-bottom: 30px;">
-        <h3 style="margin-top: 0; margin-bottom: 12px; font-weight: 600; text-align: center;">
-            <a href="https://10124.williamtheisen.com" class="course-title-link" target="_blank" rel="noopener">CSE 10124 &middot; Introduction to Using Generative AI</a>
-        </h3>
-        <div class="embed-responsive embed-responsive-16by9 course-embed">
-            <iframe
-                src="https://10124.williamtheisen.com"
-                title="Introductory AI Course Site"
-                loading="lazy"
-                class="embed-responsive-item"
-                allowfullscreen
-                tabindex="-1"
-                aria-hidden="true">
-            </iframe>
-            <a class="course-embed__overlay" href="https://10124.williamtheisen.com" target="_blank" rel="noopener" aria-label="Open the full CSE 10124 course website"></a>
-        </div>
-        
-        
-        <div style="color: #9a9a9a; font-size: 0.8em; margin-top: 10px;">
-            <strong>Changelog</strong>
-            <ul style="margin: 6px 0 0 18px;">
-            
-                <li class="text-muted">No recent updates.</li>
-            
-            </ul>
-        </div>
-    </div>
-    <div class="col-md-6 col-sm-12" style="margin-bottom: 30px;">
-        <h3 style="margin-top: 0; margin-bottom: 12px; font-weight: 600; text-align: center;">
-            <a href="https://30124.williamtheisen.com" class="course-title-link" target="_blank" rel="noopener">CSE 30124 &middot; Introduction to Artificial Intelligence</a>
-        </h3>
-        <div class="embed-responsive embed-responsive-16by9 course-embed">
-            <iframe
-                src="https://30124.williamtheisen.com"
-                title="Advanced AI Course Site"
-                loading="lazy"
-                class="embed-responsive-item"
-                allowfullscreen
-                tabindex="-1"
-                aria-hidden="true">
-            </iframe>
-            <a class="course-embed__overlay" href="https://30124.williamtheisen.com" target="_blank" rel="noopener" aria-label="Open the full CSE 30124 course website"></a>
-        </div>
-        
-        
-        <div style="color: #9a9a9a; font-size: 0.8em; margin-top: 10px;">
-            <strong>Changelog</strong>
-            <ul style="margin: 6px 0 0 18px;">
-            
-                <li class="text-muted">No recent updates.</li>
-            
-            </ul>
-        </div>
-    </div>
-</div>
-
-
-<div class="row">
-    <div class="page-header">
-        <h2 id="visualizations"><i class="fa-solid fa-eye"></i> Interactive Visualizations</h2>
+        <h2 id="visualizations"><i class="fa-solid fa-eye"></i>Visualizations</h2>
     </div>
 </div>
 
@@ -524,9 +462,9 @@
                     <div class="viz-card-icon">
                         <i class="fa fa-braille"></i>
                     </div>
-                    <h4 class="viz-card-title">Dimensionality Reduction</h4>
+                    <h4 class="viz-card-title">Embeddings</h4>
                 </div>
-                <p class="viz-card-description">Project MNIST and CIFAR-10 into 2D using PCA, t-SNE, and UMAP. Watch CNN embeddings evolve during training.</p>
+                <p class="viz-card-description">Project MNIST and CIFAR-10 embeddings into 2D using PCA, t-SNE, and UMAP. Watch the embeddings evolve during training.</p>
                 <div class="viz-card-tags">
                     
                     <span class="viz-tag">ML</span>
@@ -595,6 +533,27 @@
                     <span class="viz-tag">Inference</span>
                     
                     <span class="viz-tag">Knowledge</span>
+                    
+                </div>
+            </a>
+        </div>
+    </div>
+    
+    <div class="col-lg-3 col-md-6 col-sm-6 viz-card-wrapper" style="margin-bottom: 20px;" data-haystack="perceptron linear classifier learning rule decision boundary weights bias convergence non-separable">
+        <div class="viz-card">
+            <a href="perceptron.html" class="viz-card-link">
+                <div class="viz-card-header">
+                    <div class="viz-card-icon">
+                        <i class="fa fa-bullseye"></i>
+                    </div>
+                    <h4 class="viz-card-title">Perceptron Learning</h4>
+                </div>
+                <p class="viz-card-description">Watch a perceptron learn a linear decision boundary step-by-step. Explore convergence and failure on non-separable data.</p>
+                <div class="viz-card-tags">
+                    
+                    <span class="viz-tag">Classification</span>
+                    
+                    <span class="viz-tag">Linear Models</span>
                     
                 </div>
             </a>
@@ -740,8 +699,81 @@ window.addEventListener("load", function() {
 
 <div class="row">
     <div class="page-header">
+        <h2 id="courses"><i class="fa-solid fa-chalkboard-user"></i> Courses</h2>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-6 col-sm-12" style="margin-bottom: 30px;">
+        <h3 style="margin-top: 0; margin-bottom: 12px; font-weight: 600; text-align: center;">
+            <a href="https://10124.williamtheisen.com" class="course-title-link" target="_blank" rel="noopener">CSE 10124 &middot; Building ChatGPT</a>
+        </h3>
+        <div class="embed-responsive embed-responsive-16by9 course-embed">
+            <iframe
+                src="https://10124.williamtheisen.com"
+                title="Introductory AI Course Site"
+                loading="lazy"
+                class="embed-responsive-item"
+                allowfullscreen
+                tabindex="-1"
+                aria-hidden="true">
+            </iframe>
+            <a class="course-embed__overlay" href="https://10124.williamtheisen.com" target="_blank" rel="noopener" aria-label="Open the full CSE 10124 course website"></a>
+        </div>
+        
+        
+        <div style="color: #9a9a9a; font-size: 0.8em; margin-top: 10px;">
+            <strong>Changelog</strong>
+            <ul style="margin: 6px 0 0 18px;">
+            
+                <li class="text-muted">No recent updates.</li>
+            
+            </ul>
+        </div>
+    </div>
+    <div class="col-md-6 col-sm-12" style="margin-bottom: 30px;">
+        <h3 style="margin-top: 0; margin-bottom: 12px; font-weight: 600; text-align: center;">
+            <a href="https://30124.williamtheisen.com" class="course-title-link" target="_blank" rel="noopener">CSE 30124 &middot; Introduction to Artificial Intelligence</a>
+        </h3>
+        <div class="embed-responsive embed-responsive-16by9 course-embed">
+            <iframe
+                src="https://30124.williamtheisen.com"
+                title="Advanced AI Course Site"
+                loading="lazy"
+                class="embed-responsive-item"
+                allowfullscreen
+                tabindex="-1"
+                aria-hidden="true">
+            </iframe>
+            <a class="course-embed__overlay" href="https://30124.williamtheisen.com" target="_blank" rel="noopener" aria-label="Open the full CSE 30124 course website"></a>
+        </div>
+        
+        
+        <div style="color: #9a9a9a; font-size: 0.8em; margin-top: 10px;">
+            <strong>Changelog</strong>
+            <ul style="margin: 6px 0 0 18px;">
+            
+                <li class="text-muted">No recent updates.</li>
+            
+            </ul>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+<div class="row">
+    <div class="page-header">
         <h2 id="learning"><i class="fa-solid fa-brain"></i> Learning</h2>
     </div>
+</div>
+
+<div class="row">
+    <p style="margin-bottom: 24px;">
+        This is a list of the things I watch, read, or listen to that I find interesting!
+    </p>
 </div>
 
 
@@ -757,119 +789,154 @@ window.addEventListener("load", function() {
                 <ul class="list-group">
                 
                     
+    
+    
+    
+
+    
+        
+        <li class="list-group-item" style="display: flex; align-items: center; justify-content: space-between;">
+            <div style="display: flex; align-items: center;">
+                <i class="fa-solid fa-share-alt" style="margin-right: 10px; color: #4e73df;"></i>
+                <div>
                     
-                    <li class="list-group-item" style="display: flex; align-items: center; justify-content: space-between;">
-                        <div style="display: flex; align-items: center;">
-                            <i class="fa-solid fa-share-alt" style="margin-right: 10px; color: #4e73df;"></i>
-                            <div>
-                                
-                                    <a href="https://jalammar.github.io/illustrated-transformer/">Illustrated Transformer</a>
-                                
-                                
-                                    <div class="text-muted" style="font-size: 0.85em;">
-                                        Jay Alammar
-                                    </div>
-                                
-                            </div>
-                        </div>
+                        <a href="https://jalammar.github.io/illustrated-transformer/">Illustrated Transformer</a>
+                    
+                    
                         <div class="text-muted" style="font-size: 0.85em;">
-                            
-                                Jan 9, 2025
-                            
+                            Jay Alammar
                         </div>
-                    </li>
+                    
+                </div>
+            </div>
+            <div class="text-muted" style="font-size: 0.85em;">
+                
+                    Jan 9, 2025
+                
+            </div>
+        </li>
+    
+
                 
                     
+    
+    
+    
+
+    
+        
+        <li class="list-group-item" style="display: flex; align-items: center; justify-content: space-between;">
+            <div style="display: flex; align-items: center;">
+                <i class="fa-solid fa-video-camera" style="margin-right: 10px; color: #4e73df;"></i>
+                <div>
                     
-                    <li class="list-group-item" style="display: flex; align-items: center; justify-content: space-between;">
-                        <div style="display: flex; align-items: center;">
-                            <i class="fa-solid fa-video-camera" style="margin-right: 10px; color: #4e73df;"></i>
-                            <div>
-                                
-                                    <a href="https://www.youtube.com/watch?v=kCc8FmEb1nY">Building GPT from Scratch</a>
-                                
-                                
-                                    <div class="text-muted" style="font-size: 0.85em;">
-                                        Andrej Karpathy
-                                    </div>
-                                
-                            </div>
-                        </div>
+                        <a href="https://www.youtube.com/watch?v=kCc8FmEb1nY">Building GPT from Scratch</a>
+                    
+                    
                         <div class="text-muted" style="font-size: 0.85em;">
-                            
-                                Jan 4, 2025
-                            
+                            Andrej Karpathy
                         </div>
-                    </li>
+                    
+                </div>
+            </div>
+            <div class="text-muted" style="font-size: 0.85em;">
+                
+                    Jan 4, 2025
+                
+            </div>
+        </li>
+    
+
                 
                     
+    
+    
+    
+
+    
+        
+        <li class="list-group-item" style="display: flex; align-items: center; justify-content: space-between;">
+            <div style="display: flex; align-items: center;">
+                <i class="fa-solid fa-video-camera" style="margin-right: 10px; color: #4e73df;"></i>
+                <div>
                     
-                    <li class="list-group-item" style="display: flex; align-items: center; justify-content: space-between;">
-                        <div style="display: flex; align-items: center;">
-                            <i class="fa-solid fa-video-camera" style="margin-right: 10px; color: #4e73df;"></i>
-                            <div>
-                                
-                                    <a href="https://www.youtube.com/playlist?list=PLZHQObOWTQDNU6R1_67000Dx_ZCJB-3pi">3Blue1Brown Neural Networks</a>
-                                
-                                
-                                    <div class="text-muted" style="font-size: 0.85em;">
-                                        Grant Sanderson
-                                    </div>
-                                
-                            </div>
-                        </div>
+                        <a href="https://www.youtube.com/playlist?list=PLZHQObOWTQDNU6R1_67000Dx_ZCJB-3pi">3Blue1Brown Neural Networks</a>
+                    
+                    
                         <div class="text-muted" style="font-size: 0.85em;">
-                            
-                                Mar 9, 2024
-                            
+                            Grant Sanderson
                         </div>
-                    </li>
+                    
+                </div>
+            </div>
+            <div class="text-muted" style="font-size: 0.85em;">
+                
+                    Mar 9, 2024
+                
+            </div>
+        </li>
+    
+
                 
                     
+    
+    
+    
+
+    
+        
+        <li class="list-group-item" style="display: flex; align-items: center; justify-content: space-between;">
+            <div style="display: flex; align-items: center;">
+                <i class="fa-solid fa-book" style="margin-right: 10px; color: #4e73df;"></i>
+                <div>
                     
-                    <li class="list-group-item" style="display: flex; align-items: center; justify-content: space-between;">
-                        <div style="display: flex; align-items: center;">
-                            <i class="fa-solid fa-book" style="margin-right: 10px; color: #4e73df;"></i>
-                            <div>
-                                
-                                    <a href="http://neuralnetworksanddeeplearning.com/">Neural Networks and Deep Learning</a>
-                                
-                                
-                                    <div class="text-muted" style="font-size: 0.85em;">
-                                        Michael Nielsen
-                                    </div>
-                                
-                            </div>
-                        </div>
+                        <a href="http://neuralnetworksanddeeplearning.com/">Neural Networks and Deep Learning</a>
+                    
+                    
                         <div class="text-muted" style="font-size: 0.85em;">
-                            
-                                Feb 19, 2024
-                            
+                            Michael Nielsen
                         </div>
-                    </li>
+                    
+                </div>
+            </div>
+            <div class="text-muted" style="font-size: 0.85em;">
+                
+                    Feb 19, 2024
+                
+            </div>
+        </li>
+    
+
                 
                     
+    
+    
+    
+
+    
+        
+        <li class="list-group-item" style="display: flex; align-items: center; justify-content: space-between;">
+            <div style="display: flex; align-items: center;">
+                <i class="fa-solid fa-file-pdf" style="margin-right: 10px; color: #4e73df;"></i>
+                <div>
                     
-                    <li class="list-group-item" style="display: flex; align-items: center; justify-content: space-between;">
-                        <div style="display: flex; align-items: center;">
-                            <i class="fa-solid fa-file-pdf" style="margin-right: 10px; color: #4e73df;"></i>
-                            <div>
-                                
-                                    <a href="https://arxiv.org/abs/1706.03762">Attention Is All You Need</a>
-                                
-                                
-                                    <div class="text-muted" style="font-size: 0.85em;">
-                                        Vaswani et al.
-                                    </div>
-                                
-                            </div>
-                        </div>
+                        <a href="https://arxiv.org/abs/1706.03762">Attention Is All You Need</a>
+                    
+                    
                         <div class="text-muted" style="font-size: 0.85em;">
-                            
-                                Jan 14, 2024
-                            
+                            Vaswani et al.
                         </div>
-                    </li>
+                    
+                </div>
+            </div>
+            <div class="text-muted" style="font-size: 0.85em;">
+                
+                    Jan 14, 2024
+                
+            </div>
+        </li>
+    
+
                 
                 </ul>
             </div>
