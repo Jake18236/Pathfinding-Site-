@@ -11,7 +11,6 @@ Requires:
     - SHEETS_WEBHOOK_URL environment variable (Google Apps Script web app URL)
     - TWITTER_BEARER_TOKEN environment variable (for archive_tweet.py)
 """
-import csv
 import json
 import os
 import pathlib
@@ -21,7 +20,6 @@ import urllib.request
 
 ROOT = pathlib.Path(__file__).resolve().parents[1]
 ARCHIVER = ROOT / "scripts" / "archive_tweet.py"
-RESOURCES_CSV = ROOT / "static" / "csv" / "resources.csv"
 
 WEBHOOK_URL = os.environ.get("SHEETS_WEBHOOK_URL")
 SHARED_SECRET = os.environ.get("QUEUE_SHARED_SECRET", "")
@@ -84,65 +82,43 @@ def to_sheet_meta(arch_meta: dict) -> dict:
         "link":   arch_meta.get("url") or "",
     }
 
-def append_to_resources_csv(meta: dict) -> None:
-    """Append archived tweet to resources.csv for display in learning section."""
+def archive_to_sheets(meta: dict) -> None:
+    """Archive tweet to Google Sheets Resources tab via webhook."""
     # Parse the tweet date to get year for export_id
     tweet_date = meta.get("date", "")[:10]  # YYYY-MM-DD
     year = tweet_date[:4] if tweet_date else "2025"
 
-    # Build media paths as JSON for the notes field
+    # Build media paths as JSON
     images = meta.get("images", [])
     videos = meta.get("videos", [])
     media_json = json.dumps({"images": images, "videos": videos}) if (images or videos) else ""
 
-    # Escape tweet text for CSV (replace newlines, handle quotes)
+    # Clean tweet text (replace newlines with spaces)
     tweet_text = (meta.get("text") or "").replace("\n", " ").replace("\r", "")
 
-    row = {
+    payload = {
+        "action": "archive",
         "export_id": f"learning-{year}",
         "name": meta.get("name") or "",
         "type": "thread" if "Thread" in (meta.get("title") or "") else "tweet",
         "link": meta.get("url") or "",
         "author": meta.get("author") or "",
         "date_added": tweet_date,
-        "cover": "",
-        "checked_out": "",
-        "rating": "",
         "notes": tweet_text,
         "media": media_json,
     }
 
-    # Check if CSV exists and has headers
-    file_exists = RESOURCES_CSV.exists()
+    if SHARED_SECRET:
+        payload["secret"] = SHARED_SECRET
 
-    # Read existing rows to check for duplicates
-    if file_exists:
-        with open(RESOURCES_CSV, "r", encoding="utf-8", newline="") as f:
-            reader = csv.DictReader(f)
-            for existing in reader:
-                if existing.get("link") == row["link"]:
-                    print(f"[info] Tweet already in resources.csv, skipping: {row['link']}", file=sys.stderr)
-                    return
+    res = post_json(WEBHOOK_URL, payload)
 
-    # Get fieldnames from existing file or use defaults
-    fieldnames = ["export_id", "name", "type", "link", "author", "date_added", "cover", "checked_out", "rating", "notes", "media"]
-    if file_exists:
-        with open(RESOURCES_CSV, "r", encoding="utf-8", newline="") as f:
-            reader = csv.DictReader(f)
-            if reader.fieldnames:
-                # Add 'media' field if not present
-                fieldnames = list(reader.fieldnames)
-                if "media" not in fieldnames:
-                    fieldnames.append("media")
-
-    # Append row
-    with open(RESOURCES_CSV, "a", encoding="utf-8", newline="") as f:
-        writer = csv.DictWriter(f, fieldnames=fieldnames, extrasaction="ignore")
-        if not file_exists:
-            writer.writeheader()
-        writer.writerow(row)
-
-    print(f"[info] Added to resources.csv: {row['name'][:50]}...", file=sys.stderr)
+    if res.get("status") == "archived":
+        print(f"[info] Archived to Google Sheets: {payload['name'][:50]}...", file=sys.stderr)
+    elif res.get("status") == "duplicate":
+        print(f"[info] Tweet already in Sheets, skipping: {payload['link']}", file=sys.stderr)
+    else:
+        print(f"[warn] Failed to archive to Sheets: {res}", file=sys.stderr)
 
 def archive_url(url: str) -> dict | None:
     proc = subprocess.run(
@@ -198,8 +174,8 @@ def main():
             continue
 
         try:
-            # Add to resources.csv for display in learning section
-            append_to_resources_csv(meta)
+            # Archive to Google Sheets Resources tab
+            archive_to_sheets(meta)
 
             sheet_meta = to_sheet_meta(meta)
             complete_item(item_id, sheet_meta)

@@ -15,7 +15,10 @@
  */
 
 // Configuration
+// IMPORTANT: Replace with your Google Sheet ID (from the URL: docs.google.com/spreadsheets/d/SHEET_ID/edit)
+const SHEET_ID = 'YOUR_SHEET_ID_HERE';
 const SHEET_NAME = 'Queue';
+const RESOURCES_SHEET_NAME = 'Resources'; // Tab for archived tweets
 const VALID_URL_PATTERNS = [
   /^https?:\/\/(www\.)?(twitter\.com|x\.com)\/\w+\/status\/\d+/i,
   /^https?:\/\/(mobile\.)?(twitter\.com|x\.com)\/\w+\/status\/\d+/i
@@ -50,6 +53,8 @@ function doPost(e) {
         return releaseItem(data.id, data.secret);
       case 'fail':
         return failItem(data.id, data.error, data.secret);
+      case 'archive':
+        return archiveToResources(data);
       default:
         return jsonResponse({ error: 'Unknown action' }, 400);
     }
@@ -75,7 +80,7 @@ function addToQueue(url) {
     return jsonResponse({ error: 'Invalid Twitter/X URL' }, 400);
   }
 
-  const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(SHEET_NAME);
+  const sheet = SpreadsheetApp.openById(SHEET_ID).getSheetByName(SHEET_NAME);
   if (!sheet) {
     return jsonResponse({ error: 'Queue sheet not found' }, 500);
   }
@@ -109,7 +114,7 @@ function addToQueue(url) {
  * Claim the next pending item for processing
  */
 function claimItem(secret) {
-  const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(SHEET_NAME);
+  const sheet = SpreadsheetApp.openById(SHEET_ID).getSheetByName(SHEET_NAME);
   if (!sheet) {
     return jsonResponse({ error: 'Queue sheet not found' }, 500);
   }
@@ -149,7 +154,7 @@ function completeItem(id, meta, secret) {
     return jsonResponse({ error: 'Missing id parameter' }, 400);
   }
 
-  const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(SHEET_NAME);
+  const sheet = SpreadsheetApp.openById(SHEET_ID).getSheetByName(SHEET_NAME);
   if (!sheet) {
     return jsonResponse({ error: 'Queue sheet not found' }, 500);
   }
@@ -180,7 +185,7 @@ function releaseItem(id, secret) {
     return jsonResponse({ error: 'Missing id parameter' }, 400);
   }
 
-  const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(SHEET_NAME);
+  const sheet = SpreadsheetApp.openById(SHEET_ID).getSheetByName(SHEET_NAME);
   if (!sheet) {
     return jsonResponse({ error: 'Queue sheet not found' }, 500);
   }
@@ -207,7 +212,7 @@ function failItem(id, errorMsg, secret) {
     return jsonResponse({ error: 'Missing id parameter' }, 400);
   }
 
-  const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(SHEET_NAME);
+  const sheet = SpreadsheetApp.openById(SHEET_ID).getSheetByName(SHEET_NAME);
   if (!sheet) {
     return jsonResponse({ error: 'Queue sheet not found' }, 500);
   }
@@ -228,6 +233,49 @@ function failItem(id, errorMsg, secret) {
   }
 
   return jsonResponse({ error: 'Item not found' }, 404);
+}
+
+/**
+ * Archive a tweet to the Resources sheet
+ * Expected data: { export_id, name, type, link, author, date_added, notes, media }
+ */
+function archiveToResources(data) {
+  const sheet = SpreadsheetApp.openById(SHEET_ID).getSheetByName(RESOURCES_SHEET_NAME);
+  if (!sheet) {
+    return jsonResponse({ error: 'Resources sheet not found. Create a tab named "Resources" with headers: export_id, name, type, link, author, date_added, cover, checked_out, rating, notes, media' }, 500);
+  }
+
+  const link = data.link || '';
+  if (!link) {
+    return jsonResponse({ error: 'Missing link parameter' }, 400);
+  }
+
+  // Check for duplicates by link
+  const existingData = sheet.getDataRange().getValues();
+  for (let i = 1; i < existingData.length; i++) {
+    if (existingData[i][3] === link) { // link is column 4 (index 3)
+      return jsonResponse({ status: 'duplicate', message: 'Tweet already archived' });
+    }
+  }
+
+  // Append row: export_id, name, type, link, author, date_added, cover, checked_out, rating, notes, media
+  const row = [
+    data.export_id || '',
+    data.name || '',
+    data.type || 'tweet',
+    link,
+    data.author || '',
+    data.date_added || '',
+    '', // cover
+    '', // checked_out
+    '', // rating
+    data.notes || '',
+    data.media || ''
+  ];
+
+  sheet.appendRow(row);
+
+  return jsonResponse({ status: 'archived', link: link });
 }
 
 /**
