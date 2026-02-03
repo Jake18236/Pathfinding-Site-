@@ -324,7 +324,13 @@
             this.panY = 0;
 
             // Setup high-DPI canvas scaling using shared utility
-            const { dpr, logicalWidth, logicalHeight } = window.VizLib.CanvasUtils.setupHiDPICanvas(this.canvas);
+            const setupHiDPICanvas =
+                window.VizLib?.CanvasUtils?.setupHiDPICanvas ||
+                window.VizLib?.setupHiDPICanvas;
+            if (!setupHiDPICanvas) {
+                throw new Error('VizLib Canvas setup is not available');
+            }
+            const { dpr, logicalWidth, logicalHeight } = setupHiDPICanvas(this.canvas);
             this.dpr = dpr;
             this.logicalWidth = logicalWidth;
             this.logicalHeight = logicalHeight;
