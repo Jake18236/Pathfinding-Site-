@@ -4,6 +4,12 @@
     </div>
 </div>
 
+<div class="row">
+    <p style="margin-bottom: 24px;">
+        This is a list of the things I watch, read, or listen to that I find interesting!
+    </p>
+</div>
+
 {# Filter learning resources and sort by date #}
 {% set learning_entries = resources | filterLearning %}
 {% set sorted_learning = learning_entries | sortByKey('date_added_sort_key', true) %}

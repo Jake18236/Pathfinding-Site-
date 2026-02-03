@@ -56,16 +56,16 @@
     // Images are only loaded on first hover to improve initial load time
     const DATA_URLS = {
         mnist: {
-            raw: 'static/data/mnist-embeddings.json',
-            rawImages: 'static/data/mnist-embeddings-images.json',
-            cnn: 'static/data/mnist-training-embeddings.json',
-            cnnImages: 'static/data/mnist-training-embeddings-images.json'
+            raw: 'static/json/mnist-embeddings.json',
+            rawImages: 'static/json/mnist-embeddings-images.json',
+            cnn: 'static/json/mnist-training-embeddings.json',
+            cnnImages: 'static/json/mnist-training-embeddings-images.json'
         },
         cifar10: {
-            raw: 'static/data/cifar10-embeddings.json',
-            rawImages: 'static/data/cifar10-embeddings-images.json',
-            cnn: 'static/data/cifar10-training-embeddings.json',
-            cnnImages: 'static/data/cifar10-training-embeddings-images.json'
+            raw: 'static/json/cifar10-embeddings.json',
+            rawImages: 'static/json/cifar10-embeddings-images.json',
+            cnn: 'static/json/cifar10-training-embeddings.json',
+            cnnImages: 'static/json/cifar10-training-embeddings-images.json'
         }
     };
 
