@@ -346,12 +346,14 @@
 	    display: flex;
 	    flex-wrap: wrap;
 	    gap: 6px;
-	    margin-top: 8px;
+	    justify-content: center;
+	    padding: 0 12px;
+	    margin-bottom: 8px;
 	}
 	.learning-card-media img {
 	    max-width: 100%;
-	    max-height: 120px;
-	    border-radius: 4px;
+	    max-height: 150px;
+	    border-radius: 6px;
 	    object-fit: cover;
 	}
 	.learning-card-footer {
@@ -373,6 +375,14 @@
 	}
 	.learning-card-date {
 	    color: #777;
+	}
+	.learning-card-link {
+	    color: #666;
+	    font-size: 1.1em;
+	    transition: color 0.2s ease;
+	}
+	.learning-card-link:hover {
+	    color: #1da1f2;
 	}
 	/* Learning cards dark theme */
 	[data-theme="gruvbox-dark"] .learning-card {
@@ -408,6 +418,12 @@
 	}
 	[data-theme="gruvbox-dark"] .learning-card-date {
 	    color: #a89984;
+	}
+	[data-theme="gruvbox-dark"] .learning-card-link {
+	    color: #a89984;
+	}
+	[data-theme="gruvbox-dark"] .learning-card-link:hover {
+	    color: #83a598;
 	}
 	/* Video thumbnail styles */
 	.learning-card-thumbnail {

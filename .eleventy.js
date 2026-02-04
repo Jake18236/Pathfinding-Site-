@@ -125,6 +125,20 @@ module.exports = function(eleventyConfig) {
     }
   });
 
+  // Truncate to first N words
+  eleventyConfig.addFilter("truncateWords", function(str, count) {
+    if (!str) return '';
+    const words = str.trim().split(/\s+/);
+    if (words.length <= count) return str;
+    return words.slice(0, count).join(' ') + '...';
+  });
+
+  // Strip URLs from text
+  eleventyConfig.addFilter("stripUrls", function(str) {
+    if (!str) return '';
+    return str.replace(/https?:\/\/[^\s]+/g, '').trim();
+  });
+
   // Type icon mapping
   const TYPE_ICONS = {
     'book': 'fa-solid fa-book',

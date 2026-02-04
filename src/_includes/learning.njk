@@ -7,6 +7,9 @@
     {% set raw_type = item.type | default('') | trim %}
     {% set display_type = raw_type | replace('_', ' ') | title if raw_type else 'Resource' %}
     {% set search_blob = (display_name + ' ' + (item.author | default('')) + ' ' + display_type + ' ' + (item.notes | default(''))) | lower %}
+    {# For tweets: short title (first 3 words), strip URLs from notes #}
+    {% set tweet_title = display_name | stripUrls | truncateWords(3) if is_tweet else display_name %}
+    {% set tweet_text = item.notes | stripUrls if is_tweet else item.notes %}
 
     <div class="learning-card-wrapper" data-haystack="{{ search_blob }}">
         <div class="learning-card">
@@ -16,8 +19,10 @@
                 </div>
                 <div class="learning-card-title-group">
                     <h4 class="learning-card-title">
-                        {% if item.link %}
+                        {% if item.link and not is_tweet %}
                             <a href="{{ item.link }}" target="_blank" rel="noopener">{{ display_name }}</a>
+                        {% elif is_tweet %}
+                            {{ tweet_title }}
                         {% else %}
                             {{ display_name }}
                         {% endif %}
@@ -37,25 +42,32 @@
                     </a>
                 </div>
             {% endif %}
-            {% if item.notes or (is_tweet and item.media) %}
+            {% if is_tweet and item.media %}
+                {% set media_data = item.media | parseJson %}
+                {% if media_data and media_data.images and media_data.images.length > 0 %}
+                    <div class="learning-card-media">
+                        {% for img in media_data.images %}
+                            <img src="/static/img/tweets/{{ img }}" alt="Tweet media" loading="lazy">
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            {% endif %}
+            {% if (item.notes and not is_tweet) or (is_tweet and tweet_text) %}
                 <div class="learning-card-body">
-                    {% if item.notes %}
+                    {% if is_tweet %}
+                        <p>{{ tweet_text }}</p>
+                    {% elif item.notes %}
                         <p>{{ item.notes }}</p>
-                    {% endif %}
-                    {% if is_tweet and item.media %}
-                        {% set media_data = item.media | parseJson %}
-                        {% if media_data and media_data.images and media_data.images.length > 0 %}
-                            <div class="learning-card-media">
-                                {% for img in media_data.images %}
-                                    <img src="/static/img/tweets/{{ img }}" alt="Tweet media" loading="lazy">
-                                {% endfor %}
-                            </div>
-                        {% endif %}
                     {% endif %}
                 </div>
             {% endif %}
             <div class="learning-card-footer">
                 <span class="learning-card-type">{{ display_type }}</span>
+                {% if is_tweet and item.link %}
+                    <a href="{{ item.link }}" target="_blank" rel="noopener" class="learning-card-link" title="View on X">
+                        <i class="fa-brands fa-x-twitter"></i>
+                    </a>
+                {% endif %}
                 <span class="learning-card-date">
                     {% if item.date_added_display %}
                         {{ item.date_added_display }}
