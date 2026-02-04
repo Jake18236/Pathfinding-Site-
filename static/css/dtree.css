@@ -689,11 +689,46 @@
     color: var(--viz-text);
 }
 
+.math-class-dot {
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    margin-right: 3px;
+    vertical-align: middle;
+    border: 1px solid rgba(0, 0, 0, 0.2);
+}
+
+.math-sum-box {
+    display: inline-block;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-weight: 500;
+    margin: 0 2px;
+}
+
+.math-sum-parent {
+    background-color: rgba(106, 27, 154, 0.15);
+    border: 1px solid rgba(106, 27, 154, 0.3);
+}
+
+.math-sum-left {
+    background-color: rgba(46, 125, 50, 0.15);
+    border: 1px solid rgba(46, 125, 50, 0.3);
+}
+
+.math-sum-right {
+    background-color: rgba(21, 101, 192, 0.15);
+    border: 1px solid rgba(21, 101, 192, 0.3);
+}
+
 .math-formula {
     font-family: var(--viz-mono-font);
-    font-size: 12px;
+    font-size: 11px;
     color: var(--viz-text-muted);
     margin-top: 6px;
+    line-height: 1.6;
+    word-break: break-word;
 }
 
 .math-result {
@@ -705,22 +740,42 @@
     font-size: 14px;
 }
 
-.math-children-row {
-    display: flex;
-    gap: 8px;
-}
-
 .math-child-section {
-    flex: 1;
     margin-bottom: 8px;
 }
 
+.math-region-section {
+    border-radius: 6px;
+    padding: 10px 12px !important;
+    border-left-width: 4px !important;
+}
+
+.math-term {
+    display: inline-flex;
+    align-items: center;
+    white-space: nowrap;
+}
+
+.math-parent-title {
+    color: #6a1b9a;
+}
+
 .math-left-title {
-    color: var(--dtree-class-0);
+    color: #2e7d32;
+}
+
+.math-left-title::before {
+    content: "◀ ";
+    font-size: 10px;
 }
 
 .math-right-title {
-    color: var(--dtree-class-1);
+    color: #1565c0;
+}
+
+.math-right-title::before {
+    content: "▶ ";
+    font-size: 10px;
 }
 
 .math-child-section .math-section-title small {
@@ -745,6 +800,95 @@
     word-break: break-word;
 }
 
+.math-gain-weights {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 10px;
+    padding: 10px 12px;
+    background: var(--viz-bg-secondary, #f8f9fa);
+    border-radius: 4px;
+}
+
+.math-gain-weights > div {
+    color: var(--viz-text-muted);
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 4px;
+}
+
+.math-gain-weights strong {
+    color: var(--viz-text);
+}
+
+.math-fraction {
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+    vertical-align: middle;
+    margin: 0 4px;
+}
+
+.math-numerator {
+    border-bottom: 1px solid var(--viz-text-muted);
+    padding: 0 3px 1px;
+    line-height: 1.1;
+    font-size: 0.95em;
+}
+
+.math-denominator {
+    padding: 1px 3px 0;
+    line-height: 1.1;
+    font-size: 0.95em;
+}
+
+.math-formula-term {
+    white-space: nowrap;
+}
+
+.math-weight-left {
+    border-left: 3px solid #2e7d32;
+    padding-left: 8px;
+}
+
+.math-weight-right {
+    border-left: 3px solid #1565c0;
+    padding-left: 8px;
+}
+
+.math-symbol-left {
+    color: #2e7d32;
+    font-size: 10px;
+    margin-right: 4px;
+}
+
+.math-symbol-right {
+    color: #1565c0;
+    font-size: 10px;
+    margin-right: 4px;
+}
+
+.math-val-parent {
+    color: #6a1b9a;
+    font-weight: 600;
+}
+
+.math-val-left {
+    color: #2e7d32;
+    font-weight: 500;
+}
+
+.math-val-right {
+    color: #1565c0;
+    font-weight: 500;
+}
+
+.math-gain-calculation {
+    padding-left: 4px;
+    line-height: 1.8;
+}
+
 .math-gain-result {
     font-size: 14px;
     font-weight: 600;
@@ -756,6 +900,17 @@
 .math-gain-result strong {
     color: var(--dtree-class-1);
     font-size: 16px;
+}
+
+.math-reset-section {
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 1px solid var(--viz-border);
+    text-align: center;
+}
+
+.math-reset-section .btn {
+    font-size: 12px;
 }
 
 #tab-math .list-empty {

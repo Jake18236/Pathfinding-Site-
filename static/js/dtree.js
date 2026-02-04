@@ -1364,7 +1364,8 @@
         }
 
         // Decision boundary rendering using ImageData for pixel-perfect rendering
-        drawDecisionBoundary(solver, numClasses) {
+        // If selectedNode is provided, only show the boundary for that node's split (not descendants)
+        drawDecisionBoundary(solver, numClasses, selectedNode = null) {
             if (!this.boundaryCtx || !solver) return;
 
             const ctx = this.boundaryCtx;
@@ -1397,7 +1398,15 @@
                 for (let px = 0; px < plotW; px++) {
                     const x = px / (plotW - 1);
                     const y = 1 - py / (plotH - 1);
-                    const prediction = solver.predictFast({ x, y });
+
+                    let prediction;
+                    if (selectedNode) {
+                        // Simplified prediction: traverse tree but stop at selected node
+                        const root = solver.getTreeStructure();
+                        prediction = this._predictWithStopNode(root, { x, y }, selectedNode.id);
+                    } else {
+                        prediction = solver.predictFast({ x, y });
+                    }
                     const rgb = classRGB[prediction] || classRGB[0];
 
                     const idx = (py * plotW + px) * 4;
@@ -1409,6 +1418,38 @@
             }
 
             ctx.putImageData(imageData, plotStartX, plotStartY);
+        }
+
+        // Predict class traversing from root, but treating selectedNode's children as leaves
+        // This shows the boundary as if no splits exist below the selected node
+        _predictWithStopNode(root, point, stopNodeId) {
+            const traverse = (node) => {
+                if (!node) return 0;
+
+                // If this is a leaf, return its prediction
+                if (node.isLeaf) {
+                    return node.prediction ?? 0;
+                }
+
+                // If this is the stop node, go one more level but treat children as leaves
+                if (node.id === stopNodeId) {
+                    const goLeft = node.feature === 'x'
+                        ? point.x < node.threshold
+                        : point.y < node.threshold;
+                    const child = goLeft ? node.left : node.right;
+                    // Return the child's prediction directly (treat as leaf)
+                    return child?.prediction ?? 0;
+                }
+
+                // Normal traversal - continue down the tree
+                const goLeft = node.feature === 'x'
+                    ? point.x < node.threshold
+                    : point.y < node.threshold;
+
+                return traverse(goLeft ? node.left : node.right);
+            };
+
+            return traverse(root);
         }
 
         clearBoundary() {
@@ -1839,6 +1880,14 @@
             document.getElementById('show-boundaries')?.addEventListener('change', (e) => {
                 this.showBoundaries = e.target.checked;
                 this._updateBoundaries();
+            });
+
+            // Math tab reset button
+            document.getElementById('math-reset-btn')?.addEventListener('click', () => {
+                this.selectedMathNode = null;
+                this._clearMathTab();
+                this._updateMathNodeHighlight();
+                this._renderAll();
             });
 
             // Tree mode toggle
@@ -2272,7 +2321,8 @@
             if (this.showBoundaries) {
                 const currentSolver = this.treeMode === 'auto' ? this.solver : this.manualBuilder;
                 if (currentSolver.getTreeStructure()) {
-                    this.ui.drawDecisionBoundary(currentSolver, this.dataset.getNumClasses());
+                    // Pass selected math node to simplify boundary visualization
+                    this.ui.drawDecisionBoundary(currentSolver, this.dataset.getNumClasses(), this.selectedMathNode);
                 }
             } else {
                 this.ui.clearBoundary();
@@ -2493,31 +2543,75 @@
 
             // Parent section
             document.getElementById('math-parent-n').textContent = parentTotal;
-            document.getElementById('math-parent-classes').textContent = this._formatClassCounts(parentCounts);
-            document.getElementById('math-parent-formula').textContent = this._formatImpurityFormula(parentCounts, parentTotal, criterion);
+            document.getElementById('math-parent-classes').innerHTML = this._formatClassCounts(parentCounts);
+            document.getElementById('math-parent-formula').innerHTML = this._formatImpurityFormula(parentCounts, parentTotal, criterion);
             document.getElementById('math-parent-impurity').textContent = parentImpurity.toFixed(4);
 
+            // Determine region labels based on split feature
+            const isVerticalSplit = node.feature === 'x';
+            const leftLabel = isVerticalSplit ? 'Left Region' : 'Lower Region';
+            const rightLabel = isVerticalSplit ? 'Right Region' : 'Upper Region';
+
+            // Get the majority class for each child to determine background color
+            const leftMajority = node.left?.prediction ?? 0;
+            const rightMajority = node.right?.prediction ?? 0;
+            const colors = this.ui.classColors || ['#e41a1c', '#377eb8', '#4daf4a'];
+
             // Left child
+            document.getElementById('math-left-label').textContent = leftLabel;
             document.getElementById('math-left-condition').textContent = `(${node.feature.toUpperCase()} ≤ ${node.threshold.toFixed(2)})`;
             document.getElementById('math-left-n').textContent = leftTotal;
-            document.getElementById('math-left-classes').textContent = this._formatClassCounts(leftCounts);
-            document.getElementById('math-left-criterion').textContent = criterionSymbol;
+            document.getElementById('math-left-classes').innerHTML = this._formatClassCounts(leftCounts);
+            document.getElementById('math-left-formula').innerHTML = this._formatImpurityFormula(leftCounts, leftTotal, criterion);
             document.getElementById('math-left-impurity').textContent = leftImpurity.toFixed(4);
+            document.getElementById('math-left-section').style.backgroundColor = this._hexToRgba(colors[leftMajority], 0.15);
 
             // Right child
+            document.getElementById('math-right-label').textContent = rightLabel;
             document.getElementById('math-right-condition').textContent = `(${node.feature.toUpperCase()} > ${node.threshold.toFixed(2)})`;
             document.getElementById('math-right-n').textContent = rightTotal;
-            document.getElementById('math-right-classes').textContent = this._formatClassCounts(rightCounts);
-            document.getElementById('math-right-criterion').textContent = criterionSymbol;
+            document.getElementById('math-right-classes').innerHTML = this._formatClassCounts(rightCounts);
+            document.getElementById('math-right-formula').innerHTML = this._formatImpurityFormula(rightCounts, rightTotal, criterion);
             document.getElementById('math-right-impurity').textContent = rightImpurity.toFixed(4);
+            document.getElementById('math-right-section').style.backgroundColor = this._hexToRgba(colors[rightMajority], 0.15);
 
             // Information gain breakdown
             const gainBreakdown = document.getElementById('math-gain-breakdown');
             if (gainBreakdown) {
+                const leftSum = this._formatClassSum(leftCounts, 'math-sum-left');
+                const rightSum = this._formatClassSum(rightCounts, 'math-sum-right');
+                const parentSum = this._formatClassSum(parentCounts, 'math-sum-parent');
+
                 gainBreakdown.innerHTML = `
-                    ${criterionSymbol}<sub>parent</sub> − (w<sub>L</sub> × ${criterionSymbol}<sub>L</sub> + w<sub>R</sub> × ${criterionSymbol}<sub>R</sub>)<br>
-                    = ${parentImpurity.toFixed(4)} − (${leftWeight.toFixed(3)} × ${leftImpurity.toFixed(4)} + ${rightWeight.toFixed(3)} × ${rightImpurity.toFixed(4)})<br>
-                    = ${parentImpurity.toFixed(4)} − ${weightedImpurity.toFixed(4)}
+                    <div class="math-gain-weights">
+                        <div class="math-weight-left">
+                            <span class="math-symbol-left">◀</span> w<sub>L</sub> =
+                            <span class="math-fraction">
+                                <span class="math-numerator">n<sub>L</sub></span>
+                                <span class="math-denominator">n<sub>p</sub></span>
+                            </span> =
+                            <span class="math-fraction">
+                                <span class="math-numerator">${leftSum}</span>
+                                <span class="math-denominator">${parentSum}</span>
+                            </span> = <strong>${leftWeight.toFixed(3)}</strong>
+                        </div>
+                        <div class="math-weight-right">
+                            <span class="math-symbol-right">▶</span> w<sub>R</sub> =
+                            <span class="math-fraction">
+                                <span class="math-numerator">n<sub>R</sub></span>
+                                <span class="math-denominator">n<sub>p</sub></span>
+                            </span> =
+                            <span class="math-fraction">
+                                <span class="math-numerator">${rightSum}</span>
+                                <span class="math-denominator">${parentSum}</span>
+                            </span> = <strong>${rightWeight.toFixed(3)}</strong>
+                        </div>
+                    </div>
+                    <div class="math-gain-calculation">
+                        <span class="math-val-parent">${criterionSymbol}<sub>p</sub></span> − (<span class="math-val-left">w<sub>L</sub></span> × <span class="math-val-left">${criterionSymbol}<sub>L</sub></span> + <span class="math-val-right">w<sub>R</sub></span> × <span class="math-val-right">${criterionSymbol}<sub>R</sub></span>)<br>
+                        = <span class="math-val-parent">${parentImpurity.toFixed(4)}</span> − (<span class="math-val-left">${leftWeight.toFixed(3)}</span> × <span class="math-val-left">${leftImpurity.toFixed(4)}</span> + <span class="math-val-right">${rightWeight.toFixed(3)}</span> × <span class="math-val-right">${rightImpurity.toFixed(4)}</span>)<br>
+                        = <span class="math-val-parent">${parentImpurity.toFixed(4)}</span> − ${weightedImpurity.toFixed(4)}
+                    </div>
                 `;
             }
             document.getElementById('math-gain-value').textContent = gain.toFixed(4);
@@ -2585,29 +2679,73 @@
         _formatClassCounts(counts) {
             const parts = [];
             const sortedKeys = Object.keys(counts).sort((a, b) => parseInt(a) - parseInt(b));
+            const colors = this.ui.classColors || ['#e41a1c', '#377eb8', '#4daf4a'];
             for (const key of sortedKeys) {
-                parts.push(`C${parseInt(key) + 1}: ${counts[key]}`);
+                const classIdx = parseInt(key);
+                const color = colors[classIdx] || colors[0];
+                parts.push(`<span class="math-class-dot" style="background-color: ${color}"></span>${counts[key]}`);
             }
-            return `{${parts.join(', ')}}`;
+            return parts.join(' ');
+        }
+
+        // Format class counts as a summation with colored dots, wrapped in a colored box
+        _formatClassSum(counts, boxClass) {
+            const parts = [];
+            const sortedKeys = Object.keys(counts).sort((a, b) => parseInt(a) - parseInt(b));
+            const colors = this.ui.classColors || ['#e41a1c', '#377eb8', '#4daf4a'];
+            for (const key of sortedKeys) {
+                const classIdx = parseInt(key);
+                const color = colors[classIdx] || colors[0];
+                parts.push(`<span class="math-class-dot" style="background-color: ${color}"></span>${counts[key]}`);
+            }
+            return `<span class="math-sum-box ${boxClass}">${parts.join(' + ')}</span>`;
         }
 
         _formatImpurityFormula(counts, total, criterion) {
             if (total === 0) return '';
 
-            const probs = [];
             const sortedKeys = Object.keys(counts).sort((a, b) => parseInt(a) - parseInt(b));
+            const colors = this.ui.classColors || ['#e41a1c', '#377eb8', '#4daf4a'];
+            const terms = [];
+            const symbol = criterion === 'entropy' ? 'H' : 'G';
+
+            // Build denominator as sum of colored balls
+            const denomParts = [];
             for (const key of sortedKeys) {
-                const p = (counts[key] / total).toFixed(2);
-                probs.push(p);
+                const classIdx = parseInt(key);
+                const color = colors[classIdx] || colors[0];
+                const dot = `<span class="math-class-dot" style="background-color: ${color}"></span>`;
+                denomParts.push(`${dot}${counts[key]}`);
+            }
+            const denominator = denomParts.join('+');
+
+            for (const key of sortedKeys) {
+                const classIdx = parseInt(key);
+                const color = colors[classIdx] || colors[0];
+                const count = counts[key];
+                const dot = `<span class="math-class-dot" style="background-color: ${color}"></span>`;
+                const fraction = `<span class="math-fraction"><span class="math-numerator">${dot}${count}</span><span class="math-denominator">${denominator}</span></span>`;
+
+                if (criterion === 'entropy') {
+                    terms.push(`<span class="math-term">${fraction}·log₂${fraction}</span>`);
+                } else {
+                    terms.push(`<span class="math-term">${fraction}²</span>`);
+                }
             }
 
             if (criterion === 'entropy') {
-                const terms = probs.map(p => `${p}·log₂(${p})`).join(' + ');
-                return `H = −(${terms})`;
+                return `${symbol} = −(${terms.join(' + ')})`;
             } else {
-                const terms = probs.map(p => `${p}²`).join(' + ');
-                return `G = 1 − (${terms})`;
+                return `${symbol} = 1 − (${terms.join(' + ')})`;
             }
+        }
+
+        _hexToRgba(hex, alpha) {
+            const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+            if (result) {
+                return `rgba(${parseInt(result[1], 16)}, ${parseInt(result[2], 16)}, ${parseInt(result[3], 16)}, ${alpha})`;
+            }
+            return `rgba(128, 128, 128, ${alpha})`;
         }
     }
 

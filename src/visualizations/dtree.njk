@@ -89,8 +89,8 @@ cardOrder: 4
                         <div class="option-row">
                             <label>Criterion:</label>
                             <select id="criterion-select" class="form-control input-sm">
-                                <option value="gini" selected>Gini Impurity</option>
-                                <option value="entropy">Entropy</option>
+                                <option value="gini">Gini Impurity</option>
+                                <option value="entropy" selected>Entropy (Info Gain)</option>
                             </select>
                         </div>
                     </div>
@@ -224,11 +224,11 @@ cardOrder: 4
                                     </div>
                                 </div>
 
-                                <div class="math-section">
-                                    <div class="math-section-title">Parent Node</div>
+                                <div class="math-section math-parent-section">
+                                    <div class="math-section-title math-parent-title">● Parent Node</div>
                                     <div class="math-stats">
                                         <span class="math-stat">n = <strong id="math-parent-n">0</strong></span>
-                                        <span class="math-stat">Classes: <code id="math-parent-classes">{}</code></span>
+                                        <span class="math-stat">Classes: <span id="math-parent-classes">{}</span></span>
                                     </div>
                                     <div class="math-formula">
                                         <span id="math-parent-formula"></span>
@@ -236,35 +236,31 @@ cardOrder: 4
                                     </div>
                                 </div>
 
-                                <div class="math-children-row">
-                                    <div class="math-section math-child-section">
-                                        <div class="math-section-title math-left-title">
-                                            Left Child <small id="math-left-condition"></small>
-                                        </div>
-                                        <div class="math-stats">
-                                            <span class="math-stat">n = <strong id="math-left-n">0</strong></span>
-                                        </div>
-                                        <div class="math-stats">
-                                            <code id="math-left-classes">{}</code>
-                                        </div>
-                                        <div class="math-formula">
-                                            <span class="math-result"><span id="math-left-criterion">G</span> = <strong id="math-left-impurity">0</strong></span>
-                                        </div>
+                                <div id="math-left-section" class="math-section math-child-section math-region-section">
+                                    <div class="math-section-title math-left-title">
+                                        <span id="math-left-label">Left Region</span> <small id="math-left-condition"></small>
                                     </div>
+                                    <div class="math-stats">
+                                        <span class="math-stat">n = <strong id="math-left-n">0</strong></span>
+                                        <span class="math-stat">Classes: <span id="math-left-classes">{}</span></span>
+                                    </div>
+                                    <div class="math-formula">
+                                        <span id="math-left-formula"></span>
+                                        <span class="math-result">= <strong id="math-left-impurity">0</strong></span>
+                                    </div>
+                                </div>
 
-                                    <div class="math-section math-child-section">
-                                        <div class="math-section-title math-right-title">
-                                            Right Child <small id="math-right-condition"></small>
-                                        </div>
-                                        <div class="math-stats">
-                                            <span class="math-stat">n = <strong id="math-right-n">0</strong></span>
-                                        </div>
-                                        <div class="math-stats">
-                                            <code id="math-right-classes">{}</code>
-                                        </div>
-                                        <div class="math-formula">
-                                            <span class="math-result"><span id="math-right-criterion">G</span> = <strong id="math-right-impurity">0</strong></span>
-                                        </div>
+                                <div id="math-right-section" class="math-section math-child-section math-region-section">
+                                    <div class="math-section-title math-right-title">
+                                        <span id="math-right-label">Right Region</span> <small id="math-right-condition"></small>
+                                    </div>
+                                    <div class="math-stats">
+                                        <span class="math-stat">n = <strong id="math-right-n">0</strong></span>
+                                        <span class="math-stat">Classes: <span id="math-right-classes">{}</span></span>
+                                    </div>
+                                    <div class="math-formula">
+                                        <span id="math-right-formula"></span>
+                                        <span class="math-result">= <strong id="math-right-impurity">0</strong></span>
                                     </div>
                                 </div>
 
@@ -276,6 +272,12 @@ cardOrder: 4
                                             Gain = <strong id="math-gain-value">0</strong>
                                         </div>
                                     </div>
+                                </div>
+
+                                <div class="math-reset-section">
+                                    <button id="math-reset-btn" class="btn btn-sm btn-default">
+                                        <i class="fa fa-undo"></i> Reset View
+                                    </button>
                                 </div>
                             </div>
                         </div>
