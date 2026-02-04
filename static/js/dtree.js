@@ -2021,9 +2021,13 @@
                 return;
             }
 
-            // Don't classify if clicking on a split line (user might be trying to drag)
-            if (this.editMode === 'classify' && this._getSplitLineAtPosition(coords)) {
-                return;
+            // Check if clicking on a split line - select it for math tab
+            if (this.editMode === 'classify') {
+                const splitLine = this._getSplitLineAtPosition(coords);
+                if (splitLine) {
+                    this._selectSplitForMath(splitLine.nodeId);
+                    return;
+                }
             }
 
             switch (this.editMode) {
@@ -2276,7 +2280,7 @@
         _getSplitLineAtPosition(coords) {
             const currentSolver = this.treeMode === 'auto' ? this.solver : this.manualBuilder;
             const splitLines = currentSolver.getSplitLines();
-            const threshold = 0.02; // Distance threshold for detecting hover
+            const threshold = 0.08; // Distance threshold for detecting hover/click on split lines (larger = easier to click)
 
             for (const line of splitLines) {
                 const { feature, threshold: splitValue, bounds, nodeId } = line;
@@ -2369,6 +2373,18 @@
         // Math Tab
         // ============================================
 
+        _selectSplitForMath(nodeId) {
+            const currentSolver = this.treeMode === 'auto' ? this.solver : this.manualBuilder;
+            const node = this._findNodeById(currentSolver.getTreeStructure(), nodeId);
+
+            if (node && !node.isLeaf) {
+                this.selectedMathNode = node;
+                this._updateMathTab(nodeId);
+                this._updateMathNodeHighlight();
+                this._renderAll();
+            }
+        }
+
         _handleMathNodeClick(node) {
             if (node.isLeaf) {
                 // Clear math tab for leaf nodes
@@ -2396,7 +2412,7 @@
             }
         }
 
-        _clearMathTab(message = 'Click a split node in the tree to see calculations') {
+        _clearMathTab(message = 'Click a split line on the canvas to see calculations') {
             const emptyEl = document.getElementById('math-empty');
             const detailsEl = document.getElementById('math-details');
 
