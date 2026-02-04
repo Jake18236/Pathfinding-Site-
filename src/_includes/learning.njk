@@ -1,61 +1,58 @@
-{# Macro to render a single learning item - handles both regular items and tweets #}
-{% macro renderItem(item) %}
+{# Macro to render a single learning item as a card #}
+{% macro renderCard(item) %}
     {% set display_name = item.name | default('') | trim %}
     {% set icon_class = item.type | typeIcon %}
     {% set is_tweet = item.type == 'tweet' or item.type == 'thread' %}
+    {% set raw_type = item.type | default('') | trim %}
+    {% set display_type = raw_type | replace('_', ' ') | title if raw_type else 'Resource' %}
+    {% set search_blob = (display_name + ' ' + (item.author | default('')) + ' ' + display_type + ' ' + (item.notes | default(''))) | lower %}
 
-    {% if is_tweet %}
-        {# Tweet/Thread inline card #}
-        <li class="list-group-item tweet-card">
-            <div class="tweet-header">
-                <i class="{{ icon_class }}" style="margin-right: 8px; color: #1da1f2;"></i>
-                <a href="{{ item.link }}" target="_blank" rel="noopener" class="tweet-author">{{ item.author | default('') | trim }}</a>
-                <span class="tweet-date text-muted">{{ item.date_added_display }}</span>
-            </div>
-            <div class="tweet-content">
-                {{ item.notes | default(display_name) }}
-            </div>
-            {% if item.media %}
-                {% set media_data = item.media | parseJson %}
-                {% if media_data and media_data.images and media_data.images.length > 0 %}
-                    <div class="tweet-media">
-                        {% for img in media_data.images %}
-                            <img src="/static/img/tweets/{{ img }}" alt="Tweet media" class="tweet-image" loading="lazy">
-                        {% endfor %}
-                    </div>
-                {% endif %}
-            {% endif %}
-            <div class="tweet-footer">
-                <a href="{{ item.link }}" target="_blank" rel="noopener" class="tweet-link">
-                    <i class="fa-solid fa-arrow-up-right-from-square"></i> View original
-                </a>
-            </div>
-        </li>
-    {% else %}
-        {# Regular item #}
-        <li class="list-group-item" style="display: flex; align-items: center; justify-content: space-between;">
-            <div style="display: flex; align-items: center;">
-                <i class="{{ icon_class }}" style="margin-right: 10px; color: #4e73df;"></i>
-                <div>
-                    {% if item.link %}
-                        <a href="{{ item.link }}">{{ display_name }}</a>
-                    {% else %}
-                        {{ display_name }}
-                    {% endif %}
+    <div class="learning-card-wrapper" data-haystack="{{ search_blob }}">
+        <div class="learning-card">
+            <div class="learning-card-header">
+                <div class="learning-card-icon{{ ' tweet-icon' if is_tweet else '' }}">
+                    <i class="{{ icon_class }}"></i>
+                </div>
+                <div class="learning-card-title-group">
+                    <h4 class="learning-card-title">
+                        {% if item.link %}
+                            <a href="{{ item.link }}" target="_blank" rel="noopener">{{ display_name }}</a>
+                        {% else %}
+                            {{ display_name }}
+                        {% endif %}
+                    </h4>
                     {% if item.author or item.student %}
-                        <div class="text-muted" style="font-size: 0.85em;">
-                            {{ item.author | default(item.student) | trim }}
-                        </div>
+                        <p class="learning-card-author">{{ item.author | default(item.student) | trim }}</p>
                     {% endif %}
                 </div>
             </div>
-            <div class="text-muted" style="font-size: 0.85em;">
-                {% if item.date_added_display %}
-                    {{ item.date_added_display }}
-                {% endif %}
+            {% if item.notes or (is_tweet and item.media) %}
+                <div class="learning-card-body">
+                    {% if item.notes %}
+                        <p>{{ item.notes }}</p>
+                    {% endif %}
+                    {% if is_tweet and item.media %}
+                        {% set media_data = item.media | parseJson %}
+                        {% if media_data and media_data.images and media_data.images.length > 0 %}
+                            <div class="learning-card-media">
+                                {% for img in media_data.images %}
+                                    <img src="/static/img/tweets/{{ img }}" alt="Tweet media" loading="lazy">
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    {% endif %}
+                </div>
+            {% endif %}
+            <div class="learning-card-footer">
+                <span class="learning-card-type">{{ display_type }}</span>
+                <span class="learning-card-date">
+                    {% if item.date_added_display %}
+                        {{ item.date_added_display }}
+                    {% endif %}
+                </span>
             </div>
-        </li>
-    {% endif %}
+        </div>
+    </div>
 {% endmacro %}
 
 <div class="row">
@@ -76,6 +73,19 @@
 {% set current_year = '' | currentYear %}
 
 {% if sorted_learning | length > 0 %}
+    {# Search input #}
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="form-group" style="margin-bottom: 20px;">
+                <label for="learning-search" class="sr-only">Search learning resources</label>
+                <div class="input-group">
+                    <span class="input-group-addon"><i class="fa fa-search"></i></span>
+                    <input type="text" id="learning-search" class="form-control" placeholder="Search learning resources by title, author, type, or notes&hellip;">
+                </div>
+            </div>
+        </div>
+    </div>
+
     {% if sorted_learning | length > 5 %}
         {# Group by year #}
         {% set grouped_learning = sorted_learning | groupByYear %}
@@ -87,41 +97,25 @@
                 {% for year in ordered_years %}
                     {% set year_slug = 'learning-year-' + (year | slugify) %}
                     {% set year_entries = grouped_learning[year] %}
-                    {% set preview_list = year_entries | slice(0, 5) %}
-                    {% set remaining_list = year_entries | slice(5) %}
-                    {% set collapse_class = 'in' if (year | string) == (current_year | string) else '' %}
+                    {% set is_current_year = (year | string) == (current_year | string) %}
+                    {% set collapse_class = 'in' if is_current_year else '' %}
 
                     <div class="panel panel-default" style="border-radius: 4px; overflow: hidden; margin-bottom: 10px;">
                         <div class="panel-heading" role="tab" id="{{ year_slug }}-heading" style="padding: 0;">
-                            <button class="btn btn-link btn-block" type="button" data-toggle="collapse" data-target="#{{ year_slug }}" aria-expanded="false" aria-controls="{{ year_slug }}" style="text-align: left; padding: 12px 15px;">
-                                {{ year }}
+                            <button class="btn btn-link btn-block" type="button" data-toggle="collapse" data-target="#{{ year_slug }}" aria-expanded="{{ 'true' if is_current_year else 'false' }}" aria-controls="{{ year_slug }}" style="text-align: left; padding: 12px 15px;">
+                                {{ year }} <span class="badge">{{ year_entries | length }}</span>
                                 <i class="fa fa-caret-down pull-right"></i>
                             </button>
                         </div>
                         <div id="{{ year_slug }}" class="panel-collapse collapse {{ collapse_class }}" role="tabpanel" aria-labelledby="{{ year_slug }}-heading">
-                            <ul class="list-group" style="margin-bottom: 0;">
-                            {% for item in preview_list %}
-                                {{ renderItem(item) }}
+                            <div class="learning-card-container" style="padding: 12px;">
+                            {% for item in year_entries %}
+                                {{ renderCard(item) }}
                             {% endfor %}
-                            {% if preview_list | length == 0 %}
-                                <li class="list-group-item text-muted">No learning resources recorded for {{ year }}.</li>
+                            {% if year_entries | length == 0 %}
+                                <p class="text-muted">No learning resources recorded for {{ year }}.</p>
                             {% endif %}
-                            </ul>
-                            {% if remaining_list | length > 0 %}
-                                <div style="display: flex; justify-content: center; margin-top: 10px;">
-                                    <button class="btn btn-link btn-sm" type="button" data-toggle="collapse" data-target="#{{ year_slug }}-full" aria-expanded="false" aria-controls="{{ year_slug }}-full">
-                                        Show all {{ year }} learning resources
-                                        <i class="fa fa-caret-down"></i>
-                                    </button>
-                                </div>
-                                <div class="collapse" id="{{ year_slug }}-full" style="margin-top: 10px;">
-                                    <ul class="list-group" style="margin-bottom: 0;">
-                                    {% for item in remaining_list %}
-                                        {{ renderItem(item) }}
-                                    {% endfor %}
-                                    </ul>
-                                </div>
-                            {% endif %}
+                            </div>
                         </div>
                     </div>
                 {% endfor %}
@@ -129,17 +123,35 @@
             </div>
         </div>
     {% else %}
-        {# Simple list for 5 or fewer items #}
+        {# Simple card grid for 5 or fewer items #}
         <div class="row">
             <div class="col-sm-12">
-                <ul class="list-group">
+                <div class="learning-card-container">
                 {% for item in sorted_learning %}
-                    {{ renderItem(item) }}
+                    {{ renderCard(item) }}
                 {% endfor %}
-                </ul>
+                </div>
             </div>
         </div>
     {% endif %}
+
+    <script>
+    window.addEventListener("load", function() {
+        if (window.jQuery) {
+            var $learningCards = window.jQuery('.learning-card-wrapper');
+            window.jQuery('#learning-search').on('input', function() {
+                var term = window.jQuery(this).val().toLowerCase().trim();
+                $learningCards.each(function() {
+                    var $card = window.jQuery(this);
+                    var haystack = ($card.data('haystack') || '').toString();
+                    var fallback = $card.text().toLowerCase();
+                    var matches = term === '' || haystack.indexOf(term) !== -1 || fallback.indexOf(term) !== -1;
+                    $card.toggle(matches);
+                });
+            });
+        }
+    });
+    </script>
 {% else %}
     <div class="row">
         <div class="col-sm-12">

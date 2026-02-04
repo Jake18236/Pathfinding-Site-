@@ -243,6 +243,168 @@
 	[data-theme="gruvbox-dark"] .library-card-meta {
 	    color: #d5c4a1;
 	}
+	/* Learning cards */
+	.learning-card-container {
+	    display: flex;
+	    flex-wrap: wrap;
+	    gap: 16px;
+	    margin-top: 10px;
+	}
+	.learning-card-wrapper {
+	    flex: 1 1 calc(25% - 16px);
+	    max-width: calc(25% - 16px);
+	    min-width: 220px;
+	    display: flex;
+	}
+	@media (max-width: 991px) {
+	    .learning-card-wrapper {
+	        flex: 1 1 calc(50% - 16px);
+	        max-width: calc(50% - 16px);
+	    }
+	}
+	@media (max-width: 575px) {
+	    .learning-card-wrapper {
+	        flex: 1 1 100%;
+	        max-width: 100%;
+	    }
+	}
+	.learning-card {
+	    display: flex;
+	    flex-direction: column;
+	    width: 100%;
+	    border-radius: 6px;
+	    border: 1px solid #ddd;
+	    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+	    overflow: hidden;
+	    background-color: #fff;
+	    color: #333;
+	    transition: transform 0.2s ease, box-shadow 0.2s ease;
+	}
+	.learning-card:hover {
+	    transform: translateY(-2px);
+	    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+	}
+	.learning-card-header {
+	    display: flex;
+	    align-items: flex-start;
+	    gap: 12px;
+	    padding: 12px 12px 8px 12px;
+	}
+	.learning-card-icon {
+	    width: 36px;
+	    height: 36px;
+	    border-radius: 6px;
+	    background: #4e73df;
+	    display: flex;
+	    align-items: center;
+	    justify-content: center;
+	    flex-shrink: 0;
+	}
+	.learning-card-icon i {
+	    font-size: 16px;
+	    color: #fff;
+	}
+	.learning-card-icon.tweet-icon {
+	    background: #1da1f2;
+	}
+	.learning-card-title-group {
+	    flex: 1;
+	    min-width: 0;
+	}
+	.learning-card-title {
+	    margin: 0 0 4px 0;
+	    font-size: 0.92em;
+	    font-weight: 600;
+	    line-height: 1.35;
+	}
+	.learning-card-title a {
+	    color: inherit;
+	    text-decoration: none;
+	}
+	.learning-card-title a:hover {
+	    text-decoration: underline;
+	}
+	.learning-card-author {
+	    font-size: 0.82em;
+	    color: #666;
+	    margin: 0;
+	}
+	.learning-card-body {
+	    flex: 1 1 auto;
+	    padding: 0 12px 12px 12px;
+	    font-size: 0.85em;
+	    color: #555;
+	    line-height: 1.5;
+	}
+	.learning-card-body p {
+	    margin: 0;
+	}
+	.learning-card-media {
+	    display: flex;
+	    flex-wrap: wrap;
+	    gap: 6px;
+	    margin-top: 8px;
+	}
+	.learning-card-media img {
+	    max-width: 100%;
+	    max-height: 120px;
+	    border-radius: 4px;
+	    object-fit: cover;
+	}
+	.learning-card-footer {
+	    display: flex;
+	    align-items: center;
+	    justify-content: space-between;
+	    padding: 8px 12px;
+	    border-top: 1px solid #eee;
+	    font-size: 0.78em;
+	}
+	.learning-card-type {
+	    padding: 2px 8px;
+	    border-radius: 4px;
+	    background: #f0f0f5;
+	    color: #555;
+	    font-weight: 500;
+	    text-transform: capitalize;
+	}
+	.learning-card-date {
+	    color: #777;
+	}
+	/* Learning cards dark theme */
+	[data-theme="gruvbox-dark"] .learning-card {
+	    border-color: #504945;
+	    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.45);
+	    background-color: #282828;
+	    color: #ebdbb2;
+	}
+	[data-theme="gruvbox-dark"] .learning-card:hover {
+	    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.55);
+	}
+	[data-theme="gruvbox-dark"] .learning-card-icon {
+	    background: #458588;
+	}
+	[data-theme="gruvbox-dark"] .learning-card-icon.tweet-icon {
+	    background: #83a598;
+	}
+	[data-theme="gruvbox-dark"] .learning-card-title {
+	    color: #ebdbb2;
+	}
+	[data-theme="gruvbox-dark"] .learning-card-author {
+	    color: #a89984;
+	}
+	[data-theme="gruvbox-dark"] .learning-card-body {
+	    color: #bdae93;
+	}
+	[data-theme="gruvbox-dark"] .learning-card-footer {
+	    border-top-color: #504945;
+	}
+	[data-theme="gruvbox-dark"] .learning-card-type {
+	    background: #3c3836;
+	    color: #bdae93;
+	}
+	[data-theme="gruvbox-dark"] .learning-card-date {
+	    color: #a89984;
+	}
 	.embed-responsive {
  	    border-radius: 8px;
  	    border: 1px solid rgba(30, 41, 59, 0.18);
@@ -783,165 +945,379 @@ window.addEventListener("load", function() {
 
 
     
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="form-group" style="margin-bottom: 20px;">
+                <label for="learning-search" class="sr-only">Search learning resources</label>
+                <div class="input-group">
+                    <span class="input-group-addon"><i class="fa fa-search"></i></span>
+                    <input type="text" id="learning-search" class="form-control" placeholder="Search learning resources by title, author, type, or notes&hellip;">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    
         
-        <div class="row">
+        
+        
+
+        <div class="row" style="margin-top: 15px;">
             <div class="col-sm-12">
-                <ul class="list-group">
+                <div class="panel-group" id="learning-archive" role="tablist">
                 
                     
+                    
+                    
+                    
+
+                    <div class="panel panel-default" style="border-radius: 4px; overflow: hidden; margin-bottom: 10px;">
+                        <div class="panel-heading" role="tab" id="learning-year-2026-heading" style="padding: 0;">
+                            <button class="btn btn-link btn-block" type="button" data-toggle="collapse" data-target="#learning-year-2026" aria-expanded="true" aria-controls="learning-year-2026" style="text-align: left; padding: 12px 15px;">
+                                2026 <span class="badge">1</span>
+                                <i class="fa fa-caret-down pull-right"></i>
+                            </button>
+                        </div>
+                        <div id="learning-year-2026" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="learning-year-2026-heading">
+                            <div class="learning-card-container" style="padding: 12px;">
+                            
+                                
+    
+    
+    
     
     
     
 
-    
-        
-        <li class="list-group-item" style="display: flex; align-items: center; justify-content: space-between;">
-            <div style="display: flex; align-items: center;">
-                <i class="fa-solid fa-share-alt" style="margin-right: 10px; color: #4e73df;"></i>
-                <div>
+    <div class="learning-card-wrapper" data-haystack="i found the model weights for opus 4.5 and i have to say it looks very impressive https://t.co/rqttntybxv @djcows tweet i found the model weights for opus 4.5 and i have to say it looks very impressive https://t.co/rqttntybxv">
+        <div class="learning-card">
+            <div class="learning-card-header">
+                <div class="learning-card-icon tweet-icon">
+                    <i class="fa-brands fa-square-x-twitter"></i>
+                </div>
+                <div class="learning-card-title-group">
+                    <h4 class="learning-card-title">
+                        
+                            <a href="https://x.com/djcows/status/2018426286071296246?s=12" target="_blank" rel="noopener">i found the model weights for opus 4.5 and i have to say it looks very impressive https://t.co/rQTtnTYBxV</a>
+                        
+                    </h4>
                     
-                        <a href="https://jalammar.github.io/illustrated-transformer/">Illustrated Transformer</a>
-                    
-                    
-                        <div class="text-muted" style="font-size: 0.85em;">
-                            Jay Alammar
-                        </div>
+                        <p class="learning-card-author">@djcows</p>
                     
                 </div>
             </div>
-            <div class="text-muted" style="font-size: 0.85em;">
-                
-                    Jan 9, 2025
-                
+            
+                <div class="learning-card-body">
+                    
+                        <p>i found the model weights for opus 4.5 and i have to say it looks very impressive https://t.co/rQTtnTYBxV</p>
+                    
+                    
+                </div>
+            
+            <div class="learning-card-footer">
+                <span class="learning-card-type">Tweet</span>
+                <span class="learning-card-date">
+                    
+                        Feb 1, 2026
+                    
+                </span>
             </div>
-        </li>
-    
+        </div>
+    </div>
 
+                            
+                            
+                            </div>
+                        </div>
+                    </div>
                 
                     
+                    
+                    
+                    
+
+                    <div class="panel panel-default" style="border-radius: 4px; overflow: hidden; margin-bottom: 10px;">
+                        <div class="panel-heading" role="tab" id="learning-year-2025-heading" style="padding: 0;">
+                            <button class="btn btn-link btn-block" type="button" data-toggle="collapse" data-target="#learning-year-2025" aria-expanded="false" aria-controls="learning-year-2025" style="text-align: left; padding: 12px 15px;">
+                                2025 <span class="badge">2</span>
+                                <i class="fa fa-caret-down pull-right"></i>
+                            </button>
+                        </div>
+                        <div id="learning-year-2025" class="panel-collapse collapse " role="tabpanel" aria-labelledby="learning-year-2025-heading">
+                            <div class="learning-card-container" style="padding: 12px;">
+                            
+                                
+    
+    
+    
     
     
     
 
-    
-        
-        <li class="list-group-item" style="display: flex; align-items: center; justify-content: space-between;">
-            <div style="display: flex; align-items: center;">
-                <i class="fa-solid fa-video-camera" style="margin-right: 10px; color: #4e73df;"></i>
-                <div>
+    <div class="learning-card-wrapper" data-haystack="illustrated transformer jay alammar blogpost visual guide to transformer architecture">
+        <div class="learning-card">
+            <div class="learning-card-header">
+                <div class="learning-card-icon">
+                    <i class="fa-solid fa-share-alt"></i>
+                </div>
+                <div class="learning-card-title-group">
+                    <h4 class="learning-card-title">
+                        
+                            <a href="https://jalammar.github.io/illustrated-transformer/" target="_blank" rel="noopener">Illustrated Transformer</a>
+                        
+                    </h4>
                     
-                        <a href="https://www.youtube.com/watch?v=kCc8FmEb1nY">Building GPT from Scratch</a>
-                    
-                    
-                        <div class="text-muted" style="font-size: 0.85em;">
-                            Andrej Karpathy
-                        </div>
+                        <p class="learning-card-author">Jay Alammar</p>
                     
                 </div>
             </div>
-            <div class="text-muted" style="font-size: 0.85em;">
-                
-                    Jan 4, 2025
-                
+            
+                <div class="learning-card-body">
+                    
+                        <p>Visual guide to transformer architecture</p>
+                    
+                    
+                </div>
+            
+            <div class="learning-card-footer">
+                <span class="learning-card-type">Blogpost</span>
+                <span class="learning-card-date">
+                    
+                        Jan 9, 2025
+                    
+                </span>
             </div>
-        </li>
+        </div>
+    </div>
+
+                            
+                                
+    
+    
+    
+    
+    
     
 
-                
+    <div class="learning-card-wrapper" data-haystack="building gpt from scratch andrej karpathy video let&#39;s build gpt: from scratch in code">
+        <div class="learning-card">
+            <div class="learning-card-header">
+                <div class="learning-card-icon">
+                    <i class="fa-solid fa-video-camera"></i>
+                </div>
+                <div class="learning-card-title-group">
+                    <h4 class="learning-card-title">
+                        
+                            <a href="https://www.youtube.com/watch?v=kCc8FmEb1nY" target="_blank" rel="noopener">Building GPT from Scratch</a>
+                        
+                    </h4>
                     
-    
-    
-    
-
-    
-        
-        <li class="list-group-item" style="display: flex; align-items: center; justify-content: space-between;">
-            <div style="display: flex; align-items: center;">
-                <i class="fa-solid fa-video-camera" style="margin-right: 10px; color: #4e73df;"></i>
-                <div>
-                    
-                        <a href="https://www.youtube.com/playlist?list=PLZHQObOWTQDNU6R1_67000Dx_ZCJB-3pi">3Blue1Brown Neural Networks</a>
-                    
-                    
-                        <div class="text-muted" style="font-size: 0.85em;">
-                            Grant Sanderson
-                        </div>
+                        <p class="learning-card-author">Andrej Karpathy</p>
                     
                 </div>
             </div>
-            <div class="text-muted" style="font-size: 0.85em;">
-                
-                    Mar 9, 2024
-                
+            
+                <div class="learning-card-body">
+                    
+                        <p>Let&#39;s build GPT: from scratch in code</p>
+                    
+                    
+                </div>
+            
+            <div class="learning-card-footer">
+                <span class="learning-card-type">Video</span>
+                <span class="learning-card-date">
+                    
+                        Jan 4, 2025
+                    
+                </span>
             </div>
-        </li>
-    
+        </div>
+    </div>
 
+                            
+                            
+                            </div>
+                        </div>
+                    </div>
                 
                     
+                    
+                    
+                    
+
+                    <div class="panel panel-default" style="border-radius: 4px; overflow: hidden; margin-bottom: 10px;">
+                        <div class="panel-heading" role="tab" id="learning-year-2024-heading" style="padding: 0;">
+                            <button class="btn btn-link btn-block" type="button" data-toggle="collapse" data-target="#learning-year-2024" aria-expanded="false" aria-controls="learning-year-2024" style="text-align: left; padding: 12px 15px;">
+                                2024 <span class="badge">3</span>
+                                <i class="fa fa-caret-down pull-right"></i>
+                            </button>
+                        </div>
+                        <div id="learning-year-2024" class="panel-collapse collapse " role="tabpanel" aria-labelledby="learning-year-2024-heading">
+                            <div class="learning-card-container" style="padding: 12px;">
+                            
+                                
+    
+    
+    
     
     
     
 
-    
-        
-        <li class="list-group-item" style="display: flex; align-items: center; justify-content: space-between;">
-            <div style="display: flex; align-items: center;">
-                <i class="fa-solid fa-book" style="margin-right: 10px; color: #4e73df;"></i>
-                <div>
+    <div class="learning-card-wrapper" data-haystack="3blue1brown neural networks grant sanderson video visual explanations of neural networks">
+        <div class="learning-card">
+            <div class="learning-card-header">
+                <div class="learning-card-icon">
+                    <i class="fa-solid fa-video-camera"></i>
+                </div>
+                <div class="learning-card-title-group">
+                    <h4 class="learning-card-title">
+                        
+                            <a href="https://www.youtube.com/playlist?list=PLZHQObOWTQDNU6R1_67000Dx_ZCJB-3pi" target="_blank" rel="noopener">3Blue1Brown Neural Networks</a>
+                        
+                    </h4>
                     
-                        <a href="http://neuralnetworksanddeeplearning.com/">Neural Networks and Deep Learning</a>
-                    
-                    
-                        <div class="text-muted" style="font-size: 0.85em;">
-                            Michael Nielsen
-                        </div>
+                        <p class="learning-card-author">Grant Sanderson</p>
                     
                 </div>
             </div>
-            <div class="text-muted" style="font-size: 0.85em;">
-                
-                    Feb 19, 2024
-                
+            
+                <div class="learning-card-body">
+                    
+                        <p>Visual explanations of neural networks</p>
+                    
+                    
+                </div>
+            
+            <div class="learning-card-footer">
+                <span class="learning-card-type">Video</span>
+                <span class="learning-card-date">
+                    
+                        Mar 9, 2024
+                    
+                </span>
             </div>
-        </li>
+        </div>
+    </div>
+
+                            
+                                
+    
+    
+    
+    
+    
     
 
-                
+    <div class="learning-card-wrapper" data-haystack="neural networks and deep learning michael nielsen book free online book covering neural network fundamentals">
+        <div class="learning-card">
+            <div class="learning-card-header">
+                <div class="learning-card-icon">
+                    <i class="fa-solid fa-book"></i>
+                </div>
+                <div class="learning-card-title-group">
+                    <h4 class="learning-card-title">
+                        
+                            <a href="http://neuralnetworksanddeeplearning.com/" target="_blank" rel="noopener">Neural Networks and Deep Learning</a>
+                        
+                    </h4>
                     
-    
-    
-    
-
-    
-        
-        <li class="list-group-item" style="display: flex; align-items: center; justify-content: space-between;">
-            <div style="display: flex; align-items: center;">
-                <i class="fa-solid fa-file-pdf" style="margin-right: 10px; color: #4e73df;"></i>
-                <div>
-                    
-                        <a href="https://arxiv.org/abs/1706.03762">Attention Is All You Need</a>
-                    
-                    
-                        <div class="text-muted" style="font-size: 0.85em;">
-                            Vaswani et al.
-                        </div>
+                        <p class="learning-card-author">Michael Nielsen</p>
                     
                 </div>
             </div>
-            <div class="text-muted" style="font-size: 0.85em;">
-                
-                    Jan 14, 2024
-                
+            
+                <div class="learning-card-body">
+                    
+                        <p>Free online book covering neural network fundamentals</p>
+                    
+                    
+                </div>
+            
+            <div class="learning-card-footer">
+                <span class="learning-card-type">Book</span>
+                <span class="learning-card-date">
+                    
+                        Feb 19, 2024
+                    
+                </span>
             </div>
-        </li>
+        </div>
+    </div>
+
+                            
+                                
+    
+    
+    
+    
+    
     
 
+    <div class="learning-card-wrapper" data-haystack="attention is all you need vaswani et al. paper the foundational transformer paper">
+        <div class="learning-card">
+            <div class="learning-card-header">
+                <div class="learning-card-icon">
+                    <i class="fa-solid fa-file-pdf"></i>
+                </div>
+                <div class="learning-card-title-group">
+                    <h4 class="learning-card-title">
+                        
+                            <a href="https://arxiv.org/abs/1706.03762" target="_blank" rel="noopener">Attention Is All You Need</a>
+                        
+                    </h4>
+                    
+                        <p class="learning-card-author">Vaswani et al.</p>
+                    
+                </div>
+            </div>
+            
+                <div class="learning-card-body">
+                    
+                        <p>The foundational transformer paper</p>
+                    
+                    
+                </div>
+            
+            <div class="learning-card-footer">
+                <span class="learning-card-type">Paper</span>
+                <span class="learning-card-date">
+                    
+                        Jan 14, 2024
+                    
+                </span>
+            </div>
+        </div>
+    </div>
+
+                            
+                            
+                            </div>
+                        </div>
+                    </div>
                 
-                </ul>
+                </div>
             </div>
         </div>
     
+
+    <script>
+    window.addEventListener("load", function() {
+        if (window.jQuery) {
+            var $learningCards = window.jQuery('.learning-card-wrapper');
+            window.jQuery('#learning-search').on('input', function() {
+                var term = window.jQuery(this).val().toLowerCase().trim();
+                $learningCards.each(function() {
+                    var $card = window.jQuery(this);
+                    var haystack = ($card.data('haystack') || '').toString();
+                    var fallback = $card.text().toLowerCase();
+                    var matches = term === '' || haystack.indexOf(term) !== -1 || fallback.indexOf(term) !== -1;
+                    $card.toggle(matches);
+                });
+            });
+        }
+    });
+    </script>
 
 
 
