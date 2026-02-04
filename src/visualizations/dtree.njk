@@ -138,6 +138,7 @@ cardOrder: 4
                     <li class="active"><a href="#tab-tree" data-toggle="tab"><i class="fa fa-sitemap"></i> Tree</a></li>
                     <li><a href="#tab-about" data-toggle="tab"><i class="fa fa-info-circle"></i> About</a></li>
                     <li><a href="#tab-algorithm" data-toggle="tab"><i class="fa fa-book"></i> Algorithm</a></li>
+                    <li><a href="#tab-math" data-toggle="tab"><i class="fa fa-calculator"></i> Math</a></li>
                     <li><a href="#tab-path" data-toggle="tab"><i class="fa fa-route"></i> Path</a></li>
                 </ul>
             </div>
@@ -204,6 +205,80 @@ cardOrder: 4
                         <h4><i class="fa fa-calculator"></i> Split Criteria</h4>
                         <p><strong>Gini:</strong> <code>G = 1 - Σ(pᵢ)²</code></p>
                         <p><strong>Entropy:</strong> <code>H = -Σ pᵢ log₂(pᵢ)</code></p>
+                    </div>
+
+                    <!-- Math Tab -->
+                    <div class="tab-pane" id="tab-math">
+                        <div class="math-tab-content">
+                            <div id="math-empty" class="list-empty">
+                                Click a split node in the tree to see calculations
+                            </div>
+                            <div id="math-details" style="display: none;">
+                                <div class="math-section math-header-section">
+                                    <div class="math-node-title">
+                                        <span id="math-node-label">Node</span>
+                                        <span id="math-criterion-badge" class="badge">Gini</span>
+                                    </div>
+                                    <div class="math-split-condition">
+                                        <code id="math-split-text">X ≤ 0.50</code>
+                                    </div>
+                                </div>
+
+                                <div class="math-section">
+                                    <div class="math-section-title">Parent Node</div>
+                                    <div class="math-stats">
+                                        <span class="math-stat">n = <strong id="math-parent-n">0</strong></span>
+                                        <span class="math-stat">Classes: <code id="math-parent-classes">{}</code></span>
+                                    </div>
+                                    <div class="math-formula">
+                                        <span id="math-parent-formula"></span>
+                                        <span class="math-result">= <strong id="math-parent-impurity">0</strong></span>
+                                    </div>
+                                </div>
+
+                                <div class="math-children-row">
+                                    <div class="math-section math-child-section">
+                                        <div class="math-section-title math-left-title">
+                                            Left Child <small id="math-left-condition"></small>
+                                        </div>
+                                        <div class="math-stats">
+                                            <span class="math-stat">n = <strong id="math-left-n">0</strong></span>
+                                        </div>
+                                        <div class="math-stats">
+                                            <code id="math-left-classes">{}</code>
+                                        </div>
+                                        <div class="math-formula">
+                                            <span class="math-result"><span id="math-left-criterion">G</span> = <strong id="math-left-impurity">0</strong></span>
+                                        </div>
+                                    </div>
+
+                                    <div class="math-section math-child-section">
+                                        <div class="math-section-title math-right-title">
+                                            Right Child <small id="math-right-condition"></small>
+                                        </div>
+                                        <div class="math-stats">
+                                            <span class="math-stat">n = <strong id="math-right-n">0</strong></span>
+                                        </div>
+                                        <div class="math-stats">
+                                            <code id="math-right-classes">{}</code>
+                                        </div>
+                                        <div class="math-formula">
+                                            <span class="math-result"><span id="math-right-criterion">G</span> = <strong id="math-right-impurity">0</strong></span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="math-section math-gain-section">
+                                    <div class="math-section-title">Information Gain</div>
+                                    <div class="math-formula math-gain-formula">
+                                        <div id="math-gain-breakdown"></div>
+                                        <div class="math-gain-result">
+                                            Gain = <strong id="math-gain-value">0</strong>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
 
                     <!-- Path Tab -->

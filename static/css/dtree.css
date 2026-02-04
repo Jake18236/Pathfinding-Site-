@@ -633,6 +633,145 @@
 }
 
 /* ============================================
+   Math Tab Styles
+   ============================================ */
+.math-tab-content {
+    font-size: 13px;
+}
+
+.math-section {
+    padding: 10px 12px;
+    margin-bottom: 8px;
+    background: var(--viz-hover-bg);
+    border-radius: 6px;
+    border-left: 3px solid var(--viz-border);
+}
+
+.math-header-section {
+    border-left-color: var(--dtree-node-selected);
+    background: rgba(255, 215, 0, 0.08);
+}
+
+.math-node-title {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 4px;
+    font-weight: 600;
+}
+
+.math-split-condition code {
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.math-section-title {
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--viz-text-muted);
+    margin-bottom: 6px;
+}
+
+.math-stats {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 4px;
+    flex-wrap: wrap;
+}
+
+.math-stat {
+    color: var(--viz-text-muted);
+}
+
+.math-stat strong {
+    color: var(--viz-text);
+}
+
+.math-formula {
+    font-family: var(--viz-mono-font);
+    font-size: 12px;
+    color: var(--viz-text-muted);
+    margin-top: 6px;
+}
+
+.math-result {
+    color: var(--viz-text);
+}
+
+.math-result strong {
+    color: var(--dtree-class-1);
+    font-size: 14px;
+}
+
+.math-children-row {
+    display: flex;
+    gap: 8px;
+}
+
+.math-child-section {
+    flex: 1;
+    margin-bottom: 8px;
+}
+
+.math-left-title {
+    color: var(--dtree-class-0);
+}
+
+.math-right-title {
+    color: var(--dtree-class-1);
+}
+
+.math-child-section .math-section-title small {
+    font-weight: 400;
+    text-transform: none;
+    letter-spacing: normal;
+    opacity: 0.7;
+}
+
+.math-gain-section {
+    border-left-color: var(--dtree-class-1);
+}
+
+.math-gain-formula {
+    margin-top: 4px;
+}
+
+.math-gain-breakdown {
+    font-size: 11px;
+    line-height: 1.6;
+    margin-bottom: 8px;
+    word-break: break-word;
+}
+
+.math-gain-result {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--viz-text);
+    padding-top: 6px;
+    border-top: 1px dashed var(--viz-border);
+}
+
+.math-gain-result strong {
+    color: var(--dtree-class-1);
+    font-size: 16px;
+}
+
+#tab-math .list-empty {
+    text-align: center;
+    padding: 40px 20px;
+    color: var(--viz-text-muted);
+}
+
+/* Math tab node selection highlight */
+#tree-svg .tree-node.math-selected circle {
+    stroke: var(--dtree-class-1);
+    stroke-width: 3px;
+    stroke-dasharray: 4 2;
+}
+
+/* ============================================
    Responsive Adjustments
    ============================================ */
 @media (max-width: 992px) {

@@ -1780,6 +1780,9 @@
             this.draggedSplitNode = null;
             this.hoveredSplitLine = null;
 
+            // Math tab state
+            this.selectedMathNode = null;
+
             this._init();
         }
 
@@ -2116,7 +2119,7 @@
                     tree,
                     partialPath,
                     null,
-                    this.treeMode === 'design' ? (n) => this._handleNodeClick(n) : null
+                    (n) => this._handleNodeClick(n)
                 );
 
                 // Add pulse animation to current node
@@ -2151,13 +2154,17 @@
         }
 
         _handleNodeClick(node) {
-            if (this.treeMode !== 'design') return;
+            // Always handle math tab updates for non-leaf nodes
+            this._handleMathNodeClick(node);
 
-            this.selectedNode = node;
+            // Design mode specific handling
+            if (this.treeMode === 'design') {
+                this.selectedNode = node;
 
-            if (node.isLeaf) {
-                // Show split dialog for leaf nodes
-                this._openSplitDialog(node);
+                if (node.isLeaf) {
+                    // Show split dialog for leaf nodes
+                    this._openSplitDialog(node);
+                }
             }
 
             this._renderAll();
@@ -2244,6 +2251,9 @@
                 (node) => this._handleNodeClick(node)
             );
 
+            // Update math node highlight
+            this._updateMathNodeHighlight();
+
             // Update stats
             this.ui.updateStats(stats);
         }
@@ -2319,6 +2329,10 @@
                     this.dataset.getPoints()
                 );
 
+                // Update math tab if this node is selected or select it
+                this.selectedMathNode = this._findNodeById(currentSolver.getTreeStructure(), this.draggedSplitNode.nodeId);
+                this._updateMathTab(this.draggedSplitNode.nodeId);
+
                 // Re-render everything
                 this._renderAll();
                 return;
@@ -2348,6 +2362,211 @@
                 this.isDraggingSplit = false;
                 this.draggedSplitNode = null;
                 this._updateCursor();
+            }
+        }
+
+        // ============================================
+        // Math Tab
+        // ============================================
+
+        _handleMathNodeClick(node) {
+            if (node.isLeaf) {
+                // Clear math tab for leaf nodes
+                this.selectedMathNode = null;
+                this._clearMathTab('Leaf nodes have no split to analyze');
+            } else {
+                this.selectedMathNode = node;
+                this._updateMathTab(node.id);
+            }
+            this._updateMathNodeHighlight();
+        }
+
+        _updateMathNodeHighlight() {
+            // Remove existing highlights
+            document.querySelectorAll('.tree-node.math-selected').forEach(el => {
+                el.classList.remove('math-selected');
+            });
+
+            // Add highlight to selected node
+            if (this.selectedMathNode) {
+                const nodeEl = this.ui.treeSvg?.querySelector(`[data-node-id="${this.selectedMathNode.id}"]`);
+                if (nodeEl) {
+                    nodeEl.classList.add('math-selected');
+                }
+            }
+        }
+
+        _clearMathTab(message = 'Click a split node in the tree to see calculations') {
+            const emptyEl = document.getElementById('math-empty');
+            const detailsEl = document.getElementById('math-details');
+
+            if (emptyEl) {
+                emptyEl.style.display = 'block';
+                emptyEl.textContent = message;
+            }
+            if (detailsEl) {
+                detailsEl.style.display = 'none';
+            }
+        }
+
+        _updateMathTab(nodeId) {
+            const currentSolver = this.treeMode === 'auto' ? this.solver : this.manualBuilder;
+            const node = this._findNodeById(currentSolver.getTreeStructure(), nodeId);
+
+            if (!node || node.isLeaf) {
+                this._clearMathTab();
+                return;
+            }
+
+            const points = this.dataset.getPoints();
+            const criterion = document.getElementById('criterion-select')?.value || 'gini';
+            const criterionLabel = criterion === 'gini' ? 'Gini' : 'Entropy';
+            const criterionSymbol = criterion === 'gini' ? 'G' : 'H';
+
+            // Get points in this node's bounds
+            const nodePoints = points.filter(p =>
+                p.x >= node.bounds.minX && p.x <= node.bounds.maxX &&
+                p.y >= node.bounds.minY && p.y <= node.bounds.maxY
+            );
+
+            // Calculate parent stats
+            const parentCounts = this._getClassCounts(nodePoints);
+            const parentTotal = nodePoints.length;
+            const parentImpurity = this._calculateImpurity(parentCounts, parentTotal, criterion);
+
+            // Split points by threshold
+            const leftPoints = nodePoints.filter(p => p[node.feature] <= node.threshold);
+            const rightPoints = nodePoints.filter(p => p[node.feature] > node.threshold);
+
+            // Calculate child stats
+            const leftCounts = this._getClassCounts(leftPoints);
+            const leftTotal = leftPoints.length;
+            const leftImpurity = this._calculateImpurity(leftCounts, leftTotal, criterion);
+
+            const rightCounts = this._getClassCounts(rightPoints);
+            const rightTotal = rightPoints.length;
+            const rightImpurity = this._calculateImpurity(rightCounts, rightTotal, criterion);
+
+            // Calculate weighted impurity and gain
+            const leftWeight = parentTotal > 0 ? leftTotal / parentTotal : 0;
+            const rightWeight = parentTotal > 0 ? rightTotal / parentTotal : 0;
+            const weightedImpurity = leftWeight * leftImpurity + rightWeight * rightImpurity;
+            const gain = parentImpurity - weightedImpurity;
+
+            // Update DOM
+            const emptyEl = document.getElementById('math-empty');
+            const detailsEl = document.getElementById('math-details');
+
+            if (emptyEl) emptyEl.style.display = 'none';
+            if (detailsEl) detailsEl.style.display = 'block';
+
+            // Header
+            const nodeLabel = document.getElementById('math-node-label');
+            const criterionBadge = document.getElementById('math-criterion-badge');
+            const splitText = document.getElementById('math-split-text');
+
+            if (nodeLabel) nodeLabel.textContent = `Split Node (depth ${node.depth || 0})`;
+            if (criterionBadge) criterionBadge.textContent = criterionLabel;
+            if (splitText) splitText.textContent = `${node.feature.toUpperCase()} ≤ ${node.threshold.toFixed(3)}`;
+
+            // Parent section
+            document.getElementById('math-parent-n').textContent = parentTotal;
+            document.getElementById('math-parent-classes').textContent = this._formatClassCounts(parentCounts);
+            document.getElementById('math-parent-formula').textContent = this._formatImpurityFormula(parentCounts, parentTotal, criterion);
+            document.getElementById('math-parent-impurity').textContent = parentImpurity.toFixed(4);
+
+            // Left child
+            document.getElementById('math-left-condition').textContent = `(${node.feature.toUpperCase()} ≤ ${node.threshold.toFixed(2)})`;
+            document.getElementById('math-left-n').textContent = leftTotal;
+            document.getElementById('math-left-classes').textContent = this._formatClassCounts(leftCounts);
+            document.getElementById('math-left-criterion').textContent = criterionSymbol;
+            document.getElementById('math-left-impurity').textContent = leftImpurity.toFixed(4);
+
+            // Right child
+            document.getElementById('math-right-condition').textContent = `(${node.feature.toUpperCase()} > ${node.threshold.toFixed(2)})`;
+            document.getElementById('math-right-n').textContent = rightTotal;
+            document.getElementById('math-right-classes').textContent = this._formatClassCounts(rightCounts);
+            document.getElementById('math-right-criterion').textContent = criterionSymbol;
+            document.getElementById('math-right-impurity').textContent = rightImpurity.toFixed(4);
+
+            // Information gain breakdown
+            const gainBreakdown = document.getElementById('math-gain-breakdown');
+            if (gainBreakdown) {
+                gainBreakdown.innerHTML = `
+                    ${criterionSymbol}<sub>parent</sub> − (w<sub>L</sub> × ${criterionSymbol}<sub>L</sub> + w<sub>R</sub> × ${criterionSymbol}<sub>R</sub>)<br>
+                    = ${parentImpurity.toFixed(4)} − (${leftWeight.toFixed(3)} × ${leftImpurity.toFixed(4)} + ${rightWeight.toFixed(3)} × ${rightImpurity.toFixed(4)})<br>
+                    = ${parentImpurity.toFixed(4)} − ${weightedImpurity.toFixed(4)}
+                `;
+            }
+            document.getElementById('math-gain-value').textContent = gain.toFixed(4);
+        }
+
+        _findNodeById(root, nodeId) {
+            if (!root) return null;
+            if (root.id === nodeId) return root;
+            if (root.isLeaf) return null;
+
+            const left = this._findNodeById(root.left, nodeId);
+            if (left) return left;
+
+            return this._findNodeById(root.right, nodeId);
+        }
+
+        _getClassCounts(points) {
+            const counts = {};
+            for (const p of points) {
+                counts[p.classLabel] = (counts[p.classLabel] || 0) + 1;
+            }
+            return counts;
+        }
+
+        _calculateImpurity(classCounts, total, criterion) {
+            if (total === 0) return 0;
+
+            if (criterion === 'entropy') {
+                let entropy = 0;
+                for (const count of Object.values(classCounts)) {
+                    if (count > 0) {
+                        const p = count / total;
+                        entropy -= p * Math.log2(p);
+                    }
+                }
+                return entropy;
+            } else {
+                let gini = 1;
+                for (const count of Object.values(classCounts)) {
+                    const p = count / total;
+                    gini -= p * p;
+                }
+                return gini;
+            }
+        }
+
+        _formatClassCounts(counts) {
+            const parts = [];
+            const sortedKeys = Object.keys(counts).sort((a, b) => parseInt(a) - parseInt(b));
+            for (const key of sortedKeys) {
+                parts.push(`C${parseInt(key) + 1}: ${counts[key]}`);
+            }
+            return `{${parts.join(', ')}}`;
+        }
+
+        _formatImpurityFormula(counts, total, criterion) {
+            if (total === 0) return '';
+
+            const probs = [];
+            const sortedKeys = Object.keys(counts).sort((a, b) => parseInt(a) - parseInt(b));
+            for (const key of sortedKeys) {
+                const p = (counts[key] / total).toFixed(2);
+                probs.push(p);
+            }
+
+            if (criterion === 'entropy') {
+                const terms = probs.map(p => `${p}·log₂(${p})`).join(' + ');
+                return `H = −(${terms})`;
+            } else {
+                const terms = probs.map(p => `${p}²`).join(' + ');
+                return `G = 1 − (${terms})`;
             }
         }
     }
