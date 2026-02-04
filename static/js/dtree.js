@@ -2237,8 +2237,14 @@
             const points = this.dataset.getPoints();
             const currentSolver = this.treeMode === 'auto' ? this.solver : this.manualBuilder;
             const treeRoot = currentSolver.getTreeStructure();
-            const splitLines = currentSolver.getSplitLines();
+            let splitLines = currentSolver.getSplitLines();
             const stats = currentSolver.getStats();
+
+            // If a node is selected for Math tab, filter out its descendants to reduce visual clutter
+            if (this.selectedMathNode) {
+                const descendantIds = this._getDescendantIds(this.selectedMathNode);
+                splitLines = splitLines.filter(line => !descendantIds.has(line.nodeId));
+            }
 
             // Render canvas (pass solver to show misclassified points)
             this.ui.render(points, this.currentQuery, this.currentResult, splitLines, currentSolver);
@@ -2526,6 +2532,24 @@
             if (left) return left;
 
             return this._findNodeById(root.right, nodeId);
+        }
+
+        _getDescendantIds(node) {
+            const ids = new Set();
+            const collectIds = (n) => {
+                if (!n || n.isLeaf) return;
+                // Add child node IDs (not the current node itself)
+                if (n.left) {
+                    ids.add(n.left.id);
+                    collectIds(n.left);
+                }
+                if (n.right) {
+                    ids.add(n.right.id);
+                    collectIds(n.right);
+                }
+            };
+            collectIds(node);
+            return ids;
         }
 
         _getClassCounts(points) {
