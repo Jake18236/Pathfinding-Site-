@@ -2135,8 +2135,11 @@
                     // Show decision being made
                     const val = currentNode.feature === 'x' ? query.x : query.y;
                     const decision = val <= currentNode.threshold ? '≤' : '>';
-                    document.getElementById('metric-prediction').innerHTML =
-                        `<span class="animating-decision">${currentNode.feature.toUpperCase()} ${decision} ${currentNode.threshold.toFixed(2)}</span>`;
+                    const predEl = document.getElementById('metric-prediction');
+                    if (predEl) {
+                        predEl.innerHTML =
+                            `<span class="animating-decision">${currentNode.feature.toUpperCase()} ${decision} ${currentNode.threshold.toFixed(2)}</span>`;
+                    }
                 }
 
                 step++;
