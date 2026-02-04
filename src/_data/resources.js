@@ -95,6 +95,32 @@ function findCoverImage(name, coverField) {
   return '';
 }
 
+// Find YouTube thumbnail for video items
+function findYouTubeThumbnail(name, type, link) {
+  // Only look for thumbnails for video types
+  if (type !== 'video') return '';
+
+  // Check if it's a YouTube link
+  if (!link || (!link.includes('youtube.com') && !link.includes('youtu.be'))) return '';
+
+  // Try to find in youtube_thumbnails directory
+  const thumbnailDir = path.join(process.cwd(), 'static', 'img', 'youtube_thumbnails');
+  if (!fs.existsSync(thumbnailDir)) return '';
+
+  // Slugify the name for matching (same as Python script)
+  const slug = name.toLowerCase().replace(/[^a-z0-9]+/g, '_').replace(/^_|_$/g, '');
+
+  const extensions = ['.jpg', '.jpeg', '.png', '.webp'];
+  for (const ext of extensions) {
+    const tryPath = path.join(thumbnailDir, slug + ext);
+    if (fs.existsSync(tryPath)) {
+      return `static/img/youtube_thumbnails/${slug}${ext}`;
+    }
+  }
+
+  return '';
+}
+
 function loadResourcesFromCSV(text) {
   const records = parse(text, {
     columns: (headers) => normalizeHeaders(headers),
@@ -154,6 +180,10 @@ function loadResourcesFromCSV(text) {
     if (rating) entry.rating = rating;
     if (notes) entry.notes = notes;
     if (media) entry.media = media;
+
+    // YouTube thumbnail for video items
+    const youtubeThumbnail = findYouTubeThumbnail(name, rtype, link);
+    if (youtubeThumbnail) entry.youtube_thumbnail = youtubeThumbnail;
 
     if (!out[exportId]) out[exportId] = [];
     out[exportId].push(entry);

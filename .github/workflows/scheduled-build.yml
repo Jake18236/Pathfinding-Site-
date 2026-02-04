@@ -44,16 +44,28 @@ jobs:
           restore-keys: |
             book-covers-
 
+      - name: Restore YouTube thumbnail cache
+        uses: actions/cache@v4
+        with:
+          path: static/img/youtube_thumbnails
+          key: youtube-thumbnails-v1
+          restore-keys: |
+            youtube-thumbnails-
+
       - name: Fetch external data
         env:
           COURSE_RESOURCES_CSV_URL: https://docs.google.com/spreadsheets/d/e/2PACX-1vQ0MhdIkphQZpu5C2sQ_1WhGdE8DLxxlVtRirER3_wLgUsli0wvjdq-rYQeStwf9ubSVeDaKDNUbYeh/pub?gid=518321558&single=true&output=csv
         run: |
-          mkdir -p static/csv static/img/book_cover_thumbnails static/json
+          mkdir -p static/csv static/img/book_cover_thumbnails static/img/youtube_thumbnails static/json
           curl -L -s "$COURSE_RESOURCES_CSV_URL" -o static/csv/resources.csv
           python3 scripts/fetch_book_covers.py \
             --resources static/csv/resources.csv \
             --dest static/img/book_cover_thumbnails \
             --size L \
+            --pause 0.05
+          python3 scripts/fetch_youtube_thumbnails.py \
+            --resources static/csv/resources.csv \
+            --dest static/img/youtube_thumbnails \
             --pause 0.05
           python3 scripts/fetch_course_changelog.py \
             --config static/yaml/course_changelog.yaml \

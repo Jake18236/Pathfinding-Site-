@@ -84,11 +84,17 @@ def unique(seq: Iterable[str]) -> List[str]:
     return out
 
 
+def slugify(name: str) -> str:
+    """Convert a name to a filesystem-safe slug (matches resources.js logic)."""
+    return re.sub(r'[^a-z0-9]+', '_', name.lower()).strip('_')
+
+
 @dataclass
 class LibraryItem:
     index: int
     book_id: str
     title: str
+    slug: str  # Slugified title for filename
     author: str
     isbns: List[str]
     olids: List[str]
@@ -168,6 +174,7 @@ def extract_library_items(rows: List[dict[str, str]], header_map: dict[str, str]
                 index=idx,
                 book_id=book_id.strip(),
                 title=title.strip(),
+                slug=slugify(title),
                 author=author.strip(),
                 isbns=collect_isbns(row, header_map),
                 olids=collect_olids(row, header_map),
@@ -331,12 +338,12 @@ def main() -> None:
         if args.limit is not None and downloaded >= args.limit:
             break
 
-        if not item.book_id:
+        if not item.slug:
             missing += 1
             continue
 
         candidate_paths = [
-            args.dest / f"{item.book_id}{ext}"
+            args.dest / f"{item.slug}{ext}"
             for ext in (".jpg", ".jpeg", ".png")
         ]
         existing_path = next((p for p in candidate_paths if p.exists()), None)
@@ -354,7 +361,7 @@ def main() -> None:
             continue
 
         if args.dry_run:
-            print(f"[dry-run] Would save cover for {item.book_id} from {url}")
+            print(f"[dry-run] Would save cover for '{item.title}' ({item.slug}.jpg) from {url}")
         else:
             out_path.parent.mkdir(parents=True, exist_ok=True)
             out_path.write_bytes(content)

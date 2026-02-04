@@ -3,12 +3,23 @@
     {% set display_name = item.name | default('') | trim %}
     {% set icon_class = item.type | typeIcon %}
     {% set is_tweet = item.type == 'tweet' or item.type == 'thread' %}
+    {% set is_video = item.type == 'video' %}
     {% set raw_type = item.type | default('') | trim %}
     {% set display_type = raw_type | replace('_', ' ') | title if raw_type else 'Resource' %}
     {% set search_blob = (display_name + ' ' + (item.author | default('')) + ' ' + display_type + ' ' + (item.notes | default(''))) | lower %}
 
     <div class="learning-card-wrapper" data-haystack="{{ search_blob }}">
         <div class="learning-card">
+            {% if is_video and item.youtube_thumbnail %}
+                <div class="learning-card-thumbnail">
+                    <a href="{{ item.link }}" target="_blank" rel="noopener">
+                        <img src="/{{ item.youtube_thumbnail }}" alt="{{ display_name }} thumbnail" loading="lazy">
+                        <div class="learning-card-play-overlay">
+                            <i class="fa-solid fa-play"></i>
+                        </div>
+                    </a>
+                </div>
+            {% endif %}
             <div class="learning-card-header">
                 <div class="learning-card-icon{{ ' tweet-icon' if is_tweet else '' }}">
                     <i class="{{ icon_class }}"></i>
