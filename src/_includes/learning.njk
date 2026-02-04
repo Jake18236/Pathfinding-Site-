@@ -10,16 +10,6 @@
 
     <div class="learning-card-wrapper" data-haystack="{{ search_blob }}">
         <div class="learning-card">
-            {% if is_video and item.youtube_thumbnail %}
-                <div class="learning-card-thumbnail">
-                    <a href="{{ item.link }}" target="_blank" rel="noopener">
-                        <img src="/{{ item.youtube_thumbnail }}" alt="{{ display_name }} thumbnail" loading="lazy">
-                        <div class="learning-card-play-overlay">
-                            <i class="fa-solid fa-play"></i>
-                        </div>
-                    </a>
-                </div>
-            {% endif %}
             <div class="learning-card-header">
                 <div class="learning-card-icon{{ ' tweet-icon' if is_tweet else '' }}">
                     <i class="{{ icon_class }}"></i>
@@ -37,6 +27,16 @@
                     {% endif %}
                 </div>
             </div>
+            {% if is_video and item.youtube_thumbnail %}
+                <div class="learning-card-thumbnail">
+                    <a href="{{ item.link }}" target="_blank" rel="noopener">
+                        <img src="/{{ item.youtube_thumbnail }}" alt="{{ display_name }} thumbnail" loading="lazy">
+                        <div class="learning-card-play-overlay">
+                            <i class="fa-solid fa-play"></i>
+                        </div>
+                    </a>
+                </div>
+            {% endif %}
             {% if item.notes or (is_tweet and item.media) %}
                 <div class="learning-card-body">
                     {% if item.notes %}
