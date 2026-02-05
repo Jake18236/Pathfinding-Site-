@@ -14,11 +14,11 @@
 }
 
 [data-theme="gruvbox-dark"] {
-    --entropy-gauge-low: #b8bb26;
-    --entropy-gauge-mid: #fabd2f;
-    --entropy-gauge-high: #fb4934;
-    --entropy-bar-highlight: #fabd2f;
-    --entropy-bar-drag: #fe8019;
+    --entropy-gauge-low: var(--gruvbox-green);
+    --entropy-gauge-mid: var(--gruvbox-yellow);
+    --entropy-gauge-high: var(--gruvbox-red);
+    --entropy-bar-highlight: var(--gruvbox-yellow);
+    --entropy-bar-drag: var(--gruvbox-orange);
 }
 
 /* ============================================
@@ -33,17 +33,7 @@
 /* ============================================
    Entropy Badge
    ============================================ */
-.entropy-badge {
-    display: inline-block;
-    padding: 4px 12px;
-    background: var(--viz-hover-bg);
-    border: 1px solid var(--viz-border);
-    border-radius: 4px;
-    font-family: var(--viz-mono-font);
-    font-weight: 600;
-    font-size: 14px;
-    color: var(--viz-text);
-}
+/* .entropy-badge extends .viz-badge from visualizations.css */
 
 /* ============================================
    Canvas Styling
@@ -164,52 +154,9 @@
     white-space: nowrap;
 }
 
+/* .breakdown-table extends .viz-breakdown-table from visualizations.css */
 .breakdown-table {
-    width: 100%;
-    border-collapse: collapse;
-    font-size: 12px;
     margin-top: 12px;
-}
-
-.breakdown-table th,
-.breakdown-table td {
-    padding: 6px 8px;
-    text-align: center;
-    border: 1px solid var(--viz-border);
-}
-
-.breakdown-table th {
-    background: var(--viz-hover-bg);
-    font-weight: 600;
-    font-size: 11px;
-}
-
-.breakdown-table td {
-    font-family: var(--viz-mono-font);
-}
-
-.breakdown-table td:first-child {
-    text-align: left;
-    font-family: inherit;
-    font-weight: 500;
-}
-
-.breakdown-table .outcome-dot {
-    display: inline-block;
-    width: 10px;
-    height: 10px;
-    border-radius: 2px;
-    margin-right: 6px;
-    vertical-align: middle;
-}
-
-.breakdown-table .total-row {
-    background: var(--viz-active-bg);
-    font-weight: 600;
-}
-
-.breakdown-table .total-row td {
-    border-color: var(--viz-active-border);
 }
 
 /* ============================================

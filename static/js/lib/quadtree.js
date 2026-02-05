@@ -19,21 +19,12 @@
 export class Quadtree {
     /**
      * Create a new Quadtree
-     * @param {Object} options - Configuration options
-     * @param {Object} options.bounds - Bounding rectangle { x, y, width, height }
-     * @param {number} [options.capacity=8] - Maximum points per node before subdividing
+     * @param {Object} bounds - Bounding rectangle { x, y, width, height }
+     * @param {number} [capacity=8] - Maximum points per node before subdividing
      */
-    constructor(options) {
-        // Support both old (bounds, capacity) and new ({ bounds, capacity }) signatures
-        if (arguments.length === 2 || (options && options.x !== undefined)) {
-            // Old signature: new Quadtree(bounds, capacity)
-            this.bounds = arguments[0];
-            this.capacity = arguments[1] || 8;
-        } else {
-            // New signature: new Quadtree({ bounds, capacity })
-            this.bounds = options.bounds || options;
-            this.capacity = options.capacity || 8;
-        }
+    constructor(bounds, capacity) {
+        this.bounds = bounds;
+        this.capacity = capacity || 8;
 
         this.points = [];
         this.divided = false;

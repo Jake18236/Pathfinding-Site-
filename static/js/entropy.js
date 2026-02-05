@@ -114,19 +114,6 @@
             }));
         }
 
-        /**
-         * Normalize probabilities to sum to 1
-         * @param {number[]} probabilities
-         * @returns {number[]} Normalized probabilities
-         */
-        static normalize(probabilities) {
-            const sum = probabilities.reduce((a, b) => a + b, 0);
-            if (sum === 0) {
-                // Uniform distribution if all zero
-                return probabilities.map(() => 1 / probabilities.length);
-            }
-            return probabilities.map(p => p / sum);
-        }
     }
 
     // ============================================
@@ -221,7 +208,7 @@
         }
 
         normalize() {
-            this.probabilities = EntropyCalculator.normalize(this.probabilities);
+            this.probabilities = VizLib.MathUtils.normalize(this.probabilities);
         }
 
         makeUniform() {
@@ -516,7 +503,7 @@
             html += ` = <strong>${totalEntropy.toFixed(4)}</strong> bits</div>`;
 
             // Detailed table
-            html += '<table class="breakdown-table">';
+            html += '<table class="viz-breakdown-table breakdown-table">';
             html += '<thead><tr>';
             html += '<th>Outcome</th>';
             html += '<th>p</th>';
@@ -862,11 +849,7 @@
         }
 
         _updateColors() {
-            // Get categorical colors for outcomes
-            const isDark = document.documentElement.getAttribute('data-theme') === 'gruvbox-dark';
-            this.colors = isDark
-                ? ['#fb4934', '#83a598', '#b8bb26', '#d3869b', '#fe8019', '#fabd2f', '#d65d0e', '#d3869b', '#928374', '#8ec07c', '#689d6a', '#458588']
-                : ['#e41a1c', '#377eb8', '#4daf4a', '#984ea3', '#ff7f00', '#c4a000', '#a65628', '#f781bf', '#999999', '#17becf', '#2ca02c', '#1f77b4'];
+            this.colors = VizLib.ThemeManager.getColors('categorical', 12);
 
             // Update renderers if they exist
             if (this.barChartRenderer) {

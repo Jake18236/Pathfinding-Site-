@@ -3,6 +3,10 @@
 
   @param buttons - Array of {id, icon, label?, style, title, disabled?}
   @param speedSlider - Whether to show speed slider (default: true)
+  @param speedId - ID for speed slider (default: 'speed-slider')
+  @param speedMin - Min value for speed slider (default: 1)
+  @param speedMax - Max value for speed slider (default: 10)
+  @param speedValue - Initial value for speed slider (default: 5)
   @param statusId - ID for status display element
   @param statusText - Initial status text
 
@@ -21,7 +25,7 @@
   ) }}
 #}
 
-{% macro playbackControls(buttons, speedSlider=true, statusId=none, statusText='') %}
+{% macro playbackControls(buttons, speedSlider=true, speedId='speed-slider', speedMin=1, speedMax=10, speedValue=5, statusId=none, statusText='') %}
 <div class="panel panel-default">
     <div class="panel-body playback-panel-body">
         <div class="playback-controls-row">
@@ -43,7 +47,7 @@
             {% if speedSlider %}
             <div class="speed-control-inline">
                 <label><i class="fa fa-tachometer"></i></label>
-                <input type="range" id="speed-slider" min="1" max="10" value="5">
+                <input type="range" id="{{ speedId }}" min="{{ speedMin }}" max="{{ speedMax }}" value="{{ speedValue }}">
             </div>
             {% endif %}
         </div>

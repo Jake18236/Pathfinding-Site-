@@ -37,24 +37,42 @@
 }
 
 [data-theme="gruvbox-dark"] {
-    --viz-bg: #282828;
-    --viz-border: #504945;
-    --viz-text: #ebdbb2;
-    --viz-text-muted: #a89984;
-    --viz-hover-bg: #3c3836;
-    --viz-canvas-bg: #1d2021;
+    /* Gruvbox palette - reusable across all visualization CSS */
+    --gruvbox-bg: #282828;
+    --gruvbox-bg1: #3c3836;
+    --gruvbox-bg2: #504945;
+    --gruvbox-bg-dim: #32302f;
+    --gruvbox-bg-darkest: #1d2021;
+    --gruvbox-fg: #ebdbb2;
+    --gruvbox-fg-dim: #d5c4a1;
+    --gruvbox-gray: #a89984;
+    --gruvbox-red: #fb4934;
+    --gruvbox-green: #b8bb26;
+    --gruvbox-yellow: #fabd2f;
+    --gruvbox-blue: #83a598;
+    --gruvbox-purple: #d3869b;
+    --gruvbox-aqua: #8ec07c;
+    --gruvbox-orange: #fe8019;
+
+    /* Semantic mappings using palette */
+    --viz-bg: var(--gruvbox-bg);
+    --viz-border: var(--gruvbox-bg2);
+    --viz-text: var(--gruvbox-fg);
+    --viz-text-muted: var(--gruvbox-gray);
+    --viz-hover-bg: var(--gruvbox-bg1);
+    --viz-canvas-bg: var(--gruvbox-bg-darkest);
 
     --viz-active-bg: rgba(184, 187, 38, 0.3);
-    --viz-active-border: #b8bb26;
+    --viz-active-border: var(--gruvbox-green);
 
     --viz-success-bg: rgba(184, 187, 38, 0.3);
-    --viz-success-border: #b8bb26;
+    --viz-success-border: var(--gruvbox-green);
     --viz-warning-bg: rgba(250, 189, 47, 0.3);
-    --viz-warning-border: #fabd2f;
+    --viz-warning-border: var(--gruvbox-yellow);
     --viz-danger-bg: rgba(251, 73, 52, 0.3);
-    --viz-danger-border: #fb4934;
+    --viz-danger-border: var(--gruvbox-red);
     --viz-info-bg: rgba(131, 165, 152, 0.3);
-    --viz-info-border: #83a598;
+    --viz-info-border: var(--gruvbox-blue);
 }
 
 /* ============================================
@@ -931,6 +949,119 @@ code {
     color: var(--viz-text-muted);
     border-top: 1px solid var(--viz-border);
     background-color: var(--viz-hover-bg);
+}
+
+/* ============================================
+   Shared Breakdown Table
+   ============================================ */
+.viz-breakdown-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 12px;
+}
+
+.viz-breakdown-table th,
+.viz-breakdown-table td {
+    padding: 5px 7px;
+    text-align: center;
+    border: 1px solid var(--viz-border);
+}
+
+.viz-breakdown-table th {
+    background: var(--viz-hover-bg);
+    font-weight: 600;
+    font-size: 11px;
+}
+
+.viz-breakdown-table td {
+    font-family: var(--viz-mono-font);
+}
+
+.viz-breakdown-table td:first-child {
+    text-align: left;
+    font-family: inherit;
+    font-weight: 500;
+}
+
+.viz-breakdown-table .outcome-dot {
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    border-radius: 2px;
+    margin-right: 6px;
+    vertical-align: middle;
+}
+
+.viz-breakdown-table .total-row {
+    background: var(--viz-active-bg);
+    font-weight: 600;
+}
+
+.viz-breakdown-table .total-row td {
+    border-color: var(--viz-active-border);
+}
+
+.viz-breakdown-table .true-class {
+    background: var(--viz-success-bg);
+}
+
+.viz-breakdown-table .true-class td {
+    border-color: var(--viz-success-border);
+}
+
+/* ============================================
+   Shared Badge
+   ============================================ */
+.viz-badge {
+    display: inline-block;
+    padding: 4px 12px;
+    background: var(--viz-hover-bg);
+    border: 1px solid var(--viz-border);
+    border-radius: 4px;
+    font-family: var(--viz-mono-font);
+    font-weight: 600;
+    font-size: 14px;
+    color: var(--viz-text);
+}
+
+.viz-badge.low-loss {
+    background: var(--viz-success-bg);
+    border-color: var(--viz-success-border);
+    color: var(--viz-success-border);
+}
+
+.viz-badge.medium-loss {
+    background: var(--viz-warning-bg);
+    border-color: var(--viz-warning-border);
+    color: var(--viz-warning-border);
+}
+
+.viz-badge.high-loss {
+    background: var(--viz-danger-bg);
+    border-color: var(--viz-danger-border);
+    color: var(--viz-danger-border);
+}
+
+/* ============================================
+   Loading Overlay - fullscreen variant
+   ============================================ */
+.loading-overlay--fullscreen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 1000;
+}
+
+/* ============================================
+   Legend Dot Type
+   ============================================ */
+.legend-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    display: inline-block;
 }
 
 /* ============================================

@@ -9,15 +9,6 @@
    KNN-Specific CSS Custom Properties
    ============================================ */
 :root {
-    /* Reuse shared class colors */
-    --knn-class-0: var(--viz-class-0);
-    --knn-class-1: var(--viz-class-1);
-    --knn-class-2: var(--viz-class-2);
-
-    /* Query point - reuse shared */
-    --knn-query-bg: var(--viz-query-bg);
-    --knn-query-border: var(--viz-query-border);
-
     /* Neighbor visualization */
     --knn-neighbor-line: rgba(0, 0, 0, 0.5);
     --knn-neighbor-line-width: 2px;
@@ -25,16 +16,13 @@
     /* Decision boundary */
     --knn-boundary-opacity: 0.2;
 
-    /* Vote bars - use shared bg */
+    /* Vote bars */
     --knn-vote-bar-bg: #e9ecef;
 }
 
 [data-theme="gruvbox-dark"] {
-    /* Neighbor lines - lighter for dark bg */
     --knn-neighbor-line: rgba(235, 219, 178, 0.6);
-
-    /* Vote bars */
-    --knn-vote-bar-bg: #3c3836;
+    --knn-vote-bar-bg: var(--gruvbox-bg1);
 }
 
 /* ============================================
@@ -116,9 +104,9 @@
     min-width: 0;
 }
 
-.vote-bar-fill.class-0 { background-color: var(--knn-class-0); }
-.vote-bar-fill.class-1 { background-color: var(--knn-class-1); }
-.vote-bar-fill.class-2 { background-color: var(--knn-class-2); }
+.vote-bar-fill.class-0 { background-color: var(--viz-class-0); }
+.vote-bar-fill.class-1 { background-color: var(--viz-class-1); }
+.vote-bar-fill.class-2 { background-color: var(--viz-class-2); }
 
 .vote-bar-value {
     font-size: 10px;
@@ -161,9 +149,9 @@
     background-color: var(--viz-hover-bg);
 }
 
-.neighbor-item.class-0 { border-left-color: var(--knn-class-0); }
-.neighbor-item.class-1 { border-left-color: var(--knn-class-1); }
-.neighbor-item.class-2 { border-left-color: var(--knn-class-2); }
+.neighbor-item.class-0 { border-left-color: var(--viz-class-0); }
+.neighbor-item.class-1 { border-left-color: var(--viz-class-1); }
+.neighbor-item.class-2 { border-left-color: var(--viz-class-2); }
 
 .neighbor-rank {
     font-weight: 700;
@@ -178,9 +166,9 @@
     color: #fff;
 }
 
-.neighbor-class.class-0 { background-color: var(--knn-class-0); }
-.neighbor-class.class-1 { background-color: var(--knn-class-1); }
-.neighbor-class.class-2 { background-color: var(--knn-class-2); }
+.neighbor-class.class-0 { background-color: var(--viz-class-0); }
+.neighbor-class.class-1 { background-color: var(--viz-class-1); }
+.neighbor-class.class-2 { background-color: var(--viz-class-2); }
 
 .neighbor-distance {
     color: var(--viz-text-muted);

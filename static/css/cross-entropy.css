@@ -2,25 +2,7 @@
  * Cross-Entropy Loss Visualizer Styles
  */
 
-/* ============================================
-   Loading Overlay
-   ============================================ */
-.loading-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: rgba(255, 255, 255, 0.95);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 1000;
-}
-
-[data-theme="gruvbox-dark"] .loading-overlay {
-    background: rgba(29, 32, 33, 0.95);
-}
+/* Loading overlay uses .loading-overlay--fullscreen from visualizations.css */
 
 .loading-content {
     text-align: center;
@@ -63,35 +45,9 @@
 /* ============================================
    Loss Badge
    ============================================ */
+/* .loss-badge extends .viz-badge from visualizations.css */
 .loss-badge {
-    display: inline-block;
-    padding: 4px 12px;
-    background: var(--viz-hover-bg);
-    border: 1px solid var(--viz-border);
-    border-radius: 4px;
-    font-family: var(--viz-mono-font);
-    font-weight: 600;
-    font-size: 14px;
-    color: var(--viz-text);
     transition: all 0.3s ease;
-}
-
-.loss-badge.low-loss {
-    background: var(--viz-success-bg);
-    border-color: var(--viz-success-border);
-    color: var(--viz-success-border);
-}
-
-.loss-badge.medium-loss {
-    background: var(--viz-warning-bg);
-    border-color: var(--viz-warning-border);
-    color: var(--viz-warning-border);
-}
-
-.loss-badge.high-loss {
-    background: var(--viz-danger-bg);
-    border-color: var(--viz-danger-border);
-    color: var(--viz-danger-border);
 }
 
 /* ============================================
@@ -154,17 +110,17 @@
 }
 
 [data-theme="gruvbox-dark"] .legend-expected .legend-box {
-    border-color: #b8bb26;
+    border-color: var(--gruvbox-green);
 }
 
 [data-theme="gruvbox-dark"] .legend-correct .legend-box {
     background: rgba(152, 151, 26, 0.7);
-    border-color: #b8bb26;
+    border-color: var(--gruvbox-green);
 }
 
 [data-theme="gruvbox-dark"] .legend-incorrect .legend-box {
     background: rgba(204, 36, 29, 0.7);
-    border-color: #fb4934;
+    border-color: var(--gruvbox-red);
 }
 
 
@@ -365,47 +321,14 @@
     overflow-y: auto;
 }
 
+/* .breakdown-mini-table extends .viz-breakdown-table from visualizations.css */
 .breakdown-mini-table {
-    width: 100%;
-    border-collapse: collapse;
     font-size: 11px;
 }
 
 .breakdown-mini-table th,
 .breakdown-mini-table td {
     padding: 4px 6px;
-    border: 1px solid var(--viz-border);
-    text-align: center;
-}
-
-.breakdown-mini-table th {
-    background: var(--viz-hover-bg);
-    font-weight: 600;
-}
-
-.breakdown-mini-table td {
-    font-family: var(--viz-mono-font);
-}
-
-.breakdown-mini-table td:first-child {
-    text-align: left;
-    font-family: inherit;
-}
-
-.breakdown-mini-table .true-class {
-    background: var(--viz-success-bg);
-}
-
-.breakdown-mini-table .true-class td {
-    border-color: var(--viz-success-border);
-}
-
-.breakdown-mini-table .total-row {
-    background: var(--viz-active-bg);
-}
-
-.breakdown-mini-table .total-row td {
-    border-color: var(--viz-active-border);
 }
 
 /* ============================================

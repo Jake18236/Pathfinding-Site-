@@ -41,23 +41,23 @@
 }
 
 [data-theme="gruvbox-dark"] {
-    --astar-cell-bg: #32302f;
+    --astar-cell-bg: var(--gruvbox-bg-dim);
 
     /* Cell state colors - gruvbox palette */
     --astar-start-bg: rgba(184, 187, 38, 0.6);
-    --astar-start-border: #b8bb26;
+    --astar-start-border: var(--gruvbox-green);
     --astar-goal-bg: rgba(251, 73, 52, 0.6);
-    --astar-goal-border: #fb4934;
-    --astar-wall-bg: #1d2021;
-    --astar-wall-border: #504945;
+    --astar-goal-border: var(--gruvbox-red);
+    --astar-wall-bg: var(--gruvbox-bg-darkest);
+    --astar-wall-border: var(--gruvbox-bg2);
     --astar-closed-bg: rgba(168, 153, 132, 0.3);
-    --astar-closed-border: #a89984;
-    --astar-neighbor-border: #d3869b;
+    --astar-closed-border: var(--gruvbox-gray);
+    --astar-neighbor-border: var(--gruvbox-purple);
 
     /* Value display colors */
-    --astar-f-color: #a89984;
-    --astar-g-color: #83a598;
-    --astar-h-color: #b8bb26;
+    --astar-f-color: var(--gruvbox-gray);
+    --astar-g-color: var(--gruvbox-blue);
+    --astar-h-color: var(--gruvbox-green);
 }
 
 /* ============================================
@@ -251,8 +251,8 @@
 
 [data-theme="gruvbox-dark"] .edit-mode-buttons .btn.active {
     background-color: rgba(250, 189, 47, 0.3);
-    border-color: #fabd2f;
-    color: #ebdbb2;
+    border-color: var(--gruvbox-yellow);
+    color: var(--gruvbox-fg);
 }
 
 /* ============================================
@@ -390,7 +390,7 @@
 
 [data-theme="gruvbox-dark"] .grid-cell.hover-highlight {
     background-color: rgba(131, 165, 152, 0.5) !important;
-    border: 2px solid #83a598 !important;
+    border: 2px solid var(--gruvbox-blue) !important;
     box-shadow: 0 0 8px rgba(131, 165, 152, 0.5);
 }
 
@@ -499,7 +499,7 @@
 
 [data-theme="gruvbox-dark"] .path-line,
 [data-theme="gruvbox-dark"] .path-line-glow {
-    stroke: #b8bb26;
+    stroke: var(--gruvbox-green);
 }
 
 /* Heuristic label */
@@ -537,7 +537,7 @@
 }
 
 [data-theme="gruvbox-dark"] {
-    --astar-heuristic-color: #83a598;
+    --astar-heuristic-color: var(--gruvbox-blue);
 }
 
 [data-theme="gruvbox-dark"] .heuristic-manhattan .heuristic-line,
@@ -552,7 +552,7 @@
 [data-theme="gruvbox-dark"] .heuristic-chebyshev .heuristic-line-glow,
 [data-theme="gruvbox-dark"] .heuristic-chebyshev .heuristic-arrow,
 [data-theme="gruvbox-dark"] .heuristic-chebyshev .heuristic-label {
-    --astar-heuristic-color: #83a598;
+    --astar-heuristic-color: var(--gruvbox-blue);
 }
 
 /* ============================================
@@ -606,8 +606,8 @@
 [data-theme="gruvbox-dark"] .legend-heuristic {
     background: repeating-linear-gradient(
         90deg,
-        #83a598,
-        #83a598 4px,
+        var(--gruvbox-blue),
+        var(--gruvbox-blue) 4px,
         transparent 4px,
         transparent 7px
     );
@@ -634,8 +634,8 @@
 
 [data-theme="gruvbox-dark"] .sample-input-tabs .btn.active {
     background-color: rgba(250, 189, 47, 0.3);
-    border-color: #fabd2f;
-    color: #ebdbb2;
+    border-color: var(--gruvbox-yellow);
+    color: var(--gruvbox-fg);
 }
 
 /* ============================================
@@ -750,10 +750,10 @@
     color: #458588;
 }
 
-[data-theme="gruvbox-dark"] .log-entry.log-expand { color: #fabd2f; }
-[data-theme="gruvbox-dark"] .log-entry.log-neighbor { color: #fe8019; }
-[data-theme="gruvbox-dark"] .log-entry.log-add { color: #b8bb26; }
-[data-theme="gruvbox-dark"] .log-entry.log-update { color: #83a598; }
+[data-theme="gruvbox-dark"] .log-entry.log-expand { color: var(--gruvbox-yellow); }
+[data-theme="gruvbox-dark"] .log-entry.log-neighbor { color: var(--gruvbox-orange); }
+[data-theme="gruvbox-dark"] .log-entry.log-add { color: var(--gruvbox-green); }
+[data-theme="gruvbox-dark"] .log-entry.log-update { color: var(--gruvbox-blue); }
 
 /* ============================================
    A*-specific Comparison Table

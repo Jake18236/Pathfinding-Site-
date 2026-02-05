@@ -33,18 +33,18 @@
 }
 
 [data-theme="gruvbox-dark"] {
-    --shidoku-box-border: #ebdbb2;
-    --shidoku-fixed-bg: #3c3836;
-    --shidoku-fixed-text: #d5c4a1;
+    --shidoku-box-border: var(--gruvbox-fg);
+    --shidoku-fixed-bg: var(--gruvbox-bg1);
+    --shidoku-fixed-text: var(--gruvbox-fg-dim);
     --shidoku-assigned-bg: rgba(184, 187, 38, 0.3);
-    --shidoku-assigned-border: #b8bb26;
+    --shidoku-assigned-border: var(--gruvbox-green);
     --shidoku-examining-bg: rgba(250, 189, 47, 0.3);
-    --shidoku-examining-border: #fabd2f;
+    --shidoku-examining-border: var(--gruvbox-yellow);
     --shidoku-trying-bg: rgba(131, 165, 152, 0.3);
-    --shidoku-trying-border: #83a598;
+    --shidoku-trying-border: var(--gruvbox-blue);
     --shidoku-conflict-bg: rgba(251, 73, 52, 0.3);
-    --shidoku-conflict-border: #fb4934;
-    --shidoku-pruned-color: #fb4934;
+    --shidoku-conflict-border: var(--gruvbox-red);
+    --shidoku-pruned-color: var(--gruvbox-red);
 }
 
 /* Grid Container */
@@ -99,8 +99,8 @@
 }
 
 [data-theme="gruvbox-dark"] {
-    --shidoku-arc-line: #fe8019;
-    --shidoku-arc-glow: #fe8019;
+    --shidoku-arc-line: var(--gruvbox-orange);
+    --shidoku-arc-glow: var(--gruvbox-orange);
 }
 
 /* 2x2 Box borders */
@@ -406,7 +406,7 @@
 [data-theme="gruvbox-dark"] {
     --shidoku-arc-check-bg: rgba(254, 128, 25, 0.3);
     --shidoku-support-bg: rgba(184, 187, 38, 0.3);
-    --shidoku-support-border: #b8bb26;
+    --shidoku-support-border: var(--gruvbox-green);
 }
 
 /* Assigned value display (single large number) */
@@ -521,8 +521,8 @@
 
 [data-theme="gruvbox-dark"] .info-panel-tabs .btn.active {
     background-color: rgba(250, 189, 47, 0.3);
-    border-color: #fabd2f;
-    color: #ebdbb2;
+    border-color: var(--gruvbox-yellow);
+    color: var(--gruvbox-fg);
 }
 
 /* Puzzle Header Tabs (Load Puzzle buttons) */
@@ -549,13 +549,13 @@
 
 [data-theme="gruvbox-dark"] .puzzle-header-tabs .btn:hover {
     background-color: rgba(250, 189, 47, 0.3);
-    border-color: #fabd2f;
+    border-color: var(--gruvbox-yellow);
 }
 
 [data-theme="gruvbox-dark"] .puzzle-header-tabs .btn.active {
     background-color: rgba(250, 189, 47, 0.3);
-    border-color: #fabd2f;
-    color: #ebdbb2;
+    border-color: var(--gruvbox-yellow);
+    color: var(--gruvbox-fg);
 }
 
 /* Info panel body - uses shared .info-panel-body from visualizations.css */
@@ -708,31 +708,31 @@
 }
 
 [data-theme="gruvbox-dark"] .log-entry.log-info {
-    color: #83a598;
+    color: var(--gruvbox-blue);
 }
 
 [data-theme="gruvbox-dark"] .log-entry.log-ac3 {
-    color: #fabd2f;
+    color: var(--gruvbox-yellow);
 }
 
 [data-theme="gruvbox-dark"] .log-entry.log-assign {
-    color: #b8bb26;
+    color: var(--gruvbox-green);
 }
 
 [data-theme="gruvbox-dark"] .log-entry.log-backtrack {
-    color: #fb4934;
+    color: var(--gruvbox-red);
 }
 
 [data-theme="gruvbox-dark"] .log-entry.log-prune {
-    color: #fe8019;
+    color: var(--gruvbox-orange);
 }
 
 [data-theme="gruvbox-dark"] .log-entry.log-success {
-    color: #b8bb26;
+    color: var(--gruvbox-green);
 }
 
 [data-theme="gruvbox-dark"] .log-entry.log-failure {
-    color: #fb4934;
+    color: var(--gruvbox-red);
 }
 
 /* Cell Input Mode */
@@ -742,7 +742,7 @@
 }
 
 [data-theme="gruvbox-dark"] .shidoku-cell.input-mode {
-    outline-color: #83a598;
+    outline-color: var(--gruvbox-blue);
 }
 
 /* Button States */
@@ -1103,7 +1103,7 @@
 }
 
 [data-theme="gruvbox-dark"] .search-tree-container {
-    background-color: #1d2021;
+    background-color: var(--gruvbox-bg-darkest);
 }
 
 /* ============================================

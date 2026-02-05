@@ -126,7 +126,7 @@ export class TreeLayoutEngine {
         positionNode(rootId, 0, 0);
 
         // Pass 2: Fix overlaps
-        this._fixOverlapsWithMap(rootId, 0, positions, visibleChildren);
+        this._fixOverlaps(rootId, 0, positions, visibleChildren);
 
         return positions;
     }
@@ -184,58 +184,6 @@ export class TreeLayoutEngine {
     }
 
     /**
-     * Fix overlaps using a pre-built children map
-     * @private
-     */
-    _fixOverlapsWithMap(nodeId, depth, positions, childrenMap) {
-        const children = childrenMap.get(nodeId) || [];
-
-        // First, recursively fix children's subtrees
-        for (const childId of children) {
-            this._fixOverlapsWithMap(childId, depth + 1, positions, childrenMap);
-        }
-
-        // Then check for overlaps between adjacent siblings
-        for (let i = 1; i < children.length; i++) {
-            const leftChild = children[i - 1];
-            const rightChild = children[i];
-
-            // Get right contour of left subtree
-            const leftContour = new Map();
-            this._getContourFromMap(leftChild, depth + 1, leftContour, 'right', positions, childrenMap);
-
-            // Get left contour of right subtree
-            const rightContour = new Map();
-            this._getContourFromMap(rightChild, depth + 1, rightContour, 'left', positions, childrenMap);
-
-            // Find max overlap across all depths
-            let maxOverlap = 0;
-            for (const [d, leftX] of leftContour) {
-                if (rightContour.has(d)) {
-                    const rightX = rightContour.get(d);
-                    const overlap = leftX + this.minNodeWidth - rightX;
-                    maxOverlap = Math.max(maxOverlap, overlap);
-                }
-            }
-
-            // Shift right subtree if there's overlap
-            if (maxOverlap > 0) {
-                this._shiftSubtreeFromMap(rightChild, maxOverlap, positions, childrenMap);
-            }
-        }
-
-        // Center parent over its children
-        if (children.length > 0) {
-            const firstChild = positions.get(children[0]);
-            const lastChild = positions.get(children[children.length - 1]);
-            const parentPos = positions.get(nodeId);
-            if (firstChild && lastChild && parentPos) {
-                parentPos.x = (firstChild.x + lastChild.x) / 2;
-            }
-        }
-    }
-
-    /**
      * Get the contour (leftmost or rightmost x at each depth) for a subtree
      * @private
      */
@@ -258,28 +206,6 @@ export class TreeLayoutEngine {
     }
 
     /**
-     * Get contour using pre-built children map
-     * @private
-     */
-    _getContourFromMap(nodeId, depth, contour, side, positions, childrenMap) {
-        const pos = positions.get(nodeId);
-        if (!pos) return;
-
-        if (!contour.has(depth)) {
-            contour.set(depth, pos.x);
-        } else {
-            contour.set(depth, side === 'left'
-                ? Math.min(contour.get(depth), pos.x)
-                : Math.max(contour.get(depth), pos.x));
-        }
-
-        const children = childrenMap.get(nodeId) || [];
-        for (const childId of children) {
-            this._getContourFromMap(childId, depth + 1, contour, side, positions, childrenMap);
-        }
-    }
-
-    /**
      * Shift a subtree horizontally
      * @private
      */
@@ -291,21 +217,6 @@ export class TreeLayoutEngine {
         const children = childrenMap.get(nodeId) || [];
         for (const childId of children) {
             this._shiftSubtree(childId, dx, positions, childrenMap);
-        }
-    }
-
-    /**
-     * Shift subtree using pre-built children map
-     * @private
-     */
-    _shiftSubtreeFromMap(nodeId, dx, positions, childrenMap) {
-        const pos = positions.get(nodeId);
-        if (pos) {
-            pos.x += dx;
-        }
-        const children = childrenMap.get(nodeId) || [];
-        for (const childId of children) {
-            this._shiftSubtreeFromMap(childId, dx, positions, childrenMap);
         }
     }
 

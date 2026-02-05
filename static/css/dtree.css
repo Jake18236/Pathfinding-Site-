@@ -9,14 +9,7 @@
    Decision Tree-Specific CSS Custom Properties
    ============================================ */
 :root {
-    /* Class colors - from shared */
-    --dtree-class-0: var(--viz-class-0);
-    --dtree-class-1: var(--viz-class-1);
-    --dtree-class-2: var(--viz-class-2);
-
-    /* Query point - from shared */
-    --dtree-query-bg: var(--viz-query-bg);
-    --dtree-query-border: var(--viz-query-border);
+    /* Query point size */
     --dtree-query-size: 14px;
 
     /* Split line styling */
@@ -34,14 +27,11 @@
 }
 
 [data-theme="gruvbox-dark"] {
-    /* Split lines - lighter for dark bg */
-    --dtree-split-line: #ebdbb2;
-
-    /* Tree node colors */
-    --dtree-node-bg: #3c3836;
-    --dtree-node-border: #ebdbb2;
-    --dtree-node-selected: #fabd2f;
-    --dtree-edge-color: #a89984;
+    --dtree-split-line: var(--gruvbox-fg);
+    --dtree-node-bg: var(--gruvbox-bg1);
+    --dtree-node-border: var(--gruvbox-fg);
+    --dtree-node-selected: var(--gruvbox-yellow);
+    --dtree-edge-color: var(--gruvbox-gray);
 }
 
 /* ============================================
@@ -294,9 +284,9 @@
     font-weight: 600;
 }
 
-.distribution-label.class-0 { color: var(--dtree-class-0); }
-.distribution-label.class-1 { color: var(--dtree-class-1); }
-.distribution-label.class-2 { color: var(--dtree-class-2); }
+.distribution-label.class-0 { color: var(--viz-class-0); }
+.distribution-label.class-1 { color: var(--viz-class-1); }
+.distribution-label.class-2 { color: var(--viz-class-2); }
 
 .distribution-track {
     flex: 1;
@@ -312,9 +302,9 @@
     transition: width 0.3s ease;
 }
 
-.distribution-fill.class-0 { background-color: var(--dtree-class-0); }
-.distribution-fill.class-1 { background-color: var(--dtree-class-1); }
-.distribution-fill.class-2 { background-color: var(--dtree-class-2); }
+.distribution-fill.class-0 { background-color: var(--viz-class-0); }
+.distribution-fill.class-1 { background-color: var(--viz-class-1); }
+.distribution-fill.class-2 { background-color: var(--viz-class-2); }
 
 .distribution-value {
     min-width: 24px;
@@ -584,7 +574,7 @@
     display: inline-block;
     font-family: var(--viz-mono-font);
     font-weight: 600;
-    color: var(--dtree-query-border);
+    color: var(--viz-query-border);
     animation: decision-fade 0.3s ease-in-out;
 }
 
@@ -623,13 +613,13 @@
 .panel-heading .nav-tabs.panel-tabs > li.active > a,
 .panel-heading .nav-tabs.panel-tabs > li.active > a:hover,
 .panel-heading .nav-tabs.panel-tabs > li.active > a:focus {
-    background-color: #fff;
+    background-color: var(--viz-bg);
     border: none;
-    border-bottom: 2px solid var(--dtree-class-1, #377eb8);
+    border-bottom: 2px solid var(--viz-class-1, #377eb8);
 }
 
 .panel-heading .nav-tabs.panel-tabs > li > a:hover {
-    background-color: rgba(0, 0, 0, 0.05);
+    background-color: var(--viz-hover-bg);
 }
 
 /* ============================================
@@ -736,7 +726,7 @@
 }
 
 .math-result strong {
-    color: var(--dtree-class-1);
+    color: var(--viz-class-1);
     font-size: 14px;
 }
 
@@ -786,7 +776,7 @@
 }
 
 .math-gain-section {
-    border-left-color: var(--dtree-class-1);
+    border-left-color: var(--viz-class-1);
 }
 
 .math-gain-formula {
@@ -898,7 +888,7 @@
 }
 
 .math-gain-result strong {
-    color: var(--dtree-class-1);
+    color: var(--viz-class-1);
     font-size: 16px;
 }
 
@@ -921,9 +911,77 @@
 
 /* Math tab node selection highlight */
 #tree-svg .tree-node.math-selected circle {
-    stroke: var(--dtree-class-1);
+    stroke: var(--viz-class-1);
     stroke-width: 3px;
     stroke-dasharray: 4 2;
+}
+
+/* ============================================
+   Dark Theme Overrides
+   ============================================ */
+[data-theme="gruvbox-dark"] .math-class-dot {
+    border-color: rgba(235, 219, 178, 0.3);
+}
+
+[data-theme="gruvbox-dark"] .math-parent-title,
+[data-theme="gruvbox-dark"] .math-val-parent {
+    color: var(--gruvbox-purple);
+}
+
+[data-theme="gruvbox-dark"] .math-left-title,
+[data-theme="gruvbox-dark"] .math-val-left,
+[data-theme="gruvbox-dark"] .math-symbol-left {
+    color: var(--gruvbox-green);
+}
+
+[data-theme="gruvbox-dark"] .math-right-title,
+[data-theme="gruvbox-dark"] .math-val-right,
+[data-theme="gruvbox-dark"] .math-symbol-right {
+    color: var(--gruvbox-blue);
+}
+
+[data-theme="gruvbox-dark"] .math-sum-parent {
+    background-color: rgba(211, 134, 155, 0.15);
+    border-color: rgba(211, 134, 155, 0.3);
+}
+
+[data-theme="gruvbox-dark"] .math-sum-left {
+    background-color: rgba(184, 187, 38, 0.15);
+    border-color: rgba(184, 187, 38, 0.3);
+}
+
+[data-theme="gruvbox-dark"] .math-sum-right {
+    background-color: rgba(131, 165, 152, 0.15);
+    border-color: rgba(131, 165, 152, 0.3);
+}
+
+[data-theme="gruvbox-dark"] .math-weight-left {
+    border-left-color: var(--gruvbox-green);
+}
+
+[data-theme="gruvbox-dark"] .math-weight-right {
+    border-left-color: var(--gruvbox-blue);
+}
+
+[data-theme="gruvbox-dark"] .math-header-section {
+    background: rgba(250, 189, 47, 0.08);
+}
+
+[data-theme="gruvbox-dark"] .design-instructions {
+    background: rgba(250, 189, 47, 0.1);
+    border-color: rgba(250, 189, 47, 0.3);
+}
+
+[data-theme="gruvbox-dark"] .design-instructions i {
+    color: var(--gruvbox-yellow);
+}
+
+[data-theme="gruvbox-dark"] .path-item.path-leaf {
+    background: rgba(250, 189, 47, 0.1);
+}
+
+[data-theme="gruvbox-dark"] .math-gain-weights {
+    background: var(--viz-hover-bg);
 }
 
 /* ============================================

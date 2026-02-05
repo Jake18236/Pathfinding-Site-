@@ -100,29 +100,30 @@
             this.currentType = type;
             this.points = [];
 
+            const gen = VizLib.DatasetGenerators;
             switch (type) {
                 case 'moons':
-                    this._generateMoons(numPoints);
+                    this.points = gen.moons(numPoints);
                     this.numClasses = 2;
                     break;
                 case 'circles':
-                    this._generateCircles(numPoints);
+                    this.points = gen.circles(numPoints);
                     this.numClasses = 2;
                     break;
                 case 'blobs':
-                    this._generateBlobs(numPoints, 3);
+                    this.points = gen.blobs(numPoints, 3);
                     this.numClasses = 3;
                     break;
                 case 'linear':
-                    this._generateLinear(numPoints);
+                    this.points = gen.linear(numPoints);
                     this.numClasses = 2;
                     break;
                 case 'xor':
-                    this._generateXOR(numPoints);
+                    this.points = gen.xor(numPoints);
                     this.numClasses = 2;
                     break;
                 case 'spiral':
-                    this._generateSpiral(numPoints);
+                    this.points = gen.spiral(numPoints);
                     this.numClasses = 2;
                     break;
                 case 'custom':
@@ -132,173 +133,6 @@
             }
 
             return this.points;
-        }
-
-        // Generate two interleaving half circles (sklearn make_moons style)
-        _generateMoons(n, noise = 0.1) {
-            const nPerClass = Math.floor(n / 2);
-
-            for (let i = 0; i < nPerClass; i++) {
-                // Upper moon (class 0)
-                const angle1 = Math.PI * i / nPerClass;
-                const x1 = Math.cos(angle1) + this._noise(noise);
-                const y1 = Math.sin(angle1) + this._noise(noise);
-                this.points.push({
-                    x: this._normalize(x1, -1.5, 2.5),
-                    y: this._normalize(y1, -0.6, 1.6),
-                    classLabel: 0
-                });
-
-                // Lower moon (class 1) - shifted and flipped
-                const x2 = 1 - Math.cos(angle1) + this._noise(noise);
-                const y2 = 0.5 - Math.sin(angle1) + this._noise(noise);
-                this.points.push({
-                    x: this._normalize(x2, -1.5, 2.5),
-                    y: this._normalize(y2, -0.6, 1.6),
-                    classLabel: 1
-                });
-            }
-        }
-
-        // Generate concentric circles
-        _generateCircles(n, noise = 0.05) {
-            const nPerClass = Math.floor(n / 2);
-            const innerRadius = 0.25;
-            const outerRadius = 0.5;
-
-            for (let i = 0; i < nPerClass; i++) {
-                const angle = 2 * Math.PI * Math.random();
-
-                // Inner circle (class 0)
-                const r1 = innerRadius * (0.8 + 0.4 * Math.random()) + this._noise(noise);
-                this.points.push({
-                    x: 0.5 + r1 * Math.cos(angle),
-                    y: 0.5 + r1 * Math.sin(angle),
-                    classLabel: 0
-                });
-
-                // Outer circle (class 1)
-                const r2 = outerRadius * (0.8 + 0.4 * Math.random()) + this._noise(noise);
-                this.points.push({
-                    x: 0.5 + r2 * Math.cos(angle),
-                    y: 0.5 + r2 * Math.sin(angle),
-                    classLabel: 1
-                });
-            }
-        }
-
-        // Generate Gaussian blobs
-        _generateBlobs(n, numBlobs = 3) {
-            const centers = [
-                { x: 0.25, y: 0.75 },
-                { x: 0.75, y: 0.75 },
-                { x: 0.5, y: 0.25 }
-            ];
-            const std = 0.08;
-            const nPerBlob = Math.floor(n / numBlobs);
-
-            for (let b = 0; b < numBlobs; b++) {
-                for (let i = 0; i < nPerBlob; i++) {
-                    const x = centers[b].x + this._gaussian() * std;
-                    const y = centers[b].y + this._gaussian() * std;
-                    this.points.push({
-                        x: Math.max(0.02, Math.min(0.98, x)),
-                        y: Math.max(0.02, Math.min(0.98, y)),
-                        classLabel: b
-                    });
-                }
-            }
-        }
-
-        // Generate linearly separable points
-        _generateLinear(n, noise = 0.08) {
-            const nPerClass = Math.floor(n / 2);
-
-            for (let i = 0; i < nPerClass; i++) {
-                // Class 0: below the line y = x + 0.1
-                const x0 = 0.1 + 0.8 * Math.random();
-                const maxY0 = x0 + 0.05;
-                const y0 = Math.random() * maxY0 * 0.8 + this._noise(noise);
-                this.points.push({
-                    x: x0,
-                    y: Math.max(0.05, Math.min(0.95, y0)),
-                    classLabel: 0
-                });
-
-                // Class 1: above the line y = x + 0.1
-                const x1 = 0.1 + 0.8 * Math.random();
-                const minY1 = x1 + 0.15;
-                const y1 = minY1 + (0.95 - minY1) * Math.random() + this._noise(noise);
-                this.points.push({
-                    x: x1,
-                    y: Math.max(0.05, Math.min(0.95, y1)),
-                    classLabel: 1
-                });
-            }
-        }
-
-        // Generate XOR pattern (4 quadrants)
-        _generateXOR(n, noise = 0.05) {
-            const nPerQuadrant = Math.floor(n / 4);
-            const quadrants = [
-                { cx: 0.25, cy: 0.75, label: 0 },  // Top-left
-                { cx: 0.75, cy: 0.75, label: 1 },  // Top-right
-                { cx: 0.25, cy: 0.25, label: 1 },  // Bottom-left
-                { cx: 0.75, cy: 0.25, label: 0 }   // Bottom-right
-            ];
-
-            for (const q of quadrants) {
-                for (let i = 0; i < nPerQuadrant; i++) {
-                    this.points.push({
-                        x: q.cx + (Math.random() - 0.5) * 0.35 + this._noise(noise),
-                        y: q.cy + (Math.random() - 0.5) * 0.35 + this._noise(noise),
-                        classLabel: q.label
-                    });
-                }
-            }
-        }
-
-        // Generate two intertwining spirals
-        _generateSpiral(n, noise = 0.03) {
-            const nPerSpiral = Math.floor(n / 2);
-            const turns = 1.5;
-
-            for (let i = 0; i < nPerSpiral; i++) {
-                const t = i / nPerSpiral;
-                const angle = turns * 2 * Math.PI * t;
-                const radius = 0.05 + 0.4 * t;
-
-                // Spiral 1 (class 0)
-                this.points.push({
-                    x: 0.5 + radius * Math.cos(angle) + this._noise(noise),
-                    y: 0.5 + radius * Math.sin(angle) + this._noise(noise),
-                    classLabel: 0
-                });
-
-                // Spiral 2 (class 1) - rotated 180 degrees
-                this.points.push({
-                    x: 0.5 + radius * Math.cos(angle + Math.PI) + this._noise(noise),
-                    y: 0.5 + radius * Math.sin(angle + Math.PI) + this._noise(noise),
-                    classLabel: 1
-                });
-            }
-        }
-
-        // Helper: random noise
-        _noise(scale) {
-            return (Math.random() - 0.5) * 2 * scale;
-        }
-
-        // Helper: Box-Muller Gaussian
-        _gaussian() {
-            const u1 = Math.random();
-            const u2 = Math.random();
-            return Math.sqrt(-2 * Math.log(u1)) * Math.cos(2 * Math.PI * u2);
-        }
-
-        // Helper: normalize value to [0, 1]
-        _normalize(val, min, max) {
-            return (val - min) / (max - min);
         }
 
         // Get a hash for caching
@@ -432,14 +266,15 @@
         }
 
         _getDistanceFunction(metric) {
+            const MU = VizLib.MathUtils;
             switch (metric) {
                 case 'manhattan':
-                    return (a, b) => Math.abs(a.x - b.x) + Math.abs(a.y - b.y);
+                    return MU.manhattanDistance;
                 case 'chebyshev':
-                    return (a, b) => Math.max(Math.abs(a.x - b.x), Math.abs(a.y - b.y));
+                    return MU.chebyshevDistance;
                 case 'euclidean':
                 default:
-                    return (a, b) => Math.sqrt((a.x - b.x) ** 2 + (a.y - b.y) ** 2);
+                    return MU.euclideanDistance;
             }
         }
 

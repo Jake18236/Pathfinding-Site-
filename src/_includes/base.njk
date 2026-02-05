@@ -576,8 +576,10 @@
 		import { PlaybackController } from './static/js/lib/playback-controller.js';
 		import { ThemeManager } from './static/js/lib/theme-manager.js';
 		import { Quadtree } from './static/js/lib/quadtree.js';
-		import { setupHiDPICanvas, resetCanvasTransform, clearCanvas } from './static/js/lib/canvas-utils.js';
+		import { setupHiDPICanvas, resetCanvasTransform, clearCanvas, roundRect, drawLine, drawCircle, getMousePosition, createOffscreenCanvas } from './static/js/lib/canvas-utils.js';
 		import { TreeLayoutEngine } from './static/js/lib/tree-layout.js';
+		import { normalize, clamp, euclideanDistance, manhattanDistance, chebyshevDistance, gaussian, lerp, remapRange } from './static/js/lib/math-utils.js';
+		import { DatasetGenerators } from './static/js/lib/dataset-generators.js';
 
 		window.VizLib = {
 			PlaybackController,
@@ -586,7 +588,10 @@
 			setupHiDPICanvas,
 			resetCanvasTransform,
 			clearCanvas,
-			TreeLayoutEngine
+			CanvasUtils: { setupHiDPICanvas, resetCanvasTransform, clearCanvas, roundRect, drawLine, drawCircle, getMousePosition, createOffscreenCanvas },
+			TreeLayoutEngine,
+			MathUtils: { normalize, clamp, euclideanDistance, manhattanDistance, chebyshevDistance, gaussian, lerp, remapRange },
+			DatasetGenerators
 		};
 
 		// Signal that VizLib is ready

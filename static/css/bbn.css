@@ -55,41 +55,41 @@
 }
 
 [data-theme="gruvbox-dark"] {
-    --bbn-node-bg: #3c3836;
-    --bbn-node-border: #504945;
-    --bbn-node-header: #1d2021;
-    --bbn-node-header-text: #ebdbb2;
-    --bbn-node-text: #ebdbb2;
+    --bbn-node-bg: var(--gruvbox-bg1);
+    --bbn-node-border: var(--gruvbox-bg2);
+    --bbn-node-header: var(--gruvbox-bg-darkest);
+    --bbn-node-header-text: var(--gruvbox-fg);
+    --bbn-node-text: var(--gruvbox-fg);
 
     /* Evidence True */
     --bbn-evidence-true-bg: rgba(184, 187, 38, 0.25);
-    --bbn-evidence-true-border: #b8bb26;
-    --bbn-evidence-true-text: #b8bb26;
+    --bbn-evidence-true-border: var(--gruvbox-green);
+    --bbn-evidence-true-text: var(--gruvbox-green);
 
     /* Evidence False */
     --bbn-evidence-false-bg: rgba(251, 73, 52, 0.25);
-    --bbn-evidence-false-border: #fb4934;
-    --bbn-evidence-false-text: #fb4934;
+    --bbn-evidence-false-border: var(--gruvbox-red);
+    --bbn-evidence-false-text: var(--gruvbox-red);
 
     /* Selected node */
-    --bbn-selected-text: #83a598;
+    --bbn-selected-text: var(--gruvbox-blue);
 
     /* Edge colors */
     --bbn-edge-color: #665c54;
-    --bbn-edge-arrow: #a89984;
+    --bbn-edge-arrow: var(--gruvbox-gray);
 
     /* Probability bars */
-    --bbn-prob-bar-bg: #3c3836;
-    --bbn-prob-bar-fill: #b8bb26;
-    --bbn-prob-bar-low: #fe8019;
-    --bbn-prob-bar-high: #83a598;
+    --bbn-prob-bar-bg: var(--gruvbox-bg1);
+    --bbn-prob-bar-fill: var(--gruvbox-green);
+    --bbn-prob-bar-low: var(--gruvbox-orange);
+    --bbn-prob-bar-high: var(--gruvbox-blue);
 
     /* CPT table */
-    --bbn-cpt-header-bg: #3c3836;
-    --bbn-cpt-cell-bg: #282828;
+    --bbn-cpt-header-bg: var(--gruvbox-bg1);
+    --bbn-cpt-cell-bg: var(--gruvbox-bg);
     --bbn-cpt-hover-bg: rgba(131, 165, 152, 0.15);
-    --bbn-cpt-input-bg: #32302f;
-    --bbn-cpt-input-border: #504945;
+    --bbn-cpt-input-bg: var(--gruvbox-bg-dim);
+    --bbn-cpt-input-border: var(--gruvbox-bg2);
 }
 
 /* ============================================

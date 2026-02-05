@@ -47,26 +47,26 @@
 
 [data-theme="gruvbox-dark"] {
     --minimax-max-bg: rgba(131, 165, 152, 0.3);
-    --minimax-max-border: #83a598;
+    --minimax-max-border: var(--gruvbox-blue);
     --minimax-min-bg: rgba(211, 134, 155, 0.3);
-    --minimax-min-border: #d3869b;
+    --minimax-min-border: var(--gruvbox-purple);
 
-    --minimax-current-border: #fabd2f;
-    --minimax-pruned-border: #fb4934;
+    --minimax-current-border: var(--gruvbox-yellow);
+    --minimax-pruned-border: var(--gruvbox-red);
     --minimax-evaluated-bg: rgba(168, 153, 132, 0.2);
-    --minimax-evaluated-border: #a89984;
+    --minimax-evaluated-border: var(--gruvbox-gray);
     --minimax-selected-bg: rgba(131, 165, 152, 0.4);
-    --minimax-selected-border: #83a598;
+    --minimax-selected-border: var(--gruvbox-blue);
 
-    --minimax-alpha-color: #83a598;
-    --minimax-beta-color: #fb4934;
+    --minimax-alpha-color: var(--gruvbox-blue);
+    --minimax-beta-color: var(--gruvbox-red);
 
-    --minimax-x-color: #83a598;
-    --minimax-o-color: #d3869b;
+    --minimax-x-color: var(--gruvbox-blue);
+    --minimax-o-color: var(--gruvbox-purple);
 
-    --minimax-nim-object: #d5c4a1;
-    --minimax-nim-object-hover: #ebdbb2;
-    --minimax-nim-selected: #fe8019;
+    --minimax-nim-object: var(--gruvbox-fg-dim);
+    --minimax-nim-object-hover: var(--gruvbox-fg);
+    --minimax-nim-selected: var(--gruvbox-orange);
 }
 
 /* ============================================
@@ -140,8 +140,8 @@
 
 [data-theme="gruvbox-dark"] .game-selector .btn.active {
     background-color: rgba(250, 189, 47, 0.3);
-    border-color: #fabd2f;
-    color: #ebdbb2;
+    border-color: var(--gruvbox-yellow);
+    color: var(--gruvbox-fg);
 }
 
 /* ============================================
@@ -179,7 +179,7 @@
 }
 
 [data-theme="gruvbox-dark"] .game-tree-container-main {
-    background-color: #1d2021;
+    background-color: var(--gruvbox-bg-darkest);
 }
 
 /* ============================================
@@ -279,6 +279,52 @@
 
 .loading-phase.complete .phase-progress-bar {
     background: #4caf50;
+}
+
+/* Dark theme loading phases */
+[data-theme="gruvbox-dark"] .loading-phase {
+    background: var(--gruvbox-bg1);
+    border-color: var(--gruvbox-bg2);
+}
+
+[data-theme="gruvbox-dark"] .loading-phase.active {
+    border-color: var(--gruvbox-blue);
+    background: rgba(131, 165, 152, 0.15);
+}
+
+[data-theme="gruvbox-dark"] .loading-phase.complete {
+    border-color: var(--gruvbox-green);
+    background: rgba(184, 187, 38, 0.15);
+}
+
+[data-theme="gruvbox-dark"] .loading-phase .phase-label {
+    color: var(--gruvbox-fg);
+}
+
+[data-theme="gruvbox-dark"] .phase-icon,
+[data-theme="gruvbox-dark"] .phase-status {
+    color: var(--gruvbox-gray);
+}
+
+[data-theme="gruvbox-dark"] .loading-phase.active .phase-icon {
+    color: var(--gruvbox-blue);
+}
+
+[data-theme="gruvbox-dark"] .loading-phase.complete .phase-icon,
+[data-theme="gruvbox-dark"] .loading-phase.complete .phase-status {
+    color: var(--gruvbox-green);
+}
+
+[data-theme="gruvbox-dark"] .phase-progress-container {
+    background: var(--gruvbox-bg2);
+}
+
+[data-theme="gruvbox-dark"] .phase-progress-bar {
+    background: linear-gradient(90deg, var(--gruvbox-blue), var(--gruvbox-blue));
+}
+
+[data-theme="gruvbox-dark"] .loading-phase.complete .phase-progress-bar {
+    background: var(--gruvbox-green);
 }
 
 /* ============================================

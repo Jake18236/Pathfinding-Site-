@@ -63,11 +63,6 @@
             return oneHot;
         }
 
-        static normalize(arr) {
-            const sum = arr.reduce((a, b) => a + b, 0);
-            if (sum === 0) return arr.map(() => 1 / arr.length);
-            return arr.map(v => v / sum);
-        }
     }
 
     // ============================================
@@ -165,13 +160,13 @@
         }
 
         setPredicted(predictions) {
-            this.predicted = CrossEntropyCalculator.normalize([...predictions]);
+            this.predicted = VizLib.MathUtils.normalize([...predictions]);
         }
 
         setPredictedValue(index, value) {
             this.predicted[index] = Math.max(0, Math.min(1, value));
             // Normalize to sum to 1
-            this.predicted = CrossEntropyCalculator.normalize(this.predicted);
+            this.predicted = VizLib.MathUtils.normalize(this.predicted);
         }
 
         makeUniform() {
@@ -179,7 +174,7 @@
         }
 
         makeRandom() {
-            this.predicted = CrossEntropyCalculator.normalize(
+            this.predicted = VizLib.MathUtils.normalize(
                 new Array(NUM_CLASSES).fill(0).map(() => Math.random())
             );
         }
@@ -722,92 +717,6 @@
     }
 
     // ============================================
-    // TimelineController
-    // ============================================
-    class TimelineController {
-        constructor() {
-            this.isPlaying = false;
-            this.currentIndex = 0;
-            this.maxIndex = 0;
-            this.speed = 1000;
-            this.intervalId = null;
-            this.onIndexChange = null;
-            this.epochs = [];
-        }
-
-        setEpochs(epochs) {
-            this.epochs = epochs;
-            this.maxIndex = epochs.length - 1;
-        }
-
-        setIndex(index) {
-            this.currentIndex = Math.max(0, Math.min(this.maxIndex, index));
-            if (this.onIndexChange) {
-                this.onIndexChange(this.currentIndex);
-            }
-        }
-
-        play() {
-            if (this.isPlaying) return;
-            this.isPlaying = true;
-            this._startInterval();
-        }
-
-        pause() {
-            this.isPlaying = false;
-            this._stopInterval();
-        }
-
-        toggle() {
-            if (this.isPlaying) {
-                this.pause();
-            } else {
-                this.play();
-            }
-        }
-
-        reset() {
-            this.pause();
-            this.setIndex(0);
-        }
-
-        step() {
-            if (this.currentIndex < this.maxIndex) {
-                this.setIndex(this.currentIndex + 1);
-            }
-        }
-
-        setSpeed(ms) {
-            this.speed = ms;
-            if (this.isPlaying) {
-                this._stopInterval();
-                this._startInterval();
-            }
-        }
-
-        getCurrentEpoch() {
-            return this.epochs[this.currentIndex] || 0;
-        }
-
-        _startInterval() {
-            this.intervalId = setInterval(() => {
-                if (this.currentIndex < this.maxIndex) {
-                    this.setIndex(this.currentIndex + 1);
-                } else {
-                    this.pause();
-                }
-            }, this.speed);
-        }
-
-        _stopInterval() {
-            if (this.intervalId) {
-                clearInterval(this.intervalId);
-                this.intervalId = null;
-            }
-        }
-    }
-
-    // ============================================
     // CrossEntropyVisualizer (Main Controller)
     // ============================================
     class CrossEntropyVisualizer {
@@ -822,7 +731,14 @@
             this.state = new DistributionState();
             this.histogramRenderer = null;
             this.galleryRenderer = null;
-            this.timeline = new TimelineController();
+            this.timeline = new VizLib.PlaybackController({
+                initialSpeed: 1000,
+                getDelayFn: (speed) => speed, // speed is delay in ms
+                onPlayStateChange: (isPlaying) => {
+                    const icon = document.getElementById('play-icon');
+                    if (icon) icon.className = isPlaying ? 'fa fa-pause' : 'fa fa-play';
+                },
+            });
 
             this.isDragging = false;
             this.dragBarIndex = -1;
@@ -916,8 +832,10 @@
             // Setup timeline
             const metadata = this.dataManager.getMetadata();
             if (metadata) {
-                this.timeline.setEpochs(metadata.snapshotEpochs);
-                this.timeline.onIndexChange = (index) => this._onTimelineChange(index);
+                this.timeline.load(metadata.snapshotEpochs);
+                this.timeline.onStepChange = (index) => {
+                    if (index >= 0) this._onTimelineChange(index);
+                };
 
                 // Update total epochs display
                 const totalEpochsEl = document.getElementById('total-epochs');
@@ -1035,12 +953,12 @@
             const speedSelect = document.getElementById('playback-speed');
 
             if (btnPlay) btnPlay.addEventListener('click', () => this._onPlayToggle());
-            if (btnReset) btnReset.addEventListener('click', () => this.timeline.reset());
-            if (btnStep) btnStep.addEventListener('click', () => this.timeline.step());
+            if (btnReset) btnReset.addEventListener('click', () => { this.timeline.pause(); this.timeline.goToStep(0); });
+            if (btnStep) btnStep.addEventListener('click', () => this.timeline.stepForward());
             if (epochSlider) {
                 epochSlider.max = this.dataManager.getNumSnapshots() - 1;
                 epochSlider.addEventListener('input', (e) => {
-                    this.timeline.setIndex(parseInt(e.target.value));
+                    this.timeline.goToStep(parseInt(e.target.value));
                 });
             }
             if (speedSelect) {
@@ -1078,8 +996,6 @@
             // In manual mode, stop playback
             if (mode === 'manual') {
                 this.timeline.pause();
-                const icon = document.getElementById('play-icon');
-                if (icon) icon.className = 'fa fa-play';
             }
 
             this.render();
@@ -1120,10 +1036,6 @@
 
             // Pause playback
             this.timeline.pause();
-            const icon = document.getElementById('play-icon');
-            if (icon) {
-                icon.className = 'fa fa-play';
-            }
 
             try {
                 // Load new dataset
@@ -1144,8 +1056,8 @@
                 // Reset timeline
                 const metadata = this.dataManager.getMetadata();
                 if (metadata) {
-                    this.timeline.setEpochs(metadata.snapshotEpochs);
-                    this.timeline.reset();
+                    this.timeline.load(metadata.snapshotEpochs);
+                    this.timeline.goToStep(0);
                 }
 
                 // Update sample gallery
@@ -1220,17 +1132,13 @@
 
             // Update epoch display
             const epochDisplay = document.getElementById('current-epoch');
-            if (epochDisplay) epochDisplay.textContent = this.timeline.getCurrentEpoch();
+            if (epochDisplay) epochDisplay.textContent = this.timeline.getCurrentStep() || 0;
 
             this.render();
         }
 
         _onPlayToggle() {
             this.timeline.toggle();
-            const icon = document.getElementById('play-icon');
-            if (icon) {
-                icon.className = this.timeline.isPlaying ? 'fa fa-pause' : 'fa fa-play';
-            }
         }
 
         _onExpectedClassChange(classIndex) {
@@ -1359,7 +1267,7 @@
             const terms = this.state.getTerms();
             const trueClass = this.state.trueLabel;
 
-            let html = '<table class="breakdown-mini-table">';
+            let html = '<table class="viz-breakdown-table breakdown-mini-table">';
             html += '<tr><th>Class</th><th>y</th><th>p</th><th>-y&middot;log(p)</th></tr>';
 
             terms.forEach(t => {

@@ -1,8 +1,8 @@
 {#
   Legend Component
 
-  @param items - Array of {class, label, type?, id?}
-                 type: 'color' (default) or 'line'
+  @param items - Array of {class, label, type?, id?, icon?}
+                 type: 'color' (default), 'line', 'dot', or 'icon'
   @param className - Container class (default: 'canvas-legend')
 
   Example:
@@ -10,9 +10,10 @@
   {{ legend(
       items=[
         {class: 'class-0', label: 'Class 1'},
-        {class: 'class-1', label: 'Class 2'},
+        {class: 'class-1', label: 'Class 2', type: 'dot'},
         {class: 'query-point', label: 'Query'},
-        {class: 'neighbor-line', label: 'Neighbor', type: 'line'}
+        {class: 'neighbor-line', label: 'Neighbor', type: 'line'},
+        {label: 'Info', type: 'icon', icon: 'fa-info-circle'}
       ]
   ) }}
 #}
@@ -23,6 +24,10 @@
     <span class="legend-item"{% if item.id %} id="{{ item.id }}"{% endif %}>
         {% if item.type == 'line' %}
         <span class="legend-line {{ item.class }}"></span>
+        {% elif item.type == 'dot' %}
+        <span class="legend-dot {{ item.class }}"></span>
+        {% elif item.type == 'icon' %}
+        <i class="fa {{ item.icon }}"></i>
         {% else %}
         <span class="legend-color {{ item.class }}"></span>
         {% endif %}

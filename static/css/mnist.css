@@ -9,17 +9,7 @@
    MNIST-Specific CSS Custom Properties
    ============================================ */
 :root {
-    /* Digit colors - map to shared class colors */
-    --mnist-digit-0: var(--viz-class-0);
-    --mnist-digit-1: var(--viz-class-1);
-    --mnist-digit-2: var(--viz-class-2);
-    --mnist-digit-3: var(--viz-class-3);
-    --mnist-digit-4: var(--viz-class-4);
-    --mnist-digit-5: var(--viz-class-5);
-    --mnist-digit-6: var(--viz-class-6);
-    --mnist-digit-7: var(--viz-class-7);
-    --mnist-digit-8: var(--viz-class-8);
-    --mnist-digit-9: var(--viz-class-9);
+    /* Digit colors use shared --viz-class-* variables directly */
 
     /* Tooltip */
     --mnist-tooltip-bg: #ffffff;
@@ -28,8 +18,8 @@
 }
 
 [data-theme="gruvbox-dark"] {
-    --mnist-tooltip-bg: #32302f;
-    --mnist-tooltip-border: #ebdbb2;
+    --mnist-tooltip-bg: var(--gruvbox-bg-dim);
+    --mnist-tooltip-border: var(--gruvbox-fg);
     --mnist-tooltip-shadow: rgba(0, 0, 0, 0.4);
 }
 
@@ -80,8 +70,8 @@
 
 [data-theme="gruvbox-dark"] .algorithm-tabs .btn.active {
     background-color: rgba(250, 189, 47, 0.3);
-    border-color: #fabd2f;
-    color: #ebdbb2;
+    border-color: var(--gruvbox-yellow);
+    color: var(--gruvbox-fg);
 }
 
 /* ============================================
@@ -295,8 +285,8 @@
 
 [data-theme="gruvbox-dark"] .dataset-selector .btn-group .btn.active {
     background-color: rgba(184, 187, 38, 0.3);
-    border-color: #b8bb26;
-    color: #ebdbb2;
+    border-color: var(--gruvbox-green);
+    color: var(--gruvbox-fg);
 }
 
 .data-source-toggle {
@@ -324,8 +314,8 @@
 
 [data-theme="gruvbox-dark"] .data-source-toggle .btn-group .btn.active {
     background-color: rgba(250, 189, 47, 0.3);
-    border-color: #fabd2f;
-    color: #ebdbb2;
+    border-color: var(--gruvbox-yellow);
+    color: var(--gruvbox-fg);
 }
 
 .data-source-info {
@@ -419,7 +409,7 @@
 
 [data-theme="gruvbox-dark"] .epoch-marker.active {
     background-color: rgba(250, 189, 47, 0.3);
-    color: #fabd2f;
+    color: var(--gruvbox-yellow);
 }
 
 .timeline-hint {

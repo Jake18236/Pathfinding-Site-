@@ -20,6 +20,7 @@ cardOrder: 10
 ---
 
 {% from "components/legend.njk" import legend %}
+{% from "components/info-tabs.njk" import infoTabs %}
 
 <link rel="stylesheet" href="static/css/entropy.css">
 
@@ -31,7 +32,7 @@ cardOrder: 10
             <div class="panel-heading">
                 <div class="panel-heading-content">
                     <span class="panel-title-text"><i class="fa fa-chart-bar"></i> Probability Distribution</span>
-                    <span class="entropy-badge" id="entropy-value">H = 1.000 bits</span>
+                    <span class="viz-badge entropy-badge" id="entropy-value">H = 1.000 bits</span>
                 </div>
             </div>
             <div class="panel-body canvas-panel-body">
@@ -114,19 +115,7 @@ cardOrder: 10
 
     <!-- Right Column: Tabbed Info -->
     <div class="col-md-5">
-        <div class="panel panel-default panel-full-height">
-            <div class="panel-heading">
-                <ul class="nav nav-tabs panel-tabs">
-                    <li class="active"><a href="#tab-about" data-toggle="tab"><i class="fa fa-info-circle"></i> About</a></li>
-                    <li><a href="#tab-algorithm" data-toggle="tab"><i class="fa fa-book"></i> Algorithm</a></li>
-                    <li><a href="#tab-math" data-toggle="tab"><i class="fa fa-calculator"></i> Math</a></li>
-                    <li><a href="#tab-sampling" data-toggle="tab"><i class="fa fa-random"></i> Sampling</a></li>
-                </ul>
-            </div>
-            <div class="panel-body">
-                <div class="tab-content">
-                    <!-- About Tab -->
-                    <div class="tab-pane active" id="tab-about">
+        {% set aboutContent %}
                         <h4><i class="fa fa-chart-pie"></i> What is Shannon Entropy?</h4>
                         <p>
                             <strong>Shannon Entropy</strong> measures the average "surprise" or uncertainty
@@ -147,10 +136,9 @@ cardOrder: 10
                             <li><strong>Add outcomes</strong> to explore more complex distributions</li>
                             <li><strong>Normalize</strong> to fix probabilities that don't sum to 100%</li>
                         </ul>
-                    </div>
+        {% endset %}
 
-                    <!-- Algorithm Tab -->
-                    <div class="tab-pane" id="tab-algorithm">
+        {% set algorithmContent %}
                         <h4><i class="fa fa-cogs"></i> Computing Entropy</h4>
                         <ol class="algorithm-steps">
                             <li>For each outcome i with probability p<sub>i</sub></li>
@@ -176,10 +164,9 @@ cardOrder: 10
                             The "surprise" of seeing outcome x is <code>-log<sub>2</sub>(p(x))</code>.
                             Rare events are more surprising. Entropy is the <em>expected</em> surprise.
                         </p>
-                    </div>
+        {% endset %}
 
-                    <!-- Math Tab -->
-                    <div class="tab-pane" id="tab-math">
+        {% set mathContent %}
                         <h4><i class="fa fa-superscript"></i> The Shannon Entropy Formula</h4>
                         <div class="math-formula-display">
                             <code>H(X) = -Σ p(x) log<sub>2</sub> p(x)</code>
@@ -195,10 +182,9 @@ cardOrder: 10
                             <li><strong>Achieved when</strong>: uniform distribution (all p equal)</li>
                             <li><strong>Zero when</strong>: one outcome has p = 1 (certainty)</li>
                         </ul>
-                    </div>
+        {% endset %}
 
-                    <!-- Sampling Tab -->
-                    <div class="tab-pane" id="tab-sampling">
+        {% set samplingContent %}
                         <h4><i class="fa fa-random"></i> Sample from Distribution</h4>
                         <p class="sampling-intro">
                             Draw random samples from the current distribution to see "surprise" values.
@@ -233,9 +219,17 @@ cardOrder: 10
                             <strong>Insight:</strong> As you collect more samples, the average surprise
                             converges to the entropy H(X). This is the <em>law of large numbers</em> in action!
                         </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+        {% endset %}
+
+        {{ infoTabs(
+            variant='nav-tabs',
+            panelClass='panel-full-height',
+            tabs=[
+                {id: 'about', icon: 'fa-info-circle', label: 'About', active: true, content: aboutContent},
+                {id: 'algorithm', icon: 'fa-book', label: 'Algorithm', content: algorithmContent},
+                {id: 'math', icon: 'fa-calculator', label: 'Math', content: mathContent},
+                {id: 'sampling', icon: 'fa-random', label: 'Sampling', content: samplingContent}
+            ]
+        ) }}
     </div>
 </div>

@@ -36,7 +36,9 @@ export class ThemeManager {
                 '#a65628',  // 6 - brown
                 '#f781bf',  // 7 - pink
                 '#999999',  // 8 - gray
-                '#17becf'   // 9 - cyan
+                '#17becf',  // 9 - cyan
+                '#2ca02c',  // 10 - green (alt)
+                '#1f77b4'   // 11 - blue (alt)
             ],
             dark: [
                 '#fb4934',  // 0 - red
@@ -46,9 +48,11 @@ export class ThemeManager {
                 '#fe8019',  // 4 - orange
                 '#fabd2f',  // 5 - yellow
                 '#d65d0e',  // 6 - brown/orange
-                '#d3869b',  // 7 - pink
+                '#d65d0e',  // 7 - orange (alt)
                 '#928374',  // 8 - gray
-                '#8ec07c'   // 9 - cyan/green
+                '#8ec07c',  // 9 - cyan/green
+                '#689d6a',  // 10 - green (alt)
+                '#458588'   // 11 - blue (alt)
             ]
         },
 

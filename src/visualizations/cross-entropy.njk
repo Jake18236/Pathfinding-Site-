@@ -19,10 +19,12 @@ cardHaystack: "cross entropy loss categorical softmax gradient classification ne
 cardOrder: 11
 ---
 
+{% from "components/info-tabs.njk" import infoTabs %}
+
 <link rel="stylesheet" href="static/css/cross-entropy.css">
 
 <!-- Loading indicator -->
-<div id="loading-overlay" class="loading-overlay">
+<div id="loading-overlay" class="loading-overlay loading-overlay--fullscreen">
     <div class="loading-content">
         <i class="fa fa-spinner fa-spin fa-3x"></i>
         <p>Loading training data...</p>
@@ -53,7 +55,7 @@ cardOrder: 11
                                 Manual
                             </button>
                         </div>
-                        <span class="loss-badge" id="loss-value">L = 2.302</span>
+                        <span class="viz-badge loss-badge" id="loss-value">L = 2.302</span>
                     </div>
                 </div>
             </div>
@@ -75,18 +77,7 @@ cardOrder: 11
 
     <!-- Right Column: Tabs -->
     <div class="col-md-4">
-        <div class="panel panel-default panel-full-height">
-            <div class="panel-heading">
-                <ul class="nav nav-tabs panel-tabs">
-                    <li class="active"><a href="#tab-controls" data-toggle="tab"><i class="fa fa-sliders"></i> Controls</a></li>
-                    <li><a href="#tab-math" data-toggle="tab"><i class="fa fa-superscript"></i> Math</a></li>
-                    <li><a href="#tab-about" data-toggle="tab"><i class="fa fa-info-circle"></i> About</a></li>
-                </ul>
-            </div>
-            <div class="panel-body">
-                <div class="tab-content">
-                    <!-- Controls Tab -->
-                    <div class="tab-pane active" id="tab-controls">
+        {% set controlsContent %}
                         <!-- Training Mode Controls -->
                         <div id="training-controls-panel">
                             <h4><i class="fa fa-th"></i> <span id="samples-section-title">MNIST Samples</span></h4>
@@ -144,10 +135,9 @@ cardOrder: 11
                                 </div>
                             </div>
                         </div>
-                    </div>
+        {% endset %}
 
-                    <!-- Math Tab -->
-                    <div class="tab-pane" id="tab-math">
+        {% set mathContent %}
                         <h4><i class="fa fa-superscript"></i> The Formula</h4>
                         <div class="math-formula-display">
                             <code>L = -&Sigma;<sub>i</sub> y<sub>i</sub> &middot; log(p<sub>i</sub>)</code>
@@ -171,10 +161,9 @@ cardOrder: 11
                         <div class="loss-breakdown" id="loss-breakdown">
                             <!-- Filled dynamically -->
                         </div>
-                    </div>
+        {% endset %}
 
-                    <!-- About Tab -->
-                    <div class="tab-pane" id="tab-about">
+        {% set aboutContent %}
                         <h4><i class="fa fa-crosshairs"></i> Cross-Entropy Loss</h4>
                         <p>
                             Cross-entropy measures the difference between two probability distributions:
@@ -195,9 +184,16 @@ cardOrder: 11
                             <li><strong>Play button</strong> animates through epochs</li>
                             <li><strong>Manual mode</strong>: Drag bars to explore loss</li>
                         </ul>
-                    </div>
-                </div>
-            </div>
-        </div>
+        {% endset %}
+
+        {{ infoTabs(
+            variant='nav-tabs',
+            panelClass='panel-full-height',
+            tabs=[
+                {id: 'controls', icon: 'fa-sliders', label: 'Controls', active: true, content: controlsContent},
+                {id: 'math', icon: 'fa-superscript', label: 'Math', content: mathContent},
+                {id: 'about', icon: 'fa-info-circle', label: 'About', content: aboutContent}
+            ]
+        ) }}
     </div>
 </div>

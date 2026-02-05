@@ -2,21 +2,39 @@
   Info Tabs Component
 
   @param tabs - Array of {id, icon, label, active?, content}
+  @param variant - 'btn-group' (default, uses custom JS) or 'nav-tabs' (Bootstrap tabs)
+  @param panelClass - Extra class on the panel wrapper (default: none)
 
-  Example:
+  Example (btn-group, default):
   {% from "components/info-tabs.njk" import infoTabs %}
   {{ infoTabs(
       tabs=[
         {id: 'about', icon: 'fa-info-circle', label: 'About', active: true, content: '<h4>About this visualization...</h4>'},
-        {id: 'algorithm', icon: 'fa-book', label: 'Algorithm', content: '<h4>How it works...</h4>'},
-        {id: 'compare', icon: 'fa-table', label: 'Compare', content: '<table>...</table>'}
+        {id: 'algorithm', icon: 'fa-book', label: 'Algorithm', content: '<h4>How it works...</h4>'}
+      ]
+  ) }}
+
+  Example (nav-tabs, Bootstrap):
+  {{ infoTabs(
+      variant='nav-tabs',
+      panelClass='panel-full-height',
+      tabs=[
+        {id: 'about', icon: 'fa-info-circle', label: 'About', active: true, content: '<h4>About</h4>'},
+        {id: 'math', icon: 'fa-superscript', label: 'Math', content: '<h4>Math</h4>'}
       ]
   ) }}
 #}
 
-{% macro infoTabs(tabs) %}
-<div class="panel panel-default">
+{% macro infoTabs(tabs, variant='btn-group', panelClass='') %}
+<div class="panel panel-default{{ ' ' + panelClass if panelClass }}">
     <div class="panel-heading">
+        {% if variant == 'nav-tabs' %}
+        <ul class="nav nav-tabs panel-tabs">
+            {% for tab in tabs %}
+            <li{% if tab.active %} class="active"{% endif %}><a href="#tab-{{ tab.id }}" data-toggle="tab"><i class="fa {{ tab.icon }}"></i> {{ tab.label }}</a></li>
+            {% endfor %}
+        </ul>
+        {% else %}
         <div class="btn-group info-panel-tabs" role="group">
             {% for tab in tabs %}
             <button type="button"
@@ -26,13 +44,24 @@
             </button>
             {% endfor %}
         </div>
+        {% endif %}
     </div>
     <div class="panel-body info-panel-body">
+        {% if variant == 'nav-tabs' %}
+        <div class="tab-content">
+            {% for tab in tabs %}
+            <div class="tab-pane{% if tab.active %} active{% endif %}" id="tab-{{ tab.id }}">
+                {{ tab.content | safe }}
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
         {% for tab in tabs %}
         <div id="tab-{{ tab.id }}" class="info-tab-content{% if tab.active %} active{% endif %}">
             {{ tab.content | safe }}
         </div>
         {% endfor %}
+        {% endif %}
     </div>
 </div>
 {% endmacro %}

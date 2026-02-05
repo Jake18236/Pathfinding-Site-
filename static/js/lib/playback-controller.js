@@ -19,7 +19,8 @@ export class PlaybackController {
     /**
      * @param {Object} options - Configuration options
      * @param {number} [options.initialSpeed=5] - Initial playback speed (1-10)
-     * @param {Function} [options.onRenderStep] - Called when a step should be rendered: (step, index) => void
+     * @param {Function} [options.getDelayFn] - Custom delay function: (speed) => ms. Overrides default delay mapping.
+     * @param {Function} [options.onRenderStep] - Called when a step should be rendered: (step, index, metadata) => void
      * @param {Function} [options.onPlayStateChange] - Called when play state changes: (isPlaying) => void
      * @param {Function} [options.onStepChange] - Called when step index changes: (index, total) => void
      * @param {Function} [options.onFinished] - Called when playback reaches the end: () => void
@@ -32,6 +33,7 @@ export class PlaybackController {
         this.speed = options.initialSpeed ?? 5;
         this.playbackTimer = null;
         this.metadata = null; // Optional metadata (e.g., goal position)
+        this.getDelayFn = options.getDelayFn ?? null;
 
         // Callbacks for decoupled rendering
         this.onRenderStep = options.onRenderStep ?? (() => {});
@@ -173,10 +175,10 @@ export class PlaybackController {
 
     /**
      * Set playback speed
-     * @param {number} speed - Speed value (1-10)
+     * @param {number} speed - Speed value (1-10 for default, or custom range with getDelayFn)
      */
     setSpeed(speed) {
-        this.speed = Math.max(1, Math.min(10, speed));
+        this.speed = this.getDelayFn ? speed : Math.max(1, Math.min(10, speed));
     }
 
     /**
@@ -192,6 +194,9 @@ export class PlaybackController {
      * @returns {number} Delay in milliseconds
      */
     getDelay() {
+        if (this.getDelayFn) {
+            return this.getDelayFn(this.speed);
+        }
         // Speed 1 = 1000ms, Speed 10 = 50ms
         return 1050 - (this.speed * 100);
     }

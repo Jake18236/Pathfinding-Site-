@@ -48,41 +48,41 @@
 
 [data-theme="gruvbox-dark"] {
     /* Rule card colors */
-    --expert-rule-bg: #282828;
-    --expert-rule-border: #504945;
-    --expert-rule-text: #ebdbb2;
-    --expert-rule-header-bg: #3c3836;
+    --expert-rule-bg: var(--gruvbox-bg);
+    --expert-rule-border: var(--gruvbox-bg2);
+    --expert-rule-text: var(--gruvbox-fg);
+    --expert-rule-header-bg: var(--gruvbox-bg1);
 
     /* Rule states */
     --expert-rule-evaluating-bg: rgba(250, 189, 47, 0.3);
-    --expert-rule-evaluating-border: #fabd2f;
+    --expert-rule-evaluating-border: var(--gruvbox-yellow);
     --expert-rule-fired-bg: rgba(184, 187, 38, 0.3);
-    --expert-rule-fired-border: #b8bb26;
+    --expert-rule-fired-border: var(--gruvbox-green);
     --expert-rule-failed-bg: rgba(251, 73, 52, 0.3);
-    --expert-rule-failed-border: #fb4934;
+    --expert-rule-failed-border: var(--gruvbox-red);
 
     /* Fact badge colors */
     --expert-fact-bg: rgba(131, 165, 152, 0.3);
-    --expert-fact-border: #83a598;
+    --expert-fact-border: var(--gruvbox-blue);
     --expert-fact-true-bg: rgba(184, 187, 38, 0.3);
-    --expert-fact-true-border: #b8bb26;
+    --expert-fact-true-border: var(--gruvbox-green);
     --expert-fact-false-bg: rgba(251, 73, 52, 0.3);
-    --expert-fact-false-border: #fb4934;
+    --expert-fact-false-border: var(--gruvbox-red);
     --expert-fact-derived-bg: rgba(142, 192, 124, 0.3);
-    --expert-fact-derived-border: #8ec07c;
+    --expert-fact-derived-border: var(--gruvbox-aqua);
     --expert-fact-unknown-bg: rgba(254, 128, 25, 0.3);
-    --expert-fact-unknown-border: #fe8019;
+    --expert-fact-unknown-border: var(--gruvbox-orange);
 
     /* Inference chain edges */
     --expert-edge-color: #928374;
-    --expert-edge-active: #fabd2f;
-    --expert-edge-fired: #b8bb26;
+    --expert-edge-active: var(--gruvbox-yellow);
+    --expert-edge-fired: var(--gruvbox-green);
 
     /* Goal tree */
     --expert-goal-bg: rgba(250, 189, 47, 0.3);
-    --expert-goal-border: #fabd2f;
+    --expert-goal-border: var(--gruvbox-yellow);
     --expert-subgoal-bg: rgba(131, 165, 152, 0.3);
-    --expert-subgoal-border: #83a598;
+    --expert-subgoal-border: var(--gruvbox-blue);
 }
 
 /* ============================================
@@ -130,8 +130,8 @@
 
 [data-theme="gruvbox-dark"] .mode-toggle .btn.active {
     background-color: rgba(250, 189, 47, 0.3);
-    border-color: #fabd2f;
-    color: #ebdbb2;
+    border-color: var(--gruvbox-yellow);
+    color: var(--gruvbox-fg);
 }
 
 /* ============================================
@@ -401,7 +401,7 @@
 }
 
 [data-theme="gruvbox-dark"] .rule-keyword {
-    color: #fb4934;
+    color: var(--gruvbox-red);
 }
 
 .rule-fact {
@@ -409,7 +409,7 @@
 }
 
 [data-theme="gruvbox-dark"] .rule-fact {
-    color: #d3869b;
+    color: var(--gruvbox-purple);
 }
 
 .rule-value {
@@ -418,7 +418,7 @@
 }
 
 [data-theme="gruvbox-dark"] .rule-value {
-    color: #b8bb26;
+    color: var(--gruvbox-green);
 }
 
 /* Rule states in the list */

@@ -7,9 +7,6 @@
    Perceptron CSS Custom Properties
    ============================================ */
 :root {
-    --perceptron-class-0: var(--viz-class-0);
-    --perceptron-class-1: var(--viz-class-1);
-
     --perceptron-boundary: #111827;
     --perceptron-vector: #0f766e;
     --perceptron-margin: rgba(17, 24, 39, 0.25);
@@ -19,12 +16,12 @@
 }
 
 [data-theme="gruvbox-dark"] {
-    --perceptron-boundary: #ebdbb2;
-    --perceptron-vector: #83a598;
+    --perceptron-boundary: var(--gruvbox-fg);
+    --perceptron-vector: var(--gruvbox-blue);
     --perceptron-margin: rgba(235, 219, 178, 0.25);
 
-    --perceptron-misclassified: #fabd2f;
-    --perceptron-highlight: #fe8019;
+    --perceptron-misclassified: var(--gruvbox-yellow);
+    --perceptron-highlight: var(--gruvbox-orange);
 }
 
 /* ============================================
