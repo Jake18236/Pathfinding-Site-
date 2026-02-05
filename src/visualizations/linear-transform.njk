@@ -1,0 +1,189 @@
+---
+layout: base.njk
+title: Linear Transformations Visualizer
+icon: fa-arrows-alt
+navigation:
+  - name: "Home"
+    link: "index.html"
+    icon: "fa-home"
+permalink: "linear-transform.html"
+extraScript: "static/js/linear-transform.js"
+tags: visualization
+cardTitle: "Linear Transformations"
+cardIcon: fa-arrows-alt
+cardDescription: "See how weight matrices transform 2D space. Watch grids warp, basis vectors rotate, and unit circles stretch into ellipses."
+cardTags:
+  - Neural Networks
+  - Linear Algebra
+cardHaystack: "linear transformation matrix weight vector basis eigenvector eigenvalue determinant singular value decomposition SVD rank"
+cardOrder: 12
+---
+
+{% from "components/legend.njk" import legend %}
+{% from "components/info-tabs.njk" import infoTabs %}
+{% from "components/metrics-panel.njk" import metricsPanel %}
+
+<link rel="stylesheet" href="static/css/linear-transform.css">
+
+<div class="row" id="main-content">
+    <!-- Left Column: Canvas + Controls -->
+    <div class="col-md-7">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <div class="panel-heading-flex">
+                    <span class="panel-title-text"><i class="fa fa-arrows-alt"></i> Transformation Space</span>
+                    <span class="viz-badge det-badge" id="det-badge">det(W) = 1.00</span>
+                </div>
+            </div>
+            <div class="panel-body canvas-panel-body">
+                <div class="canvas-wrapper">
+                    <canvas id="transform-canvas" width="560" height="400"></canvas>
+                </div>
+            </div>
+            <div class="panel-footer legend-footer">
+                {{ legend(
+                    items=[
+                        {class: 'basis-e1', label: 'e₁ [1,0]', type: 'line'},
+                        {class: 'basis-e2', label: 'e₂ [0,1]', type: 'line'},
+                        {class: 'unit-circle', label: 'Unit Circle', type: 'line'},
+                        {class: 'eigen-line', label: 'Eigenvectors', type: 'line'},
+                        {class: 'data-point', label: 'Data Points', type: 'dot'}
+                    ]
+                ) }}
+            </div>
+        </div>
+
+        <!-- Controls Panel -->
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title"><i class="fa fa-sliders"></i> Controls</h3>
+            </div>
+            <div class="panel-body compact-panel lt-controls-panel">
+                <div class="lt-matrix-col">
+                    <label class="control-label-sm">Weight Matrix W</label>
+                    <div class="matrix-editor">
+                        <span class="matrix-bracket bracket-left">[</span>
+                        <div class="matrix-grid">
+                            <input type="number" id="w00" class="matrix-input" value="1" step="0.1">
+                            <input type="number" id="w01" class="matrix-input" value="0" step="0.1">
+                            <input type="number" id="w10" class="matrix-input" value="0" step="0.1">
+                            <input type="number" id="w11" class="matrix-input" value="1" step="0.1">
+                        </div>
+                        <span class="matrix-bracket bracket-right">]</span>
+                    </div>
+                    <div class="option-row">
+                        <label>Preset:</label>
+                        <select id="preset-select" class="form-control input-sm">
+                            <option value="identity" selected>Identity</option>
+                            <option value="rotate45">Rotation 45°</option>
+                            <option value="rotate90">Rotation 90°</option>
+                            <option value="scale2x">Scale 2×</option>
+                            <option value="scaleNonUni">Scale Non-uniform</option>
+                            <option value="shearX">Shear X</option>
+                            <option value="shearY">Shear Y</option>
+                            <option value="reflectX">Reflect X</option>
+                            <option value="reflectY">Reflect Y</option>
+                            <option value="projection">Projection (singular)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="lt-toggles-col">
+                    <label class="checkbox-label"><input type="checkbox" id="toggle-grid" checked> Grid</label>
+                    <label class="checkbox-label"><input type="checkbox" id="toggle-basis" checked> Basis vectors</label>
+                    <label class="checkbox-label"><input type="checkbox" id="toggle-circle" checked> Unit circle</label>
+                    <label class="checkbox-label"><input type="checkbox" id="toggle-eigen"> Eigenvectors</label>
+                    <label class="checkbox-label"><input type="checkbox" id="toggle-data"> Data points</label>
+                </div>
+
+                <div class="lt-actions-col">
+                    <div class="btn-toolbar" role="toolbar">
+                        <button id="btn-transform" class="btn btn-sm btn-success" title="Apply Transform">
+                            <i class="fa fa-play"></i> Transform
+                        </button>
+                        <button id="btn-reset" class="btn btn-sm btn-danger" title="Reset">
+                            <i class="fa fa-refresh"></i> Reset
+                        </button>
+                    </div>
+                    <div class="speed-control">
+                        <i class="fa fa-tachometer"></i>
+                        <input type="range" id="speed-slider" min="1" max="10" value="5">
+                        <span id="speed-value" class="range-value">5</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Right Column: Info + Metrics -->
+    <div class="col-md-5">
+        {{ infoTabs(
+            tabs=[
+                {id: 'about', icon: 'fa-info-circle', label: 'About', active: true, content: '
+                    <h4><i class="fa fa-arrows-alt"></i> Linear Transformations</h4>
+                    <p>
+                        A linear transformation maps vectors from one space to another while
+                        preserving addition and scalar multiplication. In neural networks, each
+                        layer applies a weight matrix <code>W</code> to its input.
+                    </p>
+                    <h4><i class="fa fa-mouse-pointer"></i> How to Use</h4>
+                    <ul class="interaction-list">
+                        <li><strong>Edit the matrix</strong> or pick a preset to set the target</li>
+                        <li><strong>Press Transform</strong> to animate the change</li>
+                        <li><strong>Toggle layers</strong> to show/hide grid, vectors, circle</li>
+                        <li><strong>Watch the metrics</strong> update during animation</li>
+                    </ul>
+                '},
+                {id: 'math', icon: 'fa-superscript', label: 'Math', content: '
+                    <h4><i class="fa fa-superscript"></i> The Formula</h4>
+                    <div class="math-formula-display">
+                        <code>y = Wx</code>
+                    </div>
+                    <p class="formula-note">
+                        Each output component is a dot product of a row of W with the input:
+                    </p>
+                    <div class="math-formula-display">
+                        <code>y₁ = w₁₁x₁ + w₁₂x₂</code><br>
+                        <code>y₂ = w₂₁x₁ + w₂₂x₂</code>
+                    </div>
+                '},
+                {id: 'nn', icon: 'fa-sitemap', label: 'NN Link', content: '
+                    <h4><i class="fa fa-sitemap"></i> Neural Network Connection</h4>
+                    <p>
+                        Each layer in a neural network applies a linear transformation
+                        <code>y = Wx + b</code> followed by a non-linear activation.
+                        The weight matrix W determines how the input space is warped.
+                    </p>
+                    <ul class="formula-list">
+                        <li><strong>Scaling</strong> stretches/compresses features</li>
+                        <li><strong>Rotation</strong> mixes features together</li>
+                        <li><strong>Projection</strong> collapses dimensions (information loss)</li>
+                        <li><strong>Stacking layers</strong> composes multiple transformations</li>
+                    </ul>
+                '},
+                {id: 'concepts', icon: 'fa-key', label: 'Concepts', content: '
+                    <h4><i class="fa fa-key"></i> Key Concepts</h4>
+                    <ul class="formula-list">
+                        <li><strong>Determinant</strong> — area scaling factor. Zero means collapse to lower dimension.</li>
+                        <li><strong>Eigenvalues</strong> — scaling factors along special directions that remain unchanged.</li>
+                        <li><strong>Eigenvectors</strong> — directions that only get scaled, not rotated.</li>
+                        <li><strong>Singular values</strong> — the semi-axis lengths of the transformed unit circle (ellipse).</li>
+                        <li><strong>Rank</strong> — dimension of the output space. Rank &lt; 2 means information loss.</li>
+                    </ul>
+                '}
+            ]
+        ) }}
+
+        {{ metricsPanel(
+            title='Matrix Analysis',
+            icon='fa-bar-chart',
+            metrics=[
+                {icon: 'fa-calculator', label: 'Determinant', id: 'metric-det', default: '1.00'},
+                {icon: 'fa-tag', label: 'Type', id: 'metric-type', default: 'Identity'},
+                {icon: 'fa-bars', label: 'Rank', id: 'metric-rank', default: '2'},
+                {icon: 'fa-diamond', label: 'Eigenvalues', id: 'metric-eigenvalues', default: '1, 1'},
+                {icon: 'fa-expand', label: 'Singular Values', id: 'metric-svd', default: '1.00, 1.00'}
+            ]
+        ) }}
+    </div>
+</div>
