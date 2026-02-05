@@ -1,0 +1,197 @@
+---
+layout: base.njk
+title: Cross-Entropy Loss Visualizer
+icon: fa-calculator
+navigation:
+  - name: "Home"
+    link: "index.html"
+    icon: "fa-home"
+permalink: "cross-entropy.html"
+extraScript: "static/js/cross-entropy.js"
+tags: visualization
+cardTitle: "Cross-Entropy Loss"
+cardIcon: fa-calculator
+cardDescription: "Watch how neural network predictions evolve during training. See cross-entropy loss decrease as the model learns."
+cardTags:
+  - Neural Networks
+  - Classification
+cardHaystack: "cross entropy loss categorical softmax gradient classification neural network optimization backpropagation machine learning training"
+cardOrder: 11
+---
+
+<link rel="stylesheet" href="static/css/cross-entropy.css">
+
+<!-- Loading indicator -->
+<div id="loading-overlay" class="loading-overlay">
+    <div class="loading-content">
+        <i class="fa fa-spinner fa-spin fa-3x"></i>
+        <p>Loading training data...</p>
+    </div>
+</div>
+
+<!-- Main Content: 2-column layout -->
+<div class="row" id="main-content">
+    <!-- Left Column: Histogram -->
+    <div class="col-md-7">
+        <div class="panel panel-default">
+            <!-- Header with mode toggle and loss badge -->
+            <div class="panel-heading">
+                <div class="panel-heading-flex">
+                    <span class="panel-title-text"><i class="fa fa-bar-chart"></i> Distribution Comparison</span>
+                    <div class="header-controls">
+                        <div class="btn-group btn-group-sm mode-toggle" role="group">
+                            <button type="button" class="btn btn-default active" id="btn-mode-training">
+                                <i class="fa fa-graduation-cap"></i> Training
+                            </button>
+                            <button type="button" class="btn btn-default" id="btn-mode-manual">
+                                <i class="fa fa-hand-paper-o"></i> Manual
+                            </button>
+                        </div>
+                        <span class="loss-badge" id="loss-value">L = 2.302</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Canvas -->
+            <div class="panel-body canvas-panel-body">
+                <div class="canvas-wrapper">
+                    <canvas id="histogram-canvas"></canvas>
+                </div>
+                <div class="histogram-legend">
+                    <span class="legend-item legend-expected"><span class="legend-box"></span> True Label</span>
+                    <span class="legend-item legend-correct"><span class="legend-box"></span> Correct</span>
+                    <span class="legend-item legend-incorrect"><span class="legend-box"></span> Incorrect</span>
+                    <span class="legend-item legend-predicted-label">Predicted: <strong id="predicted-label">?</strong></span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Right Column: Tabs -->
+    <div class="col-md-5">
+        <div class="panel panel-default panel-full-height">
+            <div class="panel-heading">
+                <ul class="nav nav-tabs panel-tabs">
+                    <li class="active"><a href="#tab-controls" data-toggle="tab"><i class="fa fa-sliders"></i> Controls</a></li>
+                    <li><a href="#tab-math" data-toggle="tab"><i class="fa fa-superscript"></i> Math</a></li>
+                    <li><a href="#tab-about" data-toggle="tab"><i class="fa fa-info-circle"></i> About</a></li>
+                </ul>
+            </div>
+            <div class="panel-body">
+                <div class="tab-content">
+                    <!-- Controls Tab -->
+                    <div class="tab-pane active" id="tab-controls">
+                        <!-- Training Mode Controls -->
+                        <div id="training-controls-panel">
+                            <h4><i class="fa fa-th"></i> MNIST Samples</h4>
+                            <div class="sample-gallery-grid" id="sample-gallery">
+                                <!-- Filled dynamically -->
+                            </div>
+
+                            <h4><i class="fa fa-clock-o"></i> Training Timeline</h4>
+                            <div class="timeline-section" id="timeline-panel">
+                                <div class="timeline-header">
+                                    <span class="epoch-display">Epoch: <strong id="current-epoch">0</strong>/<span id="total-epochs">25</span></span>
+                                    <div class="timeline-buttons">
+                                        <button class="btn btn-xs btn-default" id="btn-reset-timeline" title="Reset">
+                                            <i class="fa fa-fast-backward"></i>
+                                        </button>
+                                        <button class="btn btn-sm btn-primary" id="btn-play" title="Play/Pause">
+                                            <i class="fa fa-play" id="play-icon"></i>
+                                        </button>
+                                        <button class="btn btn-xs btn-default" id="btn-step" title="Step">
+                                            <i class="fa fa-step-forward"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                <input type="range" id="epoch-slider" class="epoch-slider-full" min="0" max="10" value="0">
+                                <div class="speed-control-row">
+                                    <label>Speed:</label>
+                                    <select id="playback-speed" class="form-control input-sm">
+                                        <option value="2000">0.5x</option>
+                                        <option value="1000" selected>1x</option>
+                                        <option value="500">2x</option>
+                                        <option value="250">4x</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Manual Mode Controls (hidden by default) -->
+                        <div id="manual-panel" style="display: none;">
+                            <h4><i class="fa fa-sliders"></i> Manual Controls</h4>
+                            <div class="manual-control-group">
+                                <label>True Class:</label>
+                                <div class="class-selector" id="expected-class-selector">
+                                    <!-- Buttons 0-9 filled dynamically -->
+                                </div>
+                            </div>
+                            <div class="manual-control-group">
+                                <p class="control-hint">Drag bars in the chart to adjust predicted distribution</p>
+                                <div class="manual-buttons">
+                                    <button class="btn btn-sm btn-default" id="btn-uniform">
+                                        <i class="fa fa-equals"></i> Uniform
+                                    </button>
+                                    <button class="btn btn-sm btn-default" id="btn-random">
+                                        <i class="fa fa-random"></i> Random
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Math Tab -->
+                    <div class="tab-pane" id="tab-math">
+                        <h4><i class="fa fa-superscript"></i> The Formula</h4>
+                        <div class="math-formula-display">
+                            <code>L = -&Sigma;<sub>i</sub> y<sub>i</sub> &middot; log(p<sub>i</sub>)</code>
+                        </div>
+                        <p class="formula-note">
+                            For one-hot labels (single true class k):
+                        </p>
+                        <div class="math-formula-display">
+                            <code>L = -log(p<sub>k</sub>)</code>
+                        </div>
+
+                        <h4><i class="fa fa-lightbulb-o"></i> Intuition</h4>
+                        <ul class="formula-list">
+                            <li><strong>p<sub>k</sub> = 1</strong>: L = 0 (perfect)</li>
+                            <li><strong>p<sub>k</sub> = 0.5</strong>: L = 0.69</li>
+                            <li><strong>p<sub>k</sub> = 0.1</strong>: L = 2.30</li>
+                            <li><strong>p<sub>k</sub> &rarr; 0</strong>: L &rarr; &infin;</li>
+                        </ul>
+
+                        <h4><i class="fa fa-calculator"></i> Loss Breakdown</h4>
+                        <div class="loss-breakdown" id="loss-breakdown">
+                            <!-- Filled dynamically -->
+                        </div>
+                    </div>
+
+                    <!-- About Tab -->
+                    <div class="tab-pane" id="tab-about">
+                        <h4><i class="fa fa-crosshairs"></i> Cross-Entropy Loss</h4>
+                        <p>
+                            Cross-entropy measures the difference between two probability distributions:
+                            the <strong>expected</strong> (true labels) and the <strong>predicted</strong> (model output).
+                        </p>
+
+                        <h4><i class="fa fa-key"></i> Key Insights</h4>
+                        <ul class="insight-list">
+                            <li><strong>Lower is better</strong> - Loss of 0 means perfect prediction</li>
+                            <li><strong>Confident &amp; wrong</strong> - Highest loss scenario</li>
+                            <li><strong>Uniform prediction</strong> - Loss = log(n) for n classes</li>
+                        </ul>
+
+                        <h4><i class="fa fa-play-circle"></i> How to Use</h4>
+                        <ul class="interaction-list">
+                            <li><strong>Training mode</strong>: Watch predictions evolve during training</li>
+                            <li><strong>Click digits</strong> to see different samples</li>
+                            <li><strong>Play button</strong> animates through epochs</li>
+                            <li><strong>Manual mode</strong>: Drag bars to explore loss</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

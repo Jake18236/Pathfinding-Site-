@@ -1,0 +1,450 @@
+/**
+ * Cross-Entropy Loss Visualizer Styles
+ */
+
+/* ============================================
+   Loading Overlay
+   ============================================ */
+.loading-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(255, 255, 255, 0.95);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+
+[data-theme="gruvbox-dark"] .loading-overlay {
+    background: rgba(29, 32, 33, 0.95);
+}
+
+.loading-content {
+    text-align: center;
+    color: var(--viz-text-muted);
+}
+
+.loading-content p {
+    margin-top: 15px;
+    font-size: 14px;
+}
+
+/* ============================================
+   Panel Header with Flex Layout
+   ============================================ */
+.panel-heading-flex {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.header-controls {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.mode-toggle .btn {
+    padding: 4px 10px;
+    font-size: 12px;
+}
+
+.mode-toggle .btn.active {
+    background: var(--viz-active-bg);
+    border-color: var(--viz-active-border);
+    color: var(--viz-active-border);
+}
+
+/* ============================================
+   Loss Badge
+   ============================================ */
+.loss-badge {
+    display: inline-block;
+    padding: 4px 12px;
+    background: var(--viz-hover-bg);
+    border: 1px solid var(--viz-border);
+    border-radius: 4px;
+    font-family: var(--viz-mono-font);
+    font-weight: 600;
+    font-size: 14px;
+    color: var(--viz-text);
+    transition: all 0.3s ease;
+}
+
+.loss-badge.low-loss {
+    background: var(--viz-success-bg);
+    border-color: var(--viz-success-border);
+    color: var(--viz-success-border);
+}
+
+.loss-badge.medium-loss {
+    background: var(--viz-warning-bg);
+    border-color: var(--viz-warning-border);
+    color: var(--viz-warning-border);
+}
+
+.loss-badge.high-loss {
+    background: var(--viz-danger-bg);
+    border-color: var(--viz-danger-border);
+    color: var(--viz-danger-border);
+}
+
+/* ============================================
+   Histogram Canvas
+   ============================================ */
+.canvas-wrapper {
+    width: 100%;
+}
+
+#histogram-canvas {
+    display: block;
+    width: 100%;
+    cursor: default;
+    background: var(--viz-canvas-bg);
+}
+
+.histogram-legend {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    padding: 10px 0;
+    font-size: 12px;
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.legend-box {
+    width: 16px;
+    height: 12px;
+    border-radius: 2px;
+}
+
+.legend-expected .legend-box {
+    background: transparent;
+    border: 2px dashed #4CAF50;
+}
+
+.legend-correct .legend-box {
+    background: rgba(76, 175, 80, 0.7);
+    border: 2px solid #388E3C;
+}
+
+.legend-incorrect .legend-box {
+    background: rgba(244, 67, 54, 0.7);
+    border: 2px solid #d32f2f;
+}
+
+.legend-predicted-label {
+    font-size: 13px;
+    color: var(--viz-text);
+}
+
+.legend-predicted-label strong {
+    font-family: var(--viz-mono-font);
+    font-size: 14px;
+}
+
+[data-theme="gruvbox-dark"] .legend-expected .legend-box {
+    border-color: #b8bb26;
+}
+
+[data-theme="gruvbox-dark"] .legend-correct .legend-box {
+    background: rgba(152, 151, 26, 0.7);
+    border-color: #b8bb26;
+}
+
+[data-theme="gruvbox-dark"] .legend-incorrect .legend-box {
+    background: rgba(204, 36, 29, 0.7);
+    border-color: #fb4934;
+}
+
+/* ============================================
+   Sample Gallery - Grid in sidebar
+   ============================================ */
+.sample-gallery-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 8px;
+    margin-bottom: 15px;
+}
+
+.gallery-item {
+    position: relative;
+    cursor: pointer;
+    border: 2px solid var(--viz-border);
+    border-radius: 4px;
+    padding: 4px;
+    background: var(--viz-canvas-bg);
+    transition: all 0.2s ease;
+}
+
+.gallery-item:hover {
+    border-color: var(--viz-active-border);
+    transform: scale(1.05);
+}
+
+.gallery-item.selected {
+    border-color: var(--viz-active-border);
+    background: var(--viz-active-bg);
+    box-shadow: 0 0 8px rgba(0, 123, 255, 0.3);
+}
+
+.gallery-image {
+    width: 100%;
+    aspect-ratio: 1;
+    image-rendering: pixelated;
+    display: block;
+}
+
+.gallery-label {
+    position: absolute;
+    bottom: 2px;
+    right: 4px;
+    font-size: 9px;
+    font-weight: bold;
+    color: var(--viz-text-muted);
+    background: rgba(255, 255, 255, 0.85);
+    padding: 1px 3px;
+    border-radius: 2px;
+}
+
+[data-theme="gruvbox-dark"] .gallery-label {
+    background: rgba(29, 32, 33, 0.85);
+}
+
+/* ============================================
+   Timeline Controls - Sidebar layout
+   ============================================ */
+.timeline-section {
+    margin-top: 10px;
+}
+
+.timeline-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 10px;
+}
+
+.epoch-display {
+    font-size: 13px;
+    white-space: nowrap;
+}
+
+.epoch-display strong {
+    font-family: var(--viz-mono-font);
+}
+
+.timeline-buttons {
+    display: flex;
+    gap: 4px;
+    align-items: center;
+}
+
+.epoch-slider-full {
+    width: 100%;
+    margin: 0 0 10px 0;
+}
+
+.speed-control-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.speed-control-row label {
+    font-size: 12px;
+    margin: 0;
+    color: var(--viz-text-muted);
+}
+
+.speed-control-row select {
+    width: auto;
+    padding: 3px 8px;
+    font-size: 12px;
+}
+
+/* ============================================
+   Manual Mode Controls - Sidebar layout
+   ============================================ */
+.manual-control-group {
+    margin-bottom: 12px;
+}
+
+.manual-control-group label {
+    display: block;
+    font-size: 12px;
+    font-weight: 600;
+    margin-bottom: 6px;
+}
+
+.control-hint {
+    font-size: 11px;
+    color: var(--viz-text-muted);
+    margin: 0 0 10px 0;
+}
+
+.class-selector {
+    display: flex;
+    gap: 4px;
+    flex-wrap: wrap;
+}
+
+.class-btn {
+    min-width: 28px;
+    padding: 4px 8px;
+    font-size: 12px;
+}
+
+.class-btn.active {
+    background: var(--viz-active-bg);
+    border-color: var(--viz-active-border);
+    color: var(--viz-active-border);
+}
+
+.manual-buttons {
+    display: flex;
+    gap: 8px;
+}
+
+/* ============================================
+   Loss Breakdown (in Math tab)
+   ============================================ */
+.loss-breakdown {
+    max-height: 250px;
+    overflow-y: auto;
+}
+
+.breakdown-mini-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 11px;
+}
+
+.breakdown-mini-table th,
+.breakdown-mini-table td {
+    padding: 4px 6px;
+    border: 1px solid var(--viz-border);
+    text-align: center;
+}
+
+.breakdown-mini-table th {
+    background: var(--viz-hover-bg);
+    font-weight: 600;
+}
+
+.breakdown-mini-table td {
+    font-family: var(--viz-mono-font);
+}
+
+.breakdown-mini-table td:first-child {
+    text-align: left;
+    font-family: inherit;
+}
+
+.breakdown-mini-table .true-class {
+    background: var(--viz-success-bg);
+}
+
+.breakdown-mini-table .true-class td {
+    border-color: var(--viz-success-border);
+}
+
+.breakdown-mini-table .total-row {
+    background: var(--viz-active-bg);
+}
+
+.breakdown-mini-table .total-row td {
+    border-color: var(--viz-active-border);
+}
+
+/* ============================================
+   Info Panel Lists
+   ============================================ */
+.insight-list,
+.interaction-list,
+.formula-list {
+    padding-left: 20px;
+    font-size: 13px;
+    line-height: 1.6;
+}
+
+.insight-list li,
+.interaction-list li,
+.formula-list li {
+    margin-bottom: 6px;
+}
+
+.math-formula-display {
+    text-align: center;
+    padding: 12px;
+    margin-bottom: 12px;
+    background: var(--viz-hover-bg);
+    border-radius: 4px;
+}
+
+.math-formula-display code {
+    font-size: 15px;
+    background: transparent;
+}
+
+.formula-note {
+    font-size: 12px;
+    color: var(--viz-text-muted);
+    text-align: center;
+    margin-bottom: 10px;
+}
+
+/* ============================================
+   Responsive
+   ============================================ */
+@media (max-width: 992px) {
+    .panel-heading-flex {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .header-controls {
+        width: 100%;
+        justify-content: space-between;
+    }
+
+    .sample-gallery-inline {
+        flex-wrap: wrap;
+    }
+
+    .timeline-inline {
+        justify-content: center;
+    }
+}
+
+@media (max-width: 768px) {
+    .loss-badge {
+        font-size: 12px;
+        padding: 3px 8px;
+    }
+
+    .histogram-legend {
+        flex-direction: column;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .gallery-item {
+        width: 38px;
+    }
+
+    .manual-controls-inline {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+}
