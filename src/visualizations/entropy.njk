@@ -32,83 +32,28 @@ cardOrder: 10
             <div class="panel-heading">
                 <div class="panel-heading-content">
                     <span class="panel-title-text"><i class="fa fa-chart-bar"></i> Probability Distribution</span>
+                    <select id="preset-select" class="form-control input-sm preset-header-select">
+                        <option value="fairCoin" selected>Fair Coin</option>
+                        <option value="biasedCoin">Biased Coin (90/10)</option>
+                        <option value="fairDie">Fair Die</option>
+                        <option value="loadedDie">Loaded Die</option>
+                        <option value="ballsInBag">Balls in Bag</option>
+                        <option value="custom">Custom</option>
+                    </select>
                     <span class="viz-badge entropy-badge" id="entropy-value">H = 1.000 bits</span>
                 </div>
             </div>
             <div class="panel-body canvas-panel-body">
                 <div class="canvas-wrapper">
-                    <canvas id="entropy-canvas" width="560" height="400"></canvas>
+                    <canvas id="entropy-canvas"></canvas>
                 </div>
             </div>
             <div class="panel-footer entropy-footer">
                 <span id="sum-indicator" class="sum-indicator valid">Sum: 100.0%</span>
+                <span id="avg-code-display" class="encoding-avg-footer">
+                    <i class="fa fa-code"></i> Avg: <strong id="avg-code-length">-</strong>
+                </span>
                 <span class="entropy-hint"><i class="fa fa-hand-pointer-o"></i> Drag bars to adjust probabilities</span>
-            </div>
-        </div>
-
-        <!-- Huffman Encoding Panel (hidden by default) -->
-        <div id="encoding-panel" class="panel panel-default" style="display: none;">
-            <div class="panel-heading">
-                <div class="panel-heading-content">
-                    <span class="panel-title-text"><i class="fa fa-code"></i> Huffman Encoding</span>
-                    <span class="encoding-avg">Avg: <strong id="avg-code-length">-</strong></span>
-                </div>
-            </div>
-            <div class="panel-body compact-panel">
-                <div id="encoding-table"></div>
-            </div>
-        </div>
-
-        <!-- Controls Panel -->
-        <div class="panel panel-default">
-            <div class="panel-heading">
-                <h3 class="panel-title"><i class="fa fa-sliders"></i> Controls</h3>
-            </div>
-            <div class="panel-body compact-panel entropy-controls-panel">
-                <!-- Left: Preset & Outcomes -->
-                <div class="entropy-options-col">
-                    <div class="entropy-option-group">
-                        <div class="option-row">
-                            <label>Preset:</label>
-                            <select id="preset-select" class="form-control input-sm">
-                                <option value="fairCoin" selected>Fair Coin</option>
-                                <option value="biasedCoin">Biased Coin (90/10)</option>
-                                <option value="fairDie">Fair Die</option>
-                                <option value="loadedDie">Loaded Die</option>
-                                <option value="custom">Custom</option>
-                            </select>
-                        </div>
-                        <div class="option-row">
-                            <label>Outcomes:</label>
-                            <div class="entropy-stepper">
-                                <button id="btn-remove-outcome" class="btn btn-xs btn-default" title="Remove outcome">−</button>
-                                <span id="outcome-count" class="outcome-count-display">2</span>
-                                <button id="btn-add-outcome" class="btn btn-xs btn-default" title="Add outcome">+</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <!-- Middle: Options -->
-                <div class="entropy-options-col">
-                    <label class="checkbox-label" title="When enabled, dragging one bar auto-adjusts others to keep sum at 100%">
-                        <input type="checkbox" id="link-probabilities" checked> Link probabilities
-                    </label>
-                    <label class="checkbox-label" title="Show Huffman encoding for this distribution">
-                        <input type="checkbox" id="show-encoding"> Show Huffman codes
-                    </label>
-                </div>
-                <!-- Right: Actions -->
-                <div class="entropy-actions-col">
-                    <button id="btn-normalize" class="btn btn-sm btn-default" title="Scale probabilities to sum to 100%">
-                        <i class="fa fa-balance-scale"></i> Normalize
-                    </button>
-                    <button id="btn-uniform" class="btn btn-sm btn-default" title="Make all probabilities equal">
-                        <i class="fa fa-equals"></i> Uniform
-                    </button>
-                    <button id="btn-reset" class="btn btn-sm btn-default" title="Reset to preset">
-                        <i class="fa fa-refresh"></i>
-                    </button>
-                </div>
             </div>
         </div>
     </div>

@@ -11,21 +11,21 @@
     // ============================================
     // Constants
     // ============================================
-    const CANVAS_WIDTH = 560;
-    const CANVAS_HEIGHT = 400;
+    let CANVAS_WIDTH = 560;
+    const CANVAS_HEIGHT = 340;
 
     // Bar chart layout
-    const BAR_CHART_TOP = 30;
+    const BAR_CHART_TOP = 25;
     const BAR_CHART_HEIGHT = 220;
     const BAR_CHART_BOTTOM = BAR_CHART_TOP + BAR_CHART_HEIGHT;
-    const BAR_PADDING_LEFT = 50;
+    const BAR_PADDING_LEFT = 85;
     const BAR_PADDING_RIGHT = 30;
     const BAR_MIN_WIDTH = 30;
     const BAR_MAX_WIDTH = 80;
     const BAR_GAP = 10;
 
     // Gauge layout
-    const GAUGE_CENTER_Y = 340;
+    const GAUGE_CENTER_Y = 435;
     const GAUGE_RADIUS = 50;
 
     // Constraints
@@ -53,6 +53,12 @@
             name: 'Loaded Die',
             probabilities: [0.30, 0.20, 0.18, 0.15, 0.10, 0.07],
             labels: ['1', '2', '3', '4', '5', '6']
+        },
+        ballsInBag: {
+            name: 'Balls in Bag',
+            ballCounts: [3, 2, 1],
+            probabilities: [0.5, 1/3, 1/6],
+            labels: ['Red', 'Blue', 'Green']
         },
         custom: {
             name: 'Custom',
@@ -250,6 +256,7 @@
             this.hoveredBar = -1;
             this.draggingBar = -1;
             this.barBounds = [];
+            this.huffmanCodes = null;
         }
 
         render() {
@@ -303,7 +310,38 @@
                 ctx.font = '12px sans-serif';
                 ctx.textBaseline = 'top';
                 ctx.fillText(state.labels[i], x + barWidth / 2, BAR_CHART_BOTTOM + 8);
+
+                // Huffman code bits below outcome label
+                if (this.huffmanCodes && this.huffmanCodes[i]) {
+                    this._drawHuffmanBits(x + barWidth / 2, BAR_CHART_BOTTOM + 30, this.huffmanCodes[i].code);
+                }
+
+                // Entropy contribution calculation
+                this._drawContribution(x + barWidth / 2, BAR_CHART_BOTTOM + 50, p);
+
+                // Draw "+" between adjacent contribution results
+                if (i > 0) {
+                    const prevCenterX = startX + (i - 1) * (barWidth + BAR_GAP) + barWidth / 2;
+                    const currCenterX = x + barWidth / 2;
+                    const plusX = (prevCenterX + currCenterX) / 2;
+                    ctx.font = 'bold 10px sans-serif';
+                    ctx.fillStyle = this._getMutedColor();
+                    ctx.textAlign = 'center';
+                    ctx.textBaseline = 'top';
+                    ctx.fillText('+', plusX, BAR_CHART_BOTTOM + 68);
+                }
             });
+
+            // Draw row labels on the left margin
+            const labelX = BAR_PADDING_LEFT - 8;
+            ctx.textAlign = 'right';
+            ctx.textBaseline = 'middle';
+            ctx.font = '10px sans-serif';
+            ctx.fillStyle = this._getMutedColor();
+            ctx.fillText('Huffman', labelX, BAR_CHART_BOTTOM + 36);
+            ctx.fillText('−p·log₂p', labelX, BAR_CHART_BOTTOM + 54);
+            ctx.font = 'bold 10px sans-serif';
+            ctx.fillText('bits', labelX, BAR_CHART_BOTTOM + 72);
 
             // Draw drag handles indicator on hovered bar
             if (this.hoveredBar >= 0 || this.draggingBar >= 0) {
@@ -360,6 +398,77 @@
                 ? 'rgba(168, 153, 132, 0.3)' : 'rgba(0, 0, 0, 0.1)';
         }
 
+        _drawContribution(centerX, y, p) {
+            const ctx = this.ctx;
+            const mutedColor = this._getMutedColor();
+            const textColor = this._getTextColor();
+
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'top';
+
+            if (p <= 0) {
+                ctx.font = '9px sans-serif';
+                ctx.fillStyle = mutedColor;
+                ctx.fillText('0', centerX, y);
+                return;
+            }
+
+            const contribution = -p * Math.log2(p);
+            const pStr = p.toFixed(2);
+
+            // Line 1: formula with actual values
+            ctx.font = '9px sans-serif';
+            ctx.fillStyle = mutedColor;
+            ctx.fillText(`\u2212(${pStr})log\u2082(${pStr})`, centerX, y);
+
+            // Line 2: result
+            ctx.font = 'bold 10px sans-serif';
+            ctx.fillStyle = textColor;
+            ctx.fillText(contribution.toFixed(3), centerX, y + 18);
+        }
+
+        _getMutedColor() {
+            return document.documentElement.getAttribute('data-theme') === 'gruvbox-dark'
+                ? '#a89984' : '#888';
+        }
+
+        _drawHuffmanBits(centerX, y, code) {
+            const ctx = this.ctx;
+            const isDark = document.documentElement.getAttribute('data-theme') === 'gruvbox-dark';
+            const bitSize = 13;
+            const bitGap = 1;
+            const totalWidth = code.length * (bitSize + bitGap) - bitGap;
+            let bx = centerX - totalWidth / 2;
+
+            for (let b = 0; b < code.length; b++) {
+                const bit = code[b];
+
+                // Background
+                ctx.fillStyle = bit === '1'
+                    ? (isDark ? 'rgba(184, 187, 38, 0.3)' : 'rgba(66, 133, 244, 0.15)')
+                    : (isDark ? 'rgba(60, 56, 54, 0.8)' : 'rgba(0, 0, 0, 0.05)');
+                ctx.fillRect(bx, y, bitSize, bitSize);
+
+                // Border
+                ctx.strokeStyle = bit === '1'
+                    ? (isDark ? 'rgba(184, 187, 38, 0.5)' : 'rgba(66, 133, 244, 0.4)')
+                    : (isDark ? 'rgba(168, 153, 132, 0.3)' : 'rgba(0, 0, 0, 0.15)');
+                ctx.lineWidth = 1;
+                ctx.strokeRect(bx, y, bitSize, bitSize);
+
+                // Bit text
+                ctx.fillStyle = bit === '1'
+                    ? (isDark ? '#b8bb26' : '#1a73e8')
+                    : (isDark ? '#a89984' : '#888');
+                ctx.font = 'bold 9px monospace';
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.fillText(bit, bx + bitSize / 2, y + bitSize / 2);
+
+                bx += bitSize + bitGap;
+            }
+        }
+
         getBarAtPosition(x, y) {
             for (let i = 0; i < this.barBounds.length; i++) {
                 const b = this.barBounds[i];
@@ -378,6 +487,371 @@
     }
 
     // ============================================
+    // BallBagRenderer Class
+    // ============================================
+    class BallBagRenderer {
+        constructor(ctx, state, colors) {
+            this.ctx = ctx;
+            this.state = state;
+            this.colors = colors;
+            this.huffmanCodes = null;
+
+            // Ball counts per color
+            this.counts = [3, 2, 1];
+            // Currently selected color index for adding balls
+            this.selectedColor = 0;
+
+            // Layout constants
+            this.bagTop = 20;
+            this.bagBottom = 230;
+            this.bagPadding = 60;
+
+            // Cached ball positions for hit testing
+            this.ballPositions = [];
+            // Palette strip bounds for hit testing
+            this.paletteBounds = [];
+        }
+
+        /**
+         * Load counts from preset, sync probabilities
+         */
+        loadCounts(counts) {
+            this.counts = counts.slice();
+            this._syncProbabilities();
+        }
+
+        _syncProbabilities() {
+            const total = this.counts.reduce((a, b) => a + b, 0);
+            if (total === 0) {
+                this.state.probabilities = this.counts.map(() => 0);
+            } else {
+                this.state.probabilities = this.counts.map(c => c / total);
+            }
+        }
+
+        addBall(colorIndex) {
+            if (colorIndex >= 0 && colorIndex < this.counts.length) {
+                this.counts[colorIndex]++;
+                this._syncProbabilities();
+            }
+        }
+
+        removeBall(colorIndex) {
+            if (colorIndex >= 0 && colorIndex < this.counts.length && this.counts[colorIndex] > 0) {
+                this.counts[colorIndex]--;
+                // Remove color if all counts are zero? No, keep the color.
+                this._syncProbabilities();
+            }
+        }
+
+        /**
+         * Find which ball is at the given canvas coordinates
+         * Returns {colorIndex} or null
+         */
+        getBallAtPosition(x, y) {
+            // Check in reverse order so top-drawn balls are hit first
+            for (let i = this.ballPositions.length - 1; i >= 0; i--) {
+                const bp = this.ballPositions[i];
+                const dx = x - bp.x;
+                const dy = y - bp.y;
+                if (dx * dx + dy * dy <= bp.r * bp.r) {
+                    return { colorIndex: bp.colorIndex };
+                }
+            }
+            return null;
+        }
+
+        /**
+         * Find which palette swatch was clicked
+         * Returns colorIndex or -1
+         */
+        getPaletteAtPosition(x, y) {
+            for (let i = 0; i < this.paletteBounds.length; i++) {
+                const b = this.paletteBounds[i];
+                if (x >= b.x && x <= b.x + b.w && y >= b.y && y <= b.y + b.h) {
+                    return i;
+                }
+            }
+            return -1;
+        }
+
+        /**
+         * Check if position is inside the bag area
+         */
+        isInsideBag(x, y) {
+            const bagLeft = this.bagPadding;
+            const bagRight = CANVAS_WIDTH - this.bagPadding;
+            return x >= bagLeft && x <= bagRight && y >= this.bagTop && y <= this.bagBottom;
+        }
+
+        render() {
+            const { ctx, state, colors, counts } = this;
+            const n = counts.length;
+            const total = counts.reduce((a, b) => a + b, 0);
+
+            const bagLeft = this.bagPadding;
+            const bagRight = CANVAS_WIDTH - this.bagPadding;
+            const bagWidth = bagRight - bagLeft;
+            const bagHeight = this.bagBottom - this.bagTop;
+
+            const isDark = document.documentElement.getAttribute('data-theme') === 'gruvbox-dark';
+            const textColor = isDark ? '#ebdbb2' : '#333333';
+            const mutedColor = isDark ? '#a89984' : '#888';
+            const bagBg = isDark ? '#3c3836' : '#f0ece3';
+            const bagBorder = isDark ? '#665c54' : '#c4b9a4';
+
+            // --- Draw bag container ---
+            ctx.fillStyle = bagBg;
+            ctx.strokeStyle = bagBorder;
+            ctx.lineWidth = 2;
+            VizLib.CanvasUtils.roundRect(ctx, bagLeft, this.bagTop, bagWidth, bagHeight, 16);
+            ctx.fill();
+            ctx.stroke();
+
+            // Bag opening (top trapezoid shape)
+            ctx.beginPath();
+            ctx.moveTo(bagLeft + 15, this.bagTop);
+            ctx.lineTo(bagLeft - 5, this.bagTop - 10);
+            ctx.lineTo(bagRight + 5, this.bagTop - 10);
+            ctx.lineTo(bagRight - 15, this.bagTop);
+            ctx.fillStyle = bagBorder;
+            ctx.fill();
+
+            // --- Layout balls inside bag ---
+            this.ballPositions = [];
+
+            if (total > 0) {
+                // Determine ball radius - scale down for many balls
+                const maxRadius = 16;
+                const minRadius = 6;
+                let radius = maxRadius;
+                if (total > 15) {
+                    radius = Math.max(minRadius, maxRadius - (total - 15) * 0.4);
+                }
+
+                // Build array of all balls with their color
+                const allBalls = [];
+                for (let ci = 0; ci < n; ci++) {
+                    for (let j = 0; j < counts[ci]; j++) {
+                        allBalls.push(ci);
+                    }
+                }
+
+                // Pack balls in a hex grid pattern inside the bag
+                const spacing = radius * 2.2;
+                const usableWidth = bagWidth - radius * 4;
+                const cols = Math.max(1, Math.floor(usableWidth / spacing));
+                const rows = Math.ceil(allBalls.length / cols);
+
+                // Center the grid vertically and horizontally in the bag
+                const gridWidth = Math.min(allBalls.length, cols) * spacing;
+                const gridHeight = rows * spacing;
+                const startX = bagLeft + (bagWidth - gridWidth) / 2 + spacing / 2;
+                const startY = this.bagTop + (bagHeight - gridHeight) / 2 + spacing / 2;
+
+                for (let idx = 0; idx < allBalls.length; idx++) {
+                    const row = Math.floor(idx / cols);
+                    const col = idx % cols;
+                    // Hex offset: odd rows shift right by half spacing
+                    const offsetX = (row % 2) * (spacing / 2);
+                    const bx = startX + col * spacing + offsetX;
+                    const by = startY + row * spacing;
+
+                    const ci = allBalls[idx];
+
+                    // Draw ball shadow
+                    ctx.beginPath();
+                    ctx.arc(bx + 1.5, by + 1.5, radius, 0, Math.PI * 2);
+                    ctx.fillStyle = 'rgba(0,0,0,0.15)';
+                    ctx.fill();
+
+                    // Draw ball
+                    ctx.beginPath();
+                    ctx.arc(bx, by, radius, 0, Math.PI * 2);
+                    ctx.fillStyle = colors[ci % colors.length];
+                    ctx.fill();
+                    ctx.strokeStyle = isDark ? 'rgba(0,0,0,0.4)' : 'rgba(0,0,0,0.2)';
+                    ctx.lineWidth = 1;
+                    ctx.stroke();
+
+                    // Highlight/shine on ball
+                    ctx.beginPath();
+                    ctx.arc(bx - radius * 0.25, by - radius * 0.25, radius * 0.35, 0, Math.PI * 2);
+                    ctx.fillStyle = 'rgba(255,255,255,0.35)';
+                    ctx.fill();
+
+                    this.ballPositions.push({ x: bx, y: by, r: radius, colorIndex: ci });
+                }
+            } else {
+                // Empty bag message
+                ctx.fillStyle = mutedColor;
+                ctx.font = '13px sans-serif';
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.fillText('Click to add balls', bagLeft + bagWidth / 2, this.bagTop + bagHeight / 2);
+            }
+
+            // --- Draw color palette strip below bag ---
+            const paletteY = this.bagBottom + 12;
+            const swatchSize = 18;
+            const swatchGap = 8;
+            const totalPaletteWidth = n * swatchSize + (n - 1) * swatchGap;
+            let paletteStartX = (CANVAS_WIDTH - totalPaletteWidth) / 2;
+
+            this.paletteBounds = [];
+
+            for (let ci = 0; ci < n; ci++) {
+                const sx = paletteStartX + ci * (swatchSize + swatchGap);
+
+                // Selection indicator
+                if (ci === this.selectedColor) {
+                    ctx.strokeStyle = isDark ? '#ebdbb2' : '#333';
+                    ctx.lineWidth = 2;
+                    ctx.strokeRect(sx - 3, paletteY - 3, swatchSize + 6, swatchSize + 6);
+                }
+
+                // Swatch
+                ctx.fillStyle = colors[ci % colors.length];
+                ctx.fillRect(sx, paletteY, swatchSize, swatchSize);
+
+                this.paletteBounds.push({ x: sx - 3, y: paletteY - 3, w: swatchSize + 6, h: swatchSize + 6 });
+            }
+
+            // --- Draw labels row: color name + count ---
+            const labelY = paletteY + swatchSize + 10;
+            const labelSpacing = Math.min(80, (CANVAS_WIDTH - 2 * this.bagPadding) / n);
+            const labelsStartX = CANVAS_WIDTH / 2 - (n * labelSpacing) / 2 + labelSpacing / 2;
+
+            for (let ci = 0; ci < n; ci++) {
+                const lx = labelsStartX + ci * labelSpacing;
+
+                // Color dot + label
+                ctx.fillStyle = colors[ci % colors.length];
+                ctx.beginPath();
+                ctx.arc(lx - 20, labelY + 4, 4, 0, Math.PI * 2);
+                ctx.fill();
+
+                ctx.fillStyle = textColor;
+                ctx.font = '11px sans-serif';
+                ctx.textAlign = 'left';
+                ctx.textBaseline = 'top';
+                ctx.fillText(`${state.labels[ci]}: ${counts[ci]}`, lx - 14, labelY);
+            }
+
+            // --- Draw Huffman codes row ---
+            if (this.huffmanCodes) {
+                const huffY = labelY + 20;
+                ctx.font = '10px sans-serif';
+                ctx.fillStyle = mutedColor;
+                ctx.textAlign = 'right';
+                ctx.textBaseline = 'top';
+                ctx.fillText('Huffman', this.bagPadding - 8, huffY);
+
+                for (let ci = 0; ci < n; ci++) {
+                    if (this.huffmanCodes[ci]) {
+                        const lx = labelsStartX + ci * labelSpacing;
+                        this._drawHuffmanBits(lx, huffY, this.huffmanCodes[ci].code);
+                    }
+                }
+            }
+
+            // --- Draw contribution formula row ---
+            const contribY = (this.huffmanCodes ? labelY + 40 : labelY + 20);
+            ctx.font = '10px sans-serif';
+            ctx.fillStyle = mutedColor;
+            ctx.textAlign = 'right';
+            ctx.textBaseline = 'top';
+            ctx.fillText('\u2212p\u00B7log\u2082p', this.bagPadding - 8, contribY);
+
+            for (let ci = 0; ci < n; ci++) {
+                const lx = labelsStartX + ci * labelSpacing;
+                const p = state.probabilities[ci] || 0;
+                this._drawContribution(lx, contribY, p);
+            }
+
+            // Draw "+" between contributions
+            ctx.font = 'bold 10px sans-serif';
+            ctx.fillStyle = mutedColor;
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'top';
+            for (let ci = 1; ci < n; ci++) {
+                const prevX = labelsStartX + (ci - 1) * labelSpacing;
+                const currX = labelsStartX + ci * labelSpacing;
+                ctx.fillText('+', (prevX + currX) / 2, contribY + 14);
+            }
+
+            // Result row
+            const resultY = contribY + 14;
+            ctx.font = 'bold 10px sans-serif';
+            ctx.fillStyle = mutedColor;
+            ctx.textAlign = 'right';
+            ctx.textBaseline = 'top';
+            ctx.fillText('bits', this.bagPadding - 8, resultY);
+        }
+
+        _drawContribution(centerX, y, p) {
+            const ctx = this.ctx;
+            const isDark = document.documentElement.getAttribute('data-theme') === 'gruvbox-dark';
+            const mutedColor = isDark ? '#a89984' : '#888';
+            const textColor = isDark ? '#ebdbb2' : '#333333';
+
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'top';
+
+            if (p <= 0) {
+                ctx.font = '9px sans-serif';
+                ctx.fillStyle = mutedColor;
+                ctx.fillText('0', centerX, y);
+                return;
+            }
+
+            const contribution = -p * Math.log2(p);
+            const pStr = p.toFixed(2);
+
+            ctx.font = '9px sans-serif';
+            ctx.fillStyle = mutedColor;
+            ctx.fillText(`\u2212(${pStr})log\u2082(${pStr})`, centerX, y);
+
+            ctx.font = 'bold 10px sans-serif';
+            ctx.fillStyle = textColor;
+            ctx.fillText(contribution.toFixed(3), centerX, y + 14);
+        }
+
+        _drawHuffmanBits(centerX, y, code) {
+            const ctx = this.ctx;
+            const isDark = document.documentElement.getAttribute('data-theme') === 'gruvbox-dark';
+            const bitSize = 12;
+            const bitGap = 1;
+            const totalWidth = code.length * (bitSize + bitGap) - bitGap;
+            let bx = centerX - totalWidth / 2;
+
+            for (let b = 0; b < code.length; b++) {
+                const bit = code[b];
+                ctx.fillStyle = bit === '1'
+                    ? (isDark ? 'rgba(184, 187, 38, 0.3)' : 'rgba(66, 133, 244, 0.15)')
+                    : (isDark ? 'rgba(60, 56, 54, 0.8)' : 'rgba(0, 0, 0, 0.05)');
+                ctx.fillRect(bx, y, bitSize, bitSize);
+
+                ctx.strokeStyle = bit === '1'
+                    ? (isDark ? 'rgba(184, 187, 38, 0.5)' : 'rgba(66, 133, 244, 0.4)')
+                    : (isDark ? 'rgba(168, 153, 132, 0.3)' : 'rgba(0, 0, 0, 0.15)');
+                ctx.lineWidth = 1;
+                ctx.strokeRect(bx, y, bitSize, bitSize);
+
+                ctx.fillStyle = bit === '1'
+                    ? (isDark ? '#b8bb26' : '#1a73e8')
+                    : (isDark ? '#a89984' : '#888');
+                ctx.font = 'bold 9px monospace';
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.fillText(bit, bx + bitSize / 2, y + bitSize / 2);
+
+                bx += bitSize + bitGap;
+            }
+        }
+    }
+
+    // ============================================
     // EntropyGaugeRenderer Class
     // ============================================
     class EntropyGaugeRenderer {
@@ -391,6 +865,16 @@
         render(currentEntropy, maxEntropy) {
             const { ctx, centerX, centerY, radius } = this;
             const textColor = this._getTextColor();
+
+            // Draw subtle separator line between bar chart and gauge
+            const separatorY = centerY - radius - 35;
+            ctx.strokeStyle = this._getBackgroundColor();
+            ctx.lineWidth = 1;
+            ctx.setLineDash([]);
+            ctx.beginPath();
+            ctx.moveTo(BAR_PADDING_LEFT, separatorY);
+            ctx.lineTo(CANVAS_WIDTH - BAR_PADDING_RIGHT, separatorY);
+            ctx.stroke();
 
             // Draw title
             ctx.fillStyle = textColor;
@@ -786,10 +1270,14 @@
 
             this.state = new DistributionState();
             this.barChartRenderer = null;
+            this.ballBagRenderer = null;
             this.gaugeRenderer = null;
             this.mathRenderer = null;
             this.sampler = null;
             this.encoder = null;
+
+            // 'barChart' or 'ballBag'
+            this.activeRenderer = 'barChart';
 
             this.isDragging = false;
             this.dragBarIndex = -1;
@@ -815,16 +1303,15 @@
                 return;
             }
 
-            // Setup high-DPI canvas
-            const result = VizLib.setupHiDPICanvas(this.canvas);
-            this.ctx = result.ctx;
-            this.dpr = result.dpr;
+            // Measure actual container width and update CANVAS_WIDTH
+            this._resizeCanvas();
 
             // Get colors from ThemeManager
             this._updateColors();
 
             // Initialize renderers
             this.barChartRenderer = new BarChartRenderer(this.ctx, this.state, this.colors);
+            this.ballBagRenderer = new BallBagRenderer(this.ctx, this.state, this.colors);
             this.gaugeRenderer = new EntropyGaugeRenderer(this.ctx);
 
             const mathContainer = document.getElementById('entropy-math-breakdown');
@@ -848,12 +1335,38 @@
             this._updateEncoding();
         }
 
+        _resizeCanvas() {
+            // Read actual CSS size and update the logical width
+            const rect = this.canvas.getBoundingClientRect();
+            CANVAS_WIDTH = rect.width;
+
+            // Re-setup hi-DPI canvas with new dimensions
+            const result = VizLib.setupHiDPICanvas(this.canvas);
+            this.ctx = result.ctx;
+            this.dpr = result.dpr;
+
+            // Update gauge center if renderer exists
+            if (this.gaugeRenderer) {
+                this.gaugeRenderer.ctx = this.ctx;
+                this.gaugeRenderer.centerX = CANVAS_WIDTH / 2;
+            }
+            if (this.barChartRenderer) {
+                this.barChartRenderer.ctx = this.ctx;
+            }
+            if (this.ballBagRenderer) {
+                this.ballBagRenderer.ctx = this.ctx;
+            }
+        }
+
         _updateColors() {
             this.colors = VizLib.ThemeManager.getColors('categorical', 12);
 
             // Update renderers if they exist
             if (this.barChartRenderer) {
                 this.barChartRenderer.colors = this.colors;
+            }
+            if (this.ballBagRenderer) {
+                this.ballBagRenderer.colors = this.colors;
             }
             if (this.mathRenderer) {
                 this.mathRenderer.colors = this.colors;
@@ -867,10 +1380,37 @@
             this.canvas.addEventListener('mouseup', () => this._onMouseUp());
             this.canvas.addEventListener('mouseleave', () => this._onMouseLeave());
 
+            // Right-click for ball bag mode (debounce to prevent double-fire)
+            let lastContextMenu = 0;
+            this.canvas.addEventListener('contextmenu', (e) => {
+                if (this.activeRenderer === 'ballBag') {
+                    e.preventDefault();
+                    const now = Date.now();
+                    if (now - lastContextMenu < 200) return;
+                    lastContextMenu = now;
+                    const pos = this._getMousePos(e);
+                    const hit = this.ballBagRenderer.getBallAtPosition(pos.x, pos.y);
+                    if (hit) {
+                        this.ballBagRenderer.removeBall(hit.colorIndex);
+                        this.render();
+                    }
+                }
+            });
+
             // Touch events for mobile
             this.canvas.addEventListener('touchstart', (e) => this._onTouchStart(e));
             this.canvas.addEventListener('touchmove', (e) => this._onTouchMove(e));
             this.canvas.addEventListener('touchend', () => this._onMouseUp());
+
+            // Resize handling
+            let resizeTimeout;
+            window.addEventListener('resize', () => {
+                clearTimeout(resizeTimeout);
+                resizeTimeout = setTimeout(() => {
+                    this._resizeCanvas();
+                    this.render();
+                }, 100);
+            });
 
             // Control events
             const presetSelect = document.getElementById('preset-select');
@@ -940,13 +1480,14 @@
             const encodingCheckbox = document.getElementById('show-encoding');
             if (encodingCheckbox) {
                 encodingCheckbox.addEventListener('change', (e) => {
-                    const panel = document.getElementById('encoding-panel');
-                    if (panel) {
-                        panel.style.display = e.target.checked ? 'block' : 'none';
-                        if (e.target.checked) {
-                            this._updateEncoding();
-                        }
+                    if (e.target.checked) {
+                        this._updateEncoding();
+                    } else {
+                        this.barChartRenderer.huffmanCodes = null;
+                        const avgDisplay = document.getElementById('avg-code-display');
+                        if (avgDisplay) avgDisplay.style.display = 'none';
                     }
+                    this.render();
                 });
             }
 
@@ -982,6 +1523,29 @@
 
         _onMouseDown(e) {
             const pos = this._getMousePos(e);
+
+            if (this.activeRenderer === 'ballBag') {
+                // Left-click only (right-click handled in contextmenu)
+                if (e.button !== 0) return;
+                const bbr = this.ballBagRenderer;
+
+                // Check palette click first
+                const paletteIdx = bbr.getPaletteAtPosition(pos.x, pos.y);
+                if (paletteIdx >= 0) {
+                    bbr.selectedColor = paletteIdx;
+                    this.render();
+                    return;
+                }
+
+                // Check if clicking an existing ball (tap to remove on desktop too? No - only right-click removes)
+                // Left-click inside bag = add ball of selected color
+                if (bbr.isInsideBag(pos.x, pos.y)) {
+                    bbr.addBall(bbr.selectedColor);
+                    this.render();
+                }
+                return;
+            }
+
             const barIndex = this.barChartRenderer.getBarAtPosition(pos.x, pos.y);
             if (barIndex >= 0) {
                 this.isDragging = true;
@@ -993,19 +1557,28 @@
         }
 
         _onMouseMove(e) {
+            if (this.activeRenderer === 'ballBag') {
+                const pos = this._getMousePos(e);
+                const bbr = this.ballBagRenderer;
+                // Cursor hint: pointer over balls/palette, crosshair in bag
+                if (bbr.getPaletteAtPosition(pos.x, pos.y) >= 0) {
+                    this.canvas.style.cursor = 'pointer';
+                } else if (bbr.getBallAtPosition(pos.x, pos.y)) {
+                    this.canvas.style.cursor = 'pointer';
+                } else if (bbr.isInsideBag(pos.x, pos.y)) {
+                    this.canvas.style.cursor = 'crosshair';
+                } else {
+                    this.canvas.style.cursor = 'default';
+                }
+                return;
+            }
+
             const pos = this._getMousePos(e);
 
             if (this.isDragging && this.dragBarIndex >= 0) {
                 // Update probability based on Y position
                 const newP = this.barChartRenderer.getProbabilityFromY(pos.y);
-
-                // Use linked or unlinked mode based on checkbox
-                const linkCheckbox = document.getElementById('link-probabilities');
-                if (linkCheckbox?.checked) {
-                    this.state.setProbabilityLinked(this.dragBarIndex, newP);
-                } else {
-                    this.state.setProbability(this.dragBarIndex, newP);
-                }
+                this.state.setProbabilityLinked(this.dragBarIndex, newP);
                 this.render();
             } else {
                 // Hover detection
@@ -1022,20 +1595,52 @@
             if (this.isDragging) {
                 this.isDragging = false;
                 this.dragBarIndex = -1;
-                this.barChartRenderer.draggingBar = -1;
+                if (this.activeRenderer !== 'ballBag') {
+                    this.barChartRenderer.draggingBar = -1;
+                }
                 this.canvas.style.cursor = 'default';
                 this.render();
             }
         }
 
         _onMouseLeave() {
-            this.barChartRenderer.hoveredBar = -1;
+            if (this.activeRenderer !== 'ballBag') {
+                this.barChartRenderer.hoveredBar = -1;
+            }
             this._onMouseUp();
         }
 
         _onTouchStart(e) {
             e.preventDefault();
             const pos = this._getTouchPos(e);
+
+            if (this.activeRenderer === 'ballBag') {
+                const bbr = this.ballBagRenderer;
+
+                // Palette tap
+                const paletteIdx = bbr.getPaletteAtPosition(pos.x, pos.y);
+                if (paletteIdx >= 0) {
+                    bbr.selectedColor = paletteIdx;
+                    this.render();
+                    return;
+                }
+
+                // Tap on existing ball = remove it
+                const hit = bbr.getBallAtPosition(pos.x, pos.y);
+                if (hit) {
+                    bbr.removeBall(hit.colorIndex);
+                    this.render();
+                    return;
+                }
+
+                // Tap empty space in bag = add ball
+                if (bbr.isInsideBag(pos.x, pos.y)) {
+                    bbr.addBall(bbr.selectedColor);
+                    this.render();
+                }
+                return;
+            }
+
             const barIndex = this.barChartRenderer.getBarAtPosition(pos.x, pos.y);
             if (barIndex >= 0) {
                 this.isDragging = true;
@@ -1047,16 +1652,12 @@
 
         _onTouchMove(e) {
             e.preventDefault();
+            if (this.activeRenderer === 'ballBag') return;
             if (this.isDragging && this.dragBarIndex >= 0) {
                 const pos = this._getTouchPos(e);
                 const newP = this.barChartRenderer.getProbabilityFromY(pos.y);
 
-                const linkCheckbox = document.getElementById('link-probabilities');
-                if (linkCheckbox?.checked) {
-                    this.state.setProbabilityLinked(this.dragBarIndex, newP);
-                } else {
-                    this.state.setProbability(this.dragBarIndex, newP);
-                }
+                this.state.setProbabilityLinked(this.dragBarIndex, newP);
                 this.render();
             }
         }
@@ -1064,6 +1665,20 @@
         _onPresetChange(e) {
             const presetKey = e.target.value;
             this.state.loadPreset(presetKey);
+
+            if (presetKey === 'ballsInBag') {
+                this.activeRenderer = 'ballBag';
+                const preset = PRESETS.ballsInBag;
+                this.ballBagRenderer.loadCounts(preset.ballCounts);
+                // Update hint text
+                const hint = document.querySelector('.entropy-hint');
+                if (hint) hint.innerHTML = '<i class="fa fa-hand-pointer-o"></i> Click bag to add, right-click ball to remove';
+            } else {
+                this.activeRenderer = 'barChart';
+                const hint = document.querySelector('.entropy-hint');
+                if (hint) hint.innerHTML = '<i class="fa fa-hand-pointer-o"></i> Drag bars to adjust probabilities';
+            }
+
             this._updateOutcomeCount();
             this.render();
         }
@@ -1099,6 +1714,9 @@
             const presetSelect = document.getElementById('preset-select');
             const presetKey = presetSelect ? presetSelect.value : 'fairCoin';
             this.state.loadPreset(presetKey);
+            if (presetKey === 'ballsInBag') {
+                this.ballBagRenderer.loadCounts(PRESETS.ballsInBag.ballCounts);
+            }
             this._updateOutcomeCount();
             this.render();
         }
@@ -1219,18 +1837,16 @@
             // Rebuild Huffman codes
             this.encoder.encode(this.state.probabilities, this.state.labels);
 
-            // Update average code length display
+            // Pass codes to active renderer
+            this.barChartRenderer.huffmanCodes = this.encoder.codes;
+            this.ballBagRenderer.huffmanCodes = this.encoder.codes;
+
+            // Update average code length display in footer
             const avgEl = document.getElementById('avg-code-length');
             if (avgEl) {
                 const avgLen = this.encoder.getAverageCodeLength(this.state.probabilities);
                 const entropy = this.state.getEntropy();
                 avgEl.textContent = `${avgLen.toFixed(3)} bits (H = ${entropy.toFixed(3)})`;
-            }
-
-            // Update encoding table
-            const tableEl = document.getElementById('encoding-table');
-            if (tableEl) {
-                this.encoder.renderTable(tableEl, this.colors);
             }
         }
 
@@ -1243,23 +1859,20 @@
                 ? '#1d2021' : '#fafafa';
             VizLib.clearCanvas(ctx, CANVAS_WIDTH, CANVAS_HEIGHT, bgColor);
 
-            // Render components
-            this.barChartRenderer.render();
+            // Update encoding before drawing (codes appear on bars/balls)
+            this._updateEncoding();
 
-            const entropy = this.state.getEntropy();
-            const maxEntropy = this.state.getMaxEntropy();
-            this.gaugeRenderer.render(entropy, maxEntropy);
+            // Render active canvas renderer
+            if (this.activeRenderer === 'ballBag') {
+                this.ballBagRenderer.render();
+            } else {
+                this.barChartRenderer.render();
+            }
 
             // Update UI elements
             this._updateEntropyBadge();
             this._updateSumIndicator();
             this._updateMathBreakdown();
-
-            // Update encoding if visible
-            const encodingPanel = document.getElementById('encoding-panel');
-            if (encodingPanel && encodingPanel.style.display !== 'none') {
-                this._updateEncoding();
-            }
         }
     }
 
