@@ -13,11 +13,22 @@
     // ============================================
     const NUM_CLASSES = 10;
     const EPSILON = 1e-15;
-    const CHART_PADDING = { top: 30, right: 30, bottom: 95, left: 45 };
+    const CHART_PADDING = { top: 30, right: 70, bottom: 125, left: 95 };
     const ASPECT_RATIO = 0.55; // height / width - compressed
 
-    // Data path
-    const DATA_PATH = 'static/json/cross-entropy-training.json';
+    // Data paths for different datasets
+    const DATA_PATHS = {
+        mnist: 'static/json/cross-entropy-training.json',
+        cifar10: 'static/json/cross-entropy-cifar10.json',
+        text: 'static/json/cross-entropy-text.json'
+    };
+
+    // Default class labels for each dataset
+    const DEFAULT_CLASS_LABELS = {
+        mnist: ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'],
+        cifar10: ['airplane', 'automobile', 'bird', 'cat', 'deer', 'dog', 'frog', 'horse', 'ship', 'truck'],
+        text: ['[PAD]', 'the', 'cat', 'sat', 'on', 'mat', 'dog', 'ran', 'a', '.']
+    };
 
     // ============================================
     // CrossEntropyCalculator
@@ -66,18 +77,36 @@
         constructor() {
             this.data = null;
             this.loaded = false;
+            this.currentDataset = 'mnist';
         }
 
-        async loadData() {
+        async loadData(dataset = null) {
+            if (dataset) {
+                this.currentDataset = dataset;
+            }
+            const dataPath = DATA_PATHS[this.currentDataset];
             try {
-                const response = await fetch(DATA_PATH);
+                const response = await fetch(dataPath);
                 this.data = await response.json();
                 this.loaded = true;
                 return this.data;
             } catch (error) {
-                console.error('Failed to load training data:', error);
+                console.error(`Failed to load training data for ${this.currentDataset}:`, error);
                 throw error;
             }
+        }
+
+        async switchDataset(dataset) {
+            if (dataset === this.currentDataset && this.loaded) {
+                return this.data;
+            }
+            this.currentDataset = dataset;
+            this.loaded = false;
+            return this.loadData(dataset);
+        }
+
+        getCurrentDataset() {
+            return this.currentDataset;
         }
 
         getMetadata() {
@@ -119,8 +148,13 @@
             this.trueLabel = 0;
         }
 
-        setFromSnapshot(snapshot, trueLabel) {
-            this.expected = CrossEntropyCalculator.createOneHot(trueLabel);
+        setFromSnapshot(snapshot, trueLabel, expectedDistribution = null) {
+            // Use soft labels if provided, otherwise fall back to one-hot
+            if (expectedDistribution && Array.isArray(expectedDistribution)) {
+                this.expected = [...expectedDistribution];
+            } else {
+                this.expected = CrossEntropyCalculator.createOneHot(trueLabel);
+            }
             this.predicted = [...snapshot.predictions];
             this.trueLabel = trueLabel;
         }
@@ -171,11 +205,16 @@
             // Dynamic dimensions - set by setDimensions()
             this.canvasWidth = 480;
             this.canvasHeight = 380;
+            this.isTextMode = false;
         }
 
         setDimensions(width, height) {
             this.canvasWidth = width;
             this.canvasHeight = height;
+        }
+
+        setTextMode(isText) {
+            this.isTextMode = isText;
         }
 
         _getChartWidth() {
@@ -312,6 +351,7 @@
             const { ctx } = this;
             const textColor = this._getTextColor();
             const gridColor = this._getGridColor();
+            const mutedColor = this._getMutedTextColor();
             const chartHeight = this._getChartHeight();
             const barGroupWidth = this._getBarGroupWidth();
 
@@ -339,14 +379,28 @@
                 ctx.setLineDash([]);
             }
 
-            // X-axis labels (class numbers) - directly below bars
+            // X-axis labels - directly below bars
             ctx.textAlign = 'center';
             ctx.textBaseline = 'top';
-            ctx.font = 'bold 12px sans-serif';
 
             for (let i = 0; i < NUM_CLASSES; i++) {
                 const x = CHART_PADDING.left + (i + 0.5) * barGroupWidth;
-                ctx.fillText(labels[i] || String(i), x, CHART_PADDING.top + chartHeight + 4);
+
+                if (this.isTextMode) {
+                    // Text mode: show token ID on first line, word on second line
+                    ctx.font = 'bold 12px sans-serif';
+                    ctx.fillStyle = textColor;
+                    ctx.fillText(String(i), x, CHART_PADDING.top + chartHeight + 8);
+
+                    ctx.font = '9px sans-serif';
+                    ctx.fillStyle = mutedColor;
+                    ctx.fillText(labels[i] || '', x, CHART_PADDING.top + chartHeight + 22);
+                } else {
+                    // Image mode: just show the label
+                    ctx.font = 'bold 12px sans-serif';
+                    ctx.fillStyle = textColor;
+                    ctx.fillText(labels[i] || String(i), x, CHART_PADDING.top + chartHeight + 12);
+                }
             }
         }
 
@@ -357,15 +411,23 @@
             const textColor = this._getTextColor();
             const mutedColor = this._getMutedTextColor();
 
-            const tensorStartY = CHART_PADDING.top + chartHeight + 22;
+            const classLabelY = CHART_PADDING.top + chartHeight + 12;
+            const tensorStartY = CHART_PADDING.top + chartHeight + 30;
             const rowHeight = 18;
+
+            // Draw "class" label for the index row
+            ctx.font = '11px monospace';
+            ctx.fillStyle = mutedColor;
+            ctx.textAlign = 'right';
+            ctx.textBaseline = 'top';
+            ctx.fillText('class', CHART_PADDING.left - 4, classLabelY);
 
             // Draw "predicted" tensor
             ctx.font = '11px monospace';
             ctx.fillStyle = mutedColor;
             ctx.textAlign = 'right';
             ctx.textBaseline = 'top';
-            ctx.fillText('predicted', CHART_PADDING.left - 4, tensorStartY);
+            ctx.fillText('predicted (ŷ)', CHART_PADDING.left - 4, tensorStartY);
 
             // Draw bracket and values for predicted
             ctx.fillStyle = textColor;
@@ -378,8 +440,18 @@
 
             // Values
             ctx.textAlign = 'center';
+            const argmax = predicted.indexOf(Math.max(...predicted));
+            const isCorrect = argmax === trueClass;
             for (let i = 0; i < NUM_CLASSES; i++) {
                 const x = CHART_PADDING.left + (i + 0.5) * barGroupWidth;
+                // Highlight argmax green if correct, red if wrong
+                if (i === argmax) {
+                    ctx.fillStyle = isCorrect ? this._getCorrectColor() : this._getIncorrectColor();
+                    ctx.font = 'bold 10px monospace';
+                } else {
+                    ctx.fillStyle = textColor;
+                    ctx.font = '10px monospace';
+                }
                 ctx.fillText(predicted[i].toFixed(2), x, tensorStartY);
             }
 
@@ -393,7 +465,7 @@
             ctx.font = '11px monospace';
             ctx.fillStyle = mutedColor;
             ctx.textAlign = 'right';
-            ctx.fillText('expected', CHART_PADDING.left - 4, expectedY);
+            ctx.fillText('expected (y)', CHART_PADDING.left - 4, expectedY);
 
             // Draw bracket and values for expected (one-hot)
             ctx.fillStyle = textColor;
@@ -416,7 +488,7 @@
                     ctx.fillStyle = textColor;
                     ctx.font = '10px monospace';
                 }
-                ctx.fillText(val.toFixed(0), x, expectedY);
+                ctx.fillText(val.toFixed(2), x, expectedY);
             }
 
             // Right bracket
@@ -424,6 +496,67 @@
             ctx.font = '10px monospace';
             ctx.textAlign = 'right';
             ctx.fillText(']', this.canvasWidth - CHART_PADDING.right + 2, expectedY);
+
+            // Draw "-y·log(p)" loss terms row
+            const lossY = expectedY + rowHeight;
+
+            ctx.font = '11px monospace';
+            ctx.fillStyle = mutedColor;
+            ctx.textAlign = 'right';
+            ctx.fillText('-y·log(ŷ)', CHART_PADDING.left - 4, lossY);
+
+            // Calculate and draw loss terms
+            let totalLoss = 0;
+            const lossTerms = [];
+            for (let i = 0; i < NUM_CLASSES; i++) {
+                const p = Math.max(EPSILON, predicted[i]);
+                const term = expected[i] > 0 ? -expected[i] * Math.log(p) : 0;
+                lossTerms.push(term);
+                totalLoss += term;
+            }
+
+            ctx.fillStyle = textColor;
+            ctx.font = '10px monospace';
+
+            // Left bracket
+            ctx.textAlign = 'left';
+            ctx.fillText('[', CHART_PADDING.left - 2, lossY);
+
+            // Values with + signs between them
+            ctx.textAlign = 'center';
+            for (let i = 0; i < NUM_CLASSES; i++) {
+                const x = CHART_PADDING.left + (i + 0.5) * barGroupWidth;
+                const term = lossTerms[i];
+                // Highlight non-zero terms (the true class contribution)
+                if (term > 0) {
+                    ctx.fillStyle = this._getHighlightBorderColor();
+                    ctx.font = 'bold 10px monospace';
+                } else {
+                    ctx.fillStyle = textColor;
+                    ctx.font = '10px monospace';
+                }
+                ctx.fillText(term.toFixed(2), x, lossY);
+
+                // Add + sign after each value except the last
+                if (i < NUM_CLASSES - 1) {
+                    ctx.fillStyle = mutedColor;
+                    ctx.font = '10px monospace';
+                    const plusX = CHART_PADDING.left + (i + 1) * barGroupWidth;
+                    ctx.fillText('+', plusX, lossY);
+                }
+            }
+
+            // Right bracket and sum
+            ctx.fillStyle = textColor;
+            ctx.font = '10px monospace';
+            ctx.textAlign = 'right';
+            ctx.fillText(']', this.canvasWidth - CHART_PADDING.right, lossY);
+
+            // Draw summation result
+            ctx.fillStyle = this._getHighlightBorderColor();
+            ctx.font = 'bold 10px monospace';
+            ctx.textAlign = 'left';
+            ctx.fillText(` = ${totalLoss.toFixed(3)}`, this.canvasWidth - CHART_PADDING.right + 2, lossY);
         }
 
         _getMutedTextColor() {
@@ -506,6 +639,16 @@
         constructor(container) {
             this.container = container;
             this.onSampleClick = null;
+            this.classLabels = null;
+            this.isTextMode = false;
+        }
+
+        setClassLabels(labels) {
+            this.classLabels = labels;
+        }
+
+        setTextMode(isText) {
+            this.isTextMode = isText;
         }
 
         render(samples, selectedIndex) {
@@ -516,17 +659,49 @@
                 item.className = 'gallery-item' + (index === selectedIndex ? ' selected' : '');
                 item.dataset.index = index;
 
-                const img = document.createElement('img');
-                img.src = sample.imageBase64;
-                img.alt = `Digit ${sample.trueLabel}`;
-                img.className = 'gallery-image';
+                // Check if this is a text sample (has context property) or image sample
+                if (sample.context !== undefined) {
+                    // Text mode - show context with token IDs
+                    item.classList.add('gallery-item-text');
 
-                const label = document.createElement('span');
-                label.className = 'gallery-label';
-                label.textContent = sample.trueLabel;
+                    // Show the words
+                    const textEl = document.createElement('div');
+                    textEl.className = 'gallery-text';
+                    textEl.textContent = sample.context || '[START]';
+                    item.appendChild(textEl);
 
-                item.appendChild(img);
-                item.appendChild(label);
+                    // Show the token IDs below
+                    if (sample.contextTokens) {
+                        const tokensEl = document.createElement('div');
+                        tokensEl.className = 'gallery-tokens';
+                        tokensEl.textContent = '[' + sample.contextTokens.join(', ') + ']';
+                        item.appendChild(tokensEl);
+                    }
+
+                    // Show the target token ID and word
+                    const label = document.createElement('span');
+                    label.className = 'gallery-label';
+                    const labelWord = this.classLabels ? this.classLabels[sample.trueLabel] : '';
+                    label.textContent = `→ ${sample.trueLabel}`;
+                    label.title = `Next token: ${sample.trueLabel} = "${labelWord}"`;
+                    item.appendChild(label);
+                } else {
+                    // Image mode - existing code
+                    const img = document.createElement('img');
+                    img.src = sample.imageBase64;
+                    const labelText = this.classLabels ? this.classLabels[sample.trueLabel] : sample.trueLabel;
+                    img.alt = `${labelText}`;
+                    img.className = 'gallery-image';
+
+                    const label = document.createElement('span');
+                    label.className = 'gallery-label';
+                    // Show index for CIFAR-10 (labels too long), full label for MNIST
+                    label.textContent = sample.trueLabel;
+                    label.title = labelText; // Full label in tooltip
+
+                    item.appendChild(img);
+                    item.appendChild(label);
+                }
 
                 item.addEventListener('click', () => {
                     if (this.onSampleClick) {
@@ -756,6 +931,8 @@
 
             // Render gallery
             if (this.galleryRenderer) {
+                const metadata = this.dataManager.getMetadata();
+                this.galleryRenderer.setClassLabels(metadata?.classLabels);
                 this.galleryRenderer.render(this.dataManager.getSamples(), 0);
             }
 
@@ -792,11 +969,18 @@
             const container = document.getElementById('expected-class-selector');
             if (!container) return;
 
+            const dataset = this.dataManager.getCurrentDataset();
+            const labels = this.dataManager.getMetadata()?.classLabels ||
+                           DEFAULT_CLASS_LABELS[dataset] ||
+                           Array.from({length: NUM_CLASSES}, (_, i) => String(i));
+
             container.innerHTML = '';
             for (let i = 0; i < NUM_CLASSES; i++) {
                 const btn = document.createElement('button');
                 btn.className = 'btn btn-xs btn-default class-btn' + (i === 0 ? ' active' : '');
-                btn.textContent = i;
+                // For CIFAR-10, use shorter labels or indices for space
+                btn.textContent = dataset === 'cifar10' ? i : labels[i];
+                btn.title = labels[i]; // Full label in tooltip
                 btn.dataset.class = i;
                 btn.addEventListener('click', () => this._onExpectedClassChange(i));
                 container.appendChild(btn);
@@ -810,7 +994,8 @@
             if (sample && snapshot) {
                 this.state.selectedSampleIndex = sampleIndex;
                 this.state.currentSnapshotIndex = snapshotIndex;
-                this.state.setFromSnapshot(snapshot, sample.trueLabel);
+                // Pass expectedDistribution for soft labels (text mode)
+                this.state.setFromSnapshot(snapshot, sample.trueLabel, sample.expectedDistribution);
 
                 // Update UI
                 const selectedLabel = document.getElementById('selected-label');
@@ -832,11 +1017,15 @@
             this.canvas.addEventListener('touchmove', (e) => this._onTouchMove(e));
             this.canvas.addEventListener('touchend', () => this._onMouseUp());
 
-            // Mode toggle
-            const btnTraining = document.getElementById('btn-mode-training');
+            // Mode toggle (MNIST / CIFAR-10 / Text / Manual)
+            const btnMnist = document.getElementById('btn-mode-mnist');
+            const btnCifar = document.getElementById('btn-mode-cifar10');
+            const btnText = document.getElementById('btn-mode-text');
             const btnManual = document.getElementById('btn-mode-manual');
-            if (btnTraining) btnTraining.addEventListener('click', () => this._setMode('training'));
-            if (btnManual) btnManual.addEventListener('click', () => this._setMode('manual'));
+            if (btnMnist) btnMnist.addEventListener('click', () => this._setModeAndDataset('training', 'mnist'));
+            if (btnCifar) btnCifar.addEventListener('click', () => this._setModeAndDataset('training', 'cifar10'));
+            if (btnText) btnText.addEventListener('click', () => this._setModeAndDataset('training', 'text'));
+            if (btnManual) btnManual.addEventListener('click', () => this._setModeAndDataset('manual', null));
 
             // Timeline controls
             const btnPlay = document.getElementById('btn-play');
@@ -879,12 +1068,6 @@
         _setMode(mode) {
             this.state.mode = mode;
 
-            // Update button states
-            const btnTraining = document.getElementById('btn-mode-training');
-            const btnManual = document.getElementById('btn-mode-manual');
-            if (btnTraining) btnTraining.classList.toggle('active', mode === 'training');
-            if (btnManual) btnManual.classList.toggle('active', mode === 'manual');
-
             // Show/hide panels - training controls panel vs manual panel
             const trainingControlsPanel = document.getElementById('training-controls-panel');
             const manualPanel = document.getElementById('manual-panel');
@@ -895,9 +1078,128 @@
             // In manual mode, stop playback
             if (mode === 'manual') {
                 this.timeline.pause();
+                const icon = document.getElementById('play-icon');
+                if (icon) icon.className = 'fa fa-play';
             }
 
             this.render();
+        }
+
+        async _setModeAndDataset(mode, dataset) {
+            // Update button states
+            const btnMnist = document.getElementById('btn-mode-mnist');
+            const btnCifar = document.getElementById('btn-mode-cifar10');
+            const btnText = document.getElementById('btn-mode-text');
+            const btnManual = document.getElementById('btn-mode-manual');
+
+            if (btnMnist) btnMnist.classList.toggle('active', mode === 'training' && dataset === 'mnist');
+            if (btnCifar) btnCifar.classList.toggle('active', mode === 'training' && dataset === 'cifar10');
+            if (btnText) btnText.classList.toggle('active', mode === 'training' && dataset === 'text');
+            if (btnManual) btnManual.classList.toggle('active', mode === 'manual');
+
+            // If switching to a dataset mode, load that dataset
+            if (mode === 'training' && dataset) {
+                await this._switchDataset(dataset);
+            }
+
+            // Set the mode (shows/hides appropriate panels)
+            this._setMode(mode);
+        }
+
+        async _switchDataset(dataset) {
+            if (dataset === this.dataManager.getCurrentDataset()) {
+                return;
+            }
+
+            // Show loading state
+            const loadingOverlay = document.getElementById('loading-overlay');
+            if (loadingOverlay) {
+                loadingOverlay.innerHTML = '<div class="loading-content"><i class="fa fa-spinner fa-spin fa-3x"></i><p>Loading training data...</p></div>';
+                loadingOverlay.style.display = 'flex';
+            }
+
+            // Pause playback
+            this.timeline.pause();
+            const icon = document.getElementById('play-icon');
+            if (icon) {
+                icon.className = 'fa fa-play';
+            }
+
+            try {
+                // Load new dataset
+                await this.dataManager.switchDataset(dataset);
+
+                // Update UI state
+                this._updateDatasetUI(dataset);
+
+                // Set text mode flag for renderers
+                const isTextMode = dataset === 'text';
+                if (this.histogramRenderer) {
+                    this.histogramRenderer.setTextMode(isTextMode);
+                }
+                if (this.galleryRenderer) {
+                    this.galleryRenderer.setTextMode(isTextMode);
+                }
+
+                // Reset timeline
+                const metadata = this.dataManager.getMetadata();
+                if (metadata) {
+                    this.timeline.setEpochs(metadata.snapshotEpochs);
+                    this.timeline.reset();
+                }
+
+                // Update sample gallery
+                if (this.galleryRenderer) {
+                    this.galleryRenderer.setClassLabels(metadata?.classLabels);
+                    this.galleryRenderer.render(this.dataManager.getSamples(), 0);
+                }
+
+                // Reset to first sample at first snapshot
+                this.state.selectedSampleIndex = 0;
+                this.state.currentSnapshotIndex = 0;
+                this._loadSampleAtSnapshot(0, 0);
+
+                // Update class selector for manual mode
+                this._setupClassSelector();
+
+                // Render
+                this.render();
+            } catch (error) {
+                console.error('Failed to switch dataset:', error);
+                // Show error
+                if (loadingOverlay) {
+                    loadingOverlay.innerHTML = '<div class="loading-content"><i class="fa fa-exclamation-triangle fa-3x"></i><p>Failed to load dataset</p></div>';
+                }
+                return;
+            }
+
+            // Hide loading overlay
+            if (loadingOverlay) {
+                loadingOverlay.style.display = 'none';
+            }
+        }
+
+        _updateDatasetUI(dataset) {
+            // Update toggle buttons
+            const btnMnist = document.getElementById('btn-mode-mnist');
+            const btnCifar = document.getElementById('btn-mode-cifar10');
+            const btnText = document.getElementById('btn-mode-text');
+            const btnManual = document.getElementById('btn-mode-manual');
+            if (btnMnist) btnMnist.classList.toggle('active', dataset === 'mnist');
+            if (btnCifar) btnCifar.classList.toggle('active', dataset === 'cifar10');
+            if (btnText) btnText.classList.toggle('active', dataset === 'text');
+            if (btnManual) btnManual.classList.remove('active');
+
+            // Update section title
+            const sampleTitle = document.getElementById('samples-section-title');
+            if (sampleTitle) {
+                const titles = {
+                    mnist: 'MNIST Samples',
+                    cifar10: 'CIFAR-10 Samples',
+                    text: 'Text Contexts'
+                };
+                sampleTitle.textContent = titles[dataset] || 'Samples';
+            }
         }
 
         _onSampleSelect(index) {

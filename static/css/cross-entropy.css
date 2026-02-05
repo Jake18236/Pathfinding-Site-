@@ -167,6 +167,7 @@
     border-color: #fb4934;
 }
 
+
 /* ============================================
    Sample Gallery - Grid in sidebar
    ============================================ */
@@ -203,6 +204,46 @@
     aspect-ratio: 1;
     image-rendering: pixelated;
     display: block;
+}
+
+/* Text mode gallery items */
+.gallery-item-text {
+    min-height: 58px;
+}
+
+.gallery-text {
+    font-size: 9px;
+    padding: 3px 2px;
+    background: var(--viz-hover-bg);
+    border-radius: 2px;
+    text-align: center;
+    word-break: break-word;
+    min-height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1.2;
+    color: var(--viz-text);
+}
+
+.gallery-tokens {
+    font-family: var(--viz-mono-font);
+    font-size: 8px;
+    color: var(--viz-text-muted);
+    text-align: center;
+    padding: 2px 0;
+    background: var(--viz-canvas-bg);
+}
+
+.gallery-item-text .gallery-label {
+    position: static;
+    display: block;
+    margin-top: 2px;
+    background: transparent;
+    font-size: 9px;
+    font-family: var(--viz-mono-font);
+    text-align: center;
+    color: var(--viz-active-border);
 }
 
 .gallery-label {

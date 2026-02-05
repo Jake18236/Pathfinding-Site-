@@ -32,7 +32,7 @@ cardOrder: 11
 <!-- Main Content: 2-column layout -->
 <div class="row" id="main-content">
     <!-- Left Column: Histogram -->
-    <div class="col-md-7">
+    <div class="col-md-8">
         <div class="panel panel-default">
             <!-- Header with mode toggle and loss badge -->
             <div class="panel-heading">
@@ -40,11 +40,17 @@ cardOrder: 11
                     <span class="panel-title-text"><i class="fa fa-bar-chart"></i> Distribution Comparison</span>
                     <div class="header-controls">
                         <div class="btn-group btn-group-sm mode-toggle" role="group">
-                            <button type="button" class="btn btn-default active" id="btn-mode-training">
-                                <i class="fa fa-graduation-cap"></i> Training
+                            <button type="button" class="btn btn-default active" id="btn-mode-mnist">
+                                MNIST
+                            </button>
+                            <button type="button" class="btn btn-default" id="btn-mode-cifar10">
+                                CIFAR-10
+                            </button>
+                            <button type="button" class="btn btn-default" id="btn-mode-text">
+                                Text
                             </button>
                             <button type="button" class="btn btn-default" id="btn-mode-manual">
-                                <i class="fa fa-hand-paper-o"></i> Manual
+                                Manual
                             </button>
                         </div>
                         <span class="loss-badge" id="loss-value">L = 2.302</span>
@@ -68,7 +74,7 @@ cardOrder: 11
     </div>
 
     <!-- Right Column: Tabs -->
-    <div class="col-md-5">
+    <div class="col-md-4">
         <div class="panel panel-default panel-full-height">
             <div class="panel-heading">
                 <ul class="nav nav-tabs panel-tabs">
@@ -83,7 +89,7 @@ cardOrder: 11
                     <div class="tab-pane active" id="tab-controls">
                         <!-- Training Mode Controls -->
                         <div id="training-controls-panel">
-                            <h4><i class="fa fa-th"></i> MNIST Samples</h4>
+                            <h4><i class="fa fa-th"></i> <span id="samples-section-title">MNIST Samples</span></h4>
                             <div class="sample-gallery-grid" id="sample-gallery">
                                 <!-- Filled dynamically -->
                             </div>
