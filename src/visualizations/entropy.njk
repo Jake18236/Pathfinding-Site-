@@ -1,0 +1,241 @@
+---
+layout: base.njk
+title: Shannon Entropy Visualizer
+icon: fa-chart-pie
+navigation:
+  - name: "Home"
+    link: "index.html"
+    icon: "fa-home"
+permalink: "entropy.html"
+extraScript: "static/js/entropy.js"
+tags: visualization
+cardTitle: "Shannon Entropy"
+cardIcon: fa-chart-pie
+cardDescription: "Explore information theory fundamentals. Adjust probability distributions and visualize how entropy measures uncertainty."
+cardTags:
+  - Information Theory
+  - Probability
+cardHaystack: "shannon entropy information theory bits uncertainty probability distribution surprise"
+cardOrder: 10
+---
+
+{% from "components/legend.njk" import legend %}
+
+<link rel="stylesheet" href="static/css/entropy.css">
+
+<!-- Main Content: Canvas (left) + Info (right) -->
+<div class="row" id="main-content">
+    <!-- Left Column: Visualization + Controls -->
+    <div class="col-md-7">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <div class="panel-heading-content">
+                    <span class="panel-title-text"><i class="fa fa-chart-bar"></i> Probability Distribution</span>
+                    <span class="entropy-badge" id="entropy-value">H = 1.000 bits</span>
+                </div>
+            </div>
+            <div class="panel-body canvas-panel-body">
+                <div class="canvas-wrapper">
+                    <canvas id="entropy-canvas" width="560" height="400"></canvas>
+                </div>
+            </div>
+            <div class="panel-footer entropy-footer">
+                <span id="sum-indicator" class="sum-indicator valid">Sum: 100.0%</span>
+                <span class="entropy-hint"><i class="fa fa-hand-pointer-o"></i> Drag bars to adjust probabilities</span>
+            </div>
+        </div>
+
+        <!-- Huffman Encoding Panel (hidden by default) -->
+        <div id="encoding-panel" class="panel panel-default" style="display: none;">
+            <div class="panel-heading">
+                <div class="panel-heading-content">
+                    <span class="panel-title-text"><i class="fa fa-code"></i> Huffman Encoding</span>
+                    <span class="encoding-avg">Avg: <strong id="avg-code-length">-</strong></span>
+                </div>
+            </div>
+            <div class="panel-body compact-panel">
+                <div id="encoding-table"></div>
+            </div>
+        </div>
+
+        <!-- Controls Panel -->
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title"><i class="fa fa-sliders"></i> Controls</h3>
+            </div>
+            <div class="panel-body compact-panel entropy-controls-panel">
+                <!-- Left: Preset & Outcomes -->
+                <div class="entropy-options-col">
+                    <div class="entropy-option-group">
+                        <div class="option-row">
+                            <label>Preset:</label>
+                            <select id="preset-select" class="form-control input-sm">
+                                <option value="fairCoin" selected>Fair Coin</option>
+                                <option value="biasedCoin">Biased Coin (90/10)</option>
+                                <option value="fairDie">Fair Die</option>
+                                <option value="loadedDie">Loaded Die</option>
+                                <option value="custom">Custom</option>
+                            </select>
+                        </div>
+                        <div class="option-row">
+                            <label>Outcomes:</label>
+                            <div class="entropy-stepper">
+                                <button id="btn-remove-outcome" class="btn btn-xs btn-default" title="Remove outcome">−</button>
+                                <span id="outcome-count" class="outcome-count-display">2</span>
+                                <button id="btn-add-outcome" class="btn btn-xs btn-default" title="Add outcome">+</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Middle: Options -->
+                <div class="entropy-options-col">
+                    <label class="checkbox-label" title="When enabled, dragging one bar auto-adjusts others to keep sum at 100%">
+                        <input type="checkbox" id="link-probabilities" checked> Link probabilities
+                    </label>
+                    <label class="checkbox-label" title="Show Huffman encoding for this distribution">
+                        <input type="checkbox" id="show-encoding"> Show Huffman codes
+                    </label>
+                </div>
+                <!-- Right: Actions -->
+                <div class="entropy-actions-col">
+                    <button id="btn-normalize" class="btn btn-sm btn-default" title="Scale probabilities to sum to 100%">
+                        <i class="fa fa-balance-scale"></i> Normalize
+                    </button>
+                    <button id="btn-uniform" class="btn btn-sm btn-default" title="Make all probabilities equal">
+                        <i class="fa fa-equals"></i> Uniform
+                    </button>
+                    <button id="btn-reset" class="btn btn-sm btn-default" title="Reset to preset">
+                        <i class="fa fa-refresh"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Right Column: Tabbed Info -->
+    <div class="col-md-5">
+        <div class="panel panel-default panel-full-height">
+            <div class="panel-heading">
+                <ul class="nav nav-tabs panel-tabs">
+                    <li class="active"><a href="#tab-about" data-toggle="tab"><i class="fa fa-info-circle"></i> About</a></li>
+                    <li><a href="#tab-algorithm" data-toggle="tab"><i class="fa fa-book"></i> Algorithm</a></li>
+                    <li><a href="#tab-math" data-toggle="tab"><i class="fa fa-calculator"></i> Math</a></li>
+                    <li><a href="#tab-sampling" data-toggle="tab"><i class="fa fa-random"></i> Sampling</a></li>
+                </ul>
+            </div>
+            <div class="panel-body">
+                <div class="tab-content">
+                    <!-- About Tab -->
+                    <div class="tab-pane active" id="tab-about">
+                        <h4><i class="fa fa-chart-pie"></i> What is Shannon Entropy?</h4>
+                        <p>
+                            <strong>Shannon Entropy</strong> measures the average "surprise" or uncertainty
+                            in a probability distribution. Named after Claude Shannon, the founder of
+                            information theory.
+                        </p>
+                        <h4><i class="fa fa-key"></i> Key Intuitions</h4>
+                        <ul class="interaction-list">
+                            <li><strong>Uncertainty</strong>: Higher entropy = more uncertainty about outcomes</li>
+                            <li><strong>Bits</strong>: Entropy tells you minimum bits needed to encode messages</li>
+                            <li><strong>Fair coin</strong>: Maximum uncertainty for 2 outcomes = 1 bit</li>
+                            <li><strong>Certain outcome</strong>: One bar at 100% = 0 bits (no surprise)</li>
+                        </ul>
+                        <h4><i class="fa fa-mouse-pointer"></i> How to Use</h4>
+                        <ul class="interaction-list">
+                            <li><strong>Drag bars</strong> up/down to adjust probabilities</li>
+                            <li><strong>Select presets</strong> to see classic examples</li>
+                            <li><strong>Add outcomes</strong> to explore more complex distributions</li>
+                            <li><strong>Normalize</strong> to fix probabilities that don't sum to 100%</li>
+                        </ul>
+                    </div>
+
+                    <!-- Algorithm Tab -->
+                    <div class="tab-pane" id="tab-algorithm">
+                        <h4><i class="fa fa-cogs"></i> Computing Entropy</h4>
+                        <ol class="algorithm-steps">
+                            <li>For each outcome i with probability p<sub>i</sub></li>
+                            <li>Calculate "surprise": -log<sub>2</sub>(p<sub>i</sub>)</li>
+                            <li>Weight by probability: p<sub>i</sub> × surprise</li>
+                            <li>Sum all weighted surprises</li>
+                        </ol>
+                        <div class="pseudocode-container">
+                            <pre class="pseudocode"><code><span class="line"><span class="keyword">function</span> <span class="function">entropy</span>(probabilities):</span>
+<span class="line">    H = <span class="number">0</span></span>
+<span class="line">    <span class="keyword">for</span> p <span class="keyword">in</span> probabilities:</span>
+<span class="line">        <span class="keyword">if</span> p <span class="operator">></span> <span class="number">0</span>:</span>
+<span class="line">            H <span class="operator">-=</span> p <span class="operator">*</span> <span class="function">log2</span>(p)</span>
+<span class="line">    <span class="keyword">return</span> H</span></code></pre>
+                        </div>
+                        <h4><i class="fa fa-question-circle"></i> Why log<sub>2</sub>?</h4>
+                        <p>
+                            Using base 2 gives units in <strong>bits</strong>. A fair coin flip
+                            has 1 bit of entropy - you need exactly 1 binary digit to encode heads/tails.
+                        </p>
+                        <h4><i class="fa fa-exclamation-circle"></i> Surprise / Self-Information</h4>
+                        <p>
+                            The "surprise" of seeing outcome x is <code>-log<sub>2</sub>(p(x))</code>.
+                            Rare events are more surprising. Entropy is the <em>expected</em> surprise.
+                        </p>
+                    </div>
+
+                    <!-- Math Tab -->
+                    <div class="tab-pane" id="tab-math">
+                        <h4><i class="fa fa-superscript"></i> The Shannon Entropy Formula</h4>
+                        <div class="math-formula-display">
+                            <code>H(X) = -Σ p(x) log<sub>2</sub> p(x)</code>
+                        </div>
+                        <h4><i class="fa fa-calculator"></i> Current Calculation</h4>
+                        <div id="entropy-math-breakdown">
+                            <div class="list-empty">Adjust the distribution to see calculations</div>
+                        </div>
+                        <h4><i class="fa fa-list"></i> Properties</h4>
+                        <ul class="formula-list">
+                            <li><strong>Non-negative</strong>: H(X) ≥ 0 always</li>
+                            <li><strong>Maximum</strong>: H(X) ≤ log<sub>2</sub>(n) for n outcomes</li>
+                            <li><strong>Achieved when</strong>: uniform distribution (all p equal)</li>
+                            <li><strong>Zero when</strong>: one outcome has p = 1 (certainty)</li>
+                        </ul>
+                    </div>
+
+                    <!-- Sampling Tab -->
+                    <div class="tab-pane" id="tab-sampling">
+                        <h4><i class="fa fa-random"></i> Sample from Distribution</h4>
+                        <p class="sampling-intro">
+                            Draw random samples from the current distribution to see "surprise" values.
+                            With many samples, the average surprise approaches the entropy!
+                        </p>
+                        <div class="sampling-controls">
+                            <button id="btn-sample-one" class="btn btn-sm btn-primary" title="Draw one random sample">
+                                <i class="fa fa-dice"></i> Sample Once
+                            </button>
+                            <button id="btn-sample-many" class="btn btn-sm btn-default" title="Draw 100 random samples">
+                                <i class="fa fa-forward"></i> Sample 100x
+                            </button>
+                            <button id="btn-clear-samples" class="btn btn-sm btn-default" title="Clear all samples">
+                                <i class="fa fa-trash"></i> Clear
+                            </button>
+                        </div>
+                        <div class="sampling-results">
+                            <div class="last-sample">
+                                <span>Last: <strong id="sample-outcome">-</strong></span>
+                                <span>Surprise: <strong id="sample-surprise">-</strong> bits</span>
+                            </div>
+                            <div class="sample-histogram" id="sample-histogram">
+                                <div class="histogram-empty">No samples yet. Click "Sample" to begin.</div>
+                            </div>
+                            <div class="sample-stats">
+                                <span>Total Samples: <strong id="sample-count">0</strong></span>
+                                <span>Avg Surprise: <strong id="avg-surprise">-</strong></span>
+                            </div>
+                        </div>
+                        <div class="sampling-insight">
+                            <i class="fa fa-lightbulb-o"></i>
+                            <strong>Insight:</strong> As you collect more samples, the average surprise
+                            converges to the entropy H(X). This is the <em>law of large numbers</em> in action!
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
