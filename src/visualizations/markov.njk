@@ -1,0 +1,278 @@
+---
+layout: base.njk
+title: Markov Models Visualizer
+icon: fa-random
+navigation:
+  - name: "Home"
+    link: "index.html"
+    icon: "fa-home"
+permalink: "markov.html"
+extraScript: "static/js/markov.js"
+tags: visualization
+cardTitle: "Markov Models & HMM"
+cardIcon: fa-random
+cardDescription: "Explore Markov chains and Hidden Markov Models with interactive state diagrams, transition matrices, and the Viterbi algorithm."
+cardTags:
+  - Probabilistic
+  - Sequences
+cardHaystack: "markov chain hidden markov model hmm viterbi transition matrix state diagram sequence probability"
+cardOrder: 21
+---
+
+{% from "components/legend.njk" import legend %}
+{% from "components/info-tabs.njk" import infoTabs %}
+{% from "components/metrics-panel.njk" import metricsPanel %}
+
+<link rel="stylesheet" href="static/css/markov.css">
+
+<div class="row" id="main-content">
+    {% include "components/share-button.njk" %}
+    <!-- Left Column: State Diagram + Transition Matrix + Controls -->
+    <div class="col-md-7">
+        <!-- State Diagram Panel -->
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <div class="panel-heading-content">
+                    <span class="panel-title-text"><i class="fa fa-random"></i> State Diagram</span>
+                    <span class="viz-badge markov-mode-badge" id="mode-badge">Markov Chain</span>
+                </div>
+            </div>
+            <div class="panel-body canvas-panel-body">
+                <div class="canvas-wrapper">
+                    <canvas id="markov-canvas" width="560" height="350"></canvas>
+                </div>
+            </div>
+            <div class="panel-footer legend-footer">
+                {{ legend(
+                    items=[
+                        {class: 'markov-state-default', label: 'State'},
+                        {class: 'markov-state-current', label: 'Current'},
+                        {class: 'markov-state-visited', label: 'Visited'},
+                        {class: 'markov-transition', label: 'Transition', type: 'line'}
+                    ]
+                ) }}
+            </div>
+        </div>
+
+        <!-- Transition Matrix Panel -->
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title"><i class="fa fa-table"></i> Transition Matrix</h3>
+            </div>
+            <div class="panel-body compact-panel">
+                <div id="matrix-container" class="matrix-container">
+                    <p class="text-muted text-center" style="font-size: 12px;">
+                        Select a model to see transition probabilities.
+                    </p>
+                </div>
+                <div id="emission-container" class="emission-container" style="display: none;">
+                    <h5 class="emission-title"><i class="fa fa-eye"></i> Emission Probabilities</h5>
+                    <div id="emission-matrix"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Controls Panel -->
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title"><i class="fa fa-sliders"></i> Controls</h3>
+            </div>
+            <div class="panel-body compact-panel markov-controls-panel">
+                <div class="markov-options-col">
+                    <div class="option-row">
+                        <label>Model:</label>
+                        <select id="model-select" class="form-control input-sm">
+                            <option value="weather" selected>Weather (Sunny/Rainy/Cloudy)</option>
+                            <option value="text">Text (Simple Words)</option>
+                            <option value="custom">Custom (3-State)</option>
+                        </select>
+                    </div>
+                    <div class="option-row">
+                        <label>Mode:</label>
+                        <select id="mode-select" class="form-control input-sm">
+                            <option value="mc" selected>Markov Chain</option>
+                            <option value="hmm">Hidden Markov Model</option>
+                        </select>
+                    </div>
+                    <div class="option-row">
+                        <label>Sequence Length:</label>
+                        <div class="stepper-control">
+                            <button id="seqlen-dec" class="btn btn-xs btn-default"><i class="fa fa-minus"></i></button>
+                            <span id="seqlen-value">10</span>
+                            <button id="seqlen-inc" class="btn btn-xs btn-default"><i class="fa fa-plus"></i></button>
+                        </div>
+                    </div>
+                </div>
+                <div class="markov-playback-col">
+                    <div class="btn-toolbar" role="toolbar">
+                        <button id="btn-generate" class="btn btn-sm btn-success" title="Generate sequence">
+                            <i class="fa fa-play"></i> Generate
+                        </button>
+                        <button id="btn-viterbi" class="btn btn-sm btn-primary" title="Run Viterbi (HMM mode)" disabled>
+                            <i class="fa fa-search"></i> Viterbi
+                        </button>
+                        <button id="btn-step" class="btn btn-sm btn-info" title="Step through sequence">
+                            <i class="fa fa-step-forward"></i> Step
+                        </button>
+                        <button id="btn-reset" class="btn btn-sm btn-danger" title="Reset">
+                            <i class="fa fa-refresh"></i> Reset
+                        </button>
+                    </div>
+                    <div class="speed-control">
+                        <i class="fa fa-tachometer"></i>
+                        <input type="range" id="speed-slider" min="1" max="10" value="5">
+                        <span id="speed-value" class="range-value">5</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Right Column: Info + Metrics + Sequence -->
+    <div class="col-md-5">
+        {% set aboutContent %}
+            <h4><i class="fa fa-random"></i> Markov Models</h4>
+            <p>
+                A <strong>Markov chain</strong> is a stochastic process where the next state depends
+                only on the current state (the <em>Markov property</em>). This "memorylessness" makes
+                them tractable yet powerful for modeling sequential data.
+            </p>
+            <h4><i class="fa fa-eye-slash"></i> Hidden Markov Models</h4>
+            <p>
+                A <strong>Hidden Markov Model (HMM)</strong> extends Markov chains by adding
+                <em>hidden states</em> that are not directly observable. Instead, each hidden state
+                produces an <em>emission</em> (observation) with some probability. The challenge
+                is to infer the hidden state sequence from observations.
+            </p>
+            <h4><i class="fa fa-mouse-pointer"></i> How to Use</h4>
+            <ul class="interaction-list">
+                <li><strong>Select a model</strong> preset or edit the transition matrix directly</li>
+                <li><strong>Generate</strong> a random sequence using the Markov chain</li>
+                <li><strong>Step</strong> through the sequence to see transitions animate</li>
+                <li><strong>Switch to HMM mode</strong> to see hidden states and emissions</li>
+                <li><strong>Run Viterbi</strong> to find the most likely hidden state sequence</li>
+            </ul>
+        {% endset %}
+
+        {% set algorithmContent %}
+            <h4><i class="fa fa-cogs"></i> Markov Chain Generation</h4>
+            <ol class="algorithm-steps">
+                <li>Start at an initial state s<sub>0</sub></li>
+                <li>Sample next state from transition distribution P(s<sub>t+1</sub> | s<sub>t</sub>)</li>
+                <li>Repeat for desired sequence length</li>
+            </ol>
+            <div class="pseudocode-container">
+                <pre class="pseudocode"><code><span class="line"><span class="keyword">function</span> <span class="function">generateSequence</span>(start, length):</span>
+<span class="line">    seq = [start]</span>
+<span class="line">    <span class="keyword">for</span> t = 1 <span class="keyword">to</span> length:</span>
+<span class="line">        s = seq[t-1]</span>
+<span class="line">        next = <span class="function">sample</span>(transitions[s])</span>
+<span class="line">        seq.<span class="function">append</span>(next)</span>
+<span class="line">    <span class="keyword">return</span> seq</span></code></pre>
+            </div>
+            <h4><i class="fa fa-search"></i> Viterbi Algorithm</h4>
+            <p>
+                The <strong>Viterbi algorithm</strong> finds the most likely sequence of hidden
+                states given a sequence of observations. It uses dynamic programming to avoid
+                exponential search.
+            </p>
+            <div class="pseudocode-container">
+                <pre class="pseudocode"><code><span class="line"><span class="keyword">function</span> <span class="function">viterbi</span>(observations, model):</span>
+<span class="line">    <span class="comment">// Initialize</span></span>
+<span class="line">    <span class="keyword">for</span> each state s:</span>
+<span class="line">        V[0][s] = &pi;(s) &times; B(s, obs[0])</span>
+<span class="line">    <span class="comment">// Recurse</span></span>
+<span class="line">    <span class="keyword">for</span> t = 1 <span class="keyword">to</span> T:</span>
+<span class="line">        <span class="keyword">for</span> each state s:</span>
+<span class="line">            V[t][s] = max<sub>s'</sub> V[t-1][s'] &times; A(s',s) &times; B(s, obs[t])</span>
+<span class="line">            ptr[t][s] = argmax<sub>s'</sub> V[t-1][s'] &times; A(s',s)</span>
+<span class="line">    <span class="comment">// Backtrace</span></span>
+<span class="line">    <span class="keyword">return</span> <span class="function">backtrace</span>(ptr, V)</span></code></pre>
+            </div>
+        {% endset %}
+
+        {% set mathContent %}
+            <h4><i class="fa fa-superscript"></i> Transition Probability</h4>
+            <div class="math-formula-display">
+                <code>P(s<sub>t+1</sub> = j | s<sub>t</sub> = i) = A<sub>ij</sub></code>
+            </div>
+            <p>
+                The transition matrix <strong>A</strong> where A<sub>ij</sub> is the probability
+                of moving from state i to state j. Each row sums to 1.
+            </p>
+            <h4><i class="fa fa-eye"></i> HMM Emission Probability</h4>
+            <div class="math-formula-display">
+                <code>P(o<sub>t</sub> = k | s<sub>t</sub> = j) = B<sub>jk</sub></code>
+            </div>
+            <h4><i class="fa fa-calculator"></i> Viterbi Recursion</h4>
+            <div class="math-formula-display">
+                <code>V<sub>t</sub>(j) = max<sub>i</sub> [ V<sub>t-1</sub>(i) &times; A<sub>ij</sub> ] &times; B<sub>j</sub>(o<sub>t</sub>)</code>
+            </div>
+            <ul class="formula-list">
+                <li><strong>A<sub>ij</sub></strong> &mdash; Transition probability from state i to j</li>
+                <li><strong>B<sub>j</sub>(o)</strong> &mdash; Emission probability of observing o in state j</li>
+                <li><strong>&pi;(i)</strong> &mdash; Initial state probability</li>
+                <li><strong>V<sub>t</sub>(j)</strong> &mdash; Probability of the most likely path ending in state j at time t</li>
+            </ul>
+            <h4><i class="fa fa-forward"></i> Forward Algorithm</h4>
+            <div class="math-formula-display">
+                <code>&alpha;<sub>t</sub>(j) = [ &Sigma;<sub>i</sub> &alpha;<sub>t-1</sub>(i) &times; A<sub>ij</sub> ] &times; B<sub>j</sub>(o<sub>t</sub>)</code>
+            </div>
+            <p class="formula-note">
+                The forward algorithm computes the total probability of an observation
+                sequence, summing over all possible state paths.
+            </p>
+        {% endset %}
+
+        {{ infoTabs(
+            variant='nav-tabs',
+            panelClass='panel-full-height',
+            tabs=[
+                {id: 'about', icon: 'fa-info-circle', label: 'About', active: true, content: aboutContent},
+                {id: 'algorithm', icon: 'fa-book', label: 'Algorithm', content: algorithmContent},
+                {id: 'math', icon: 'fa-calculator', label: 'Math', content: mathContent}
+            ]
+        ) }}
+
+        {{ metricsPanel(
+            title='Model Metrics',
+            icon='fa-bar-chart',
+            metrics=[
+                {icon: 'fa-circle', label: 'States', id: 'metric-states', default: '3'},
+                {icon: 'fa-map-marker', label: 'Current State', id: 'metric-current', default: '-'},
+                {icon: 'fa-hashtag', label: 'Step', id: 'metric-step', default: '0'},
+                {icon: 'fa-arrows-h', label: 'Sequence Length', id: 'metric-seqlen', default: '10'},
+                {icon: 'fa-percent', label: 'Path Probability', id: 'metric-prob', default: '-'},
+                {icon: 'fa-info-circle', label: 'Status', id: 'metric-status', default: 'Ready'}
+            ]
+        ) }}
+
+        <!-- Generated Sequence Display -->
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title"><i class="fa fa-list"></i> Generated Sequence</h3>
+            </div>
+            <div class="panel-body compact-panel">
+                <div id="sequence-display" class="sequence-display">
+                    <p class="text-muted text-center" style="font-size: 12px;">
+                        Click "Generate" to create a sequence.
+                    </p>
+                </div>
+                <div id="hmm-display" class="hmm-display" style="display: none;">
+                    <div class="hmm-row">
+                        <span class="hmm-label">Hidden:</span>
+                        <div id="hidden-sequence" class="sequence-strip"></div>
+                    </div>
+                    <div class="hmm-row">
+                        <span class="hmm-label">Observed:</span>
+                        <div id="observed-sequence" class="sequence-strip"></div>
+                    </div>
+                    <div id="viterbi-row" class="hmm-row" style="display: none;">
+                        <span class="hmm-label">Viterbi:</span>
+                        <div id="viterbi-sequence" class="sequence-strip"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
