@@ -12,7 +12,6 @@ module.exports = {
     { name: "Courses", link: "#courses", icon: "fa-chalkboard-user" },
     { name: "Visualizations", link: "#visualizations", icon: "fa-chart-line" },
     { name: "Learning", link: "#learning", icon: "fa-brain" },
-    { name: "Library", link: "#library", icon: "fa-book" },
-    { name: "Musings", link: "#musings", icon: "fa-pen-nib" }
+    { name: "Library", link: "#library", icon: "fa-book" }
   ]
 };

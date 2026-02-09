@@ -4,6 +4,7 @@
     {% set icon_class = item.type | typeIcon %}
     {% set is_tweet = item.type == 'tweet' or item.type == 'thread' %}
     {% set is_video = item.type == 'video' %}
+    {% set is_essay = item.type == 'essay' %}
     {% set raw_type = item.type | default('') | trim %}
     {% set display_type = raw_type | replace('_', ' ') | title if raw_type else 'Resource' %}
     {% set search_blob = (display_name + ' ' + (item.author | default('')) + ' ' + display_type + ' ' + (item.notes | default(''))) | lower %}
@@ -20,7 +21,7 @@
                 <div class="learning-card-title-group">
                     <h4 class="learning-card-title">
                         {% if item.link and not is_tweet %}
-                            <a href="{{ item.link }}" target="_blank" rel="noopener">{{ display_name }}</a>
+                            <a href="{{ item.link }}" {% if not is_essay %}target="_blank" rel="noopener"{% endif %}>{{ display_name }}</a>
                         {% elif is_tweet %}
                             {{ tweet_title }}
                         {% else %}
@@ -39,6 +40,13 @@
                         <div class="learning-card-play-overlay">
                             <i class="fa-solid fa-play"></i>
                         </div>
+                    </a>
+                </div>
+            {% endif %}
+            {% if is_essay and item.figure %}
+                <div class="learning-card-thumbnail">
+                    <a href="{{ item.link }}">
+                        <img src="{{ item.figure }}" alt="{{ display_name }} teaser" loading="lazy">
                     </a>
                 </div>
             {% endif %}
@@ -63,6 +71,9 @@
             {% endif %}
             <div class="learning-card-footer">
                 <span class="learning-card-type">{{ display_type }}</span>
+                {% if is_essay and item.languages and item.languages.length > 1 %}
+                    <span class="musing-card-lang"><i class="fa-solid fa-language"></i> {% for lang in item.languages %}{{ lang.label }}{% if not loop.last %} / {% endif %}{% endfor %}</span>
+                {% endif %}
                 {% if is_tweet and item.link %}
                     <a href="{{ item.link }}" target="_blank" rel="noopener" class="learning-card-link" title="View on X">
                         <i class="fa-brands fa-x-twitter"></i>
@@ -90,9 +101,13 @@
     </p>
 </div>
 
-{# Filter learning resources and sort by date #}
+{# Filter learning resources, merge in musings as essays, and sort by date #}
 {% set learning_entries = resources | filterLearning %}
-{% set sorted_learning = learning_entries | sortByKey('date_added_sort_key', true) %}
+{% set musing_entries = collections.musings | musingsAsLearning %}
+{% set all_entries = [] %}
+{% for item in learning_entries %}{% set _ = all_entries.push(item) %}{% endfor %}
+{% for item in musing_entries %}{% set _ = all_entries.push(item) %}{% endfor %}
+{% set sorted_learning = all_entries | sortByKey('date_added_sort_key', true) %}
 {% set current_year = '' | currentYear %}
 
 {% if sorted_learning | length > 0 %}

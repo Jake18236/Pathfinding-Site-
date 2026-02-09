@@ -96,6 +96,30 @@ module.exports = function(eleventyConfig) {
     return results;
   });
 
+  // Convert musings collection items into learning-card-compatible objects
+  eleventyConfig.addFilter("musingsAsLearning", function(musings) {
+    if (!musings || !Array.isArray(musings)) return [];
+    const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+    return musings.map(item => {
+      const d = item.data.date ? new Date(item.data.date) : null;
+      const entry = {
+        name: item.data.title || 'Untitled',
+        type: 'essay',
+        link: item.url,
+        author: item.data.author || '',
+        notes: item.data.summary || '',
+        figure: item.data.figure || '',
+        languages: item.data.languages || []
+      };
+      if (d && !isNaN(d)) {
+        entry.date_added_display = `${months[d.getMonth()]} ${d.getDate()}, ${d.getFullYear()}`;
+        entry.date_added_sort_key = d.toISOString().slice(0, 10);
+        entry.date_added_year = d.getFullYear().toString();
+      }
+      return entry;
+    });
+  });
+
   // Current year filter
   eleventyConfig.addFilter("currentYear", function() {
     return new Date().getFullYear();
@@ -149,7 +173,7 @@ module.exports = function(eleventyConfig) {
     'blogpost': 'fa-solid fa-share-alt',
     'tweet': 'fa-brands fa-square-x-twitter',
     'paper': 'fa-solid fa-file-pdf',
-    'essay': 'fa-solid fa-file-pdf'
+    'essay': 'fa-solid fa-pen-nib'
   };
 
   eleventyConfig.addFilter("typeIcon", function(type) {
