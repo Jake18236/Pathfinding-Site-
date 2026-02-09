@@ -14,17 +14,6 @@
     font-size: 14px;
 }
 
-/* ============================================
-   Panel Header with Flex Layout
-   ============================================ */
-.panel-heading-flex {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    flex-wrap: wrap;
-    gap: 10px;
-}
-
 .header-controls {
     display: flex;
     align-items: center;
@@ -346,26 +335,6 @@
 .interaction-list li,
 .formula-list li {
     margin-bottom: 6px;
-}
-
-.math-formula-display {
-    text-align: center;
-    padding: 12px;
-    margin-bottom: 12px;
-    background: var(--viz-hover-bg);
-    border-radius: 4px;
-}
-
-.math-formula-display code {
-    font-size: 15px;
-    background: transparent;
-}
-
-.formula-note {
-    font-size: 12px;
-    color: var(--viz-text-muted);
-    text-align: center;
-    margin-bottom: 10px;
 }
 
 /* ============================================

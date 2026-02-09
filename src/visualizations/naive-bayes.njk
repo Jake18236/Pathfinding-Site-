@@ -1,0 +1,252 @@
+---
+layout: base.njk
+title: Naive Bayes Classifier Visualizer
+icon: fa-envelope
+navigation:
+  - name: "Home"
+    link: "index.html"
+    icon: "fa-home"
+permalink: "naive-bayes.html"
+extraScript: "static/js/naive-bayes.js"
+tags: visualization
+cardTitle: "Naive Bayes Classifier"
+cardIcon: fa-envelope
+cardDescription: "Classify text as spam or ham using Naive Bayes. See word probabilities, prior vs posterior, and Laplace smoothing in action."
+cardTags:
+  - Classification
+  - Probabilistic
+cardHaystack: "naive bayes classifier spam ham text classification prior posterior laplace smoothing probability"
+cardOrder: 25
+---
+
+{% from "components/legend.njk" import legend %}
+{% from "components/info-tabs.njk" import infoTabs %}
+{% from "components/metrics-panel.njk" import metricsPanel %}
+
+<link rel="stylesheet" href="static/css/naive-bayes.css">
+
+<div class="row" id="main-content">
+    {% include "components/share-button.njk" %}
+    <!-- Left Column: Classification + Word Table + Training Data -->
+    <div class="col-md-7">
+        <!-- Classification Panel -->
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <div class="panel-heading-content">
+                    <span class="panel-title-text"><i class="fa fa-envelope"></i> Classify Message</span>
+                    <span class="viz-badge result-badge" id="result-badge">Ready</span>
+                </div>
+            </div>
+            <div class="panel-body">
+                <div class="classify-input-group">
+                    <textarea id="message-input" class="form-control nb-textarea" rows="2" placeholder="Type a message to classify (e.g. 'You won a free prize! Click now')"></textarea>
+                    <button id="btn-classify" class="btn btn-sm btn-success nb-classify-btn">
+                        <i class="fa fa-play"></i> Classify
+                    </button>
+                </div>
+
+                <!-- Result Bars -->
+                <div id="result-display" class="result-display" style="display: none;">
+                    <div class="result-bar-group">
+                        <div class="result-label">
+                            <span class="result-class spam-label"><i class="fa fa-ban"></i> Spam</span>
+                            <span class="result-prob" id="spam-prob">0%</span>
+                        </div>
+                        <div class="result-bar-track">
+                            <div class="result-bar spam-bar" id="spam-bar" style="width: 0%"></div>
+                        </div>
+                    </div>
+                    <div class="result-bar-group">
+                        <div class="result-label">
+                            <span class="result-class ham-label"><i class="fa fa-check"></i> Ham</span>
+                            <span class="result-prob" id="ham-prob">0%</span>
+                        </div>
+                        <div class="result-bar-track">
+                            <div class="result-bar ham-bar" id="ham-bar" style="width: 0%"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Prior/Posterior Canvas -->
+                <div id="prior-posterior-section" class="prior-posterior-section" style="display: none;">
+                    <div class="prior-posterior-header">
+                        <span class="section-label"><i class="fa fa-chart-bar"></i> Prior &rarr; Posterior Update</span>
+                    </div>
+                    <canvas id="prior-posterior-canvas" width="500" height="100"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Word Probabilities Table -->
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <div class="panel-heading-content">
+                    <span class="panel-title-text"><i class="fa fa-table"></i> Word Probabilities</span>
+                    <span class="badge word-count-badge" id="word-count-badge">0 words</span>
+                </div>
+            </div>
+            <div class="panel-body compact-panel">
+                <div class="word-table-wrapper">
+                    <table class="table table-condensed table-striped word-prob-table" id="word-prob-table">
+                        <thead>
+                            <tr>
+                                <th class="sortable" data-sort="word">Word <i class="fa fa-sort"></i></th>
+                                <th class="sortable" data-sort="pSpam">P(w|Spam) <i class="fa fa-sort"></i></th>
+                                <th class="sortable" data-sort="pHam">P(w|Ham) <i class="fa fa-sort"></i></th>
+                                <th class="sortable" data-sort="ratio">Log LR <i class="fa fa-sort"></i></th>
+                            </tr>
+                        </thead>
+                        <tbody id="word-prob-tbody">
+                            <tr><td colspan="4" class="text-center text-muted">Classify a message to see word probabilities</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Training Data Panel -->
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <div class="panel-heading-content">
+                    <span class="panel-title-text"><i class="fa fa-database"></i> Training Data</span>
+                    <button class="btn btn-xs btn-default" id="btn-toggle-training" title="Toggle training data">
+                        <i class="fa fa-chevron-down" id="training-toggle-icon"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="panel-body compact-panel" id="training-panel" style="display: none;">
+                <div class="training-list-wrapper">
+                    <div id="training-list" class="training-list">
+                        <!-- Filled dynamically -->
+                    </div>
+                </div>
+                <div class="add-training-section">
+                    <h5><i class="fa fa-plus-circle"></i> Add Training Example</h5>
+                    <div class="add-training-row">
+                        <textarea id="new-training-text" class="form-control input-sm" rows="1" placeholder="Enter new training message..."></textarea>
+                        <div class="add-training-controls">
+                            <select id="new-training-class" class="form-control input-sm">
+                                <option value="spam">Spam</option>
+                                <option value="ham">Ham</option>
+                            </select>
+                            <button id="btn-add-training" class="btn btn-xs btn-success" title="Add example">
+                                <i class="fa fa-plus"></i> Add
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Controls Panel -->
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title"><i class="fa fa-sliders"></i> Controls</h3>
+            </div>
+            <div class="panel-body compact-panel nb-controls-panel">
+                <div class="nb-options-col">
+                    <div class="option-row">
+                        <label>Laplace Smoothing (&alpha;):</label>
+                        <input type="range" id="alpha-slider" min="0" max="2" step="0.1" value="1">
+                        <span id="alpha-value" class="range-value">1.0</span>
+                    </div>
+                    <label class="checkbox-label"><input type="checkbox" id="show-log-probs"> Show log probabilities</label>
+                </div>
+                <div class="nb-actions-col">
+                    <button id="btn-reset" class="btn btn-sm btn-danger" title="Reset to default training data">
+                        <i class="fa fa-refresh"></i> Reset
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Right Column: Info Tabs + Metrics -->
+    <div class="col-md-5">
+        {{ infoTabs(
+            tabs=[
+                {id: 'about', icon: 'fa-info-circle', label: 'About', active: true, content: '
+                    <h4><i class="fa fa-envelope"></i> What is Naive Bayes?</h4>
+                    <p>
+                        <strong>Naive Bayes</strong> is a probabilistic classifier based on Bayes\' theorem.
+                        It predicts the class of an input by computing the posterior probability of each class
+                        given the observed features.
+                    </p>
+                    <h4><i class="fa fa-question-circle"></i> Why \"Naive\"?</h4>
+                    <p>
+                        The algorithm is called \"naive\" because it assumes that all features (words) are
+                        <strong>conditionally independent</strong> given the class. While this assumption is rarely
+                        true in practice, the classifier often performs surprisingly well.
+                    </p>
+                    <h4><i class="fa fa-mouse-pointer"></i> How to Use</h4>
+                    <ul class="interaction-list">
+                        <li><strong>Type a message</strong> and click Classify to see the prediction</li>
+                        <li><strong>Examine</strong> the word probability table to see per-word contributions</li>
+                        <li><strong>Adjust &alpha;</strong> to see the effect of Laplace smoothing</li>
+                        <li><strong>Add training data</strong> to improve the classifier</li>
+                        <li><strong>Toggle log probabilities</strong> to see the math behind the scenes</li>
+                    </ul>
+                '},
+                {id: 'algorithm', icon: 'fa-book', label: 'Algorithm', content: '
+                    <h4><i class="fa fa-cogs"></i> Training Phase</h4>
+                    <ol class="algorithm-steps">
+                        <li>Count the number of spam and ham messages</li>
+                        <li>Compute prior probabilities: P(Spam), P(Ham)</li>
+                        <li>Tokenize each message into words</li>
+                        <li>Count word frequencies per class</li>
+                        <li>Compute P(word|class) with Laplace smoothing</li>
+                    </ol>
+                    <h4><i class="fa fa-search"></i> Classification Phase</h4>
+                    <ol class="algorithm-steps">
+                        <li>Tokenize the input message</li>
+                        <li>For each class, compute log P(class) + &Sigma; log P(word|class)</li>
+                        <li>The class with the highest score wins</li>
+                        <li>Convert log-scores to probabilities via softmax</li>
+                    </ol>
+                '},
+                {id: 'math', icon: 'fa-superscript', label: 'Math', content: '
+                    <h4><i class="fa fa-superscript"></i> Bayes Theorem</h4>
+                    <div class="math-formula-display">
+                        <code>P(C|x) = P(x|C) &middot; P(C) / P(x)</code>
+                    </div>
+                    <p class="formula-note">Where C is the class and x is the feature vector (words).</p>
+
+                    <h4><i class="fa fa-unlink"></i> Naive Independence Assumption</h4>
+                    <div class="math-formula-display">
+                        <code>P(x&#8321;,x&#8322;,...,x&#8345;|C) = &Pi; P(x&#7522;|C)</code>
+                    </div>
+                    <p class="formula-note">Each word is assumed independent given the class.</p>
+
+                    <h4><i class="fa fa-plus-circle"></i> Laplace Smoothing</h4>
+                    <div class="math-formula-display">
+                        <code>P(w|C) = (count(w,C) + &alpha;) / (total(C) + &alpha;&middot;|V|)</code>
+                    </div>
+                    <p class="formula-note">
+                        &alpha; prevents zero probabilities for unseen words. |V| is the vocabulary size.
+                        When &alpha;=1 this is called add-one smoothing.
+                    </p>
+
+                    <h4><i class="fa fa-calculator"></i> Log-Space Computation</h4>
+                    <div class="math-formula-display">
+                        <code>log P(C|x) &prop; log P(C) + &Sigma; log P(x&#7522;|C)</code>
+                    </div>
+                    <p class="formula-note">We work in log-space to avoid floating-point underflow from multiplying many small probabilities.</p>
+                '}
+            ]
+        ) }}
+
+        {{ metricsPanel(
+            title='Classifier Metrics',
+            icon='fa-bar-chart',
+            metrics=[
+                {icon: 'fa-book', label: 'Vocabulary Size', id: 'metric-vocab', default: '0'},
+                {icon: 'fa-ban', label: 'Spam Count', id: 'metric-spam-count', default: '0'},
+                {icon: 'fa-check', label: 'Ham Count', id: 'metric-ham-count', default: '0'},
+                {icon: 'fa-tag', label: 'Classification', id: 'metric-classification', default: '-'},
+                {icon: 'fa-signal', label: 'Confidence', id: 'metric-confidence', default: '-'},
+                {icon: 'fa-plus-circle', label: 'Smoothing &alpha;', id: 'metric-alpha', default: '1.0'},
+                {icon: 'fa-info-circle', label: 'Status', id: 'metric-status', default: 'Ready'}
+            ]
+        ) }}
+    </div>
+</div>

@@ -21,11 +21,13 @@ cardOrder: 4
 
 {% from "components/edit-toolbar.njk" import editToolbar %}
 {% from "components/legend.njk" import legend %}
+{% from "components/speed-control.njk" import speedControl %}
 
 <link rel="stylesheet" href="static/css/dtree.css">
 
 <!-- Main Content: Canvas (left) + Info (right) -->
 <div class="row" id="main-content">
+    {% include "components/share-button.njk" %}
     <!-- Left Column: Classification Canvas + Controls -->
     <div class="col-md-7">
         <div class="panel panel-default">
@@ -169,10 +171,7 @@ cardOrder: 4
                             <div class="tree-hint"><i class="fa fa-hand-paper-o"></i> Drag to pan, scroll to zoom</div>
                             <div class="animation-controls">
                                 <label class="checkbox-label"><input type="checkbox" id="animate-classification" checked> Animate</label>
-                                <div class="speed-control">
-                                    <i class="fa fa-clock-o"></i>
-                                    <input type="range" id="animation-speed" min="1" max="10" value="5" title="Animation speed">
-                                </div>
+                                {{ speedControl(id='animation-speed', icon='fa-clock-o') }}
                             </div>
                         </div>
                     </div>

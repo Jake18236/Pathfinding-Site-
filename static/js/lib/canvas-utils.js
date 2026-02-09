@@ -200,6 +200,79 @@ export function createOffscreenCanvas(width, height, dpr = 1) {
     return { canvas, ctx };
 }
 
+/**
+ * Map between data-space coordinates and canvas-space coordinates.
+ *
+ * Handles the common pattern of a plot area within a canvas with padding,
+ * where data values in [dataMinX..dataMaxX] × [dataMinY..dataMaxY] map to
+ * a rectangular region on the canvas.
+ */
+export class CoordinateMapper {
+    /**
+     * @param {number} plotLeft   - Canvas X of the plot area's left edge
+     * @param {number} plotTop    - Canvas Y of the plot area's top edge
+     * @param {number} plotWidth  - Width of the plot area in canvas pixels
+     * @param {number} plotHeight - Height of the plot area in canvas pixels
+     * @param {number} dataMinX   - Minimum data X value
+     * @param {number} dataMaxX   - Maximum data X value
+     * @param {number} [dataMinY] - Minimum data Y value (defaults to dataMinX)
+     * @param {number} [dataMaxY] - Maximum data Y value (defaults to dataMaxX)
+     */
+    constructor(plotLeft, plotTop, plotWidth, plotHeight, dataMinX, dataMaxX, dataMinY, dataMaxY) {
+        this.plotLeft = plotLeft;
+        this.plotTop = plotTop;
+        this.plotWidth = plotWidth;
+        this.plotHeight = plotHeight;
+        this.dataMinX = dataMinX;
+        this.dataMaxX = dataMaxX;
+        this.dataMinY = dataMinY !== undefined ? dataMinY : dataMinX;
+        this.dataMaxY = dataMaxY !== undefined ? dataMaxY : dataMaxX;
+    }
+
+    /** Convert data coordinates to canvas coordinates (Y axis is flipped) */
+    dataToCanvas(dx, dy) {
+        const cx = this.plotLeft + ((dx - this.dataMinX) / (this.dataMaxX - this.dataMinX)) * this.plotWidth;
+        const cy = this.plotTop + this.plotHeight - ((dy - this.dataMinY) / (this.dataMaxY - this.dataMinY)) * this.plotHeight;
+        return { x: cx, y: cy };
+    }
+
+    /** Convert canvas coordinates to data coordinates (Y axis is flipped) */
+    canvasToData(cx, cy) {
+        const dx = this.dataMinX + ((cx - this.plotLeft) / this.plotWidth) * (this.dataMaxX - this.dataMinX);
+        const dy = this.dataMinY + ((this.plotTop + this.plotHeight - cy) / this.plotHeight) * (this.dataMaxY - this.dataMinY);
+        return { x: dx, y: dy };
+    }
+}
+
+/**
+ * Parse a hex color string to [r, g, b] array
+ *
+ * @param {string} hex - Hex color string (e.g. '#ff0000' or '#f00')
+ * @returns {number[]} RGB values [0-255]
+ */
+export function hexToRgb(hex) {
+    hex = hex.replace('#', '');
+    if (hex.length === 3) hex = hex[0]+hex[0]+hex[1]+hex[1]+hex[2]+hex[2];
+    const n = parseInt(hex, 16);
+    return [(n >> 16) & 255, (n >> 8) & 255, n & 255];
+}
+
+/**
+ * Linearly interpolate between two [r,g,b] color arrays
+ *
+ * @param {number[]} c1 - Start color [r, g, b]
+ * @param {number[]} c2 - End color [r, g, b]
+ * @param {number} t - Interpolation factor (0 = c1, 1 = c2)
+ * @returns {number[]} Interpolated [r, g, b]
+ */
+export function colorLerp(c1, c2, t) {
+    return [
+        Math.round(c1[0] + (c2[0] - c1[0]) * t),
+        Math.round(c1[1] + (c2[1] - c1[1]) * t),
+        Math.round(c1[2] + (c2[2] - c1[2]) * t)
+    ];
+}
+
 // Expose as global for backward compatibility
 if (typeof window !== 'undefined') {
     window.VizLib = window.VizLib || {};
@@ -211,6 +284,9 @@ if (typeof window !== 'undefined') {
         drawLine,
         drawCircle,
         getMousePosition,
-        createOffscreenCanvas
+        createOffscreenCanvas,
+        CoordinateMapper,
+        hexToRgb,
+        colorLerp
     };
 }

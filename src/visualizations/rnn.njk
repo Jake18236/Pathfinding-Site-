@@ -1,0 +1,239 @@
+---
+layout: base.njk
+title: RNN & LSTM Visualizer
+icon: fa-exchange
+navigation:
+  - name: "Home"
+    link: "index.html"
+    icon: "fa-home"
+permalink: "rnn.html"
+extraScript: "static/js/rnn.js"
+tags: visualization
+cardTitle: "RNN & LSTM"
+cardIcon: fa-exchange
+cardDescription: "Watch recurrent neural networks process sequences token by token. Compare vanilla RNN with LSTM gate mechanics."
+cardTags:
+  - Deep Learning
+  - Sequences
+cardHaystack: "recurrent neural network rnn lstm gru hidden state gate forget input output sequence vanishing gradient"
+cardOrder: 24
+---
+
+{% from "components/legend.njk" import legend %}
+{% from "components/info-tabs.njk" import infoTabs %}
+{% from "components/metrics-panel.njk" import metricsPanel %}
+
+<link rel="stylesheet" href="static/css/rnn.css">
+
+<div class="row" id="main-content">
+    {% include "components/share-button.njk" %}
+    <!-- Left Column: Diagrams + Controls -->
+    <div class="col-md-7">
+        <!-- Network Diagram Panel -->
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <div class="panel-heading-content">
+                    <span class="panel-title-text"><i class="fa fa-exchange"></i> Network Diagram</span>
+                    <span class="viz-badge" id="arch-badge">Vanilla RNN</span>
+                </div>
+            </div>
+            <div class="panel-body canvas-panel-body">
+                <div class="canvas-wrapper">
+                    <canvas id="network-canvas" width="560" height="300"></canvas>
+                </div>
+            </div>
+            <div class="panel-footer legend-footer">
+                {{ legend(
+                    items=[
+                        {class: 'rnn-cell-color', label: 'RNN Cell'},
+                        {class: 'rnn-active-cell', label: 'Active Cell'},
+                        {class: 'rnn-input-color', label: 'Input'},
+                        {class: 'rnn-hidden-color', label: 'Hidden State', type: 'dot'},
+                        {class: 'rnn-output-color', label: 'Output', type: 'dot'}
+                    ]
+                ) }}
+            </div>
+        </div>
+
+        <!-- Hidden State Heatmap Panel -->
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <div class="panel-heading-content">
+                    <span class="panel-title-text"><i class="fa fa-th"></i> Hidden State Heatmap</span>
+                    <span class="viz-badge" id="heatmap-badge">dim = 8</span>
+                </div>
+            </div>
+            <div class="panel-body canvas-panel-body">
+                <div class="canvas-wrapper">
+                    <canvas id="heatmap-canvas" width="560" height="160"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Controls Panel -->
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title"><i class="fa fa-sliders"></i> Controls</h3>
+            </div>
+            <div class="panel-body compact-panel rnn-controls-panel">
+                <div class="rnn-options-col">
+                    <div class="option-row">
+                        <label>Architecture:</label>
+                        <select id="arch-select" class="form-control input-sm">
+                            <option value="rnn" selected>Vanilla RNN</option>
+                            <option value="lstm">LSTM</option>
+                        </select>
+                    </div>
+                    <div class="option-row">
+                        <label>Input Sequence:</label>
+                        <select id="sequence-select" class="form-control input-sm">
+                            <option value="counting" selected>Counting (1, 2, 3&hellip;)</option>
+                            <option value="sine">Sine Wave Samples</option>
+                            <option value="custom">Custom</option>
+                        </select>
+                    </div>
+                    <div class="option-row" id="custom-seq-row" style="display:none;">
+                        <label>Values:</label>
+                        <input type="text" id="custom-seq-input" class="form-control input-sm" placeholder="e.g. 0.2, -0.5, 0.8, 0.1" />
+                    </div>
+                    <div class="option-row">
+                        <label>Seq Length:</label>
+                        <div class="stepper-control">
+                            <button class="btn btn-xs btn-default" id="seq-len-dec">&minus;</button>
+                            <input type="text" class="stepper-input" id="seq-len-val" value="6" readonly>
+                            <button class="btn btn-xs btn-default" id="seq-len-inc">+</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="rnn-actions-col">
+                    <div class="btn-toolbar" role="toolbar">
+                        <button id="btn-process" class="btn btn-sm btn-success" title="Process full sequence">
+                            <i class="fa fa-play"></i> Process
+                        </button>
+                        <button id="btn-step" class="btn btn-sm btn-info" title="Step one time step">
+                            <i class="fa fa-step-forward"></i> Step
+                        </button>
+                        <button id="btn-reset" class="btn btn-sm btn-danger" title="Reset">
+                            <i class="fa fa-refresh"></i> Reset
+                        </button>
+                    </div>
+                    <div class="speed-control">
+                        <i class="fa fa-tachometer"></i>
+                        <input type="range" id="speed-slider" min="1" max="10" value="5">
+                        <span id="speed-value" class="range-value">5</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Right Column: Info + Metrics + Gates -->
+    <div class="col-md-5">
+        {{ infoTabs(
+            tabs=[
+                {id: 'about', icon: 'fa-info-circle', label: 'About', active: true, content: '
+                    <h4><i class="fa fa-exchange"></i> Recurrent Neural Networks</h4>
+                    <p>
+                        A <strong>Recurrent Neural Network (RNN)</strong> processes sequences by
+                        maintaining a hidden state that is updated at each time step. This gives
+                        the network a form of memory over previous inputs.
+                    </p>
+                    <p>
+                        <strong>LSTM</strong> (Long Short-Term Memory) adds gating mechanisms to
+                        control what information to forget, store, and output, solving the
+                        vanishing gradient problem of vanilla RNNs.
+                    </p>
+                    <h4><i class="fa fa-mouse-pointer"></i> How to Use</h4>
+                    <ul class="interaction-list">
+                        <li><strong>Select an architecture</strong> (Vanilla RNN or LSTM)</li>
+                        <li><strong>Choose an input sequence</strong> from the dropdown</li>
+                        <li><strong>Press Process</strong> to animate the full sequence</li>
+                        <li><strong>Press Step</strong> to advance one time step at a time</li>
+                        <li><strong>Watch the hidden state heatmap</strong> evolve over time</li>
+                    </ul>
+                '},
+                {id: 'algorithm', icon: 'fa-book', label: 'Algorithm', content: '
+                    <h4><i class="fa fa-book"></i> Vanilla RNN Update</h4>
+                    <ol class="algorithm-list">
+                        <li>Receive input x<sub>t</sub> at time step t</li>
+                        <li>Combine with previous hidden state h<sub>t-1</sub></li>
+                        <li>Apply weight matrices W<sub>h</sub> and W<sub>x</sub></li>
+                        <li>Pass through tanh activation</li>
+                        <li>Output new hidden state h<sub>t</sub></li>
+                    </ol>
+                    <h4><i class="fa fa-lock"></i> LSTM Gates</h4>
+                    <ul class="formula-list">
+                        <li><strong>Forget Gate (f<sub>t</sub>)</strong> &mdash; decides what to discard from the cell state</li>
+                        <li><strong>Input Gate (i<sub>t</sub>)</strong> &mdash; decides what new information to store</li>
+                        <li><strong>Output Gate (o<sub>t</sub>)</strong> &mdash; decides what to output from the cell state</li>
+                        <li>Cell state C<sub>t</sub> provides a highway for gradient flow</li>
+                    </ul>
+                '},
+                {id: 'math', icon: 'fa-superscript', label: 'Math', content: '
+                    <h4><i class="fa fa-superscript"></i> Vanilla RNN</h4>
+                    <div class="math-formula-display">
+                        <code>h<sub>t</sub> = tanh(W<sub>h</sub> h<sub>t-1</sub> + W<sub>x</sub> x<sub>t</sub> + b)</code>
+                    </div>
+                    <p class="formula-note">
+                        W<sub>h</sub> maps hidden-to-hidden, W<sub>x</sub> maps input-to-hidden, b is bias.
+                    </p>
+                    <h4><i class="fa fa-lock"></i> LSTM Equations</h4>
+                    <div class="math-formula-display">
+                        <code>f<sub>t</sub> = &sigma;(W<sub>f</sub> [h<sub>t-1</sub>, x<sub>t</sub>] + b<sub>f</sub>)</code>
+                    </div>
+                    <div class="math-formula-display">
+                        <code>i<sub>t</sub> = &sigma;(W<sub>i</sub> [h<sub>t-1</sub>, x<sub>t</sub>] + b<sub>i</sub>)</code>
+                    </div>
+                    <div class="math-formula-display">
+                        <code>o<sub>t</sub> = &sigma;(W<sub>o</sub> [h<sub>t-1</sub>, x<sub>t</sub>] + b<sub>o</sub>)</code>
+                    </div>
+                    <div class="math-formula-display">
+                        <code>C<sub>t</sub> = f<sub>t</sub> &odot; C<sub>t-1</sub> + i<sub>t</sub> &odot; tanh(W<sub>c</sub> [h<sub>t-1</sub>, x<sub>t</sub>] + b<sub>c</sub>)</code>
+                    </div>
+                    <div class="math-formula-display">
+                        <code>h<sub>t</sub> = o<sub>t</sub> &odot; tanh(C<sub>t</sub>)</code>
+                    </div>
+                    <p class="formula-note">
+                        &sigma; is sigmoid, &odot; is element-wise multiplication.
+                    </p>
+                '}
+            ]
+        ) }}
+
+        {{ metricsPanel(
+            title='RNN Metrics',
+            icon='fa-bar-chart',
+            metrics=[
+                {icon: 'fa-clock-o', label: 'Time Step', id: 'metric-timestep', default: '0 / 6'},
+                {icon: 'fa-arrows-h', label: 'Hidden Dim', id: 'metric-hidden-dim', default: '8'},
+                {icon: 'fa-microchip', label: 'Cell Type', id: 'metric-cell-type', default: 'Vanilla RNN'},
+                {icon: 'fa-sign-in', label: 'Current Input', id: 'metric-current-input', default: '-'},
+                {icon: 'fa-line-chart', label: 'Hidden Norm', id: 'metric-hidden-norm', default: '-'},
+                {icon: 'fa-info-circle', label: 'Status', id: 'metric-status', default: 'Ready'}
+            ]
+        ) }}
+
+        <!-- Gate Visualization Panel (LSTM only) -->
+        <div class="panel panel-default" id="gate-panel" style="display:none;">
+            <div class="panel-heading">
+                <h3 class="panel-title"><i class="fa fa-lock"></i> LSTM Gate Values</h3>
+            </div>
+            <div class="panel-body compact-panel">
+                <div class="rnn-gate-row">
+                    <div class="rnn-gate-col">
+                        <label class="control-label-sm rnn-gate-label-forget">Forget Gate (f<sub>t</sub>)</label>
+                        <canvas id="forget-gate-canvas" width="150" height="80"></canvas>
+                    </div>
+                    <div class="rnn-gate-col">
+                        <label class="control-label-sm rnn-gate-label-input">Input Gate (i<sub>t</sub>)</label>
+                        <canvas id="input-gate-canvas" width="150" height="80"></canvas>
+                    </div>
+                    <div class="rnn-gate-col">
+                        <label class="control-label-sm rnn-gate-label-output">Output Gate (o<sub>t</sub>)</label>
+                        <canvas id="output-gate-canvas" width="150" height="80"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

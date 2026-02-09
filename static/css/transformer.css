@@ -1,0 +1,276 @@
+/**
+ * Transformer & Attention Visualizer Styles
+ * Visualization-specific styles only. Common styles are in visualizations.css.
+ */
+
+/* ============================================
+   CSS Custom Properties
+   ============================================ */
+:root {
+    /* Heatmap gradient: cool (low attention) to warm (high attention) */
+    --tf-attn-zero: #f0f4ff;
+    --tf-attn-low: #b3cde3;
+    --tf-attn-mid: #fc8d59;
+    --tf-attn-high: #d73027;
+    --tf-attn-max: #7f0000;
+
+    /* Token label colors */
+    --tf-token-text: #333333;
+    --tf-token-highlight: #1565c0;
+
+    /* Weight text on cells */
+    --tf-weight-text-light: #ffffff;
+    --tf-weight-text-dark: #333333;
+
+    /* Input styling */
+    --tf-input-bg: #ffffff;
+    --tf-input-border: #cccccc;
+    --tf-input-focus: #66afe9;
+
+    /* PE visualization */
+    --tf-pe-positive: #2196f3;
+    --tf-pe-negative: #ff5722;
+
+    /* Cell hover */
+    --tf-cell-hover-border: #ffd700;
+
+    /* Head badge */
+    --tf-head-active: #1976d2;
+}
+
+[data-theme="gruvbox-dark"] {
+    --tf-attn-zero: #1d2021;
+    --tf-attn-low: #3c3836;
+    --tf-attn-mid: #fe8019;
+    --tf-attn-high: #fb4934;
+    --tf-attn-max: #cc241d;
+
+    --tf-token-text: #ebdbb2;
+    --tf-token-highlight: #83a598;
+
+    --tf-weight-text-light: #ebdbb2;
+    --tf-weight-text-dark: #1d2021;
+
+    --tf-input-bg: #3c3836;
+    --tf-input-border: #504945;
+    --tf-input-focus: #83a598;
+
+    --tf-pe-positive: #83a598;
+    --tf-pe-negative: #fb4934;
+
+    --tf-cell-hover-border: #fabd2f;
+
+    --tf-head-active: #458588;
+}
+
+/* ============================================
+   Canvas
+   ============================================ */
+#attention-canvas {
+    display: block;
+    width: 100%;
+    cursor: crosshair;
+    background: var(--viz-canvas-bg);
+}
+
+.header-controls {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+/* ============================================
+   Head Toggle Tabs
+   ============================================ */
+.head-toggle .btn {
+    padding: 4px 8px;
+    font-size: 11px;
+}
+
+.head-toggle .btn.active {
+    background: var(--tf-head-active);
+    border-color: var(--tf-head-active);
+    color: #ffffff;
+}
+
+.head-badge {
+    transition: all 0.3s ease;
+}
+
+/* ============================================
+   Legend Color Overrides
+   ============================================ */
+.legend-color.attn-low {
+    background: linear-gradient(135deg, var(--tf-attn-zero), var(--tf-attn-low));
+}
+
+.legend-color.attn-mid {
+    background: var(--tf-attn-mid);
+}
+
+.legend-color.attn-high {
+    background: linear-gradient(135deg, var(--tf-attn-high), var(--tf-attn-max));
+}
+
+/* ============================================
+   Controls Layout
+   ============================================ */
+.tf-controls-panel {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+.tf-input-col {
+    flex: 2;
+    min-width: 200px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.tf-options-col {
+    flex: 1.5;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    min-width: 180px;
+}
+
+.tf-actions-col {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    justify-content: center;
+    min-width: 140px;
+}
+
+/* ============================================
+   Sentence Input
+   ============================================ */
+.tf-sentence-input {
+    font-family: var(--viz-mono-font);
+    font-size: 13px;
+    padding: 6px 10px;
+    background: var(--tf-input-bg);
+    border: 1px solid var(--tf-input-border);
+    color: var(--viz-text);
+    border-radius: 3px;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.tf-sentence-input:focus {
+    outline: none;
+    border-color: var(--tf-input-focus);
+    box-shadow: 0 0 0 2px rgba(102, 175, 233, 0.25);
+}
+
+[data-theme="gruvbox-dark"] .tf-sentence-input:focus {
+    box-shadow: 0 0 0 2px rgba(131, 165, 152, 0.25);
+}
+
+/* ============================================
+   Control Label
+   ============================================ */
+.control-label-sm {
+    font-size: 12px;
+    font-weight: 600;
+    margin: 0;
+}
+
+/* ============================================
+   Checkbox Labels
+   ============================================ */
+.checkbox-label {
+    font-size: 12px;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    cursor: pointer;
+}
+
+/* ============================================
+   Token Detail Panel
+   ============================================ */
+#token-detail-panel .no-data-message {
+    text-align: center;
+    padding: 15px;
+    color: var(--viz-text-muted);
+    font-size: 12px;
+}
+
+#token-detail-panel .no-data-message i {
+    display: block;
+    font-size: 1.5em;
+    margin-bottom: 8px;
+}
+
+.token-detail-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 12px;
+}
+
+.token-detail-table th,
+.token-detail-table td {
+    padding: 4px 8px;
+    border: 1px solid var(--viz-border);
+    text-align: left;
+}
+
+.token-detail-table th {
+    background: var(--viz-hover-bg);
+    font-weight: 600;
+    font-size: 11px;
+}
+
+.token-detail-table td {
+    font-family: var(--viz-mono-font);
+}
+
+.token-detail-table td:last-child {
+    text-align: right;
+}
+
+.token-detail-header {
+    font-size: 13px;
+    font-weight: 600;
+    margin-bottom: 8px;
+    color: var(--viz-text);
+}
+
+.token-detail-header .token-name {
+    color: var(--tf-token-highlight);
+}
+
+.attn-bar-container {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.attn-bar {
+    height: 10px;
+    border-radius: 2px;
+    transition: width 0.2s ease;
+}
+
+/* ============================================
+   Responsive
+   ============================================ */
+@media (max-width: 992px) {
+    .tf-controls-panel {
+        flex-direction: column;
+    }
+
+    .tf-actions-col {
+        flex-direction: row;
+        justify-content: center;
+    }
+
+    .head-toggle .btn {
+        padding: 3px 6px;
+        font-size: 10px;
+    }
+}

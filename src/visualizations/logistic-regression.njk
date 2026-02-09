@@ -1,0 +1,214 @@
+---
+layout: base.njk
+title: Logistic Regression Visualizer
+icon: fa-percent
+navigation:
+  - name: "Home"
+    link: "index.html"
+    icon: "fa-home"
+permalink: "logistic-regression.html"
+extraScript: "static/js/logistic-regression.js"
+tags: visualization
+cardTitle: "Logistic Regression"
+cardIcon: fa-percent
+cardDescription: "Visualize logistic regression with sigmoid function, decision boundary animation, and gradient descent on log-loss."
+cardTags:
+  - Classification
+  - ML Fundamentals
+cardHaystack: "logistic regression sigmoid function decision boundary log loss binary classification gradient descent probability"
+cardOrder: 18
+---
+
+{% from "components/legend.njk" import legend %}
+{% from "components/info-tabs.njk" import infoTabs %}
+{% from "components/metrics-panel.njk" import metricsPanel %}
+{% from "components/speed-control.njk" import speedControl %}
+{% from "components/stepper-control.njk" import stepperControl %}
+
+<link rel="stylesheet" href="static/css/logistic-regression.css">
+
+<div class="row" id="main-content">
+    {% include "components/share-button.njk" %}
+    <div class="col-md-7">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <div class="panel-heading-content">
+                    <span class="panel-title-text"><i class="fa fa-percent"></i> Classification Space</span>
+                    <div class="edit-toolbar active" id="edit-toolbar">
+                        <div class="btn-group edit-mode-buttons" role="group">
+                            <button type="button" class="btn btn-sm btn-default active" data-mode="add" title="Add points">
+                                <i class="fa fa-plus"></i> Add
+                            </button>
+                            <button type="button" class="btn btn-sm btn-default" data-mode="delete" title="Delete points">
+                                <i class="fa fa-minus"></i> Delete
+                            </button>
+                        </div>
+                        <div class="btn-group class-selector" role="group" id="class-selector">
+                            <button type="button" class="btn btn-sm btn-default active" data-class="0" title="Class 0">
+                                <span class="class-dot class-0"></span>
+                            </button>
+                            <button type="button" class="btn btn-sm btn-default" data-class="1" title="Class 1">
+                                <span class="class-dot class-1"></span>
+                            </button>
+                        </div>
+                        <button id="btn-clear-points" class="btn btn-sm btn-danger" title="Clear all points">
+                            <i class="fa fa-trash"></i> Clear
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="panel-body canvas-panel-body">
+                <div class="canvas-wrapper">
+                    <canvas id="logistic-canvas" width="560" height="400"></canvas>
+                    <div id="click-overlay" class="click-overlay">
+                        <span>Click to add data points</span>
+                    </div>
+                </div>
+            </div>
+            <div class="panel-footer legend-footer">
+                {{ legend(
+                    items=[
+                        {class: 'class-0', label: 'Class 0'},
+                        {class: 'class-1', label: 'Class 1'},
+                        {class: 'boundary-line', label: 'Boundary', type: 'line'},
+                        {class: 'prob-gradient', label: 'P(y=1)', type: 'color'}
+                    ]
+                ) }}
+            </div>
+        </div>
+
+        <!-- Sigmoid Panel -->
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title"><i class="fa fa-line-chart"></i> Sigmoid Function</h3>
+            </div>
+            <div class="panel-body canvas-panel-body">
+                <div class="canvas-wrapper">
+                    <canvas id="sigmoid-canvas" width="560" height="160"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Controls -->
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title"><i class="fa fa-sliders"></i> Controls</h3>
+            </div>
+            <div class="panel-body compact-panel logreg-controls-panel">
+                <div class="logreg-options-col">
+                    <div class="logreg-option-group">
+                        <div class="option-row">
+                            <label>Dataset:</label>
+                            <select id="dataset-select" class="form-control input-sm">
+                                <option value="custom" selected>Custom (click to add)</option>
+                                <option value="linear">Linearly Separable</option>
+                                <option value="overlap">Overlapping</option>
+                                <option value="moons">Moons</option>
+                                <option value="xor">XOR</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="logreg-option-group">
+                        <div class="option-row">
+                            <label>LR:</label>
+                            <input type="range" id="lr-slider" min="0.01" max="2" step="0.01" value="0.5">
+                            <span id="lr-value" class="range-value">0.50</span>
+                        </div>
+                        <div class="option-row">
+                            <label>Iterations:</label>
+                            {{ stepperControl(id='iter', value='200', title='', inputWidth='48px') }}
+                        </div>
+                    </div>
+                    <div class="logreg-option-group">
+                        <label class="checkbox-label"><input type="checkbox" id="show-probability" checked> Show probability gradient</label>
+                        <label class="checkbox-label"><input type="checkbox" id="show-boundary" checked> Show boundary</label>
+                    </div>
+                </div>
+                <div class="logreg-playback-col">
+                    <div class="btn-toolbar" role="toolbar">
+                        <button id="btn-train" class="btn btn-sm btn-success" title="Train"><i class="fa fa-play"></i> Train</button>
+                        <button id="btn-step" class="btn btn-sm btn-info" title="Step"><i class="fa fa-step-forward"></i></button>
+                        <button id="btn-reset" class="btn btn-sm btn-danger" title="Reset"><i class="fa fa-refresh"></i></button>
+                    </div>
+                    {{ speedControl(value='7') }}
+                    <div class="playback-status"><span id="playback-step">Ready</span></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-5">
+        {{ infoTabs(
+            tabs=[
+                {id: 'about', icon: 'fa-info-circle', label: 'About', active: true, content: '
+                    <h4><i class="fa fa-percent"></i> Logistic Regression</h4>
+                    <p>
+                        Logistic regression models the probability of a binary outcome using the sigmoid
+                        function. Unlike linear regression, the output is bounded between 0 and 1.
+                    </p>
+                    <h4><i class="fa fa-mouse-pointer"></i> How to Use</h4>
+                    <ul class="interaction-list">
+                        <li><strong>Click canvas</strong> to add points (select class)</li>
+                        <li><strong>Press Train</strong> to animate gradient descent</li>
+                        <li><strong>Watch the boundary</strong> evolve during training</li>
+                        <li><strong>Probability gradient</strong> shows classification confidence</li>
+                    </ul>
+                '},
+                {id: 'algorithm', icon: 'fa-book', label: 'Algorithm', content: '
+                    <h4><i class="fa fa-cogs"></i> Training</h4>
+                    <ol class="algorithm-list">
+                        <li>Compute linear combination <code>z = w·x + b</code></li>
+                        <li>Apply sigmoid <code>σ(z) = 1/(1+e<sup>−z</sup>)</code></li>
+                        <li>Compute log-loss <code>L = −[y·log(p) + (1−y)·log(1−p)]</code></li>
+                        <li>Compute gradients <code>∂L/∂w, ∂L/∂b</code></li>
+                        <li>Update parameters via gradient descent</li>
+                        <li>Repeat until convergence</li>
+                    </ol>
+                '},
+                {id: 'math', icon: 'fa-superscript', label: 'Math', content: '
+                    <h4><i class="fa fa-superscript"></i> Sigmoid Function</h4>
+                    <code>σ(z) = 1 / (1 + e<sup>−z</sup>)</code>
+                    <p class="formula-desc">Maps any real value to (0, 1) — interpretable as probability.</p>
+
+                    <h4>Binary Cross-Entropy Loss</h4>
+                    <code>L = −(1/n) Σ [yᵢ log(pᵢ) + (1−yᵢ) log(1−pᵢ)]</code>
+                    <p class="formula-desc">Penalizes confident wrong predictions heavily.</p>
+
+                    <h4>Gradient</h4>
+                    <code>∂L/∂w = (1/n) Σ (pᵢ − yᵢ)xᵢ</code>
+                    <p class="formula-desc">Same form as linear regression gradient, but p is sigmoid output.</p>
+
+                    <h4>Decision Boundary</h4>
+                    <code>w·x + b = 0</code>
+                    <p class="formula-desc">The line where P(y=1) = 0.5.</p>
+                '}
+            ]
+        ) }}
+
+        {{ metricsPanel(
+            title='Training Metrics',
+            icon='fa-bar-chart',
+            metrics=[
+                {icon: 'fa-database', label: 'Points', id: 'metric-points', default: '0'},
+                {icon: 'fa-repeat', label: 'Iteration', id: 'metric-iteration', default: '-'},
+                {icon: 'fa-exclamation-triangle', label: 'Log-Loss', id: 'metric-loss', default: '-'},
+                {icon: 'fa-check-circle', label: 'Accuracy', id: 'metric-accuracy', default: '-'},
+                {icon: 'fa-sliders', label: 'Weights', id: 'metric-weights', default: '-'},
+                {icon: 'fa-dot-circle-o', label: 'Bias', id: 'metric-bias', default: '-'},
+                {icon: 'fa-info-circle', label: 'Status', id: 'metric-status', default: 'Add points to begin'}
+            ]
+        ) }}
+
+        <!-- Loss Curve -->
+        <div class="panel panel-default" id="loss-curve-panel" style="display:none;">
+            <div class="panel-heading">
+                <h3 class="panel-title"><i class="fa fa-line-chart"></i> Loss Curve</h3>
+            </div>
+            <div class="panel-body canvas-panel-body">
+                <div class="canvas-wrapper">
+                    <canvas id="loss-curve-canvas" width="300" height="160"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

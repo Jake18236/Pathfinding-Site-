@@ -1,0 +1,278 @@
+---
+layout: base.njk
+title: Markov Babbler
+icon: fa-commenting
+navigation:
+  - name: "Home"
+    link: "index.html"
+    icon: "fa-home"
+permalink: "markov-babbler.html"
+extraScript: "static/js/markov-babbler.js"
+tags: visualization
+cardTitle: "Markov Babbler"
+cardIcon: fa-commenting
+cardDescription: "Build word-level Markov chains from text corpora and watch as they generate new prose one word at a time. Adjust n-gram order and explore how context shapes language."
+cardTags:
+  - Probabilistic
+  - Text Generation
+cardHaystack: "markov chain text generation n-gram bigram trigram language model babbler word probability corpus"
+cardOrder: 22
+---
+
+{% from "components/metrics-panel.njk" import metricsPanel %}
+{% from "components/info-tabs.njk" import infoTabs %}
+{% from "components/legend.njk" import legend %}
+
+<link rel="stylesheet" href="static/css/markov-babbler.css">
+
+<div class="row" id="main-content">
+    {% include "components/share-button.njk" %}
+    <!-- Left Column: Context Graph + Generated Text + Controls -->
+    <div class="col-md-7">
+        <!-- Context Graph Panel -->
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <div class="panel-heading-content">
+                    <span class="panel-title-text"><i class="fa fa-commenting"></i> Context Graph</span>
+                    <span class="viz-badge babbler-context-badge" id="context-badge">ready</span>
+                </div>
+            </div>
+            <div class="panel-body canvas-panel-body">
+                <div class="canvas-wrapper">
+                    <canvas id="babbler-canvas" width="560" height="380"></canvas>
+                </div>
+            </div>
+            <div class="panel-footer legend-footer">
+                {{ legend(
+                    items=[
+                        {class: 'babbler-context-node', label: 'Context'},
+                        {class: 'babbler-candidate-node', label: 'Candidate'},
+                        {class: 'babbler-selected-node', label: 'Selected'},
+                        {class: 'babbler-connection-line', label: 'Probability', type: 'line'}
+                    ]
+                ) }}
+            </div>
+        </div>
+
+        <!-- Generated Text Panel -->
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <div class="panel-heading-content">
+                    <span class="panel-title-text"><i class="fa fa-file-text-o"></i> Generated Text</span>
+                    <span class="viz-badge babbler-word-count" id="word-count-badge">0 words</span>
+                </div>
+            </div>
+            <div class="panel-body compact-panel">
+                <div id="generated-text-display" class="generated-text-display">
+                    <p class="text-muted text-center" style="font-size: 12px;">
+                        Click "Generate" to create text from the Markov model.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Controls Panel -->
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title"><i class="fa fa-sliders"></i> Controls</h3>
+            </div>
+            <div class="panel-body compact-panel babbler-controls-panel">
+                <div class="babbler-options-col">
+                    <div class="option-row">
+                        <label>Corpus:</label>
+                        <select id="corpus-select" class="form-control input-sm">
+                            <option value="nursery" selected>Nursery Rhymes</option>
+                            <option value="shakespeare">Shakespeare Sonnets</option>
+                            <option value="tech">Tech Documentation</option>
+                            <option value="stories">Simple Stories</option>
+                            <option value="scifi">Science Fiction</option>
+                            <option value="custom">Custom Text</option>
+                        </select>
+                    </div>
+                    <div id="custom-corpus-section" class="custom-corpus-section" style="display: none;">
+                        <textarea id="custom-corpus-input" class="form-control" rows="3"
+                            placeholder="Paste your own text here (at least 50 words recommended)..."></textarea>
+                        <button id="btn-build-custom" class="btn btn-xs btn-default" style="margin-top: 4px;">
+                            <i class="fa fa-wrench"></i> Build Model
+                        </button>
+                    </div>
+                    <div class="option-row">
+                        <label>N-gram Order:</label>
+                        <div class="stepper-control">
+                            <button id="ngram-order-minus" class="btn btn-xs btn-default" title="Decrease order">&#8722;</button>
+                            <input type="text" id="ngram-order-value" class="stepper-input" value="2" readonly>
+                            <button id="ngram-order-plus" class="btn btn-xs btn-default" title="Increase order">+</button>
+                        </div>
+                    </div>
+                    <div class="option-row">
+                        <label>Seed Word:</label>
+                        <select id="seed-select" class="form-control input-sm">
+                            <option value="__random__">(Random)</option>
+                        </select>
+                    </div>
+                    <div class="option-row">
+                        <label>Max Words:</label>
+                        <div class="stepper-control">
+                            <button id="max-words-minus" class="btn btn-xs btn-default" title="Decrease max words">&#8722;</button>
+                            <input type="text" id="max-words-value" class="stepper-input" value="50" readonly style="width: 42px;">
+                            <button id="max-words-plus" class="btn btn-xs btn-default" title="Increase max words">+</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="babbler-playback-col">
+                    <div class="btn-toolbar" role="toolbar">
+                        <button id="btn-generate" class="btn btn-sm btn-success" title="Generate text">
+                            <i class="fa fa-play"></i> Generate
+                        </button>
+                        <button id="btn-step" class="btn btn-sm btn-info" title="Generate one word">
+                            <i class="fa fa-step-forward"></i> Step
+                        </button>
+                        <button id="btn-reset" class="btn btn-sm btn-danger" title="Reset">
+                            <i class="fa fa-refresh"></i> Reset
+                        </button>
+                    </div>
+                    <div class="speed-control">
+                        <i class="fa fa-tachometer"></i>
+                        <input type="range" id="speed-slider" min="1" max="10" value="5">
+                        <span id="speed-value" class="range-value">5</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Right Column: Info + Metrics + N-gram Table -->
+    <div class="col-md-5">
+        {% set aboutContent %}
+            <h4><i class="fa fa-commenting"></i> Markov Babbler</h4>
+            <p>
+                A <strong>Markov babbler</strong> generates text by learning word-level transition
+                probabilities from a corpus. Given the last <em>n</em> words (the <strong>context</strong>),
+                it randomly selects the next word weighted by how often that transition appeared
+                in the training text.
+            </p>
+            <p>
+                Low-order models (bigram) produce chaotic but diverse text. Higher-order models
+                (trigram, 4-gram) produce more coherent phrases but tend to reproduce the source
+                verbatim and hit dead ends more often.
+            </p>
+            <h4><i class="fa fa-mouse-pointer"></i> How to Use</h4>
+            <ul class="interaction-list">
+                <li><strong>Select a corpus</strong> or paste your own text</li>
+                <li><strong>Adjust n-gram order</strong> to see how context length affects output</li>
+                <li><strong>Generate</strong> to watch text build word by word</li>
+                <li><strong>Step</strong> to advance one word at a time</li>
+                <li>The <strong>context graph</strong> shows candidate next words and their probabilities</li>
+                <li>When the model hits a dead end, it <strong>backs off</strong> to a shorter context</li>
+            </ul>
+        {% endset %}
+
+        {% set algorithmContent %}
+            <h4><i class="fa fa-cogs"></i> N-gram Text Generation</h4>
+            <ol class="algorithm-steps">
+                <li>Tokenize the corpus into words</li>
+                <li>Build a table mapping each n-word context to observed next words</li>
+                <li>Pick a starting context</li>
+                <li>Sample the next word from the context's distribution</li>
+                <li>Slide the context window forward and repeat</li>
+            </ol>
+            <div class="pseudocode-container">
+                <pre class="pseudocode"><code><span class="line"><span class="keyword">function</span> <span class="function">buildModel</span>(corpus, order):</span>
+<span class="line">    tokens = <span class="function">tokenize</span>(corpus)</span>
+<span class="line">    model = {}</span>
+<span class="line">    <span class="keyword">for</span> i = 0 <span class="keyword">to</span> len(tokens) - order:</span>
+<span class="line">        context = tokens[i..i+order]</span>
+<span class="line">        next = tokens[i+order]</span>
+<span class="line">        model[context][next] += 1</span>
+<span class="line">    <span class="keyword">return</span> model</span>
+<span class="line"></span>
+<span class="line"><span class="keyword">function</span> <span class="function">generate</span>(model, order, maxWords):</span>
+<span class="line">    context = <span class="function">randomStart</span>(model)</span>
+<span class="line">    output = [...context]</span>
+<span class="line">    <span class="keyword">for</span> i = 1 <span class="keyword">to</span> maxWords:</span>
+<span class="line">        candidates = model[context]</span>
+<span class="line">        <span class="keyword">if</span> candidates is empty:</span>
+<span class="line">            context = <span class="function">backoff</span>(context) <span class="comment">// shorter context</span></span>
+<span class="line">        next = <span class="function">sampleWeighted</span>(candidates)</span>
+<span class="line">        output.<span class="function">append</span>(next)</span>
+<span class="line">        context = output[<span class="keyword">last</span> order words]</span>
+<span class="line">    <span class="keyword">return</span> output</span></code></pre>
+            </div>
+            <h4><i class="fa fa-level-down"></i> Backoff</h4>
+            <p>
+                When no continuation is found for the full context, the model <strong>backs off</strong>
+                to a shorter context (e.g., from trigram to bigram). This prevents dead ends while
+                producing less constrained output.
+            </p>
+        {% endset %}
+
+        {% set mathContent %}
+            <h4><i class="fa fa-superscript"></i> Conditional Probability</h4>
+            <div class="math-formula-display">
+                <code>P(w<sub>n</sub> | w<sub>n-k</sub> ... w<sub>n-1</sub>) = count(w<sub>n-k</sub>...w<sub>n</sub>) / count(w<sub>n-k</sub>...w<sub>n-1</sub>)</code>
+            </div>
+            <p>
+                The probability of the next word given the context is estimated by
+                <strong>maximum likelihood</strong>: the ratio of n-gram counts to (n-1)-gram counts.
+            </p>
+            <h4><i class="fa fa-signal"></i> Entropy</h4>
+            <div class="math-formula-display">
+                <code>H = &minus; &Sigma;<sub>w</sub> P(w|ctx) log<sub>2</sub> P(w|ctx)</code>
+            </div>
+            <p>
+                Entropy measures the <strong>uncertainty</strong> of the next word. High entropy
+                means many equally-likely candidates; low entropy means the model is very
+                confident about what comes next.
+            </p>
+            <h4><i class="fa fa-bar-chart"></i> Perplexity</h4>
+            <div class="math-formula-display">
+                <code>PP = 2<sup>H</sup></code>
+            </div>
+            <p class="formula-note">
+                Perplexity is the exponential of entropy &mdash; roughly the "effective number of
+                choices" at each step. A perplexity of 10 means the model is as uncertain as
+                if choosing uniformly among 10 words.
+            </p>
+        {% endset %}
+
+        {{ infoTabs(
+            variant='nav-tabs',
+            panelClass='panel-full-height',
+            tabs=[
+                {id: 'about', icon: 'fa-info-circle', label: 'About', active: true, content: aboutContent},
+                {id: 'algorithm', icon: 'fa-book', label: 'Algorithm', content: algorithmContent},
+                {id: 'math', icon: 'fa-calculator', label: 'Math', content: mathContent}
+            ]
+        ) }}
+
+        {{ metricsPanel(
+            title='Model Metrics',
+            icon='fa-bar-chart',
+            layout='grid',
+            rows=[
+                [{icon: 'fa-book', label: 'Corpus', id: 'metric-corpus-size', default: '-'},
+                 {icon: 'fa-font', label: 'Vocabulary', id: 'metric-vocab', default: '-'}],
+                [{icon: 'fa-bars', label: 'N-gram Order', id: 'metric-order', default: '2'},
+                 {icon: 'fa-quote-left', label: 'Context', id: 'metric-context', default: '-'}],
+                [{icon: 'fa-list-ol', label: 'Candidates', id: 'metric-candidates', default: '-'},
+                 {icon: 'fa-signal', label: 'Entropy', id: 'metric-entropy', default: '-'}],
+                [{icon: 'fa-pencil', label: 'Generated', id: 'metric-generated', default: '0'},
+                 {icon: 'fa-info-circle', label: 'Status', id: 'metric-status', default: 'Ready'}]
+            ]
+        ) }}
+
+        <!-- N-gram Candidates Table -->
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title"><i class="fa fa-table"></i> Next Word Candidates</h3>
+            </div>
+            <div class="panel-body compact-panel">
+                <div id="ngram-table-container" class="ngram-table-container">
+                    <p class="text-muted text-center" style="font-size: 12px;">
+                        Generate text to see candidate probabilities.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

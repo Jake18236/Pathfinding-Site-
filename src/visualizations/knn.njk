@@ -22,11 +22,14 @@ cardOrder: 3
 {% from "components/edit-toolbar.njk" import editToolbar %}
 {% from "components/legend.njk" import legend %}
 {% from "components/info-tabs.njk" import infoTabs %}
+{% from "components/speed-control.njk" import speedControl %}
+{% from "components/stepper-control.njk" import stepperControl %}
 
 <link rel="stylesheet" href="static/css/knn.css">
 
 <!-- Main Content: Canvas + Controls (left) + Info (right) -->
 <div class="row" id="main-content">
+    {% include "components/share-button.njk" %}
     <!-- Left Column: Classification Canvas + Controls -->
     <div class="col-md-7">
         <div class="panel panel-default">
@@ -106,11 +109,7 @@ cardOrder: 3
                     <div class="knn-option-group">
                         <div class="option-row">
                             <label>K:</label>
-                            <div class="k-stepper">
-                                <button id="k-minus" class="btn btn-xs btn-default" title="Decrease K">−</button>
-                                <input type="text" id="k-value" class="k-input" value="3" readonly>
-                                <button id="k-plus" class="btn btn-xs btn-default" title="Increase K">+</button>
-                            </div>
+                            {{ stepperControl(id='k', value='3', title='K') }}
                         </div>
                         <label class="checkbox-label"><input type="checkbox" id="show-boundaries"> Boundaries</label>
                         <label class="checkbox-label"><input type="checkbox" id="weighted-knn"> Weighted</label>
@@ -135,10 +134,7 @@ cardOrder: 3
                             <i class="fa fa-refresh"></i>
                         </button>
                     </div>
-                    <div class="speed-control">
-                        <i class="fa fa-tachometer"></i>
-                        <input type="range" id="speed-slider" min="1" max="10" value="5">
-                    </div>
+                    {{ speedControl() }}
                 </div>
             </div>
         </div>

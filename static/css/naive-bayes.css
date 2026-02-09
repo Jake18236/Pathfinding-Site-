@@ -1,0 +1,500 @@
+/**
+ * Naive Bayes Classifier Visualizer Styles
+ *
+ * Visualization-specific styles only. Common styles are in visualizations.css.
+ */
+
+/* ============================================
+   Custom Properties
+   ============================================ */
+:root {
+    --nb-spam-color: #dc3545;
+    --nb-spam-bg: rgba(220, 53, 69, 0.15);
+    --nb-spam-border: #dc3545;
+    --nb-ham-color: #28a745;
+    --nb-ham-bg: rgba(40, 167, 69, 0.15);
+    --nb-ham-border: #28a745;
+    --nb-bar-track: #e9ecef;
+    --nb-word-highlight: rgba(0, 123, 255, 0.08);
+    --nb-positive-ratio: #dc3545;
+    --nb-negative-ratio: #28a745;
+    --nb-neutral-ratio: #6c757d;
+}
+
+[data-theme="gruvbox-dark"] {
+    --nb-spam-color: var(--gruvbox-red);
+    --nb-spam-bg: rgba(251, 73, 52, 0.2);
+    --nb-spam-border: var(--gruvbox-red);
+    --nb-ham-color: var(--gruvbox-green);
+    --nb-ham-bg: rgba(184, 187, 38, 0.2);
+    --nb-ham-border: var(--gruvbox-green);
+    --nb-bar-track: var(--gruvbox-bg1);
+    --nb-word-highlight: rgba(131, 165, 152, 0.1);
+    --nb-positive-ratio: var(--gruvbox-red);
+    --nb-negative-ratio: var(--gruvbox-green);
+    --nb-neutral-ratio: var(--gruvbox-gray);
+}
+
+/* ============================================
+   Panel Header
+   ============================================ */
+.result-badge {
+    transition: all 0.3s ease;
+}
+
+.result-badge.spam {
+    background: var(--nb-spam-bg);
+    color: var(--nb-spam-color);
+    border-color: var(--nb-spam-border);
+}
+
+.result-badge.ham {
+    background: var(--nb-ham-bg);
+    color: var(--nb-ham-color);
+    border-color: var(--nb-ham-border);
+}
+
+/* ============================================
+   Classification Input
+   ============================================ */
+.classify-input-group {
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+    margin-bottom: 12px;
+}
+
+.nb-textarea {
+    font-size: 13px;
+    resize: vertical;
+    min-height: 50px;
+    flex: 1;
+}
+
+.nb-classify-btn {
+    white-space: nowrap;
+    padding: 8px 16px;
+    min-height: 50px;
+}
+
+/* ============================================
+   Result Display Bars
+   ============================================ */
+.result-display {
+    margin-bottom: 12px;
+}
+
+.result-bar-group {
+    margin-bottom: 8px;
+}
+
+.result-bar-group:last-child {
+    margin-bottom: 0;
+}
+
+.result-label {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 4px;
+    font-size: 12px;
+}
+
+.result-class {
+    font-weight: 600;
+}
+
+.spam-label {
+    color: var(--nb-spam-color);
+}
+
+.ham-label {
+    color: var(--nb-ham-color);
+}
+
+.result-prob {
+    font-family: var(--viz-mono-font);
+    font-weight: 600;
+    font-size: 13px;
+}
+
+.result-bar-track {
+    height: 20px;
+    background: var(--nb-bar-track);
+    border-radius: 4px;
+    overflow: hidden;
+    position: relative;
+}
+
+.result-bar {
+    height: 100%;
+    border-radius: 4px;
+    transition: width 0.4s ease;
+    min-width: 0;
+}
+
+.spam-bar {
+    background: linear-gradient(90deg, var(--nb-spam-color), rgba(220, 53, 69, 0.7));
+}
+
+.ham-bar {
+    background: linear-gradient(90deg, var(--nb-ham-color), rgba(40, 167, 69, 0.7));
+}
+
+[data-theme="gruvbox-dark"] .spam-bar {
+    background: linear-gradient(90deg, var(--gruvbox-red), rgba(251, 73, 52, 0.6));
+}
+
+[data-theme="gruvbox-dark"] .ham-bar {
+    background: linear-gradient(90deg, var(--gruvbox-green), rgba(184, 187, 38, 0.6));
+}
+
+/* ============================================
+   Prior/Posterior Canvas
+   ============================================ */
+.prior-posterior-section {
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 1px solid var(--viz-border);
+}
+
+.prior-posterior-header {
+    margin-bottom: 8px;
+}
+
+.section-label {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--viz-text-muted);
+}
+
+#prior-posterior-canvas {
+    display: block;
+    width: 100%;
+    height: 100px;
+    background: var(--viz-canvas-bg);
+    border-radius: 4px;
+}
+
+/* ============================================
+   Word Probabilities Table
+   ============================================ */
+.word-count-badge {
+    font-size: 11px;
+    font-weight: normal;
+}
+
+.word-table-wrapper {
+    max-height: 300px;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+.word-prob-table {
+    font-size: 12px;
+    margin-bottom: 0;
+}
+
+.word-prob-table thead th {
+    position: sticky;
+    top: 0;
+    background: var(--viz-bg);
+    z-index: 1;
+    cursor: pointer;
+    user-select: none;
+    white-space: nowrap;
+    font-size: 11px;
+    border-bottom: 2px solid var(--viz-border);
+}
+
+.word-prob-table thead th:hover {
+    background: var(--viz-hover-bg);
+}
+
+.word-prob-table thead th .fa-sort {
+    opacity: 0.4;
+    font-size: 10px;
+    margin-left: 3px;
+}
+
+.word-prob-table thead th.sort-active .fa-sort {
+    opacity: 1;
+}
+
+.word-prob-table td {
+    font-family: var(--viz-mono-font);
+    font-size: 11px;
+    padding: 4px 8px;
+    vertical-align: middle;
+}
+
+.word-prob-table td:first-child {
+    font-family: inherit;
+    font-weight: 500;
+}
+
+.word-prob-table tr.word-highlight {
+    background: var(--nb-word-highlight);
+}
+
+.ratio-positive {
+    color: var(--nb-positive-ratio);
+    font-weight: 600;
+}
+
+.ratio-negative {
+    color: var(--nb-negative-ratio);
+    font-weight: 600;
+}
+
+.ratio-neutral {
+    color: var(--nb-neutral-ratio);
+}
+
+/* ============================================
+   Training Data Panel
+   ============================================ */
+.training-list-wrapper {
+    max-height: 250px;
+    overflow-y: auto;
+    margin-bottom: 12px;
+}
+
+.training-list {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.training-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 12px;
+    background: var(--viz-hover-bg);
+    border-left: 3px solid transparent;
+}
+
+.training-item.spam {
+    border-left-color: var(--nb-spam-color);
+}
+
+.training-item.ham {
+    border-left-color: var(--nb-ham-color);
+}
+
+.training-item-label {
+    font-weight: 600;
+    font-size: 10px;
+    text-transform: uppercase;
+    min-width: 36px;
+}
+
+.training-item-label.spam {
+    color: var(--nb-spam-color);
+}
+
+.training-item-label.ham {
+    color: var(--nb-ham-color);
+}
+
+.training-item-text {
+    flex: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    color: var(--viz-text);
+}
+
+.training-item-remove {
+    cursor: pointer;
+    opacity: 0.5;
+    font-size: 11px;
+    color: var(--viz-text-muted);
+}
+
+.training-item-remove:hover {
+    opacity: 1;
+    color: var(--viz-danger-border);
+}
+
+/* Add Training Section */
+.add-training-section {
+    padding-top: 10px;
+    border-top: 1px solid var(--viz-border);
+}
+
+.add-training-section h5 {
+    font-size: 12px;
+    font-weight: 600;
+    margin: 0 0 8px 0;
+    color: var(--viz-text-muted);
+}
+
+.add-training-row {
+    display: flex;
+    gap: 8px;
+    align-items: flex-start;
+}
+
+.add-training-row textarea {
+    flex: 1;
+    font-size: 12px;
+    min-height: 30px;
+}
+
+.add-training-controls {
+    display: flex;
+    gap: 4px;
+    align-items: center;
+}
+
+.add-training-controls select {
+    width: auto;
+    font-size: 12px;
+    padding: 3px 6px;
+}
+
+/* ============================================
+   Controls Panel
+   ============================================ */
+.nb-controls-panel {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.nb-options-col {
+    flex: 1;
+}
+
+.nb-options-col .option-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 6px;
+}
+
+.nb-options-col .option-row label {
+    font-size: 12px;
+    margin: 0;
+    white-space: nowrap;
+    min-width: 140px;
+}
+
+.nb-options-col .option-row input[type="range"] {
+    flex: 1;
+    max-width: 120px;
+}
+
+.nb-actions-col {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+/* ============================================
+   Info Panel Content
+   ============================================ */
+.algorithm-steps {
+    padding-left: 20px;
+    font-size: 13px;
+    line-height: 1.8;
+}
+
+.algorithm-steps li {
+    margin-bottom: 4px;
+}
+
+.interaction-list {
+    padding-left: 20px;
+    font-size: 13px;
+    line-height: 1.6;
+}
+
+.interaction-list li {
+    margin-bottom: 6px;
+}
+
+/* ============================================
+   Log Probability Display
+   ============================================ */
+.log-prob-row {
+    display: flex;
+    justify-content: space-between;
+    font-size: 11px;
+    font-family: var(--viz-mono-font);
+    color: var(--viz-text-muted);
+    padding: 2px 0;
+}
+
+.log-prob-section {
+    margin-top: 8px;
+    padding: 8px;
+    background: var(--viz-hover-bg);
+    border-radius: 4px;
+    font-size: 11px;
+}
+
+.log-prob-section .log-prob-header {
+    font-weight: 600;
+    margin-bottom: 4px;
+    color: var(--viz-text);
+}
+
+.log-prob-term {
+    display: flex;
+    justify-content: space-between;
+    padding: 1px 0;
+    font-family: var(--viz-mono-font);
+}
+
+.log-prob-term.total {
+    border-top: 1px solid var(--viz-border);
+    margin-top: 4px;
+    padding-top: 4px;
+    font-weight: 600;
+}
+
+/* ============================================
+   Responsive
+   ============================================ */
+@media (max-width: 992px) {
+    .classify-input-group {
+        flex-direction: column;
+    }
+
+    .nb-classify-btn {
+        min-height: auto;
+        width: 100%;
+    }
+
+    .nb-controls-panel {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .nb-options-col .option-row {
+        flex-wrap: wrap;
+    }
+}
+
+@media (max-width: 768px) {
+    .word-table-wrapper {
+        max-height: 200px;
+    }
+
+    .training-list-wrapper {
+        max-height: 150px;
+    }
+
+    .add-training-row {
+        flex-direction: column;
+    }
+
+    .add-training-controls {
+        width: 100%;
+    }
+}

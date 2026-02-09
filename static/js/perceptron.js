@@ -23,9 +23,9 @@
     const STEP_PHASES = ['activation', 'prediction', 'update', 'redraw'];
 
     // ============================================
-    // Helpers
+    // Helpers (clamp assigned on load after VizLib is available)
     // ============================================
-    const clamp = (value, min, max) => Math.max(min, Math.min(max, value));
+    let clamp;
 
     const toSigned = (label) => (label === 1 ? 1 : -1);
     const toLabel = (sign) => (sign === 1 ? 1 : 0);
@@ -928,6 +928,7 @@
     }
 
     window.addEventListener('load', () => {
+        clamp = VizLib.MathUtils.clamp;
         new PerceptronViz();
     });
 })();

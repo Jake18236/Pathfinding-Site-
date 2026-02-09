@@ -1,0 +1,286 @@
+/**
+ * CNN Visualizer Styles
+ * Visualization-specific styles only. Common styles are in visualizations.css.
+ */
+
+/* ============================================
+   CSS Custom Properties
+   ============================================ */
+:root {
+    --cnn-cell-border: #bbb;
+    --cnn-cell-bg: #fff;
+    --cnn-highlight: rgba(255, 165, 0, 0.45);
+    --cnn-highlight-border: #ff8c00;
+    --cnn-output-positive: #1565c0;
+    --cnn-output-zero: #ffffff;
+    --cnn-output-negative: #c62828;
+    --cnn-input-low: #000000;
+    --cnn-input-high: #ffffff;
+    --cnn-kernel-bg: #fff;
+    --cnn-kernel-border: #ccc;
+    --cnn-kernel-focus: #ff8c00;
+    --cnn-computation-bg: #f8f9fa;
+    --cnn-computation-border: #dee2e6;
+    --cnn-current-dot: #ff8c00;
+    --cnn-pooling-max: #1976d2;
+    --cnn-pooling-avg: #388e3c;
+}
+
+[data-theme="gruvbox-dark"] {
+    --cnn-cell-border: #504945;
+    --cnn-cell-bg: #3c3836;
+    --cnn-highlight: rgba(254, 128, 25, 0.45);
+    --cnn-highlight-border: #fe8019;
+    --cnn-output-positive: #83a598;
+    --cnn-output-zero: #282828;
+    --cnn-output-negative: #fb4934;
+    --cnn-input-low: #1d2021;
+    --cnn-input-high: #ebdbb2;
+    --cnn-kernel-bg: #3c3836;
+    --cnn-kernel-border: #504945;
+    --cnn-kernel-focus: #fe8019;
+    --cnn-computation-bg: #32302f;
+    --cnn-computation-border: #504945;
+    --cnn-current-dot: #fe8019;
+    --cnn-pooling-max: #83a598;
+    --cnn-pooling-avg: #b8bb26;
+}
+
+/* ============================================
+   Canvas
+   ============================================ */
+#input-canvas,
+#feature-canvas {
+    display: block;
+    width: 100%;
+    cursor: default;
+    background: var(--viz-canvas-bg);
+}
+
+#maxpool-canvas,
+#avgpool-canvas {
+    display: block;
+    width: 100%;
+    background: var(--viz-canvas-bg);
+}
+
+/* ============================================
+   Filter Editor Panel
+   ============================================ */
+.cnn-filter-panel {
+    display: flex;
+    gap: 20px;
+    align-items: flex-start;
+}
+
+.cnn-filter-col {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    align-items: center;
+}
+
+.cnn-kernel-grid {
+    display: grid;
+    gap: 3px;
+}
+
+.cnn-kernel-grid.size-3 {
+    grid-template-columns: repeat(3, 1fr);
+}
+
+.cnn-kernel-grid.size-5 {
+    grid-template-columns: repeat(5, 1fr);
+}
+
+.cnn-kernel-input {
+    width: 50px;
+    height: 32px;
+    text-align: center;
+    font-family: var(--viz-mono-font);
+    font-size: 12px;
+    font-weight: 600;
+    border: 1px solid var(--cnn-kernel-border);
+    border-radius: 3px;
+    background: var(--cnn-kernel-bg);
+    color: var(--viz-text);
+    padding: 0 2px;
+}
+
+.cnn-kernel-input::-webkit-outer-spin-button,
+.cnn-kernel-input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+.cnn-kernel-input[type=number] {
+    -moz-appearance: textfield;
+}
+
+.cnn-kernel-input:focus {
+    outline: none;
+    border-color: var(--cnn-kernel-focus);
+    box-shadow: 0 0 0 2px rgba(255, 140, 0, 0.25);
+}
+
+.cnn-preset-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    justify-content: center;
+    max-width: 240px;
+}
+
+.cnn-preset-buttons .btn.active {
+    background-color: var(--viz-active-bg);
+    border-color: var(--viz-active-border);
+    color: var(--viz-text);
+}
+
+/* ============================================
+   Computation Display
+   ============================================ */
+.cnn-computation-col {
+    flex: 1;
+    min-width: 0;
+}
+
+.cnn-computation-box {
+    background: var(--cnn-computation-bg);
+    border: 1px solid var(--cnn-computation-border);
+    border-radius: 4px;
+    padding: 10px;
+    font-family: var(--viz-mono-font);
+    font-size: 11px;
+    line-height: 1.6;
+    max-height: 160px;
+    overflow-y: auto;
+    white-space: pre-wrap;
+    word-break: break-all;
+    color: var(--viz-text);
+}
+
+.cnn-computation-box .comp-multiply {
+    color: var(--cnn-output-positive);
+}
+
+.cnn-computation-box .comp-result {
+    font-weight: bold;
+    color: var(--cnn-highlight-border);
+}
+
+/* ============================================
+   Controls Panel
+   ============================================ */
+.cnn-controls-panel {
+    display: flex;
+    gap: 20px;
+}
+
+.cnn-options-col {
+    flex: 1;
+}
+
+.cnn-actions-col {
+    width: 150px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    justify-content: center;
+}
+
+.cnn-actions-col .btn-toolbar {
+    display: flex;
+    gap: 6px;
+    flex-direction: column;
+}
+
+/* ============================================
+   Speed Control
+   ============================================ */
+.speed-control {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12px;
+    color: var(--viz-text-muted);
+}
+
+/* ============================================
+   Pooling Row
+   ============================================ */
+.cnn-pooling-row {
+    display: flex;
+    gap: 10px;
+    padding: 10px;
+}
+
+.cnn-pooling-cell {
+    flex: 1;
+    text-align: center;
+}
+
+.cnn-pooling-cell .control-label-sm {
+    display: block;
+    margin-bottom: 6px;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--viz-text-muted);
+}
+
+/* ============================================
+   Legend Overrides
+   ============================================ */
+.legend-color.cnn-input-cell {
+    background: linear-gradient(135deg, #000 0%, #fff 100%);
+    border: 1px solid var(--cnn-cell-border);
+}
+
+.legend-color.cnn-filter-window {
+    background-color: var(--cnn-highlight);
+    border: 2px solid var(--cnn-highlight-border);
+}
+
+.legend-dot.cnn-current-output {
+    background-color: var(--cnn-current-dot);
+}
+
+.control-label-sm {
+    font-size: 12px;
+    font-weight: 600;
+    margin: 0;
+}
+
+/* ============================================
+   Responsive
+   ============================================ */
+@media (max-width: 992px) {
+    .cnn-filter-panel {
+        flex-direction: column;
+    }
+
+    .cnn-controls-panel {
+        flex-direction: column;
+    }
+
+    .cnn-actions-col {
+        width: 100%;
+    }
+
+    .cnn-actions-col .btn-toolbar {
+        flex-direction: row;
+        justify-content: center;
+    }
+
+    .cnn-pooling-row {
+        flex-direction: column;
+    }
+}
+
+@media (max-width: 768px) {
+    .cnn-kernel-input {
+        width: 40px;
+        height: 28px;
+        font-size: 11px;
+    }
+}

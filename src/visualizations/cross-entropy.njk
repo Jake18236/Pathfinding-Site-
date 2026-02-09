@@ -33,12 +33,13 @@ cardOrder: 11
 
 <!-- Main Content: 2-column layout -->
 <div class="row" id="main-content">
+    {% include "components/share-button.njk" %}
     <!-- Left Column: Histogram -->
     <div class="col-md-8">
         <div class="panel panel-default">
             <!-- Header with mode toggle and loss badge -->
             <div class="panel-heading">
-                <div class="panel-heading-flex">
+                <div class="panel-heading-content">
                     <span class="panel-title-text"><i class="fa fa-bar-chart"></i> Distribution Comparison</span>
                     <div class="header-controls">
                         <div class="btn-group btn-group-sm mode-toggle" role="group">

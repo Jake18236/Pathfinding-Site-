@@ -1,0 +1,209 @@
+---
+layout: base.njk
+title: Neural Network Visualizer
+icon: fa-brain
+navigation:
+  - name: "Home"
+    link: "index.html"
+    icon: "fa-home"
+permalink: "neural-network.html"
+extraScript: "static/js/neural-network.js"
+tags: visualization
+cardTitle: "Feed-Forward Neural Network"
+cardIcon: fa-brain
+cardDescription: "Build and train neural networks interactively. Watch forward passes, decision boundaries evolve, and explore activation functions."
+cardTags:
+  - Deep Learning
+  - Neural Networks
+cardHaystack: "neural network feed-forward feedforward deep learning activation function relu sigmoid tanh decision boundary XOR"
+cardOrder: 15
+---
+
+{% from "components/legend.njk" import legend %}
+{% from "components/info-tabs.njk" import infoTabs %}
+{% from "components/metrics-panel.njk" import metricsPanel %}
+{% from "components/speed-control.njk" import speedControl %}
+{% from "components/stepper-control.njk" import stepperControl %}
+
+<link rel="stylesheet" href="static/css/neural-network.css">
+
+<div class="row" id="main-content">
+    {% include "components/share-button.njk" %}
+    <!-- Left Column: Canvases + Controls -->
+    <div class="col-md-7">
+        <!-- Decision Boundary Panel -->
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <div class="panel-heading-content">
+                    <span class="panel-title-text"><i class="fa fa-th"></i> Decision Boundary</span>
+                </div>
+            </div>
+            <div class="panel-body canvas-panel-body">
+                <div class="canvas-wrapper">
+                    <canvas id="boundary-canvas" width="560" height="400"></canvas>
+                </div>
+            </div>
+            <div class="panel-footer legend-footer">
+                {{ legend(
+                    items=[
+                        {class: 'class-0', label: 'Class 0'},
+                        {class: 'class-1', label: 'Class 1'},
+                        {class: 'nn-boundary', label: 'Boundary', type: 'line'}
+                    ]
+                ) }}
+            </div>
+        </div>
+
+        <!-- Network Architecture Panel -->
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <div class="panel-heading-content">
+                    <span class="panel-title-text"><i class="fa fa-brain"></i> Network Architecture</span>
+                </div>
+            </div>
+            <div class="panel-body canvas-panel-body">
+                <div class="canvas-wrapper">
+                    <canvas id="network-canvas" width="560" height="200"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Controls Panel -->
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title"><i class="fa fa-sliders"></i> Controls</h3>
+            </div>
+            <div class="panel-body compact-panel nn-controls-panel">
+                <div class="nn-options-col">
+                    <div class="nn-option-group">
+                        <div class="option-row">
+                            <label>Dataset:</label>
+                            <select id="dataset-select" class="form-control input-sm">
+                                <option value="xor" selected>XOR</option>
+                                <option value="moons">Moons</option>
+                                <option value="circles">Circles</option>
+                                <option value="spiral">Spiral</option>
+                                <option value="blobs">Blobs</option>
+                            </select>
+                        </div>
+                        <div class="option-row">
+                            <label>Activation:</label>
+                            <select id="activation-select" class="form-control input-sm">
+                                <option value="relu" selected>ReLU</option>
+                                <option value="sigmoid">Sigmoid</option>
+                                <option value="tanh">Tanh</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="nn-option-group">
+                        <div class="option-row">
+                            <label>Layers:</label>
+                            {{ stepperControl(id='layers', value='1', title='layer') }}
+                        </div>
+                        <div class="option-row">
+                            <label>Neurons:</label>
+                            {{ stepperControl(id='neurons', value='4', title='neurons') }}
+                        </div>
+                    </div>
+                    <div class="nn-option-group">
+                        <div class="option-row">
+                            <label>LR:</label>
+                            <input type="range" id="lr-slider" min="0.001" max="0.5" step="0.001" value="0.05">
+                            <span id="lr-value" class="range-value">0.050</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="nn-playback-col">
+                    <div class="btn-toolbar" role="toolbar">
+                        <button id="btn-train" class="btn btn-sm btn-success" title="Train">
+                            <i class="fa fa-play"></i>
+                        </button>
+                        <button id="btn-pause" class="btn btn-sm btn-warning" title="Pause" disabled>
+                            <i class="fa fa-pause"></i>
+                        </button>
+                        <button id="btn-step" class="btn btn-sm btn-info" title="Step (1 epoch)">
+                            <i class="fa fa-step-forward"></i>
+                        </button>
+                        <button id="btn-reset" class="btn btn-sm btn-danger" title="Reset">
+                            <i class="fa fa-refresh"></i>
+                        </button>
+                    </div>
+                    {{ speedControl() }}
+                    <div class="playback-status">
+                        <span id="epoch-display">Epoch: 0</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Right Column: Info + Metrics -->
+    <div class="col-md-5">
+        {{ infoTabs(
+            tabs=[
+                {id: 'about', icon: 'fa-info-circle', label: 'About', active: true, content: '
+                    <h4><i class="fa fa-brain"></i> Feed-Forward Neural Network</h4>
+                    <p>
+                        A feed-forward neural network passes inputs through layers of
+                        interconnected neurons, each applying a weighted sum followed by a
+                        non-linear activation function. The network learns by adjusting
+                        weights via backpropagation to minimize classification error.
+                    </p>
+                    <h4><i class="fa fa-mouse-pointer"></i> How to Use</h4>
+                    <ul class="interaction-list">
+                        <li><strong>Press Play</strong> to train the network continuously</li>
+                        <li><strong>Step</strong> to advance one epoch at a time</li>
+                        <li><strong>Click</strong> on the decision boundary canvas to add points</li>
+                        <li><strong>Adjust layers/neurons</strong> to change the architecture</li>
+                        <li><strong>Switch activation</strong> to see ReLU vs Sigmoid vs Tanh</li>
+                        <li><strong>Try XOR or Spiral</strong> to see why depth matters</li>
+                    </ul>
+                '},
+                {id: 'algorithm', icon: 'fa-book', label: 'Algorithm', content: '
+                    <h4><i class="fa fa-cogs"></i> Forward Pass</h4>
+                    <ol class="algorithm-steps">
+                        <li>Input features <code>[x1, x2]</code> enter the network</li>
+                        <li>Each neuron computes <code>z = Wx + b</code></li>
+                        <li>Apply activation: <code>a = f(z)</code></li>
+                        <li>Output layer uses softmax for class probabilities</li>
+                        <li>Predict the class with highest probability</li>
+                    </ol>
+                    <h4><i class="fa fa-refresh"></i> Backpropagation</h4>
+                    <ol class="algorithm-steps">
+                        <li>Compute cross-entropy loss at output</li>
+                        <li>Propagate gradients backward through layers</li>
+                        <li>Update weights: <code>W -= lr * dL/dW</code></li>
+                        <li>Repeat for each training sample (SGD)</li>
+                    </ol>
+                '},
+                {id: 'math', icon: 'fa-superscript', label: 'Math', content: '
+                    <h4><i class="fa fa-superscript"></i> Activation Functions</h4>
+                    <ul class="formula-list">
+                        <li><strong>ReLU</strong>: <code>f(x) = max(0, x)</code></li>
+                        <li><strong>Sigmoid</strong>: <code>f(x) = 1 / (1 + e^-x)</code></li>
+                        <li><strong>Tanh</strong>: <code>f(x) = (e^x - e^-x) / (e^x + e^-x)</code></li>
+                    </ul>
+                    <h4><i class="fa fa-line-chart"></i> Cross-Entropy Loss</h4>
+                    <p><code>L = -[y log(p) + (1-y) log(1-p)]</code></p>
+                    <p class="formula-desc">Measures how far predicted probabilities are from true labels.</p>
+                    <h4><i class="fa fa-arrow-down"></i> Weight Update</h4>
+                    <p><code>W = W - lr * dL/dW</code></p>
+                    <p class="formula-desc">Gradient descent moves weights in the direction that reduces loss.</p>
+                '}
+            ]
+        ) }}
+
+        {{ metricsPanel(
+            title='Metrics',
+            metrics=[
+                {icon: 'fa-repeat', label: 'Epoch', id: 'metric-epoch', default: '0'},
+                {icon: 'fa-line-chart', label: 'Loss', id: 'metric-loss', default: '-'},
+                {icon: 'fa-check-circle', label: 'Accuracy', id: 'metric-accuracy', default: '0%'},
+                {icon: 'fa-sitemap', label: 'Architecture', id: 'metric-architecture', default: '2-4-2'},
+                {icon: 'fa-sliders', label: 'Learning Rate', id: 'metric-lr', default: '0.050'},
+                {icon: 'fa-info-circle', label: 'Status', id: 'metric-status', default: 'Ready'}
+            ]
+        ) }}
+    </div>
+</div>

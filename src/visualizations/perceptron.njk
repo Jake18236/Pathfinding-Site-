@@ -22,10 +22,13 @@ cardOrder: 9
 {% from "components/legend.njk" import legend %}
 {% from "components/info-tabs.njk" import infoTabs %}
 {% from "components/metrics-panel.njk" import metricsPanel %}
+{% from "components/speed-control.njk" import speedControl %}
+{% from "components/stepper-control.njk" import stepperControl %}
 
 <link rel="stylesheet" href="static/css/perceptron.css">
 
 <div class="row" id="main-content">
+    {% include "components/share-button.njk" %}
     <!-- Left Column: Canvas + Controls -->
     <div class="col-md-7">
         <div class="panel panel-default">
@@ -89,11 +92,7 @@ cardOrder: 9
                         </div>
                         <div class="option-row">
                             <label>Epochs:</label>
-                            <div class="stepper-control">
-                                <button id="epochs-minus" class="btn btn-xs btn-default" title="Decrease epochs">−</button>
-                                <input type="text" id="epochs-value" class="stepper-input" value="5" readonly>
-                                <button id="epochs-plus" class="btn btn-xs btn-default" title="Increase epochs">+</button>
-                            </div>
+                            {{ stepperControl(id='epochs', value='5', title='epochs') }}
                         </div>
                         <label class="checkbox-label"><input type="checkbox" id="shuffle-toggle" checked> Shuffle each epoch</label>
                     </div>
@@ -122,10 +121,7 @@ cardOrder: 9
                             <i class="fa fa-refresh"></i>
                         </button>
                     </div>
-                    <div class="speed-control">
-                        <i class="fa fa-tachometer"></i>
-                        <input type="range" id="speed-slider" min="1" max="10" value="6">
-                    </div>
+                    {{ speedControl(value='6') }}
                     <div class="playback-status">
                         <span id="playback-step">Step: 0 / 0</span>
                     </div>

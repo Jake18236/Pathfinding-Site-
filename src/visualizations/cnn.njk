@@ -1,0 +1,260 @@
+---
+layout: base.njk
+title: CNN Visualizer
+icon: fa-th
+navigation:
+  - name: "Home"
+    link: "index.html"
+    icon: "fa-home"
+permalink: "cnn.html"
+extraScript: "static/js/cnn.js"
+tags: visualization
+cardTitle: "Convolutional Neural Networks"
+cardIcon: fa-th
+cardDescription: "Watch convolution filters slide over images, producing feature maps. Explore pooling operations and custom kernels."
+cardTags:
+  - Deep Learning
+  - CNN
+cardHaystack: "convolutional neural network cnn filter kernel feature map pooling convolution stride padding"
+cardOrder: 20
+---
+
+{% from "components/legend.njk" import legend %}
+{% from "components/info-tabs.njk" import infoTabs %}
+{% from "components/metrics-panel.njk" import metricsPanel %}
+
+<link rel="stylesheet" href="static/css/cnn.css">
+
+<div class="row" id="main-content">
+    {% include "components/share-button.njk" %}
+    <!-- Left Column: Canvas + Controls -->
+    <div class="col-md-7">
+        <!-- Input Image Panel -->
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <div class="panel-heading-content">
+                    <span class="panel-title-text"><i class="fa fa-picture-o"></i> Input Image</span>
+                    <span class="viz-badge" id="input-badge">8 &times; 8</span>
+                </div>
+            </div>
+            <div class="panel-body canvas-panel-body">
+                <div class="canvas-wrapper">
+                    <canvas id="input-canvas" width="280" height="280"></canvas>
+                </div>
+            </div>
+            <div class="panel-footer legend-footer">
+                {{ legend(
+                    items=[
+                        {class: 'cnn-input-cell', label: 'Input Pixel'},
+                        {class: 'cnn-filter-window', label: 'Filter Window'},
+                        {class: 'cnn-current-output', label: 'Current Output', type: 'dot'}
+                    ]
+                ) }}
+            </div>
+        </div>
+
+        <!-- Feature Map Panel -->
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <div class="panel-heading-content">
+                    <span class="panel-title-text"><i class="fa fa-th"></i> Feature Map (Convolution Output)</span>
+                    <span class="viz-badge" id="output-badge">6 &times; 6</span>
+                </div>
+            </div>
+            <div class="panel-body canvas-panel-body">
+                <div class="canvas-wrapper">
+                    <canvas id="feature-canvas" width="280" height="280"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Filter Editor Panel -->
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title"><i class="fa fa-filter"></i> Filter / Kernel Editor</h3>
+            </div>
+            <div class="panel-body compact-panel cnn-filter-panel">
+                <div class="cnn-filter-col">
+                    <div class="cnn-kernel-grid" id="kernel-grid">
+                        <!-- Populated by JS -->
+                    </div>
+                    <div class="cnn-preset-buttons" id="preset-buttons">
+                        <button class="btn btn-xs btn-default" data-preset="edge-h" title="Horizontal Edge Detection">Edge H</button>
+                        <button class="btn btn-xs btn-default" data-preset="edge-v" title="Vertical Edge Detection">Edge V</button>
+                        <button class="btn btn-xs btn-default" data-preset="sharpen" title="Sharpen">Sharpen</button>
+                        <button class="btn btn-xs btn-default" data-preset="blur" title="Box Blur">Blur</button>
+                        <button class="btn btn-xs btn-default" data-preset="emboss" title="Emboss">Emboss</button>
+                        <button class="btn btn-xs btn-default active" data-preset="identity" title="Identity (no change)">Identity</button>
+                        <button class="btn btn-xs btn-default" data-preset="custom" title="Custom (edit values)">Custom</button>
+                    </div>
+                </div>
+                <div class="cnn-computation-col" id="computation-display">
+                    <label class="control-label-sm">Current Computation</label>
+                    <div class="cnn-computation-box" id="computation-box">
+                        <span class="text-muted">Press Animate or Step to begin</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Controls Panel -->
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title"><i class="fa fa-sliders"></i> Controls</h3>
+            </div>
+            <div class="panel-body compact-panel cnn-controls-panel">
+                <div class="cnn-options-col">
+                    <div class="option-row">
+                        <label>Input Image:</label>
+                        <select id="input-select" class="form-control input-sm">
+                            <option value="checkerboard" selected>Checkerboard</option>
+                            <option value="diagonal">Diagonal</option>
+                            <option value="cross">Cross</option>
+                            <option value="random">Random</option>
+                            <option value="gradient">Gradient</option>
+                        </select>
+                    </div>
+                    <div class="option-row">
+                        <label>Filter Size:</label>
+                        <select id="filter-size-select" class="form-control input-sm">
+                            <option value="3" selected>3 &times; 3</option>
+                            <option value="5">5 &times; 5</option>
+                        </select>
+                    </div>
+                    <div class="option-row">
+                        <label>Stride:</label>
+                        <select id="stride-select" class="form-control input-sm">
+                            <option value="1" selected>1</option>
+                            <option value="2">2</option>
+                        </select>
+                    </div>
+                    <div class="option-row">
+                        <label>Padding:</label>
+                        <select id="padding-select" class="form-control input-sm">
+                            <option value="none" selected>None (Valid)</option>
+                            <option value="same">Same (Zero-pad)</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="cnn-actions-col">
+                    <div class="btn-toolbar" role="toolbar">
+                        <button id="btn-animate" class="btn btn-sm btn-success" title="Animate convolution">
+                            <i class="fa fa-play"></i> Animate
+                        </button>
+                        <button id="btn-step" class="btn btn-sm btn-info" title="Step forward one position">
+                            <i class="fa fa-step-forward"></i> Step
+                        </button>
+                        <button id="btn-reset" class="btn btn-sm btn-danger" title="Reset">
+                            <i class="fa fa-refresh"></i> Reset
+                        </button>
+                    </div>
+                    <div class="speed-control">
+                        <i class="fa fa-tachometer"></i>
+                        <input type="range" id="speed-slider" min="1" max="10" value="5">
+                        <span id="speed-value" class="range-value">5</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Right Column: Info + Metrics + Pooling -->
+    <div class="col-md-5">
+        {{ infoTabs(
+            tabs=[
+                {id: 'about', icon: 'fa-info-circle', label: 'About', active: true, content: '
+                    <h4><i class="fa fa-th"></i> Convolutional Neural Networks</h4>
+                    <p>
+                        A <strong>Convolutional Neural Network (CNN)</strong> learns spatial patterns
+                        in data by sliding small filters (kernels) across the input. Each filter
+                        detects a specific feature like edges, textures, or shapes.
+                    </p>
+                    <h4><i class="fa fa-mouse-pointer"></i> How to Use</h4>
+                    <ul class="interaction-list">
+                        <li><strong>Select an input image</strong> pattern from the dropdown</li>
+                        <li><strong>Choose a filter preset</strong> or edit kernel values directly</li>
+                        <li><strong>Press Animate</strong> to watch the filter slide across the input</li>
+                        <li><strong>Press Step</strong> to advance one position at a time</li>
+                        <li><strong>Adjust stride and padding</strong> to see how they affect output size</li>
+                    </ul>
+                '},
+                {id: 'algorithm', icon: 'fa-book', label: 'Algorithm', content: '
+                    <h4><i class="fa fa-book"></i> Convolution Steps</h4>
+                    <ol class="algorithm-list">
+                        <li>Place the filter at the top-left of the input</li>
+                        <li>Multiply each filter weight by the corresponding input value</li>
+                        <li>Sum all products to get one output value</li>
+                        <li>Slide the filter by <em>stride</em> pixels and repeat</li>
+                        <li>Continue until the filter has covered the entire input</li>
+                    </ol>
+                    <h4><i class="fa fa-compress"></i> Pooling</h4>
+                    <ul class="formula-list">
+                        <li><strong>Max Pooling</strong> &mdash; takes the maximum value in each window</li>
+                        <li><strong>Average Pooling</strong> &mdash; takes the mean of values in each window</li>
+                        <li>Pooling reduces spatial dimensions and provides translation invariance</li>
+                    </ul>
+                '},
+                {id: 'math', icon: 'fa-superscript', label: 'Math', content: '
+                    <h4><i class="fa fa-superscript"></i> Convolution Formula</h4>
+                    <div class="math-formula-display">
+                        <code>O(i,j) = &sum;<sub>m</sub> &sum;<sub>n</sub> I(i&middot;s+m, j&middot;s+n) &middot; K(m,n)</code>
+                    </div>
+                    <p class="formula-note">
+                        Where I is the input, K is the kernel, s is stride, and O is the output feature map.
+                    </p>
+                    <h4><i class="fa fa-arrows-alt"></i> Output Size Formula</h4>
+                    <div class="math-formula-display">
+                        <code>O<sub>size</sub> = &lfloor;(I<sub>size</sub> - K<sub>size</sub> + 2P) / S&rfloor; + 1</code>
+                    </div>
+                    <p class="formula-note">
+                        I<sub>size</sub> = input size, K<sub>size</sub> = kernel size, P = padding, S = stride.
+                    </p>
+                    <h4><i class="fa fa-cubes"></i> Parameters</h4>
+                    <ul class="formula-list">
+                        <li>A 3&times;3 kernel has <strong>9 learnable parameters</strong> (plus optional bias)</li>
+                        <li>The same kernel is applied at every spatial location (weight sharing)</li>
+                        <li>This drastically reduces parameters vs. fully connected layers</li>
+                    </ul>
+                '}
+            ]
+        ) }}
+
+        {{ metricsPanel(
+            title='Convolution Metrics',
+            icon='fa-bar-chart',
+            metrics=[
+                {icon: 'fa-picture-o', label: 'Input Size', id: 'metric-input-size', default: '8 x 8'},
+                {icon: 'fa-filter', label: 'Filter Size', id: 'metric-filter-size', default: '3 x 3'},
+                {icon: 'fa-th', label: 'Output Size', id: 'metric-output-size', default: '6 x 6'},
+                {icon: 'fa-arrows-h', label: 'Stride', id: 'metric-stride', default: '1'},
+                {icon: 'fa-expand', label: 'Padding', id: 'metric-padding', default: 'None'},
+                {icon: 'fa-arrow-down', label: 'Min Output', id: 'metric-min-val', default: '-'},
+                {icon: 'fa-arrow-up', label: 'Max Output', id: 'metric-max-val', default: '-'},
+                {icon: 'fa-info-circle', label: 'Status', id: 'metric-status', default: 'Ready'}
+            ]
+        ) }}
+
+        <!-- Pooling Panel -->
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title"><i class="fa fa-compress"></i> Pooling (2&times;2)</h3>
+            </div>
+            <div class="panel-body canvas-panel-body">
+                <div class="cnn-pooling-row">
+                    <div class="cnn-pooling-cell">
+                        <label class="control-label-sm">Max Pooling</label>
+                        <div class="canvas-wrapper">
+                            <canvas id="maxpool-canvas" width="140" height="140"></canvas>
+                        </div>
+                    </div>
+                    <div class="cnn-pooling-cell">
+                        <label class="control-label-sm">Average Pooling</label>
+                        <div class="canvas-wrapper">
+                            <canvas id="avgpool-canvas" width="140" height="140"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

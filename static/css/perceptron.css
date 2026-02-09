@@ -55,13 +55,6 @@
     gap: 6px;
 }
 
-.range-value {
-    min-width: 40px;
-    text-align: right;
-    font-family: var(--viz-mono-font);
-    font-size: 11px;
-}
-
 .checkbox-label {
     font-size: 12px;
     margin: 0;

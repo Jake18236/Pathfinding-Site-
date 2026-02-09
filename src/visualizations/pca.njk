@@ -1,0 +1,193 @@
+---
+layout: base.njk
+title: PCA Visualizer
+icon: fa-compress
+navigation:
+  - name: "Home"
+    link: "index.html"
+    icon: "fa-home"
+permalink: "pca.html"
+extraScript: "static/js/pca.js"
+tags: visualization
+cardTitle: "Principal Component Analysis"
+cardIcon: fa-compress
+cardDescription: "Visualize PCA with eigenvector directions, dimensionality reduction projections, and variance explained plots."
+cardTags:
+  - Dimensionality Reduction
+  - Unsupervised
+cardHaystack: "principal component analysis pca eigenvector eigenvalue variance explained dimensionality reduction projection scree plot"
+cardOrder: 22
+---
+
+{% from "components/legend.njk" import legend %}
+{% from "components/info-tabs.njk" import infoTabs %}
+{% from "components/metrics-panel.njk" import metricsPanel %}
+
+<link rel="stylesheet" href="static/css/pca.css">
+
+<div class="row" id="main-content">
+    {% include "components/share-button.njk" %}
+    <div class="col-md-7">
+        <!-- Data Space -->
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <div class="panel-heading-content">
+                    <span class="panel-title-text"><i class="fa fa-compress"></i> Data Space</span>
+                    <div class="edit-toolbar active" id="edit-toolbar">
+                        <div class="btn-group edit-mode-buttons" role="group">
+                            <button type="button" class="btn btn-sm btn-default active" data-mode="add" title="Add points">
+                                <i class="fa fa-plus"></i> Add
+                            </button>
+                            <button type="button" class="btn btn-sm btn-default" data-mode="delete" title="Delete points">
+                                <i class="fa fa-minus"></i> Delete
+                            </button>
+                        </div>
+                        <button id="btn-clear-points" class="btn btn-sm btn-danger" title="Clear all points">
+                            <i class="fa fa-trash"></i> Clear
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="panel-body canvas-panel-body">
+                <div class="canvas-wrapper">
+                    <canvas id="pca-canvas" width="560" height="400"></canvas>
+                    <div id="click-overlay" class="click-overlay">
+                        <span>Click to add data points</span>
+                    </div>
+                </div>
+            </div>
+            <div class="panel-footer legend-footer">
+                {{ legend(
+                    items=[
+                        {class: 'data-point', label: 'Data'},
+                        {class: 'pc1-line', label: 'PC1', type: 'line'},
+                        {class: 'pc2-line', label: 'PC2', type: 'line'},
+                        {class: 'projection-line', label: 'Projection', type: 'line'}
+                    ]
+                ) }}
+            </div>
+        </div>
+
+        <!-- Scree Plot -->
+        <div class="panel panel-default" id="scree-panel" style="display:none;">
+            <div class="panel-heading">
+                <h3 class="panel-title"><i class="fa fa-bar-chart"></i> Explained Variance</h3>
+            </div>
+            <div class="panel-body canvas-panel-body">
+                <div class="canvas-wrapper">
+                    <canvas id="scree-canvas" width="560" height="160"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Controls -->
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title"><i class="fa fa-sliders"></i> Controls</h3>
+            </div>
+            <div class="panel-body compact-panel pca-controls-panel">
+                <div class="pca-options-col">
+                    <div class="pca-option-group">
+                        <div class="option-row">
+                            <label>Dataset:</label>
+                            <select id="dataset-select" class="form-control input-sm">
+                                <option value="custom" selected>Custom (click to add)</option>
+                                <option value="correlated">Correlated</option>
+                                <option value="uncorrelated">Uncorrelated</option>
+                                <option value="anisotropic">Anisotropic</option>
+                                <option value="circular">Circular</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="pca-option-group">
+                        <div class="option-row">
+                            <label>Components:</label>
+                            <div class="btn-group" role="group">
+                                <button type="button" class="btn btn-sm btn-default" data-k="1">1</button>
+                                <button type="button" class="btn btn-sm btn-default active" data-k="2">2</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="pca-option-group">
+                        <label class="checkbox-label"><input type="checkbox" id="show-projections"> Show projections</label>
+                        <label class="checkbox-label"><input type="checkbox" id="show-mean" checked> Show mean</label>
+                        <label class="checkbox-label"><input type="checkbox" id="show-pc-axes" checked> Show PC axes</label>
+                    </div>
+                </div>
+                <div class="pca-playback-col">
+                    <button id="btn-compute" class="btn btn-sm btn-success" title="Compute PCA">
+                        <i class="fa fa-play"></i> Compute
+                    </button>
+                    <button id="btn-reset" class="btn btn-sm btn-danger" title="Reset">
+                        <i class="fa fa-refresh"></i> Reset
+                    </button>
+                    <div class="playback-status"><span id="playback-step">Ready</span></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-5">
+        {{ infoTabs(
+            tabs=[
+                {id: 'about', icon: 'fa-info-circle', label: 'About', active: true, content: '
+                    <h4><i class="fa fa-compress"></i> Principal Component Analysis</h4>
+                    <p>
+                        PCA finds the directions of maximum variance in data and projects
+                        it onto a lower-dimensional subspace. The principal components are
+                        orthogonal eigenvectors of the covariance matrix.
+                    </p>
+                    <h4><i class="fa fa-mouse-pointer"></i> How to Use</h4>
+                    <ul class="interaction-list">
+                        <li><strong>Click canvas</strong> to add data points</li>
+                        <li><strong>Press Compute</strong> to find principal components</li>
+                        <li><strong>Select 1 component</strong> to see 2D→1D projection</li>
+                        <li><strong>Toggle projections</strong> to see projection lines</li>
+                        <li><strong>Try different datasets</strong> to see how PC directions change</li>
+                    </ul>
+                '},
+                {id: 'algorithm', icon: 'fa-book', label: 'Algorithm', content: '
+                    <h4><i class="fa fa-cogs"></i> PCA Steps</h4>
+                    <ol class="algorithm-list">
+                        <li>Center the data (subtract mean)</li>
+                        <li>Compute covariance matrix <code>C = (1/n)X<sup>T</sup>X</code></li>
+                        <li>Find eigenvectors and eigenvalues of C</li>
+                        <li>Sort by eigenvalue (descending)</li>
+                        <li>Project data onto top k eigenvectors</li>
+                    </ol>
+                '},
+                {id: 'math', icon: 'fa-superscript', label: 'Math', content: '
+                    <h4><i class="fa fa-superscript"></i> Covariance Matrix</h4>
+                    <code>C = (1/n) Σᵢ (xᵢ − μ)(xᵢ − μ)<sup>T</sup></code>
+                    <p class="formula-desc">Measures how features vary together.</p>
+
+                    <h4>Eigendecomposition</h4>
+                    <code>Cv = λv</code>
+                    <p class="formula-desc">Eigenvectors v are the principal directions, eigenvalues λ are the variances.</p>
+
+                    <h4>Explained Variance Ratio</h4>
+                    <code>ratio_k = λ_k / Σᵢ λᵢ</code>
+                    <p class="formula-desc">Fraction of total variance captured by component k.</p>
+
+                    <h4>Reconstruction</h4>
+                    <code>x̂ = W_k W_k<sup>T</sup>(x − μ) + μ</code>
+                    <p class="formula-desc">Approximate original data using k components.</p>
+                '}
+            ]
+        ) }}
+
+        {{ metricsPanel(
+            title='PCA Metrics',
+            icon='fa-bar-chart',
+            metrics=[
+                {icon: 'fa-database', label: 'Points', id: 'metric-points', default: '0'},
+                {icon: 'fa-arrows-alt', label: 'PC1 Variance', id: 'metric-var1', default: '-'},
+                {icon: 'fa-arrows-alt', label: 'PC2 Variance', id: 'metric-var2', default: '-'},
+                {icon: 'fa-percent', label: 'Explained (PC1)', id: 'metric-expl1', default: '-'},
+                {icon: 'fa-percent', label: 'Explained (PC1+2)', id: 'metric-expl12', default: '-'},
+                {icon: 'fa-dot-circle-o', label: 'Mean', id: 'metric-mean', default: '-'},
+                {icon: 'fa-info-circle', label: 'Status', id: 'metric-status', default: 'Add points to begin'}
+            ]
+        ) }}
+    </div>
+</div>

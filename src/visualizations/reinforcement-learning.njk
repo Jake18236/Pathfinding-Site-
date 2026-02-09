@@ -1,0 +1,238 @@
+---
+layout: base.njk
+title: Reinforcement Learning Visualizer
+icon: fa-gamepad
+navigation:
+  - name: "Home"
+    link: "index.html"
+    icon: "fa-home"
+permalink: "reinforcement-learning.html"
+extraScript: "static/js/reinforcement-learning.js"
+tags: visualization
+cardTitle: "Reinforcement Learning"
+cardIcon: fa-gamepad
+cardDescription: "Watch an agent learn optimal policies in grid worlds through Q-learning and SARSA. Visualize Q-tables and exploration."
+cardTags:
+  - RL
+  - Q-Learning
+cardHaystack: "reinforcement learning q-learning sarsa epsilon greedy exploration exploitation reward policy grid world"
+cardOrder: 16
+---
+
+{% from "components/legend.njk" import legend %}
+{% from "components/info-tabs.njk" import infoTabs %}
+{% from "components/metrics-panel.njk" import metricsPanel %}
+
+<link rel="stylesheet" href="static/css/reinforcement-learning.css">
+
+<div class="row" id="main-content">
+    {% include "components/share-button.njk" %}
+    <!-- Left Column: Grid World + Controls -->
+    <div class="col-md-7">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <div class="panel-heading-content">
+                    <span class="panel-title-text"><i class="fa fa-gamepad"></i> Grid World</span>
+                    <span class="viz-badge episode-badge" id="episode-badge">Episode: 0</span>
+                </div>
+            </div>
+            <div class="panel-body canvas-panel-body">
+                <div class="canvas-wrapper">
+                    <canvas id="rl-canvas" width="560" height="480"></canvas>
+                </div>
+            </div>
+            <div class="panel-footer legend-footer">
+                {{ legend(
+                    items=[
+                        {class: 'rl-agent', label: 'Agent'},
+                        {class: 'rl-goal', label: 'Goal'},
+                        {class: 'rl-wall', label: 'Wall'},
+                        {class: 'rl-pit', label: 'Pit'},
+                        {class: 'rl-path', label: 'Path'}
+                    ]
+                ) }}
+            </div>
+        </div>
+
+        <!-- Controls Panel -->
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title"><i class="fa fa-sliders"></i> Controls</h3>
+            </div>
+            <div class="panel-body compact-panel rl-controls-panel">
+                <div class="rl-options-col">
+                    <div class="option-row">
+                        <label>Environment:</label>
+                        <select id="env-select" class="form-control input-sm">
+                            <option value="cliff" selected>Cliff Walking (4x12)</option>
+                            <option value="frozen">Frozen Lake (4x4)</option>
+                            <option value="custom">Custom (5x5)</option>
+                        </select>
+                    </div>
+                    <div class="option-row">
+                        <label>Algorithm:</label>
+                        <select id="algo-select" class="form-control input-sm">
+                            <option value="qlearning" selected>Q-Learning</option>
+                            <option value="sarsa">SARSA</option>
+                        </select>
+                    </div>
+                    <div class="option-row">
+                        <label>Epsilon (<span id="epsilon-value">0.10</span>):</label>
+                        <input type="range" id="epsilon-slider" min="0" max="1" step="0.01" value="0.10">
+                    </div>
+                    <div class="option-row">
+                        <label>Learning Rate (<span id="lr-value">0.10</span>):</label>
+                        <input type="range" id="lr-slider" min="0.01" max="1" step="0.01" value="0.10">
+                    </div>
+                    <div class="option-row">
+                        <label>Discount (<span id="gamma-value">0.99</span>):</label>
+                        <input type="range" id="gamma-slider" min="0" max="1" step="0.01" value="0.99">
+                    </div>
+                    <div class="option-row">
+                        <label>Max Episodes:</label>
+                        <div class="stepper-control">
+                            <button id="episodes-dec" class="btn btn-xs btn-default"><i class="fa fa-minus"></i></button>
+                            <span id="episodes-value">500</span>
+                            <button id="episodes-inc" class="btn btn-xs btn-default"><i class="fa fa-plus"></i></button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="rl-playback-col">
+                    <div class="btn-toolbar" role="toolbar">
+                        <button id="btn-train" class="btn btn-sm btn-success" title="Train agent">
+                            <i class="fa fa-play"></i> Train
+                        </button>
+                        <button id="btn-pause" class="btn btn-sm btn-warning" title="Pause training" disabled>
+                            <i class="fa fa-pause"></i> Pause
+                        </button>
+                        <button id="btn-step" class="btn btn-sm btn-info" title="Step one episode">
+                            <i class="fa fa-step-forward"></i> Step
+                        </button>
+                        <button id="btn-reset" class="btn btn-sm btn-danger" title="Reset everything">
+                            <i class="fa fa-refresh"></i> Reset
+                        </button>
+                    </div>
+                    <div class="speed-control">
+                        <i class="fa fa-tachometer"></i>
+                        <input type="range" id="speed-slider" min="1" max="10" value="5">
+                        <span id="speed-value" class="range-value">5</span>
+                    </div>
+                    <div class="display-toggles">
+                        <label class="checkbox-label"><input type="checkbox" id="toggle-qvalues"> Q-Values</label>
+                        <label class="checkbox-label"><input type="checkbox" id="toggle-policy" checked> Policy Arrows</label>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Right Column: Info + Metrics + Q-Table -->
+    <div class="col-md-5">
+        {{ infoTabs(
+            tabs=[
+                {id: 'about', icon: 'fa-info-circle', label: 'About', active: true, content: '
+                    <h4><i class="fa fa-gamepad"></i> Reinforcement Learning</h4>
+                    <p>
+                        <strong>Reinforcement Learning</strong> (RL) is a paradigm where an agent
+                        learns to make decisions by interacting with an environment. The agent
+                        receives rewards or penalties and learns a <em>policy</em> that maximizes
+                        cumulative reward over time.
+                    </p>
+                    <h4><i class="fa fa-mouse-pointer"></i> How to Use</h4>
+                    <ul class="interaction-list">
+                        <li><strong>Pick an environment</strong> and algorithm to get started</li>
+                        <li><strong>Press Train</strong> to run episodes automatically</li>
+                        <li><strong>Press Step</strong> to run a single episode</li>
+                        <li><strong>Toggle Q-Values/Policy</strong> to see what the agent learned</li>
+                        <li><strong>Adjust epsilon</strong> to control exploration vs exploitation</li>
+                    </ul>
+                '},
+                {id: 'algorithm', icon: 'fa-book', label: 'Algorithm', content: '
+                    <h4><i class="fa fa-book"></i> Q-Learning (Off-Policy)</h4>
+                    <p>
+                        Q-Learning updates Q-values using the <strong>maximum</strong> future
+                        Q-value, regardless of the action actually taken. This makes it
+                        <em>off-policy</em> &mdash; it learns the optimal policy even while
+                        exploring randomly.
+                    </p>
+                    <div class="math-formula-display">
+                        <code>Q(s,a) &larr; Q(s,a) + &alpha;[r + &gamma; max<sub>a&prime;</sub> Q(s&prime;,a&prime;) - Q(s,a)]</code>
+                    </div>
+                    <h4><i class="fa fa-book"></i> SARSA (On-Policy)</h4>
+                    <p>
+                        SARSA updates Q-values using the <strong>actual next action</strong>
+                        chosen by the policy (including exploration). This makes it
+                        <em>on-policy</em> &mdash; it learns the value of the policy it is
+                        actually following.
+                    </p>
+                    <div class="math-formula-display">
+                        <code>Q(s,a) &larr; Q(s,a) + &alpha;[r + &gamma; Q(s&prime;,a&prime;) - Q(s,a)]</code>
+                    </div>
+                    <h4><i class="fa fa-random"></i> Epsilon-Greedy</h4>
+                    <p>
+                        With probability <strong>&epsilon;</strong>, choose a random action
+                        (explore). Otherwise, choose the action with the highest Q-value
+                        (exploit).
+                    </p>
+                '},
+                {id: 'math', icon: 'fa-superscript', label: 'Math', content: '
+                    <h4><i class="fa fa-superscript"></i> Bellman Equation</h4>
+                    <p>The optimal Q-function satisfies the Bellman optimality equation:</p>
+                    <div class="math-formula-display">
+                        <code>Q*(s,a) = E[r + &gamma; max<sub>a&prime;</sub> Q*(s&prime;,a&prime;)]</code>
+                    </div>
+                    <h4><i class="fa fa-pencil"></i> Q-Learning Update</h4>
+                    <div class="math-formula-display">
+                        <code>&Delta;Q = &alpha;[r + &gamma; max<sub>a&prime;</sub> Q(s&prime;,a&prime;) - Q(s,a)]</code>
+                    </div>
+                    <ul class="formula-list">
+                        <li><strong>&alpha;</strong> (alpha) &mdash; Learning rate, controls step size</li>
+                        <li><strong>&gamma;</strong> (gamma) &mdash; Discount factor, weights future vs immediate reward</li>
+                        <li><strong>&epsilon;</strong> (epsilon) &mdash; Exploration rate</li>
+                        <li><strong>r</strong> &mdash; Immediate reward received</li>
+                        <li><strong>s, a</strong> &mdash; Current state and action</li>
+                        <li><strong>s&prime;, a&prime;</strong> &mdash; Next state and action</li>
+                    </ul>
+                    <h4><i class="fa fa-pencil"></i> SARSA Update</h4>
+                    <div class="math-formula-display">
+                        <code>&Delta;Q = &alpha;[r + &gamma; Q(s&prime;,a&prime;) - Q(s,a)]</code>
+                    </div>
+                    <p class="formula-note">
+                        The key difference: Q-Learning uses <code>max</code> over all actions
+                        at s&prime;, while SARSA uses the action a&prime; actually chosen by the
+                        current policy.
+                    </p>
+                '}
+            ]
+        ) }}
+
+        {{ metricsPanel(
+            title='Training Metrics',
+            icon='fa-bar-chart',
+            metrics=[
+                {icon: 'fa-hashtag', label: 'Episode', id: 'metric-episode', default: '0'},
+                {icon: 'fa-shoe-prints', label: 'Steps', id: 'metric-steps', default: '0'},
+                {icon: 'fa-star', label: 'Total Reward', id: 'metric-reward', default: '0.00'},
+                {icon: 'fa-random', label: 'Epsilon', id: 'metric-epsilon', default: '0.10'},
+                {icon: 'fa-arrow-up', label: 'Max Q', id: 'metric-maxq', default: '0.00'},
+                {icon: 'fa-check-circle', label: 'Converged', id: 'metric-converged', default: 'No'},
+                {icon: 'fa-info-circle', label: 'Status', id: 'metric-status', default: 'Ready'}
+            ]
+        ) }}
+
+        <!-- Q-Table Display -->
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title"><i class="fa fa-table"></i> Q-Table / Policy</h3>
+            </div>
+            <div class="panel-body compact-panel">
+                <div id="qtable-display" class="qtable-display">
+                    <p class="text-muted text-center" style="font-size: 12px;">
+                        Train the agent to see Q-values and policy arrows here.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

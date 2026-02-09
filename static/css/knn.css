@@ -330,19 +330,6 @@
     padding: 4px 8px;
 }
 
-.knn-playback-col .speed-control {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    font-size: 11px;
-    color: var(--viz-text-muted);
-    width: 100%;
-}
-
-.knn-playback-col .speed-control input[type="range"] {
-    flex: 1;
-}
-
 /* ============================================
    Responsive Adjustments
    ============================================ */

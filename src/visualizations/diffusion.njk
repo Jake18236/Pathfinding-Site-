@@ -1,0 +1,209 @@
+---
+layout: base.njk
+title: Diffusion Models Visualizer
+icon: fa-cloud
+navigation:
+  - name: "Home"
+    link: "index.html"
+    icon: "fa-home"
+permalink: "diffusion.html"
+extraScript: "static/js/diffusion.js"
+tags: visualization
+cardTitle: "Diffusion Models"
+cardIcon: fa-cloud
+cardDescription: "Watch the forward and reverse diffusion process. See how noise is progressively added and then removed to generate data."
+cardTags:
+  - Deep Learning
+  - Generative
+cardHaystack: "diffusion model denoising noise schedule forward reverse process generative DDPM score matching"
+cardOrder: 26
+---
+
+{% from "components/legend.njk" import legend %}
+{% from "components/info-tabs.njk" import infoTabs %}
+{% from "components/metrics-panel.njk" import metricsPanel %}
+
+<link rel="stylesheet" href="static/css/diffusion.css">
+
+<div class="row" id="main-content">
+    {% include "components/share-button.njk" %}
+    <!-- Left Column: Canvases + Controls -->
+    <div class="col-md-7">
+        <!-- 2D Distribution Panel -->
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <div class="panel-heading-content">
+                    <span class="panel-title-text"><i class="fa fa-cloud"></i> 2D Distribution</span>
+                    <span class="viz-badge step-badge" id="step-badge">Step 0 / 50</span>
+                </div>
+            </div>
+            <div class="panel-body canvas-panel-body">
+                <div class="canvas-wrapper">
+                    <canvas id="diffusion-canvas" width="560" height="400"></canvas>
+                </div>
+            </div>
+            <div class="panel-footer legend-footer">
+                {{ legend(
+                    items=[
+                        {class: 'diff-original', label: 'Original Data', type: 'dot'},
+                        {class: 'diff-noisy', label: 'Current State', type: 'dot'},
+                        {class: 'diff-noise-low', label: 'Low Noise', type: 'dot'},
+                        {class: 'diff-noise-high', label: 'High Noise', type: 'dot'}
+                    ]
+                ) }}
+            </div>
+        </div>
+
+        <!-- Noise Schedule Panel -->
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title"><i class="fa fa-line-chart"></i> Noise Schedule</h3>
+            </div>
+            <div class="panel-body canvas-panel-body">
+                <div class="canvas-wrapper">
+                    <canvas id="schedule-canvas" width="560" height="120"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Controls Panel -->
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title"><i class="fa fa-sliders"></i> Controls</h3>
+            </div>
+            <div class="panel-body compact-panel diff-controls-panel">
+                <!-- Left: Options -->
+                <div class="diff-options-col">
+                    <div class="option-row">
+                        <label>Distribution:</label>
+                        <select id="distribution-select" class="form-control input-sm">
+                            <option value="swiss-roll" selected>Swiss Roll</option>
+                            <option value="two-moons">Two Moons</option>
+                            <option value="gaussian-mixture">Gaussian Mixture</option>
+                            <option value="ring">Ring</option>
+                        </select>
+                    </div>
+                    <div class="option-row">
+                        <label>Steps:</label>
+                        <input type="range" id="steps-slider" min="10" max="100" value="50">
+                        <span id="steps-value" class="range-value">50</span>
+                    </div>
+                    <div class="option-row">
+                        <label>Process:</label>
+                        <select id="process-select" class="form-control input-sm">
+                            <option value="forward" selected>Forward</option>
+                            <option value="reverse">Reverse</option>
+                            <option value="both">Both</option>
+                        </select>
+                    </div>
+                    <div class="option-row">
+                        <label>Speed:</label>
+                        <input type="range" id="speed-slider" min="1" max="10" value="5">
+                        <span id="speed-value" class="range-value">5</span>
+                    </div>
+                </div>
+
+                <!-- Right: Playback -->
+                <div class="diff-playback-col">
+                    <div class="btn-toolbar" role="toolbar">
+                        <button id="btn-forward" class="btn btn-sm btn-success" title="Run Forward">
+                            <i class="fa fa-arrow-right"></i> Forward
+                        </button>
+                        <button id="btn-reverse" class="btn btn-sm btn-info" title="Run Reverse">
+                            <i class="fa fa-arrow-left"></i> Reverse
+                        </button>
+                    </div>
+                    <div class="btn-toolbar" role="toolbar">
+                        <button id="btn-step" class="btn btn-sm btn-default" title="Step">
+                            <i class="fa fa-step-forward"></i> Step
+                        </button>
+                        <button id="btn-reset" class="btn btn-sm btn-danger" title="Reset">
+                            <i class="fa fa-refresh"></i> Reset
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Right Column: Info + Metrics -->
+    <div class="col-md-5">
+        {{ infoTabs(
+            tabs=[
+                {id: 'about', icon: 'fa-info-circle', label: 'About', active: true, content: '
+                    <h4><i class="fa fa-cloud"></i> What are Diffusion Models?</h4>
+                    <p>
+                        <strong>Diffusion models</strong> are generative models that learn to produce data
+                        by reversing a gradual noising process. They have achieved state-of-the-art results
+                        in image generation (DALL-E 2, Stable Diffusion, Midjourney).
+                    </p>
+                    <h4><i class="fa fa-arrow-right"></i> Forward Process</h4>
+                    <p>
+                        The <strong>forward process</strong> gradually adds Gaussian noise to data over
+                        T timesteps until it becomes pure noise. This destroys all structure in the data.
+                    </p>
+                    <h4><i class="fa fa-arrow-left"></i> Reverse Process</h4>
+                    <p>
+                        The <strong>reverse process</strong> learns to denoise: starting from pure noise,
+                        a neural network predicts and removes noise at each step, gradually recovering
+                        the original data distribution.
+                    </p>
+                    <h4><i class="fa fa-mouse-pointer"></i> How to Use</h4>
+                    <ul class="interaction-list">
+                        <li><strong>Choose a distribution</strong> to set the data shape</li>
+                        <li><strong>Run Forward</strong> to watch noise destroy structure</li>
+                        <li><strong>Run Reverse</strong> to watch data emerge from noise</li>
+                        <li><strong>Use Step</strong> to advance one timestep at a time</li>
+                        <li><strong>Adjust steps</strong> to control the diffusion granularity</li>
+                    </ul>
+                '},
+                {id: 'algorithm', icon: 'fa-book', label: 'Algorithm', content: '
+                    <h4><i class="fa fa-cogs"></i> Forward Diffusion</h4>
+                    <p>At each timestep t, noise is added according to a variance schedule &beta;<sub>t</sub>:</p>
+                    <code>q(x<sub>t</sub> | x<sub>t-1</sub>) = N(x<sub>t</sub>; &radic;(1 - &beta;<sub>t</sub>) x<sub>t-1</sub>, &beta;<sub>t</sub> I)</code>
+                    <p class="formula-desc">Each step mixes the current sample with a small amount of Gaussian noise.</p>
+
+                    <h4><i class="fa fa-cogs"></i> Reverse Denoising</h4>
+                    <p>A neural network &epsilon;<sub>&theta;</sub> is trained to predict the noise added at each step:</p>
+                    <code>p<sub>&theta;</sub>(x<sub>t-1</sub> | x<sub>t</sub>) = N(x<sub>t-1</sub>; &mu;<sub>&theta;</sub>(x<sub>t</sub>, t), &sigma;<sub>t</sub>&sup2; I)</code>
+                    <p class="formula-desc">The model predicts the mean &mu;<sub>&theta;</sub> of the denoised distribution.</p>
+
+                    <h4><i class="fa fa-lightbulb-o"></i> Training Objective</h4>
+                    <p>The model is trained to predict the noise &epsilon; that was added:</p>
+                    <code>L = E[ || &epsilon; - &epsilon;<sub>&theta;</sub>(&radic;&alpha;&#773;<sub>t</sub> x<sub>0</sub> + &radic;(1 - &alpha;&#773;<sub>t</sub>) &epsilon;, t) ||&sup2; ]</code>
+                    <p class="formula-desc">Simple MSE loss between actual and predicted noise.</p>
+                '},
+                {id: 'math', icon: 'fa-superscript', label: 'Math', content: '
+                    <h4><i class="fa fa-superscript"></i> Noise Schedule</h4>
+                    <code>&beta;<sub>t</sub></code> <span class="formula-desc" style="display:inline">= linear schedule from &beta;<sub>1</sub> to &beta;<sub>T</sub></span>
+                    <br>
+                    <code>&alpha;<sub>t</sub> = 1 - &beta;<sub>t</sub></code>
+                    <br>
+                    <code>&alpha;&#773;<sub>t</sub> = &prod;<sub>s=1</sub><sup>t</sup> &alpha;<sub>s</sub></code>
+                    <p class="formula-desc">&alpha;&#773;<sub>t</sub> (alpha-bar) controls the total noise at step t. It decreases from 1 (clean) to ~0 (pure noise).</p>
+
+                    <h4>Closed-Form Forward</h4>
+                    <code>q(x<sub>t</sub> | x<sub>0</sub>) = N(x<sub>t</sub>; &radic;&alpha;&#773;<sub>t</sub> x<sub>0</sub>, (1 - &alpha;&#773;<sub>t</sub>) I)</code>
+                    <p class="formula-desc">We can jump to any timestep t directly without iterating.</p>
+
+                    <h4>Evidence Lower Bound (ELBO)</h4>
+                    <code>log p(x) &ge; E<sub>q</sub>[ log p(x<sub>0</sub>|x<sub>1</sub>) - &Sigma;<sub>t</sub> D<sub>KL</sub>(q(x<sub>t-1</sub>|x<sub>t</sub>,x<sub>0</sub>) || p<sub>&theta;</sub>(x<sub>t-1</sub>|x<sub>t</sub>)) ]</code>
+                    <p class="formula-desc">The training maximizes a variational lower bound on the log-likelihood.</p>
+                '}
+            ]
+        ) }}
+
+        {{ metricsPanel(
+            title='Diffusion Status',
+            icon='fa-bar-chart',
+            metrics=[
+                {icon: 'fa-step-forward', label: 'Current Step', id: 'metric-step', default: '0'},
+                {icon: 'fa-list-ol', label: 'Total Steps', id: 'metric-total-steps', default: '50'},
+                {icon: 'fa-exchange', label: 'Process', id: 'metric-process', default: 'Forward'},
+                {icon: 'fa-volume-up', label: 'Noise Level (&alpha;&#773;<sub>t</sub>)', id: 'metric-noise-level', default: '1.000'},
+                {icon: 'fa-dot-circle-o', label: 'Distribution', id: 'metric-distribution', default: 'Swiss Roll'},
+                {icon: 'fa-info-circle', label: 'Status', id: 'metric-status', default: 'Ready'}
+            ]
+        ) }}
+    </div>
+</div>

@@ -46,7 +46,7 @@
                     {% for row in rows %}
                     <tr>
                         {% for metric in row %}
-                        <td><i class="fa {{ metric.icon }}"></i> {{ metric.label }}</td>
+                        <td><i class="fa {{ metric.icon }}"></i> {{ metric.label | safe }}</td>
                         <td id="{{ metric.id }}" class="text-right metric-value"{% if metric.colspan %} colspan="{{ metric.colspan }}"{% endif %}>{{ metric.default | default('-') }}</td>
                         {% endfor %}
                     </tr>
@@ -54,7 +54,7 @@
                 {% else %}
                     {% for metric in metrics %}
                     <tr>
-                        <td><i class="fa {{ metric.icon }}"></i> {{ metric.label }}</td>
+                        <td><i class="fa {{ metric.icon }}"></i> {{ metric.label | safe }}</td>
                         <td id="{{ metric.id }}" class="text-right metric-value"{% if metric.colspan %} colspan="{{ metric.colspan }}"{% endif %}>{{ metric.default | default('-') }}</td>
                     </tr>
                     {% endfor %}

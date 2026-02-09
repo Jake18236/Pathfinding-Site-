@@ -26,11 +26,12 @@ cardOrder: 12
 <link rel="stylesheet" href="static/css/linear-transform.css">
 
 <div class="row" id="main-content">
+    {% include "components/share-button.njk" %}
     <!-- Left Column: Canvas + Controls -->
     <div class="col-md-7">
         <div class="panel panel-default">
             <div class="panel-heading">
-                <div class="panel-heading-flex">
+                <div class="panel-heading-content">
                     <span class="panel-title-text"><i class="fa fa-arrows-alt"></i> Transformation Space</span>
                     <span class="viz-badge det-badge" id="det-badge">det(W) = 1.00</span>
                 </div>

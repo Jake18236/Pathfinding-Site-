@@ -1,0 +1,260 @@
+/**
+ * Reinforcement Learning Visualizer Styles
+ * Visualization-specific styles only. Common styles are in visualizations.css.
+ */
+
+/* ============================================
+   CSS Custom Properties
+   ============================================ */
+:root {
+    --rl-agent-color: #2196F3;
+    --rl-goal-color: #4CAF50;
+    --rl-wall-color: #424242;
+    --rl-pit-color: #F44336;
+    --rl-path-color: rgba(33, 150, 243, 0.3);
+    --rl-arrow-color: #333;
+    --rl-q-positive: #4CAF50;
+    --rl-q-negative: #F44336;
+    --rl-grid-border: #ccc;
+    --rl-cell-bg: #ffffff;
+    --rl-input-bg: #fff;
+    --rl-input-border: #ccc;
+}
+
+[data-theme="gruvbox-dark"] {
+    --rl-agent-color: #83a598;
+    --rl-goal-color: #b8bb26;
+    --rl-wall-color: #1d2021;
+    --rl-pit-color: #fb4934;
+    --rl-path-color: rgba(131, 165, 152, 0.3);
+    --rl-arrow-color: #ebdbb2;
+    --rl-q-positive: #b8bb26;
+    --rl-q-negative: #fb4934;
+    --rl-grid-border: #504945;
+    --rl-cell-bg: #3c3836;
+    --rl-input-bg: #3c3836;
+    --rl-input-border: #504945;
+}
+
+/* ============================================
+   Canvas
+   ============================================ */
+#rl-canvas {
+    display: block;
+    width: 100%;
+    cursor: default;
+    background: var(--viz-canvas-bg);
+}
+
+.episode-badge {
+    transition: all 0.3s ease;
+}
+
+/* ============================================
+   Legend Colors
+   ============================================ */
+.legend-color.rl-agent {
+    background-color: var(--rl-agent-color);
+}
+
+.legend-color.rl-goal {
+    background-color: var(--rl-goal-color);
+}
+
+.legend-color.rl-wall {
+    background-color: var(--rl-wall-color);
+}
+
+.legend-color.rl-pit {
+    background-color: var(--rl-pit-color);
+}
+
+.legend-color.rl-path {
+    background-color: var(--rl-path-color);
+    border: 1px solid var(--rl-agent-color);
+}
+
+/* ============================================
+   Controls Layout
+   ============================================ */
+.rl-controls-panel {
+    display: flex;
+    gap: 20px;
+}
+
+.rl-options-col {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.rl-playback-col {
+    width: 160px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    justify-content: center;
+}
+
+.rl-playback-col .btn-toolbar {
+    display: flex;
+    gap: 4px;
+    flex-wrap: wrap;
+}
+
+.rl-playback-col .btn-toolbar .btn {
+    flex: 1;
+    min-width: 70px;
+}
+
+/* Option rows */
+.option-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12px;
+}
+
+.option-row label {
+    margin: 0;
+    font-weight: normal;
+    white-space: nowrap;
+    min-width: 80px;
+}
+
+.option-row select {
+    font-size: 11px;
+    padding: 2px 4px;
+    height: auto;
+    flex: 1;
+}
+
+.option-row input[type="range"] {
+    flex: 1;
+    height: 4px;
+}
+
+/* Stepper control */
+.stepper-control {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.stepper-control span {
+    font-family: var(--viz-mono-font);
+    font-size: 12px;
+    font-weight: bold;
+    min-width: 40px;
+    text-align: center;
+}
+
+/* Speed control */
+.speed-control {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12px;
+    color: var(--viz-text-muted);
+}
+
+/* Display toggles */
+.display-toggles {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.checkbox-label {
+    font-size: 12px;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    cursor: pointer;
+}
+
+/* ============================================
+   Q-Table Display
+   ============================================ */
+.qtable-display {
+    max-height: 220px;
+    overflow-y: auto;
+    overflow-x: auto;
+}
+
+.qtable-grid {
+    display: inline-grid;
+    gap: 1px;
+    background-color: var(--rl-grid-border);
+    border: 1px solid var(--rl-grid-border);
+    font-size: 9px;
+    font-family: var(--viz-mono-font);
+}
+
+.qtable-cell {
+    width: 48px;
+    height: 48px;
+    background-color: var(--rl-cell-bg);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    padding: 2px;
+}
+
+.qtable-cell.wall-cell {
+    background-color: var(--rl-wall-color);
+}
+
+.qtable-cell.goal-cell {
+    background-color: rgba(76, 175, 80, 0.2);
+    border: 1px solid var(--rl-goal-color);
+}
+
+.qtable-cell.pit-cell {
+    background-color: rgba(244, 67, 54, 0.2);
+    border: 1px solid var(--rl-pit-color);
+}
+
+.qtable-cell .q-up,
+.qtable-cell .q-down,
+.qtable-cell .q-left,
+.qtable-cell .q-right {
+    font-size: 7px;
+    line-height: 1;
+    color: var(--viz-text-muted);
+}
+
+.qtable-cell .q-up { position: absolute; top: 2px; }
+.qtable-cell .q-down { position: absolute; bottom: 2px; }
+.qtable-cell .q-left { position: absolute; left: 2px; }
+.qtable-cell .q-right { position: absolute; right: 2px; }
+
+.qtable-cell .q-positive { color: var(--rl-q-positive); }
+.qtable-cell .q-negative { color: var(--rl-q-negative); }
+
+.qtable-cell .policy-arrow {
+    font-size: 14px;
+    color: var(--rl-arrow-color);
+    font-weight: bold;
+}
+
+/* ============================================
+   Responsive
+   ============================================ */
+@media (max-width: 992px) {
+    .rl-controls-panel {
+        flex-direction: column;
+    }
+
+    .rl-playback-col {
+        width: 100%;
+    }
+
+    .rl-playback-col .btn-toolbar {
+        justify-content: center;
+    }
+}

@@ -666,9 +666,5 @@
         });
     }
 
-    if (window.VizLib) {
-        init();
-    } else {
-        window.addEventListener('vizlib-ready', init);
-    }
+    window.addEventListener('vizlib-ready', init);
 })();

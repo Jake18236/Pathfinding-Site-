@@ -1,0 +1,209 @@
+---
+layout: base.njk
+title: Clustering Visualizer
+icon: fa-object-group
+navigation:
+  - name: "Home"
+    link: "index.html"
+    icon: "fa-home"
+permalink: "clustering.html"
+extraScript: "static/js/clustering.js"
+tags: visualization
+cardTitle: "Clustering"
+cardIcon: fa-object-group
+cardDescription: "Visualize K-Means clustering with step-by-step centroid animation. Explore different datasets and watch clusters form."
+cardTags:
+  - Unsupervised
+  - Clustering
+cardHaystack: "clustering k-means kmeans centroid unsupervised learning elbow method silhouette"
+cardOrder: 14
+---
+
+{% from "components/legend.njk" import legend %}
+{% from "components/info-tabs.njk" import infoTabs %}
+{% from "components/metrics-panel.njk" import metricsPanel %}
+{% from "components/speed-control.njk" import speedControl %}
+{% from "components/stepper-control.njk" import stepperControl %}
+
+<link rel="stylesheet" href="static/css/clustering.css">
+
+<div class="row" id="main-content">
+    {% include "components/share-button.njk" %}
+    <!-- Left Column: Canvas + Controls -->
+    <div class="col-md-7">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <div class="panel-heading-content">
+                    <span class="panel-title-text"><i class="fa fa-object-group"></i> Clustering Space</span>
+                    <div class="edit-toolbar active" id="edit-toolbar">
+                        <div class="btn-group edit-mode-buttons" role="group">
+                            <button type="button" class="btn btn-sm btn-default active" data-mode="add" title="Add data points">
+                                <i class="fa fa-plus"></i> Add
+                            </button>
+                            <button type="button" class="btn btn-sm btn-default" data-mode="delete" title="Delete points">
+                                <i class="fa fa-minus"></i> Delete
+                            </button>
+                        </div>
+                        <button id="btn-clear-points" class="btn btn-sm btn-danger" title="Clear all points">
+                            <i class="fa fa-trash"></i> Clear
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="panel-body canvas-panel-body">
+                <div class="canvas-wrapper">
+                    <canvas id="clustering-canvas" width="560" height="480"></canvas>
+                    <div id="click-overlay" class="click-overlay">
+                        <span>Click to add data points</span>
+                    </div>
+                </div>
+            </div>
+            <div class="panel-footer legend-footer">
+                {{ legend(
+                    items=[
+                        {class: 'class-0', label: 'Cluster 0'},
+                        {class: 'class-1', label: 'Cluster 1'},
+                        {class: 'class-2', label: 'Cluster 2'},
+                        {class: 'class-3', label: 'Cluster 3'},
+                        {class: 'cluster-centroid', label: 'Centroid'}
+                    ]
+                ) }}
+            </div>
+        </div>
+
+        <!-- Controls Panel -->
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title"><i class="fa fa-sliders"></i> Controls</h3>
+            </div>
+            <div class="panel-body compact-panel cluster-controls-panel">
+                <!-- Left: Algorithm Options -->
+                <div class="cluster-options-col">
+                    <div class="cluster-option-group">
+                        <div class="option-row">
+                            <label>Dataset:</label>
+                            <select id="dataset-select" class="form-control input-sm">
+                                <option value="custom" selected>Custom (click to add)</option>
+                                <option value="blobs">Blobs</option>
+                                <option value="moons">Moons</option>
+                                <option value="circles">Circles</option>
+                                <option value="random">Random</option>
+                            </select>
+                        </div>
+                        <div class="option-row">
+                            <label>K:</label>
+                            {{ stepperControl(id='k', value='3', title='K') }}
+                        </div>
+                    </div>
+                    <div class="cluster-option-group">
+                        <div class="option-row">
+                            <label>Algorithm:</label>
+                            <select id="algorithm-select" class="form-control input-sm">
+                                <option value="kmeans" selected>K-Means</option>
+                            </select>
+                        </div>
+                        <label class="checkbox-label"><input type="checkbox" id="show-voronoi"> Show Voronoi</label>
+                        <label class="checkbox-label"><input type="checkbox" id="show-history"> Show History</label>
+                    </div>
+                </div>
+                <!-- Right: Playback -->
+                <div class="cluster-playback-col">
+                    <div class="btn-toolbar" role="toolbar">
+                        <button id="btn-play" class="btn btn-sm btn-success" title="Play">
+                            <i class="fa fa-play"></i>
+                        </button>
+                        <button id="btn-pause" class="btn btn-sm btn-warning" title="Pause" disabled>
+                            <i class="fa fa-pause"></i>
+                        </button>
+                        <button id="btn-step" class="btn btn-sm btn-info" title="Step forward">
+                            <i class="fa fa-step-forward"></i>
+                        </button>
+                        <button id="btn-reset" class="btn btn-sm btn-danger" title="Reset">
+                            <i class="fa fa-refresh"></i>
+                        </button>
+                    </div>
+                    {{ speedControl() }}
+                    <div class="playback-status">
+                        <span id="playback-step">Ready</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Right Column: Info + Metrics -->
+    <div class="col-md-5">
+        {{ infoTabs(
+            tabs=[
+                {id: 'about', icon: 'fa-info-circle', label: 'About', active: true, content: '
+                    <h4><i class="fa fa-object-group"></i> What is K-Means?</h4>
+                    <p>
+                        <strong>K-Means</strong> is an unsupervised clustering algorithm that partitions
+                        data into K groups by iteratively assigning points to the nearest centroid and
+                        updating centroids to the mean of their assigned points.
+                    </p>
+                    <h4><i class="fa fa-mouse-pointer"></i> How to Use</h4>
+                    <ul class="interaction-list">
+                        <li><strong>Click canvas</strong> to add data points</li>
+                        <li><strong>Choose a dataset</strong> preset to explore patterns</li>
+                        <li><strong>Set K</strong> to the desired number of clusters</li>
+                        <li><strong>Press Play</strong> to animate K-Means step by step</li>
+                        <li><strong>Press Step</strong> to advance one iteration at a time</li>
+                        <li><strong>Toggle Voronoi</strong> to see cluster regions</li>
+                        <li><strong>Toggle History</strong> to see centroid movement trails</li>
+                    </ul>
+                    <h4><i class="fa fa-pencil"></i> Custom Mode</h4>
+                    <p>
+                        Select \"Custom\" dataset to draw your own data points.
+                        Switch between Add/Delete modes to create your dataset.
+                    </p>
+                '},
+                {id: 'algorithm', icon: 'fa-book', label: 'Algorithm', content: '
+                    <h4><i class="fa fa-cogs"></i> K-Means Steps</h4>
+                    <ol class="algorithm-list">
+                        <li><strong>Initialize:</strong> Randomly place K centroids in the data space</li>
+                        <li><strong>Assign:</strong> Assign each point to the nearest centroid (Euclidean distance)</li>
+                        <li><strong>Update:</strong> Move each centroid to the mean position of its assigned points</li>
+                        <li><strong>Repeat:</strong> Alternate between assign and update until centroids stop moving (convergence) or max iterations reached</li>
+                    </ol>
+                    <h4><i class="fa fa-random"></i> Initialization</h4>
+                    <p>
+                        Centroids are initialized by selecting K random positions within the data range.
+                        Different initializations can lead to different final clusters.
+                    </p>
+                    <h4><i class="fa fa-check"></i> Convergence</h4>
+                    <p>
+                        The algorithm converges when centroids move less than a small threshold
+                        between iterations (typically &lt; 0.001).
+                    </p>
+                '},
+                {id: 'math', icon: 'fa-superscript', label: 'Math', content: '
+                    <h4><i class="fa fa-superscript"></i> Objective Function</h4>
+                    <code>J = &Sigma;<sub>k</sub> &Sigma;<sub>i &isin; C<sub>k</sub></sub> ||x<sub>i</sub> &minus; &mu;<sub>k</sub>||&sup2;</code>
+                    <p class="formula-desc">Within-cluster sum of squares (inertia). K-Means minimizes this quantity.</p>
+
+                    <h4>Assignment Rule</h4>
+                    <code>C<sub>k</sub> = {x<sub>i</sub> : ||x<sub>i</sub> &minus; &mu;<sub>k</sub>|| &le; ||x<sub>i</sub> &minus; &mu;<sub>j</sub>|| &forall; j}</code>
+                    <p class="formula-desc">Each point is assigned to the cluster with the nearest centroid.</p>
+
+                    <h4>Update Rule</h4>
+                    <code>&mu;<sub>k</sub> = (1/|C<sub>k</sub>|) &Sigma;<sub>i &isin; C<sub>k</sub></sub> x<sub>i</sub></code>
+                    <p class="formula-desc">Each centroid moves to the mean of its assigned points.</p>
+                '}
+            ]
+        ) }}
+
+        {{ metricsPanel(
+            title='Cluster Metrics',
+            icon='fa-bar-chart',
+            metrics=[
+                {icon: 'fa-database', label: 'Points', id: 'metric-points', default: '0'},
+                {icon: 'fa-th-large', label: 'K', id: 'metric-k', default: '3'},
+                {icon: 'fa-repeat', label: 'Iteration', id: 'metric-iteration', default: '-'},
+                {icon: 'fa-compress', label: 'Inertia (WCSS)', id: 'metric-inertia', default: '-'},
+                {icon: 'fa-check-circle', label: 'Converged', id: 'metric-converged', default: '-'},
+                {icon: 'fa-info-circle', label: 'Status', id: 'metric-status', default: 'Add points to begin'}
+            ]
+        ) }}
+    </div>
+</div>

@@ -39,17 +39,6 @@
 }
 
 /* ============================================
-   Panel Heading Flex
-   ============================================ */
-.panel-heading-flex {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    flex-wrap: wrap;
-    gap: 10px;
-}
-
-/* ============================================
    Determinant Badge
    ============================================ */
 .det-badge {
@@ -191,13 +180,6 @@
     color: var(--viz-text-muted);
 }
 
-.range-value {
-    min-width: 20px;
-    text-align: right;
-    font-family: var(--viz-mono-font);
-    font-size: 11px;
-}
-
 /* ============================================
    Checkbox Labels
    ============================================ */
@@ -208,25 +190,6 @@
     align-items: center;
     gap: 6px;
     cursor: pointer;
-}
-
-/* ============================================
-   Math formula display (for info tabs)
-   ============================================ */
-.math-formula-display {
-    text-align: center;
-    margin: 10px 0;
-}
-
-.math-formula-display code {
-    font-size: 16px;
-    padding: 8px 16px;
-}
-
-.formula-note {
-    font-size: 12px;
-    color: var(--viz-text-muted);
-    margin: 8px 0 4px;
 }
 
 /* ============================================

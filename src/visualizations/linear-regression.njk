@@ -1,0 +1,233 @@
+---
+layout: base.njk
+title: Linear Regression Visualizer
+icon: fa-chart-line
+navigation:
+  - name: "Home"
+    link: "index.html"
+    icon: "fa-home"
+permalink: "linear-regression.html"
+extraScript: "static/js/linear-regression.js"
+tags: visualization
+cardTitle: "Linear Regression"
+cardIcon: fa-chart-line
+cardDescription: "Explore linear regression with interactive point placement, gradient descent animation, and loss surface visualization."
+cardTags:
+  - Regression
+  - ML Fundamentals
+cardHaystack: "linear regression gradient descent loss surface residuals best fit line learning rate mean squared error MSE"
+cardOrder: 13
+---
+
+{% from "components/legend.njk" import legend %}
+{% from "components/info-tabs.njk" import infoTabs %}
+{% from "components/metrics-panel.njk" import metricsPanel %}
+{% from "components/speed-control.njk" import speedControl %}
+{% from "components/stepper-control.njk" import stepperControl %}
+
+<link rel="stylesheet" href="static/css/linear-regression.css">
+
+<div class="row" id="main-content">
+    {% include "components/share-button.njk" %}
+    <!-- Left Column: Canvas + Controls -->
+    <div class="col-md-7">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <div class="panel-heading-content">
+                    <span class="panel-title-text"><i class="fa fa-chart-line"></i> Regression Space</span>
+                    <div class="edit-toolbar active" id="edit-toolbar">
+                        <div class="btn-group edit-mode-buttons" role="group">
+                            <button type="button" class="btn btn-sm btn-default active" data-mode="add" title="Add data points">
+                                <i class="fa fa-plus"></i> Add
+                            </button>
+                            <button type="button" class="btn btn-sm btn-default" data-mode="delete" title="Delete points">
+                                <i class="fa fa-minus"></i> Delete
+                            </button>
+                        </div>
+                        <button id="btn-clear-points" class="btn btn-sm btn-danger" title="Clear all points">
+                            <i class="fa fa-trash"></i> Clear
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="panel-body canvas-panel-body">
+                <div class="canvas-wrapper">
+                    <canvas id="regression-canvas" width="560" height="480"></canvas>
+                    <div id="click-overlay" class="click-overlay">
+                        <span>Click to add data points</span>
+                    </div>
+                </div>
+            </div>
+            <div class="panel-footer legend-footer">
+                {{ legend(
+                    items=[
+                        {class: 'data-point', label: 'Data Point'},
+                        {class: 'fit-line', label: 'Best Fit', type: 'line'},
+                        {class: 'residual-line', label: 'Residual', type: 'line'},
+                        {class: 'gd-line', label: 'GD Line', type: 'line'}
+                    ]
+                ) }}
+            </div>
+        </div>
+
+        <!-- Controls Panel -->
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title"><i class="fa fa-sliders"></i> Controls</h3>
+            </div>
+            <div class="panel-body compact-panel lr-controls-panel">
+                <div class="lr-options-col">
+                    <div class="lr-option-group">
+                        <div class="option-row">
+                            <label>Dataset:</label>
+                            <select id="dataset-select" class="form-control input-sm">
+                                <option value="custom" selected>Custom (click to add)</option>
+                                <option value="linear">Linear + Noise</option>
+                                <option value="quadratic">Quadratic</option>
+                                <option value="sine">Sinusoidal</option>
+                                <option value="cluster">Clusters</option>
+                                <option value="outliers">With Outliers</option>
+                            </select>
+                        </div>
+                        <div class="option-row">
+                            <label>Method:</label>
+                            <select id="method-select" class="form-control input-sm">
+                                <option value="normal" selected>Normal Equation</option>
+                                <option value="gradient">Gradient Descent</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="lr-option-group" id="gd-options" style="display: none;">
+                        <div class="option-row">
+                            <label>LR:</label>
+                            <input type="range" id="lr-slider" min="0.001" max="0.5" step="0.001" value="0.05">
+                            <span id="lr-value" class="range-value">0.050</span>
+                        </div>
+                        <div class="option-row">
+                            <label>Iterations:</label>
+                            {{ stepperControl(id='iter', value='100', title='', inputWidth='48px') }}
+                        </div>
+                    </div>
+                    <div class="lr-option-group">
+                        <label class="checkbox-label"><input type="checkbox" id="show-residuals"> Show residuals</label>
+                        <label class="checkbox-label"><input type="checkbox" id="show-equation" checked> Show equation</label>
+                    </div>
+                </div>
+
+                <div class="lr-playback-col">
+                    <div class="btn-toolbar" role="toolbar">
+                        <button id="btn-fit" class="btn btn-sm btn-success" title="Fit line">
+                            <i class="fa fa-play"></i> Fit
+                        </button>
+                        <button id="btn-step" class="btn btn-sm btn-info" title="Step (GD mode)" disabled>
+                            <i class="fa fa-step-forward"></i>
+                        </button>
+                        <button id="btn-reset" class="btn btn-sm btn-danger" title="Reset fit">
+                            <i class="fa fa-refresh"></i>
+                        </button>
+                    </div>
+                    {{ speedControl(value='6') }}
+                    <div class="playback-status">
+                        <span id="playback-step">Ready</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Loss Surface -->
+        <div class="panel panel-default" id="loss-panel" style="display: none;">
+            <div class="panel-heading">
+                <h3 class="panel-title"><i class="fa fa-area-chart"></i> Loss Landscape</h3>
+            </div>
+            <div class="panel-body canvas-panel-body">
+                <div class="canvas-wrapper">
+                    <canvas id="loss-canvas" width="560" height="280"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Right Column: Info + Metrics -->
+    <div class="col-md-5">
+        {{ infoTabs(
+            tabs=[
+                {id: 'about', icon: 'fa-info-circle', label: 'About', active: true, content: '
+                    <h4><i class="fa fa-chart-line"></i> Linear Regression</h4>
+                    <p>
+                        Linear regression fits a straight line <code>y = mx + b</code> to data by minimizing
+                        the sum of squared residuals. It is the foundation of many ML algorithms.
+                    </p>
+                    <h4><i class="fa fa-mouse-pointer"></i> How to Use</h4>
+                    <ul class="interaction-list">
+                        <li><strong>Click canvas</strong> to add data points</li>
+                        <li><strong>Choose a dataset</strong> preset to explore patterns</li>
+                        <li><strong>Press Fit</strong> to compute the best-fit line</li>
+                        <li><strong>Switch to Gradient Descent</strong> to animate training</li>
+                        <li><strong>Toggle residuals</strong> to see error distances</li>
+                    </ul>
+                '},
+                {id: 'algorithm', icon: 'fa-book', label: 'Algorithm', content: '
+                    <h4><i class="fa fa-cogs"></i> Normal Equation</h4>
+                    <p>The closed-form solution computes optimal parameters directly:</p>
+                    <code>w = (X<sup>T</sup>X)<sup>-1</sup>X<sup>T</sup>y</code>
+                    <p class="formula-desc">Solves in one step, no iteration needed.</p>
+
+                    <h4><i class="fa fa-cogs"></i> Gradient Descent</h4>
+                    <p>Iteratively updates parameters by following the gradient:</p>
+                    <code>w ← w − η · ∂L/∂w</code>
+                    <p class="formula-desc">Where η is the learning rate and L is MSE loss.</p>
+
+                    <ol class="algorithm-list">
+                        <li>Initialize weights randomly</li>
+                        <li>Compute predictions ŷ = Xw</li>
+                        <li>Compute loss L = (1/n)Σ(y − ŷ)²</li>
+                        <li>Compute gradient ∂L/∂w</li>
+                        <li>Update weights w ← w − η·∂L/∂w</li>
+                        <li>Repeat until convergence</li>
+                    </ol>
+                '},
+                {id: 'math', icon: 'fa-superscript', label: 'Math', content: '
+                    <h4><i class="fa fa-superscript"></i> Mean Squared Error</h4>
+                    <code>MSE = (1/n) Σᵢ (yᵢ − ŷᵢ)²</code>
+                    <p class="formula-desc">Average squared difference between actual and predicted values.</p>
+
+                    <h4>R² Score</h4>
+                    <code>R² = 1 − SS_res / SS_tot</code>
+                    <p class="formula-desc">Proportion of variance explained by the model. R²=1 is perfect fit.</p>
+
+                    <h4>Gradient</h4>
+                    <code>∂MSE/∂m = −(2/n) Σᵢ xᵢ(yᵢ − ŷᵢ)</code>
+                    <p class="formula-desc">Slope gradient — direction to update m.</p>
+                    <code>∂MSE/∂b = −(2/n) Σᵢ (yᵢ − ŷᵢ)</code>
+                    <p class="formula-desc">Intercept gradient — direction to update b.</p>
+                '}
+            ]
+        ) }}
+
+        {{ metricsPanel(
+            title='Fit Metrics',
+            icon='fa-bar-chart',
+            metrics=[
+                {icon: 'fa-database', label: 'Points', id: 'metric-points', default: '0'},
+                {icon: 'fa-arrows-h', label: 'Slope (m)', id: 'metric-slope', default: '-'},
+                {icon: 'fa-dot-circle-o', label: 'Intercept (b)', id: 'metric-intercept', default: '-'},
+                {icon: 'fa-exclamation-triangle', label: 'MSE', id: 'metric-mse', default: '-'},
+                {icon: 'fa-check-circle', label: 'R²', id: 'metric-r2', default: '-'},
+                {icon: 'fa-repeat', label: 'Iteration', id: 'metric-iteration', default: '-'},
+                {icon: 'fa-info-circle', label: 'Status', id: 'metric-status', default: 'Add points to begin'}
+            ]
+        ) }}
+
+        <!-- Loss Curve -->
+        <div class="panel panel-default" id="loss-curve-panel" style="display: none;">
+            <div class="panel-heading">
+                <h3 class="panel-title"><i class="fa fa-line-chart"></i> Loss Curve</h3>
+            </div>
+            <div class="panel-body canvas-panel-body">
+                <div class="canvas-wrapper">
+                    <canvas id="loss-curve-canvas" width="300" height="180"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
