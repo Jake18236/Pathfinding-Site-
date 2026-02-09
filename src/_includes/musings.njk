@@ -1,0 +1,51 @@
+<div class="row">
+    <div class="page-header">
+        <h2 id="musings"><i class="fa-solid fa-pen-nib"></i> Musings</h2>
+    </div>
+</div>
+
+<div class="row">
+    <p style="margin-bottom: 24px;">
+        Occasional blog posts on AI, teaching, and whatever else is on my mind.
+    </p>
+</div>
+
+{% if collections.musings and collections.musings.length > 0 %}
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="musings-list">
+            {% for post in collections.musings %}
+                <div class="musing-card">
+                    <div class="musing-card-body">
+                        <h4 class="musing-card-title">
+                            <a href="{{ post.url }}">{{ post.data.title }}</a>
+                        </h4>
+                        <span class="musing-card-date">{{ post.data.date | date('LLLL d, yyyy') }}</span>
+                        {% if post.data.languages and post.data.languages.length > 1 %}
+                        <span class="musing-card-lang"><i class="fa-solid fa-language"></i> {% for lang in post.data.languages %}{{ lang.label }}{% if not loop.last %} / {% endif %}{% endfor %}</span>
+                        {% endif %}
+                        {% if post.data.summary %}
+                            <p class="musing-card-summary">{{ post.data.summary }}</p>
+                        {% endif %}
+                        {% if post.data.tags and post.data.tags.length > 0 %}
+                            <div class="musing-card-tags">
+                            {% for tag in post.data.tags %}
+                                {% if tag != "musing" %}
+                                <span class="musing-tag">{{ tag }}</span>
+                                {% endif %}
+                            {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            {% endfor %}
+            </div>
+        </div>
+    </div>
+{% else %}
+    <div class="row">
+        <div class="col-sm-12">
+            <p class="text-muted">No musings yet — check back soon!</p>
+        </div>
+    </div>
+{% endif %}

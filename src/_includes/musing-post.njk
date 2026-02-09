@@ -1,0 +1,136 @@
+---
+layout: base.njk
+---
+<div class="row">
+    <div class="col-md-8 col-md-offset-2">
+	<article>
+	    <header class="musing-post-header">
+		{% if languages and languages.length > 1 %}
+		{% for lang in languages %}
+		<h2 class="musing-post-title{% if loop.first %} active{% endif %}" data-lang="{{ lang.code }}" style="margin-top: 0;">{{ lang.title | default(title) }}</h2>
+		{% endfor %}
+		{% else %}
+		<h2 style="margin-top: 0;">{{ title }}</h2>
+		{% endif %}
+		<div class="musing-post-meta">
+		    <time datetime="{{ date | date('yyyy-MM-dd') }}">{{ date | date('LLLL d, yyyy') }}</time>
+		    {% if author %} &middot; {{ author }}{% endif %}
+		</div>
+		{% if tags and tags.length > 0 %}
+		    <div class="musing-post-tags">
+		    {% for tag in tags %}
+			{% if tag != "musing" and tag != "draft" %}
+			<span class="musing-tag">{{ tag }}</span>
+			{% endif %}
+		    {% endfor %}
+		    </div>
+		{% endif %}
+	    </header>
+	    {% if languages and languages.length > 1 %}
+	    <div class="lang-toggle" role="tablist">
+		{% for lang in languages %}
+		<button class="lang-btn{% if loop.first %} active{% endif %}" data-lang="{{ lang.code }}" role="tab" aria-selected="{{ 'true' if loop.first else 'false' }}">{{ lang.label }}</button>
+		{% endfor %}
+	    </div>
+	    {% endif %}
+	    <div class="musing-post-content">
+		{{ content | safe }}
+	    </div>
+	</article>
+
+	<hr/>
+	<p><a href="index.html#musings">&larr; Back to all musings</a></p>
+    </div>
+</div>
+
+<script>
+/* Language toggle for bilingual posts */
+(function() {
+    var container = document.querySelector('.musing-post-content');
+    var toggleBar = document.querySelector('.lang-toggle');
+    if (!container || !toggleBar) return;
+
+    var nodes = Array.prototype.slice.call(container.childNodes);
+    var sections = {};
+    var order = [];
+    var currentCode = null;
+
+    nodes.forEach(function(node) {
+	if (node.nodeType === Node.COMMENT_NODE) {
+	    var match = node.textContent.trim().match(/^lang:(\S+)$/);
+	    if (match) {
+		currentCode = match[1];
+		if (!sections[currentCode]) {
+		    sections[currentCode] = [];
+		    order.push(currentCode);
+		}
+		return;
+	    }
+	}
+	if (currentCode) {
+	    sections[currentCode].push(node);
+	}
+    });
+
+    if (order.length < 2) return;
+
+    order.forEach(function(code, idx) {
+	var wrapper = document.createElement('div');
+	wrapper.className = 'lang-section' + (idx === 0 ? ' active' : '');
+	wrapper.setAttribute('data-lang', code);
+
+	var firstNode = sections[code][0];
+	if (firstNode) {
+	    container.insertBefore(wrapper, firstNode);
+	} else {
+	    container.appendChild(wrapper);
+	}
+
+	sections[code].forEach(function(n) {
+	    wrapper.appendChild(n);
+	});
+    });
+
+    nodes.forEach(function(node) {
+	if (node.nodeType === Node.COMMENT_NODE && /^lang:\S+$/.test(node.textContent.trim())) {
+	    node.parentNode.removeChild(node);
+	}
+    });
+
+    var LANG_KEY = 'musing-lang';
+    var saved = null;
+    try { saved = localStorage.getItem(LANG_KEY); } catch(e) {}
+
+    var titles = document.querySelectorAll('.musing-post-title[data-lang]');
+
+    function activate(code) {
+	var secs = container.querySelectorAll('.lang-section');
+	var btns = toggleBar.querySelectorAll('.lang-btn');
+	for (var i = 0; i < secs.length; i++) {
+	    var isMatch = secs[i].getAttribute('data-lang') === code;
+	    secs[i].className = 'lang-section' + (isMatch ? ' active' : '');
+	}
+	for (var j = 0; j < btns.length; j++) {
+	    var btnMatch = btns[j].getAttribute('data-lang') === code;
+	    btns[j].className = 'lang-btn' + (btnMatch ? ' active' : '');
+	    btns[j].setAttribute('aria-selected', btnMatch ? 'true' : 'false');
+	}
+	for (var t = 0; t < titles.length; t++) {
+	    var titleMatch = titles[t].getAttribute('data-lang') === code;
+	    titles[t].className = 'musing-post-title' + (titleMatch ? ' active' : '');
+	}
+	try { localStorage.setItem(LANG_KEY, code); } catch(e) {}
+    }
+
+    if (saved && sections[saved]) {
+	activate(saved);
+    }
+
+    var buttons = toggleBar.querySelectorAll('.lang-btn');
+    for (var k = 0; k < buttons.length; k++) {
+	buttons[k].addEventListener('click', function() {
+	    activate(this.getAttribute('data-lang'));
+	});
+    }
+})();
+</script>

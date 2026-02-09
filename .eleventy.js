@@ -157,11 +157,32 @@ module.exports = function(eleventyConfig) {
     return TYPE_ICONS[type.toLowerCase()] || 'fa-solid fa-paperclip';
   });
 
+  // Date formatting filter for musings
+  eleventyConfig.addFilter("date", function(dateVal, format) {
+    if (!dateVal) return '';
+    const d = new Date(dateVal);
+    if (isNaN(d)) return String(dateVal);
+    const months = ["January","February","March","April","May","June",
+                    "July","August","September","October","November","December"];
+    const pad = n => String(n).padStart(2, '0');
+    if (format === 'yyyy-MM-dd') return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;
+    if (format === 'LLLL d, yyyy') return `${months[d.getMonth()]} ${d.getDate()}, ${d.getFullYear()}`;
+    return d.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+  });
+
   // ===== COLLECTIONS =====
   // Visualization collection - auto-discovers all pages tagged "visualization"
   eleventyConfig.addCollection("visualizations", function(collectionApi) {
     return collectionApi.getFilteredByTag("visualization")
       .sort((a, b) => (a.data.cardOrder || 99) - (b.data.cardOrder || 99));
+  });
+
+  // Musings collection - auto-discovers all pages tagged "musing", sorted newest-first
+  // Posts tagged "draft" are excluded from the listing
+  eleventyConfig.addCollection("musings", function(collectionApi) {
+    return collectionApi.getFilteredByTag("musing")
+      .filter(item => !(item.data.tags || []).includes("draft"))
+      .sort((a, b) => new Date(b.data.date) - new Date(a.data.date));
   });
 
   // ===== SHORTCODES =====
@@ -174,6 +195,7 @@ module.exports = function(eleventyConfig) {
   // Copy static assets
   eleventyConfig.addPassthroughCopy({ "static": "static" });
   eleventyConfig.addPassthroughCopy({ "static/ico/favicon.ico": "favicon.ico" });
+  eleventyConfig.addPassthroughCopy({ "CNAME": "CNAME" });
 
   // ===== WATCH TARGETS =====
   eleventyConfig.addWatchTarget("./src/");

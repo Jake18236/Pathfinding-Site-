@@ -4,10 +4,70 @@
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<meta name="description" content="">
-	<meta name="author" content="">
+{%- set metaDesc = description | default(cardDescription) | default(siteInfo.description) -%}
+{%- set pageTitle %}{{ title }}{% if title %} | {% endif %}{{ siteInfo.title }}{% endset -%}
+{%- set canonicalUrl %}{{ siteInfo.url }}/{{ permalink | default(page.url | replace(r/^\//, "")) }}{% endset -%}
+{%- set ogImageUrl %}{{ siteInfo.url }}/{{ ogImage | default(siteInfo.ogImage) }}{% endset %}
 
-	<title>{{ siteInfo.title }}</title>
+	<meta name="description" content="{{ metaDesc }}">
+	<meta name="author" content="{{ siteInfo.author }}">
+
+	<title>{{ pageTitle }}</title>
+
+	<link rel="canonical" href="{{ canonicalUrl }}">
+
+	<!-- Open Graph -->
+	<meta property="og:type" content="{% if extraScript %}article{% else %}website{% endif %}">
+	<meta property="og:title" content="{{ pageTitle }}">
+	<meta property="og:description" content="{{ metaDesc }}">
+	<meta property="og:url" content="{{ canonicalUrl }}">
+	<meta property="og:image" content="{{ ogImageUrl }}">
+	<meta property="og:site_name" content="{{ siteInfo.title }}">
+
+	<!-- Twitter Card -->
+	<meta name="twitter:card" content="summary_large_image">
+	<meta name="twitter:title" content="{{ pageTitle }}">
+	<meta name="twitter:description" content="{{ metaDesc }}">
+	<meta name="twitter:image" content="{{ ogImageUrl }}">
+
+	<!-- JSON-LD Structured Data -->
+	{% if extraScript %}
+	<script type="application/ld+json">
+	{
+		"@context": "https://schema.org",
+		"@type": "LearningResource",
+		"name": "{{ title }}",
+		"description": "{{ metaDesc }}",
+		"url": "{{ canonicalUrl }}",
+		"image": "{{ ogImageUrl }}",
+		"educationalLevel": "Undergraduate",
+		"learningResourceType": "Interactive visualization",
+		"author": {
+			"@type": "Person",
+			"name": "{{ siteInfo.author }}"
+		},
+		"provider": {
+			"@type": "Organization",
+			"name": "University of Notre Dame"
+		}{% if cardTags %},
+		"keywords": "{{ cardTags | join(', ') }}"{% endif %}
+	}
+	</script>
+	{% else %}
+	<script type="application/ld+json">
+	{
+		"@context": "https://schema.org",
+		"@type": "WebSite",
+		"name": "{{ siteInfo.title }}",
+		"description": "{{ metaDesc }}",
+		"url": "{{ siteInfo.url }}",
+		"author": {
+			"@type": "Person",
+			"name": "{{ siteInfo.author }}"
+		}
+	}
+	</script>
+	{% endif %}
 
 	<!-- Theme CSS (toggleable) -->
 	<link id="theme-style" href="{{ prefix | default('') }}static/css/bluegold.css" rel="stylesheet">
@@ -16,12 +76,6 @@
 	<link rel="stylesheet" href="{{ prefix | default('') }}static/css/visualizations.css">
 	{% endif %}
 	<script src="https://kit.fontawesome.com/9d2722956c.js" crossorigin="anonymous"></script>
-
-	<!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
-	<!--[if lt IE 9]>
-	<script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
-	<script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
-	<![endif]-->
 
 	<style>
 	body {
@@ -465,6 +519,180 @@
 	[data-theme="gruvbox-dark"] .learning-card-thumbnail {
 	    background: #1d2021;
 	}
+	/* Musings / blog cards */
+	.musings-list {
+	    display: flex;
+	    flex-direction: column;
+	    gap: 16px;
+	}
+	.musing-card {
+	    border-radius: 6px;
+	    border: 1px solid #ddd;
+	    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+	    background-color: #fff;
+	    color: #333;
+	    transition: transform 0.2s ease, box-shadow 0.2s ease;
+	}
+	.musing-card:hover {
+	    transform: translateY(-2px);
+	    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+	}
+	.musing-card-body {
+	    padding: 16px 20px;
+	}
+	.musing-card-title {
+	    margin: 0 0 6px 0;
+	    font-size: 1.05em;
+	    font-weight: 600;
+	    line-height: 1.35;
+	}
+	.musing-card-title a {
+	    color: inherit;
+	    text-decoration: none;
+	}
+	.musing-card-title a:hover {
+	    text-decoration: underline;
+	}
+	.musing-card-date {
+	    font-size: 0.82em;
+	    color: #777;
+	}
+	.musing-card-summary {
+	    margin: 10px 0 0 0;
+	    font-size: 0.9em;
+	    color: #555;
+	    line-height: 1.55;
+	}
+	.musing-card-tags {
+	    display: flex;
+	    flex-wrap: wrap;
+	    gap: 6px;
+	    margin-top: 10px;
+	}
+	.musing-tag {
+	    padding: 2px 10px;
+	    border-radius: 4px;
+	    background: #f0f0f5;
+	    color: #555;
+	    font-size: 0.78em;
+	    font-weight: 500;
+	}
+	/* Musings dark theme */
+	[data-theme="gruvbox-dark"] .musing-card {
+	    border-color: #504945;
+	    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.45);
+	    background-color: #282828;
+	    color: #ebdbb2;
+	}
+	[data-theme="gruvbox-dark"] .musing-card:hover {
+	    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.55);
+	}
+	[data-theme="gruvbox-dark"] .musing-card-title {
+	    color: #ebdbb2;
+	}
+	[data-theme="gruvbox-dark"] .musing-card-date {
+	    color: #a89984;
+	}
+	[data-theme="gruvbox-dark"] .musing-card-summary {
+	    color: #bdae93;
+	}
+	[data-theme="gruvbox-dark"] .musing-tag {
+	    background: #3c3836;
+	    color: #bdae93;
+	}
+	/* Language toggle for bilingual posts */
+	.lang-toggle {
+	    display: inline-flex;
+	    gap: 0;
+	    border-radius: 6px;
+	    overflow: hidden;
+	    border: 1px solid #ddd;
+	    margin-bottom: 20px;
+	}
+	.lang-btn {
+	    padding: 6px 16px;
+	    border: none;
+	    background: #f5f5f5;
+	    color: #555;
+	    font-size: 0.85em;
+	    font-weight: 500;
+	    cursor: pointer;
+	    transition: background-color 0.2s ease, color 0.2s ease;
+	    outline: none;
+	}
+	.lang-btn:not(:last-child) {
+	    border-right: 1px solid #ddd;
+	}
+	.lang-btn:hover {
+	    background: #e8e8ee;
+	}
+	.lang-btn.active {
+	    background: #4e73df;
+	    color: #fff;
+	}
+	.lang-btn:focus-visible {
+	    box-shadow: 0 0 0 3px rgba(78, 115, 223, 0.35);
+	    z-index: 1;
+	    position: relative;
+	}
+	.lang-section { display: none; }
+	.lang-section.active { display: block; }
+	/* Language toggle dark theme */
+	[data-theme="gruvbox-dark"] .lang-toggle {
+	    border-color: #504945;
+	}
+	[data-theme="gruvbox-dark"] .lang-btn {
+	    background: #3c3836;
+	    color: #bdae93;
+	}
+	[data-theme="gruvbox-dark"] .lang-btn:not(:last-child) {
+	    border-right-color: #504945;
+	}
+	[data-theme="gruvbox-dark"] .lang-btn:hover {
+	    background: #504945;
+	}
+	[data-theme="gruvbox-dark"] .lang-btn.active {
+	    background: #458588;
+	    color: #ebdbb2;
+	}
+	[data-theme="gruvbox-dark"] .lang-btn:focus-visible {
+	    box-shadow: 0 0 0 3px rgba(69, 133, 136, 0.35);
+	}
+	/* Language indicator on homepage cards */
+	.musing-card-lang {
+	    display: inline-flex;
+	    align-items: center;
+	    gap: 4px;
+	    font-size: 0.78em;
+	    color: #888;
+	    margin-left: 10px;
+	}
+	.musing-card-lang i { font-size: 0.9em; }
+	[data-theme="gruvbox-dark"] .musing-card-lang { color: #a89984; }
+	/* Musing post page styles */
+	.musing-post-header { margin-bottom: 30px; }
+	.musing-post-meta { font-size: 0.9em; color: #777; margin-bottom: 8px; }
+	.musing-post-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+	.musing-post-content { font-size: 1.05em; line-height: 1.75; }
+	.musing-post-content h2,
+	.musing-post-content h3,
+	.musing-post-content h4 { margin-top: 1.5em; }
+	.musing-post-content img { max-width: 100%; border-radius: 6px; }
+	.musing-post-content pre { border-radius: 6px; padding: 16px; overflow-x: auto; }
+	.musing-post-content blockquote {
+	    border-left: 4px solid #4e73df;
+	    padding-left: 16px;
+	    margin-left: 0;
+	    color: #555;
+	    font-style: italic;
+	}
+	.musing-post-title { display: none; }
+	.musing-post-title.active { display: block; }
+	[data-theme="gruvbox-dark"] .musing-post-meta { color: #a89984; }
+	[data-theme="gruvbox-dark"] .musing-post-content blockquote {
+	    border-left-color: #458588;
+	    color: #bdae93;
+	}
 	.embed-responsive {
  	    border-radius: 8px;
  	    border: 1px solid rgba(30, 41, 59, 0.18);
@@ -576,10 +804,12 @@
 		import { PlaybackController } from './static/js/lib/playback-controller.js';
 		import { ThemeManager } from './static/js/lib/theme-manager.js';
 		import { Quadtree } from './static/js/lib/quadtree.js';
-		import { setupHiDPICanvas, resetCanvasTransform, clearCanvas, roundRect, drawLine, drawCircle, getMousePosition, createOffscreenCanvas } from './static/js/lib/canvas-utils.js';
+		import { setupHiDPICanvas, resetCanvasTransform, clearCanvas, roundRect, drawLine, drawCircle, getMousePosition, createOffscreenCanvas, CoordinateMapper, hexToRgb, colorLerp } from './static/js/lib/canvas-utils.js';
 		import { TreeLayoutEngine } from './static/js/lib/tree-layout.js';
 		import { normalize, clamp, euclideanDistance, manhattanDistance, chebyshevDistance, gaussian, lerp, remapRange } from './static/js/lib/math-utils.js';
 		import { DatasetGenerators } from './static/js/lib/dataset-generators.js';
+		import { URLStateManager } from './static/js/lib/url-state-manager.js';
+		import { setTextContent, wireStepper, wireSlider } from './static/js/lib/dom-utils.js';
 
 		window.VizLib = {
 			PlaybackController,
@@ -588,16 +818,39 @@
 			setupHiDPICanvas,
 			resetCanvasTransform,
 			clearCanvas,
-			CanvasUtils: { setupHiDPICanvas, resetCanvasTransform, clearCanvas, roundRect, drawLine, drawCircle, getMousePosition, createOffscreenCanvas },
+			CanvasUtils: { setupHiDPICanvas, resetCanvasTransform, clearCanvas, roundRect, drawLine, drawCircle, getMousePosition, createOffscreenCanvas, CoordinateMapper, hexToRgb, colorLerp },
 			TreeLayoutEngine,
 			MathUtils: { normalize, clamp, euclideanDistance, manhattanDistance, chebyshevDistance, gaussian, lerp, remapRange },
-			DatasetGenerators
+			DatasetGenerators,
+			URLStateManager,
+			DomUtils: { setTextContent, wireStepper, wireSlider }
+		};
+
+		// Helper for viz scripts to wait for VizLib readiness
+		window.VizLib._ready = true;
+		window.VizLib.onReady = function(fn) {
+			if (window.VizLib._ready) fn();
+			else window.addEventListener('vizlib-ready', fn);
 		};
 
 		// Signal that VizLib is ready
 		window.dispatchEvent(new CustomEvent('vizlib-ready'));
 	</script>
 	<script src="{{ extraScript }}"></script>
+	<script type="module">
+		// Auto-initialize URL state management for visualizations
+		window.addEventListener('vizlib-ready', function() {
+			if (document.getElementById('main-content')) {
+				var urlState = new VizLib.URLStateManager();
+				setTimeout(function() {
+					urlState.applyFromURL();
+					urlState.enableAutoSync();
+					urlState.bindShareButton();
+				}, 100);
+				window._urlState = urlState;
+			}
+		});
+	</script>
 	{% endif %}
 	<script>
 	(function() {
