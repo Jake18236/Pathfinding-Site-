@@ -169,6 +169,8 @@
             this.dpr = 1;
             this.nodeRadius = 35;
             this.positions = [];
+            this.arrowLabelPositions = [];
+            this.hoveredLabel = null;
         }
 
         setupCanvas() {
@@ -232,6 +234,9 @@
                 ctx.fillStyle = colors.bg;
                 ctx.fillRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
             }
+
+            // Reset label positions for hit detection
+            this.arrowLabelPositions = [];
 
             const numStates = model.states.length;
             this.computePositions(numStates);
@@ -368,8 +373,6 @@
             // Probability label
             const midX = (startX + endX) / 2 + ox * 0.5;
             const midY = (startY + endY) / 2 + oy * 0.5;
-            ctx.font = '11px ' + (typeof getComputedStyle !== 'undefined'
-                ? 'var(--viz-mono-font, monospace)' : 'monospace');
             ctx.font = 'bold 11px Menlo, Monaco, Consolas, monospace';
             ctx.fillStyle = isActive ? colors.arrowActive : colors.probText;
             ctx.textAlign = 'center';
@@ -378,12 +381,22 @@
             // Background for readability
             const text = prob.toFixed(2);
             const tm = ctx.measureText(text);
-            ctx.fillStyle = colors.bg;
-            ctx.globalAlpha = 0.85;
+            const isHovered = this.hoveredLabel &&
+                this.hoveredLabel.from === from && this.hoveredLabel.to === to;
+            ctx.fillStyle = isHovered ? (colors.currentHighlight || 'rgba(251,192,45,0.3)') : colors.bg;
+            ctx.globalAlpha = isHovered ? 1 : 0.85;
             ctx.fillRect(midX - tm.width / 2 - 3, midY - 7, tm.width + 6, 14);
+            if (isHovered) {
+                ctx.strokeStyle = colors.currentBorder || '#FBC02D';
+                ctx.lineWidth = 1.5;
+                ctx.strokeRect(midX - tm.width / 2 - 3, midY - 7, tm.width + 6, 14);
+            }
             ctx.globalAlpha = 1;
             ctx.fillStyle = isActive ? colors.arrowActive : colors.probText;
             ctx.fillText(text, midX, midY);
+
+            // Store label position for hit detection
+            this.arrowLabelPositions.push({ from, to, x: midX, y: midY });
 
             ctx.restore();
         }
@@ -433,16 +446,50 @@
             ctx.font = 'bold 11px Menlo, Monaco, Consolas, monospace';
             const text = prob.toFixed(2);
             const tm = ctx.measureText(text);
-            ctx.fillStyle = colors.bg;
-            ctx.globalAlpha = 0.85;
+            const isHovered = this.hoveredLabel &&
+                this.hoveredLabel.from === stateIdx && this.hoveredLabel.to === stateIdx;
+            ctx.fillStyle = isHovered ? (colors.currentHighlight || 'rgba(251,192,45,0.3)') : colors.bg;
+            ctx.globalAlpha = isHovered ? 1 : 0.85;
             ctx.fillRect(labelX - tm.width / 2 - 3, labelY - 7, tm.width + 6, 14);
+            if (isHovered) {
+                ctx.strokeStyle = colors.currentBorder || '#FBC02D';
+                ctx.lineWidth = 1.5;
+                ctx.strokeRect(labelX - tm.width / 2 - 3, labelY - 7, tm.width + 6, 14);
+            }
             ctx.globalAlpha = 1;
             ctx.fillStyle = isActive ? colors.arrowActive : colors.probText;
             ctx.textAlign = 'center';
             ctx.textBaseline = 'middle';
             ctx.fillText(text, labelX, labelY);
 
+            // Store label position for hit detection
+            this.arrowLabelPositions.push({ from: stateIdx, to: stateIdx, x: labelX, y: labelY });
+
             ctx.restore();
+        }
+
+        /** Hit-test mouse coordinates against stored arrow label positions. */
+        hitTest(mx, my) {
+            const hitRadius = 20;
+            for (const lbl of this.arrowLabelPositions) {
+                const dx = mx - lbl.x;
+                const dy = my - lbl.y;
+                if (dx * dx + dy * dy < hitRadius * hitRadius) {
+                    return { type: 'arrow', from: lbl.from, to: lbl.to, x: lbl.x, y: lbl.y };
+                }
+            }
+            return null;
+        }
+
+        /** Convert mouse event to canvas logical coordinates. */
+        getCanvasCoords(e) {
+            const rect = this.canvas.getBoundingClientRect();
+            const scaleX = CANVAS_WIDTH / rect.width;
+            const scaleY = CANVAS_HEIGHT / rect.height;
+            return {
+                x: (e.clientX - rect.left) * scaleX,
+                y: (e.clientY - rect.top) * scaleY
+            };
         }
     }
 
@@ -667,6 +714,38 @@
                 });
             });
 
+            // Canvas mousemove — cursor feedback on probability labels
+            this.canvas.addEventListener('mousemove', (e) => {
+                const coords = this.diagram.getCanvasCoords(e);
+                const hit = this.diagram.hitTest(coords.x, coords.y);
+                if (hit) {
+                    this.canvas.style.cursor = 'pointer';
+                    if (!this.diagram.hoveredLabel ||
+                        this.diagram.hoveredLabel.from !== hit.from ||
+                        this.diagram.hoveredLabel.to !== hit.to) {
+                        this.diagram.hoveredLabel = { from: hit.from, to: hit.to };
+                        this.render();
+                    }
+                } else {
+                    this.canvas.style.cursor = 'default';
+                    if (this.diagram.hoveredLabel) {
+                        this.diagram.hoveredLabel = null;
+                        this.render();
+                    }
+                }
+            });
+
+            // Canvas click — open inline editor on probability labels
+            this.canvas.addEventListener('click', (e) => {
+                const coords = this.diagram.getCanvasCoords(e);
+                const hit = this.diagram.hitTest(coords.x, coords.y);
+                if (hit) {
+                    this.openInlineEditor(hit.from, hit.to, hit.x, hit.y);
+                } else {
+                    this.cancelInlineEdit();
+                }
+            });
+
             // Theme change
             if (window.VizLib && VizLib.ThemeManager) {
                 VizLib.ThemeManager.onThemeChange(() => this.render());
@@ -681,7 +760,6 @@
             this.currentStep = -1;
             this.visitedStates.clear();
             this.activeTransition = null;
-            this.buildMatrixTable();
             this.buildEmissionTable();
             this.updateMetrics();
             this.clearSequenceDisplay();
@@ -732,66 +810,6 @@
             document.getElementById('metric-seqlen').textContent = this.seqLen;
         }
 
-        // ---- Matrix Table ----
-
-        buildMatrixTable() {
-            const container = document.getElementById('matrix-container');
-            const m = this.engine.model;
-            const N = m.states.length;
-
-            let html = '<table class="matrix-table"><thead><tr><th>From \\ To</th>';
-            for (let j = 0; j < N; j++) {
-                html += '<th>' + m.states[j] + '</th>';
-            }
-            html += '<th>&Sigma;</th></tr></thead><tbody>';
-
-            for (let i = 0; i < N; i++) {
-                html += '<tr><td class="row-header">' + m.states[i] + '</td>';
-                for (let j = 0; j < N; j++) {
-                    const val = m.transitions[i][j].toFixed(2);
-                    html += '<td><input type="text" class="matrix-input" '
-                        + 'data-from="' + i + '" data-to="' + j + '" '
-                        + 'value="' + val + '"></td>';
-                }
-                const rowSum = m.transitions[i].reduce((a, b) => a + b, 0);
-                const sumClass = Math.abs(rowSum - 1) < 0.01 ? 'valid' : 'invalid';
-                html += '<td class="matrix-row-sum ' + sumClass + '">'
-                    + rowSum.toFixed(2) + '</td>';
-                html += '</tr>';
-            }
-
-            html += '</tbody></table>';
-            container.innerHTML = html;
-
-            // Bind input events
-            container.querySelectorAll('.matrix-input').forEach(input => {
-                input.addEventListener('change', (e) => {
-                    this.onMatrixChange(e.target);
-                });
-                input.addEventListener('focus', (e) => e.target.select());
-            });
-        }
-
-        onMatrixChange(input) {
-            const from = parseInt(input.dataset.from);
-            const to = parseInt(input.dataset.to);
-            let val = parseFloat(input.value);
-
-            if (isNaN(val) || val < 0) {
-                input.classList.add('invalid');
-                return;
-            }
-            input.classList.remove('invalid');
-
-            // Clamp
-            val = Math.max(0, Math.min(1, val));
-            this.engine.updateTransition(from, to, val);
-
-            // Refresh the entire row to show normalized values
-            this.buildMatrixTable();
-            this.render();
-        }
-
         buildEmissionTable() {
             const container = document.getElementById('emission-matrix');
             const m = this.engine.model;
@@ -819,6 +837,89 @@
 
             html += '</tbody></table>';
             container.innerHTML = html;
+        }
+
+        // ---- Inline Probability Editor ----
+
+        openInlineEditor(from, to, canvasX, canvasY) {
+            const editor = document.getElementById('inline-editor');
+            const input = document.getElementById('inline-editor-input');
+            if (!editor || !input) return;
+
+            // Convert canvas logical coords to CSS position relative to canvas-wrapper
+            const rect = this.canvas.getBoundingClientRect();
+            const scaleX = rect.width / CANVAS_WIDTH;
+            const scaleY = rect.height / CANVAS_HEIGHT;
+            const cssX = canvasX * scaleX;
+            const cssY = canvasY * scaleY;
+
+            editor.style.left = cssX + 'px';
+            editor.style.top = cssY + 'px';
+            editor.style.display = '';
+
+            // Pre-fill with current value
+            const currentVal = this.engine.model.transitions[from][to];
+            input.value = currentVal.toFixed(2);
+            input.select();
+            input.focus();
+
+            // Store which transition is being edited
+            this._editingFrom = from;
+            this._editingTo = to;
+
+            // Remove old listeners (to avoid stacking)
+            const newInput = input.cloneNode(true);
+            input.parentNode.replaceChild(newInput, input);
+
+            newInput.select();
+            newInput.focus();
+
+            newInput.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    this.commitInlineEdit(this._editingFrom, this._editingTo, newInput.value);
+                } else if (e.key === 'Escape') {
+                    e.preventDefault();
+                    this.cancelInlineEdit();
+                }
+            });
+
+            newInput.addEventListener('blur', () => {
+                // Small delay to allow click-away detection
+                setTimeout(() => {
+                    if (document.getElementById('inline-editor').style.display !== 'none') {
+                        this.cancelInlineEdit();
+                    }
+                }, 150);
+            });
+        }
+
+        commitInlineEdit(from, to, value) {
+            const editor = document.getElementById('inline-editor');
+            let val = parseFloat(value);
+
+            if (isNaN(val) || val < 0) {
+                this.cancelInlineEdit();
+                return;
+            }
+
+            // Clamp 0–1
+            val = Math.max(0, Math.min(1, val));
+            this.engine.updateTransition(from, to, val);
+
+            // Hide editor
+            editor.style.display = 'none';
+
+            // Re-render and update
+            this.render();
+            this.updateMetrics();
+        }
+
+        cancelInlineEdit() {
+            const editor = document.getElementById('inline-editor');
+            if (editor) {
+                editor.style.display = 'none';
+            }
         }
 
         // ---- Sequence Generation ----

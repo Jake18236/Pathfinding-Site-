@@ -21,13 +21,12 @@ cardOrder: 21
 
 {% from "components/legend.njk" import legend %}
 {% from "components/info-tabs.njk" import infoTabs %}
-{% from "components/metrics-panel.njk" import metricsPanel %}
 
 <link rel="stylesheet" href="static/css/markov.css">
 
 <div class="row" id="main-content">
     {% include "components/share-button.njk" %}
-    <!-- Left Column: State Diagram + Transition Matrix + Controls -->
+    <!-- Left Column: State Diagram + Controls -->
     <div class="col-md-7">
         <!-- State Diagram Panel -->
         <div class="panel panel-default">
@@ -38,8 +37,11 @@ cardOrder: 21
                 </div>
             </div>
             <div class="panel-body canvas-panel-body">
-                <div class="canvas-wrapper">
+                <div class="canvas-wrapper" style="position: relative;">
                     <canvas id="markov-canvas" width="560" height="350"></canvas>
+                    <div id="inline-editor" class="inline-editor" style="display: none;">
+                        <input type="text" id="inline-editor-input" class="inline-editor-input">
+                    </div>
                 </div>
             </div>
             <div class="panel-footer legend-footer">
@@ -51,24 +53,7 @@ cardOrder: 21
                         {class: 'markov-transition', label: 'Transition', type: 'line'}
                     ]
                 ) }}
-            </div>
-        </div>
-
-        <!-- Transition Matrix Panel -->
-        <div class="panel panel-default">
-            <div class="panel-heading">
-                <h3 class="panel-title"><i class="fa fa-table"></i> Transition Matrix</h3>
-            </div>
-            <div class="panel-body compact-panel">
-                <div id="matrix-container" class="matrix-container">
-                    <p class="text-muted text-center" style="font-size: 12px;">
-                        Select a model to see transition probabilities.
-                    </p>
-                </div>
-                <div id="emission-container" class="emission-container" style="display: none;">
-                    <h5 class="emission-title"><i class="fa fa-eye"></i> Emission Probabilities</h5>
-                    <div id="emission-matrix"></div>
-                </div>
+                <span class="legend-hint"><i class="fa fa-pencil"></i> Click probabilities to edit</span>
             </div>
         </div>
 
@@ -146,7 +131,8 @@ cardOrder: 21
             </p>
             <h4><i class="fa fa-mouse-pointer"></i> How to Use</h4>
             <ul class="interaction-list">
-                <li><strong>Select a model</strong> preset or edit the transition matrix directly</li>
+                <li><strong>Select a model</strong> preset to load transition probabilities</li>
+                <li><strong>Click a probability</strong> on any arrow to edit it directly</li>
                 <li><strong>Generate</strong> a random sequence using the Markov chain</li>
                 <li><strong>Step</strong> through the sequence to see transitions animate</li>
                 <li><strong>Switch to HMM mode</strong> to see hidden states and emissions</li>
@@ -224,26 +210,31 @@ cardOrder: 21
             </p>
         {% endset %}
 
+        {% set metricsContent %}
+            <table class="table table-condensed metrics-table">
+                <tbody>
+                    <tr><td><i class="fa fa-circle"></i> States</td><td id="metric-states" class="text-right metric-value">3</td></tr>
+                    <tr><td><i class="fa fa-map-marker"></i> Current State</td><td id="metric-current" class="text-right metric-value">-</td></tr>
+                    <tr><td><i class="fa fa-hashtag"></i> Step</td><td id="metric-step" class="text-right metric-value">0</td></tr>
+                    <tr><td><i class="fa fa-arrows-h"></i> Sequence Length</td><td id="metric-seqlen" class="text-right metric-value">10</td></tr>
+                    <tr><td><i class="fa fa-percent"></i> Path Probability</td><td id="metric-prob" class="text-right metric-value">-</td></tr>
+                    <tr><td><i class="fa fa-info-circle"></i> Status</td><td id="metric-status" class="text-right metric-value">Ready</td></tr>
+                </tbody>
+            </table>
+            <div id="emission-container" class="emission-container" style="display: none;">
+                <h5 class="emission-title"><i class="fa fa-eye"></i> Emission Probabilities</h5>
+                <div id="emission-matrix"></div>
+            </div>
+        {% endset %}
+
         {{ infoTabs(
             variant='nav-tabs',
             panelClass='panel-full-height',
             tabs=[
                 {id: 'about', icon: 'fa-info-circle', label: 'About', active: true, content: aboutContent},
                 {id: 'algorithm', icon: 'fa-book', label: 'Algorithm', content: algorithmContent},
-                {id: 'math', icon: 'fa-calculator', label: 'Math', content: mathContent}
-            ]
-        ) }}
-
-        {{ metricsPanel(
-            title='Model Metrics',
-            icon='fa-bar-chart',
-            metrics=[
-                {icon: 'fa-circle', label: 'States', id: 'metric-states', default: '3'},
-                {icon: 'fa-map-marker', label: 'Current State', id: 'metric-current', default: '-'},
-                {icon: 'fa-hashtag', label: 'Step', id: 'metric-step', default: '0'},
-                {icon: 'fa-arrows-h', label: 'Sequence Length', id: 'metric-seqlen', default: '10'},
-                {icon: 'fa-percent', label: 'Path Probability', id: 'metric-prob', default: '-'},
-                {icon: 'fa-info-circle', label: 'Status', id: 'metric-status', default: 'Ready'}
+                {id: 'math', icon: 'fa-calculator', label: 'Math', content: mathContent},
+                {id: 'metrics', icon: 'fa-bar-chart', label: 'Metrics', content: metricsContent}
             ]
         ) }}
 
