@@ -5,6 +5,12 @@ prefix: /
 <div class="row">
     <div class="col-md-8 col-md-offset-2">
 	<article>
+	    {% if figure %}
+	    <div class="musing-post-figure">
+		<img src="{{ figure }}" alt="{{ figureAlt | default(title) }}">
+		{% if figureCaption %}<figcaption>{{ figureCaption }}</figcaption>{% endif %}
+	    </div>
+	    {% endif %}
 	    <header class="musing-post-header">
 		{% if languages and languages.length > 1 %}
 		{% for lang in languages %}
@@ -13,27 +19,31 @@ prefix: /
 		{% else %}
 		<h2 style="margin-top: 0;">{{ title }}</h2>
 		{% endif %}
-		<div class="musing-post-meta">
-		    <time datetime="{{ date | date('yyyy-MM-dd') }}">{{ date | date('LLLL d, yyyy') }}</time>
-		    {% if author %} &middot; {{ author }}{% endif %}
-		</div>
-		{% if tags and tags.length > 0 %}
-		    <div class="musing-post-tags">
-		    {% for tag in tags %}
-			{% if tag != "musing" and tag != "draft" %}
-			<span class="musing-tag">{{ tag }}</span>
+		<div class="musing-post-meta-row">
+		    <div class="musing-post-meta-left">
+			<div class="musing-post-meta">
+			    <time datetime="{{ date | date('yyyy-MM-dd') }}">{{ date | date('LLLL d, yyyy') }}</time>
+			    {% if author %} &middot; {{ author }}{% endif %}
+			</div>
+			{% if tags and tags.length > 0 %}
+			<div class="musing-post-tags">
+			    {% for tag in tags %}
+			    {% if tag != "musing" and tag != "draft" %}
+			    <span class="musing-tag">{{ tag }}</span>
+			    {% endif %}
+			    {% endfor %}
+			</div>
 			{% endif %}
-		    {% endfor %}
 		    </div>
-		{% endif %}
+		    {% if languages and languages.length > 1 %}
+		    <div class="lang-toggle" role="tablist">
+			{% for lang in languages %}
+			<button class="lang-btn{% if loop.first %} active{% endif %}" data-lang="{{ lang.code }}" role="tab" aria-selected="{{ 'true' if loop.first else 'false' }}">{{ lang.label }}</button>
+			{% endfor %}
+		    </div>
+		    {% endif %}
+		</div>
 	    </header>
-	    {% if languages and languages.length > 1 %}
-	    <div class="lang-toggle" role="tablist">
-		{% for lang in languages %}
-		<button class="lang-btn{% if loop.first %} active{% endif %}" data-lang="{{ lang.code }}" role="tab" aria-selected="{{ 'true' if loop.first else 'false' }}">{{ lang.label }}</button>
-		{% endfor %}
-	    </div>
-	    {% endif %}
 	    <div class="musing-post-content">
 		{{ content | safe }}
 	    </div>
