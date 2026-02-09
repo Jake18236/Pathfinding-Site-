@@ -1,0 +1,22 @@
+{#
+  Stepper Control Component
+
+  A minus button + readonly value input + plus button.
+
+  @param id - Base ID (produces id-minus, id-value, id-plus elements)
+  @param value - Initial display value
+  @param title - Accessible name (used in button titles)
+  @param inputWidth - Optional custom width for the input (e.g. '48px')
+
+  Example:
+  {% from "components/stepper-control.njk" import stepperControl %}
+  {{ stepperControl(id='k', value='3', title='K value') }}
+#}
+
+{% macro stepperControl(id, value, title='') %}
+<div class="stepper-control">
+    <button id="{{ id }}-minus" class="btn btn-xs btn-default" title="Decrease {{ title }}">&#8722;</button>
+    <input type="text" id="{{ id }}-value" class="stepper-input" value="{{ value }}" readonly{% if inputWidth %} style="width:{{ inputWidth }}"{% endif %}>
+    <button id="{{ id }}-plus" class="btn btn-xs btn-default" title="Increase {{ title }}">+</button>
+</div>
+{% endmacro %}

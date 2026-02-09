@@ -1,0 +1,24 @@
+{#
+  Speed Control Component
+
+  A tachometer icon + range slider + optional value display.
+
+  @param id - ID for the range input (default: 'speed-slider')
+  @param min - Minimum value (default: '1')
+  @param max - Maximum value (default: '10')
+  @param value - Initial value (default: '5')
+  @param showValue - Whether to show a value display span (default: false)
+  @param icon - Icon class (default: 'fa-tachometer')
+
+  Example:
+  {% from "components/speed-control.njk" import speedControl %}
+  {{ speedControl(id='speed-slider', value='5', showValue=true) }}
+#}
+
+{% macro speedControl(id='speed-slider', min='1', max='10', value='5', showValue=false, icon='fa-tachometer') %}
+<div class="speed-control">
+    <i class="fa {{ icon }}"></i>
+    <input type="range" id="{{ id }}" min="{{ min }}" max="{{ max }}" value="{{ value }}">
+    {% if showValue %}<span id="{{ id }}-value" class="range-value">{{ value }}</span>{% endif %}
+</div>
+{% endmacro %}
