@@ -3,7 +3,7 @@ layout: musing-post.njk
 title: "In the Defense of English: 637, 290, 39017, 328, 7725"
 date: 2026-02-09
 summary: "A defense of human languages"
-author: "The Provincial Professor"
+author: "William Theisen"
 figure: https://images.prismic.io/star-trek-untold/NWM1ZTY2OWQtMzczNi00YjUyLThiMDAtNTQwYTBjNmZhOWU0_0530e22dea41e24a039563139cdc215e.jpg?auto=compress,format&rect=0,0,2800,1178&w=2800&h=1178
 ogImage: https://images.prismic.io/star-trek-untold/NWM1ZTY2OWQtMzczNi00YjUyLThiMDAtNTQwYTBjNmZhOWU0_0530e22dea41e24a039563139cdc215e.jpg?auto=compress,format&rect=0,0,2800,1178&w=2800&h=1178
 figureAlt: "Picard and a Tamarian from the TNG episode: Darmok"
