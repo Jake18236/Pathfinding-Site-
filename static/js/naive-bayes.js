@@ -1289,6 +1289,7 @@
 
             // Draw curves
             const classColors = c.classColors;
+            const badgesF1 = [];
             for (let k = 0; k < curves.length; k++) {
                 const dimmed = highlightClass !== null && k !== highlightClass;
                 ctx.globalAlpha = dimmed ? 0.1 : 1;
@@ -1302,13 +1303,12 @@
                 }
                 ctx.stroke();
 
-                // Green star + class-colored dashed line to Y axis
+                // Star + class-colored dashed line to Y axis
                 if (testPoint && prediction) {
                     const pdfVal = prediction.pdfs[k][0];
                     const sp = mapper.dataToCanvas(testPoint[0], pdfVal);
                     const axisX = pad.left;
 
-                    // Dashed line from star to Y axis in class color
                     ctx.strokeStyle = classColors[k];
                     ctx.lineWidth = 0.8;
                     ctx.setLineDash([3, 3]);
@@ -1318,12 +1318,30 @@
                     ctx.stroke();
                     ctx.setLineDash([]);
 
-                    // PDF value badge at axis
-                    drawBadgeLabel(ctx, pdfVal.toFixed(2), axisX - 3, sp.y, classColors[k], 'right', 'middle');
-
+                    badgesF1.push({ text: pdfVal.toFixed(2), y: sp.y, color: classColors[k] });
                     drawSmallTestMarker(ctx, sp.x, sp.y, c.testPt);
                 }
                 ctx.globalAlpha = 1;
+            }
+
+            // Draw PDF badges with overlap resolution
+            if (badgesF1.length > 1) {
+                badgesF1.sort((a, b) => a.y - b.y);
+                for (let pass = 0; pass < 10; pass++) {
+                    let moved = false;
+                    for (let i = 1; i < badgesF1.length; i++) {
+                        const overlap = 15 - (badgesF1[i].y - badgesF1[i - 1].y);
+                        if (overlap > 0) {
+                            badgesF1[i - 1].y -= overlap / 2;
+                            badgesF1[i].y += overlap / 2;
+                            moved = true;
+                        }
+                    }
+                    if (!moved) break;
+                }
+            }
+            for (const b of badgesF1) {
+                drawBadgeLabel(ctx, b.text, pad.left - 3, b.y, b.color, 'right', 'middle');
             }
 
             // Vertical line at test point x1 (extend to top of canvas for seamless connection)
@@ -1416,6 +1434,7 @@
                 ctx.globalAlpha = 1;
             }
 
+            const badgesF2 = [];
             for (let k = 0; k < curves.length; k++) {
                 const dimmed = highlightClass !== null && k !== highlightClass;
                 ctx.globalAlpha = dimmed ? 0.1 : 1;
@@ -1430,14 +1449,13 @@
                 }
                 ctx.stroke();
 
-                // Green star + class-colored dashed line to X axis (bottom)
+                // Star + class-colored dashed line to X axis (bottom)
                 if (testPoint && prediction) {
                     const pdfVal = prediction.pdfs[k][1];
                     const sx = pdfToCanvasX(pdfVal);
                     const sy = dataToCanvasY(testPoint[1]);
                     const axisY = pad.top + plotH;
 
-                    // Dashed line from star to X axis in class color
                     ctx.strokeStyle = classColors[k];
                     ctx.lineWidth = 0.8;
                     ctx.setLineDash([3, 3]);
@@ -1447,12 +1465,31 @@
                     ctx.stroke();
                     ctx.setLineDash([]);
 
-                    // PDF value badge at axis
-                    drawBadgeLabel(ctx, pdfVal.toFixed(2), sx, axisY + 2, classColors[k], 'center', 'top');
-
+                    badgesF2.push({ text: pdfVal.toFixed(2), x: sx, color: classColors[k] });
                     drawSmallTestMarker(ctx, sx, sy, c.testPt);
                 }
                 ctx.globalAlpha = 1;
+            }
+
+            // Draw PDF badges with overlap resolution
+            if (badgesF2.length > 1) {
+                badgesF2.sort((a, b) => a.x - b.x);
+                for (let pass = 0; pass < 10; pass++) {
+                    let moved = false;
+                    for (let i = 1; i < badgesF2.length; i++) {
+                        const overlap = 38 - (badgesF2[i].x - badgesF2[i - 1].x);
+                        if (overlap > 0) {
+                            badgesF2[i - 1].x -= overlap / 2;
+                            badgesF2[i].x += overlap / 2;
+                            moved = true;
+                        }
+                    }
+                    if (!moved) break;
+                }
+            }
+            const axisYBadge = pad.top + plotH;
+            for (const b of badgesF2) {
+                drawBadgeLabel(ctx, b.text, b.x, axisYBadge + 2, b.color, 'center', 'top');
             }
 
             // Horizontal line at test point y (extend to right edge for seamless connection)
