@@ -1166,6 +1166,27 @@
     }
 
     /**
+     * Subsample a balanced dataset to create class imbalance.
+     * ratio is the fraction of samples assigned to class 0 (majority).
+     */
+    function makeImbalanced(points, n, ratio) {
+        const byClass = {};
+        for (const p of points) {
+            if (!byClass[p.classLabel]) byClass[p.classLabel] = [];
+            byClass[p.classLabel].push(p);
+        }
+        const classes = Object.keys(byClass).sort((a, b) => a - b);
+        const n0 = Math.round(n * ratio);
+        const n1 = n - n0;
+        const result = [];
+        const c0 = byClass[classes[0]] || [];
+        const c1 = byClass[classes[1]] || [];
+        for (let i = 0; i < Math.min(n0, c0.length); i++) result.push(c0[i]);
+        for (let i = 0; i < Math.min(n1, c1.length); i++) result.push(c1[i]);
+        return result;
+    }
+
+    /**
      * Dataset generation helper - converts VizLib generator output to X, y arrays
      */
     function generateDataset(name, n, noiseLevel) {
@@ -1180,6 +1201,9 @@
             case 'spiral': points = gen.spiral(n, noiseLevel); break;
             case 'blobs4': points = generateBlobs(n, 4, noiseLevel); break;
             case 'blobs5': points = generateBlobs(n, 5, noiseLevel); break;
+            case 'imbal-moons': points = makeImbalanced(gen.moons(n * 3, noiseLevel), n, 0.75); break;
+            case 'imbal-blobs': points = makeImbalanced(gen.blobs(n * 3, 2), n, 0.8); break;
+            case 'imbal-linear': points = makeImbalanced(gen.linear(n * 3, noiseLevel), n, 0.8); break;
             default: points = gen.moons(n, noiseLevel);
         }
         const X = points.map(p => [p.x, p.y]);

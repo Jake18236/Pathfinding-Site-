@@ -333,14 +333,21 @@ cardOrder: 25
                                 <div class="option-row">
                                     <label>Dataset:</label>
                                     <select id="gnb-dataset-select" class="form-control input-sm">
-                                        <option value="moons">Moons</option>
-                                        <option value="circles">Circles</option>
-                                        <option value="blobs">Blobs</option>
-                                        <option value="linear">Linear</option>
-                                        <option value="xor">XOR</option>
-                                        <option value="spiral">Spiral</option>
-                                        <option value="blobs4">Blobs (4 classes)</option>
-                                        <option value="blobs5">Blobs (5 classes)</option>
+                                        <optgroup label="Balanced">
+                                            <option value="moons">Moons</option>
+                                            <option value="circles">Circles</option>
+                                            <option value="blobs">Blobs</option>
+                                            <option value="linear">Linear</option>
+                                            <option value="xor">XOR</option>
+                                            <option value="spiral">Spiral</option>
+                                            <option value="blobs4">Blobs (4 classes)</option>
+                                            <option value="blobs5">Blobs (5 classes)</option>
+                                        </optgroup>
+                                        <optgroup label="Imbalanced">
+                                            <option value="imbal-moons">Moons (75/25)</option>
+                                            <option value="imbal-blobs">Blobs (80/20)</option>
+                                            <option value="imbal-linear">Linear (80/20)</option>
+                                        </optgroup>
                                     </select>
                                 </div>
                                 <div class="option-row">
