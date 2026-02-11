@@ -29,11 +29,20 @@ cardOrder: 25
     {% include "components/share-button.njk" %}
     <!-- Left Column: Classification + Word Table + Training Data -->
     <div class="col-md-7">
+        <!-- ==================== TEXT MODE ==================== -->
+        <div id="nb-text-mode">
         <!-- Classification Panel -->
         <div class="panel panel-default">
             <div class="panel-heading">
                 <div class="panel-heading-content">
-                    <span class="panel-title-text"><i class="fa fa-envelope"></i> Classify Message</span>
+                    <div class="btn-group btn-group-sm nb-mode-toggle" role="group">
+                        <button type="button" class="btn btn-default" id="btn-mode-gaussian">
+                            <i class="fa fa-area-chart"></i> Continuous
+                        </button>
+                        <button type="button" class="btn btn-default active" id="btn-mode-text">
+                            <i class="fa fa-font"></i> Discrete
+                        </button>
+                    </div>
                     <span class="viz-badge result-badge" id="result-badge">Ready</span>
                 </div>
             </div>
@@ -138,27 +147,43 @@ cardOrder: 25
             </div>
         </div>
 
-        <!-- Controls Panel -->
-        <div class="panel panel-default">
-            <div class="panel-heading">
-                <h3 class="panel-title"><i class="fa fa-sliders"></i> Controls</h3>
-            </div>
-            <div class="panel-body compact-panel nb-controls-panel">
-                <div class="nb-options-col">
-                    <div class="option-row">
-                        <label>Laplace Smoothing (&alpha;):</label>
-                        <input type="range" id="alpha-slider" min="0" max="2" step="0.1" value="1">
-                        <span id="alpha-value" class="range-value">1.0</span>
+        </div>{# end nb-text-mode #}
+
+        <!-- ==================== GAUSSIAN MODE ==================== -->
+        <div id="nb-gaussian-mode" style="display: none;">
+            <!-- Visualization Panel -->
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <div class="panel-heading-content">
+                        <div class="btn-group btn-group-sm nb-mode-toggle" role="group">
+                            <button type="button" class="btn btn-default active" id="btn-mode-gaussian-2">
+                                <i class="fa fa-area-chart"></i> Continuous
+                            </button>
+                            <button type="button" class="btn btn-default" id="btn-mode-text-2">
+                                <i class="fa fa-font"></i> Discrete
+                            </button>
+                        </div>
+                        <span class="gnb-header-badges">
+                            <span class="gnb-test-point-label" id="gnb-test-point-label"></span>
+                            <span class="gnb-header-arrow"><i class="fa fa-long-arrow-right"></i></span>
+                            <span class="viz-badge" id="gnb-result-badge">Click to classify</span>
+                        </span>
                     </div>
-                    <label class="checkbox-label"><input type="checkbox" id="show-log-probs"> Show log probabilities</label>
                 </div>
-                <div class="nb-actions-col">
-                    <button id="btn-reset" class="btn btn-sm btn-danger" title="Reset to default training data">
-                        <i class="fa fa-refresh"></i> Reset
-                    </button>
+                <div class="panel-body">
+                    <div class="gnb-grid-wrapper">
+                        <div class="gnb-dist2"><canvas id="gnb-dist2-canvas"></canvas></div>
+                        <div class="gnb-scatter"><canvas id="gnb-scatter-canvas"></canvas></div>
+                        <div class="gnb-corner"></div>
+                        <div class="gnb-dist1"><canvas id="gnb-dist1-canvas"></canvas></div>
+                    </div>
+                    <div class="gnb-legend" id="gnb-legend">
+                    </div>
                 </div>
             </div>
-        </div>
+
+            <!-- Gaussian Controls Panel -->
+        </div>{# end nb-gaussian-mode #}
     </div>
 
     <!-- Right Column: Info Tabs + Metrics -->
@@ -166,6 +191,7 @@ cardOrder: 25
         {{ infoTabs(
             tabs=[
                 {id: 'about', icon: 'fa-info-circle', label: 'About', active: true, content: '
+                    <div class="nb-info-text-mode">
                     <h4><i class="fa fa-envelope"></i> What is Naive Bayes?</h4>
                     <p>
                         <strong>Naive Bayes</strong> is a probabilistic classifier based on Bayes\' theorem.
@@ -186,8 +212,38 @@ cardOrder: 25
                         <li><strong>Add training data</strong> to improve the classifier</li>
                         <li><strong>Toggle log probabilities</strong> to see the math behind the scenes</li>
                     </ul>
+                    </div>
+                    <div class="nb-info-gaussian-mode" style="display:none;">
+                    <h4><i class="fa fa-area-chart"></i> Continuous Naive Bayes</h4>
+                    <p>
+                        <strong>Continuous Naive Bayes</strong> extends the Naive Bayes framework to continuous
+                        features by modeling each feature\'s distribution within each class using a probability
+                        density function. The distribution assumption is selectable:
+                    </p>
+                    <ul class="interaction-list" style="font-size:12px;">
+                        <li><strong>Gaussian</strong> &mdash; classic symmetric bell curve (mean &amp; variance)</li>
+                        <li><strong>KDE</strong> &mdash; non-parametric kernel density estimate (data-adaptive)</li>
+                        <li><strong>Laplace</strong> &mdash; peaked center with heavy tails (median &amp; MAD)</li>
+                        <li><strong>Exponential</strong> &mdash; asymmetric, decaying (rate &lambda;)</li>
+                    </ul>
+                    <h4><i class="fa fa-dot-circle-o"></i> Why Different Distributions?</h4>
+                    <p>
+                        The Naive Bayes framework is agnostic to the underlying distribution &mdash; only
+                        the likelihood function changes. Selecting different PDFs demonstrates how the
+                        distributional assumption affects classification boundaries.
+                    </p>
+                    <h4><i class="fa fa-mouse-pointer"></i> How to Use</h4>
+                    <ul class="interaction-list">
+                        <li><strong>Click the scatter plot</strong> to place a test point and see the classification</li>
+                        <li><strong>Switch distributions</strong> in Controls to see how PDF shape affects boundaries</li>
+                        <li><strong>Observe</strong> the marginal distributions on the left and bottom panels</li>
+                        <li><strong>Read</strong> the calculation breakdown in the Math tab</li>
+                        <li><strong>Change datasets</strong> to see how different shapes interact with each PDF</li>
+                    </ul>
+                    </div>
                 '},
                 {id: 'algorithm', icon: 'fa-book', label: 'Algorithm', content: '
+                    <div class="nb-info-text-mode">
                     <h4><i class="fa fa-cogs"></i> Training Phase</h4>
                     <ol class="algorithm-steps">
                         <li>Count the number of spam and ham messages</li>
@@ -203,8 +259,33 @@ cardOrder: 25
                         <li>The class with the highest score wins</li>
                         <li>Convert log-scores to probabilities via softmax</li>
                     </ol>
+                    </div>
+                    <div class="nb-info-gaussian-mode" style="display:none;">
+                    <h4><i class="fa fa-superscript"></i> Likelihood PDF</h4>
+                    <p class="formula-note">The likelihood P(x|Class) is evaluated using the selected distribution. The specific formula and fitted parameters are shown dynamically in the Math tab.</p>
+
+                    <h4><i class="fa fa-unlink"></i> Naive Bayes for Continuous Features</h4>
+                    <div class="math-formula-display">
+                        <code>P(C|x&#8321;,x&#8322;) &prop; P(C) &middot; P(x&#8321;|C) &middot; P(x&#8322;|C)</code>
+                    </div>
+                    <p class="formula-note">Each feature likelihood is a PDF evaluated at the test point &mdash; the framework is the same regardless of distribution choice.</p>
+
+                    <h4><i class="fa fa-cogs"></i> Training (Fit)</h4>
+                    <ol class="algorithm-steps">
+                        <li>For each class, compute the prior P(C<sub>k</sub>) = N<sub>k</sub> / N</li>
+                        <li>For each feature and class, fit the selected distribution\'s parameters from the training data</li>
+                    </ol>
+                    <h4><i class="fa fa-search"></i> Prediction</h4>
+                    <ol class="algorithm-steps">
+                        <li>For the test point, evaluate the selected PDF for each feature given each class</li>
+                        <li>Multiply the prior by all feature likelihoods (naive independence)</li>
+                        <li>Normalize across classes to get posterior probabilities</li>
+                        <li>Predict the class with the highest posterior</li>
+                    </ol>
+                    </div>
                 '},
                 {id: 'math', icon: 'fa-superscript', label: 'Math', content: '
+                    <div class="nb-info-text-mode">
                     <h4><i class="fa fa-superscript"></i> Bayes Theorem</h4>
                     <div class="math-formula-display">
                         <code>P(C|x) = P(x|C) &middot; P(C) / P(x)</code>
@@ -231,21 +312,85 @@ cardOrder: 25
                         <code>log P(C|x) &prop; log P(C) + &Sigma; log P(x&#7522;|C)</code>
                     </div>
                     <p class="formula-note">We work in log-space to avoid floating-point underflow from multiplying many small probabilities.</p>
-                '}
-            ]
-        ) }}
+                    </div>
+                    <div class="nb-info-gaussian-mode" style="display:none;">
+                    <h4><i class="fa fa-cogs"></i> Fitted Parameters</h4>
+                    <div id="gnb-fit-panel" class="gnb-calc-panel">
+                        <span class="formula-note">Switch to Gaussian mode to see fitted parameters.</span>
+                    </div>
 
-        {{ metricsPanel(
-            title='Classifier Metrics',
-            icon='fa-bar-chart',
-            metrics=[
-                {icon: 'fa-book', label: 'Vocabulary Size', id: 'metric-vocab', default: '0'},
-                {icon: 'fa-ban', label: 'Spam Count', id: 'metric-spam-count', default: '0'},
-                {icon: 'fa-check', label: 'Ham Count', id: 'metric-ham-count', default: '0'},
-                {icon: 'fa-tag', label: 'Classification', id: 'metric-classification', default: '-'},
-                {icon: 'fa-signal', label: 'Confidence', id: 'metric-confidence', default: '-'},
-                {icon: 'fa-plus-circle', label: 'Smoothing &alpha;', id: 'metric-alpha', default: '1.0'},
-                {icon: 'fa-info-circle', label: 'Status', id: 'metric-status', default: 'Ready'}
+                    <h4><i class="fa fa-calculator"></i> Live Calculation</h4>
+                    <div id="gnb-calc-panel" class="gnb-calc-panel">
+                        <span class="formula-note">Click a point on the scatter plot to see the calculation breakdown.</span>
+                    </div>
+                    </div>
+                '},
+                {id: 'controls', icon: 'fa-sliders', label: 'Controls', content: '
+                    <div class="nb-info-text-mode">
+                        <div class="nb-controls-panel">
+                            <div class="nb-options-col">
+                                <div class="option-row">
+                                    <label>Laplace Smoothing (&alpha;):</label>
+                                    <input type="range" id="alpha-slider" min="0" max="2" step="0.1" value="1">
+                                    <span id="alpha-value" class="range-value">1.0</span>
+                                </div>
+                                <label class="checkbox-label"><input type="checkbox" id="show-log-probs"> Show log probabilities</label>
+                            </div>
+                            <div class="nb-actions-col">
+                                <button id="btn-reset" class="btn btn-sm btn-danger" title="Reset to default training data">
+                                    <i class="fa fa-refresh"></i> Reset
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="nb-info-gaussian-mode" style="display:none;">
+                        <div class="gnb-controls-panel">
+                            <div class="gnb-options-col">
+                                <div class="option-row">
+                                    <label>Dataset:</label>
+                                    <select id="gnb-dataset-select" class="form-control input-sm">
+                                        <option value="moons">Moons</option>
+                                        <option value="circles">Circles</option>
+                                        <option value="blobs">Blobs</option>
+                                        <option value="linear">Linear</option>
+                                        <option value="xor">XOR</option>
+                                        <option value="spiral">Spiral</option>
+                                        <option value="blobs4">Blobs (4 classes)</option>
+                                        <option value="blobs5">Blobs (5 classes)</option>
+                                    </select>
+                                </div>
+                                <div class="option-row">
+                                    <label>Distribution:</label>
+                                    <select id="gnb-dist-select" class="form-control input-sm">
+                                        <option value="gaussian">Gaussian</option>
+                                        <option value="kde">KDE</option>
+                                        <option value="laplace">Laplace</option>
+                                        <option value="exponential">Exponential</option>
+                                    </select>
+                                </div>
+                                <div class="option-row">
+                                    <label>Noise:</label>
+                                    <input type="range" id="gnb-noise-slider" min="0.01" max="0.3" step="0.01" value="0.1">
+                                    <span id="gnb-noise-value" class="range-value">0.10</span>
+                                </div>
+                                <div class="option-row">
+                                    <label>Samples:</label>
+                                    <input type="range" id="gnb-samples-slider" min="40" max="300" step="10" value="100">
+                                    <span id="gnb-samples-value" class="range-value">100</span>
+                                </div>
+                            </div>
+                            <div class="gnb-actions-col">
+                                <button id="gnb-btn-regenerate" class="btn btn-sm btn-success" title="Generate new data">
+                                    <i class="fa fa-refresh"></i> Regenerate
+                                </button>
+                                <button id="gnb-btn-reset" class="btn btn-sm btn-danger" title="Reset to defaults">
+                                    <i class="fa fa-undo"></i> Reset
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                '}
             ]
         ) }}
     </div>

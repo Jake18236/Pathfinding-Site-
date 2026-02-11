@@ -428,7 +428,6 @@
             this._bindEvents();
 
             // Update metrics
-            this._updateMetrics();
 
             // Render training data list
             this._renderTrainingData();
@@ -767,7 +766,6 @@
 
             // Re-render
             this._renderTrainingData();
-            this._updateMetrics();
             this._updateStatus('Added training example');
 
             // Re-classify if there is a previous result
@@ -782,8 +780,7 @@
                 data.splice(index, 1);
                 this.classifier.train(data);
                 this._renderTrainingData();
-                this._updateMetrics();
-                this._updateStatus('Removed training example');
+                    this._updateStatus('Removed training example');
 
                 if (this.lastResult) {
                     this._onClassify();
@@ -835,7 +832,6 @@
             }
 
             this._renderTrainingData();
-            this._updateMetrics();
             this._updateStatus('Reset to defaults');
         }
 
@@ -881,11 +877,1174 @@
     }
 
     // ============================================
+    // Distribution Registry (pluggable PDFs)
+    // ============================================
+    const Distributions = {
+        gaussian: {
+            name: 'Gaussian',
+            paramLabels: ['\u03BC (mean)', '\u03C3 (std)', '\u03C3\u00B2 (var)'],
+            fit(values) {
+                const n = values.length;
+                let sum = 0;
+                for (const v of values) sum += v;
+                const mu = sum / n;
+                let varSum = 0;
+                for (const v of values) varSum += (v - mu) ** 2;
+                const variance = Math.max(varSum / n, 1e-9);
+                return { mu, variance };
+            },
+            pdf(x, params) {
+                const { mu, variance } = params;
+                return Math.exp(-((x - mu) ** 2) / (2 * variance)) / Math.sqrt(2 * Math.PI * variance);
+            },
+            paramValues(params) {
+                return [params.mu, Math.sqrt(params.variance), params.variance];
+            },
+            paramDisplay(params) {
+                return '\u03BC=' + params.mu.toFixed(2) + ', \u03C3=' + Math.sqrt(params.variance).toFixed(2);
+            }
+        },
+        kde: {
+            name: 'KDE',
+            paramLabels: ['h (bandwidth)', 'n (points)'],
+            fit(values) {
+                const n = values.length;
+                let sum = 0;
+                for (const v of values) sum += v;
+                const mean = sum / n;
+                let varSum = 0;
+                for (const v of values) varSum += (v - mean) ** 2;
+                const std = Math.sqrt(varSum / n);
+                // Silverman's rule
+                const h = Math.max(1.06 * std * Math.pow(n, -0.2), 1e-6);
+                return { h, data: values.slice(), n };
+            },
+            pdf(x, params) {
+                const { h, data, n } = params;
+                let sum = 0;
+                for (const xi of data) {
+                    const u = (x - xi) / h;
+                    sum += Math.exp(-0.5 * u * u);
+                }
+                return sum / (n * h * Math.sqrt(2 * Math.PI));
+            },
+            paramValues(params) {
+                return [params.h, params.n];
+            },
+            paramDisplay(params) {
+                return 'h=' + params.h.toFixed(3) + ', n=' + params.n;
+            }
+        },
+        laplace: {
+            name: 'Laplace',
+            paramLabels: ['\u03BC (median)', 'b (scale)'],
+            fit(values) {
+                const sorted = values.slice().sort((a, b) => a - b);
+                const n = sorted.length;
+                const mu = n % 2 === 1 ? sorted[Math.floor(n / 2)] : (sorted[n / 2 - 1] + sorted[n / 2]) / 2;
+                let madSum = 0;
+                for (const v of sorted) madSum += Math.abs(v - mu);
+                const b = Math.max(madSum / n, 1e-9);
+                return { mu, b };
+            },
+            pdf(x, params) {
+                const { mu, b } = params;
+                return Math.exp(-Math.abs(x - mu) / b) / (2 * b);
+            },
+            paramValues(params) {
+                return [params.mu, params.b];
+            },
+            paramDisplay(params) {
+                return '\u03BC=' + params.mu.toFixed(2) + ', b=' + params.b.toFixed(3);
+            }
+        },
+        exponential: {
+            name: 'Exponential',
+            paramLabels: ['\u03BB (rate)'],
+            fit(values) {
+                let sum = 0;
+                for (const v of values) sum += v;
+                const mean = sum / values.length;
+                const lambda = 1 / Math.max(mean, 1e-9);
+                return { lambda };
+            },
+            pdf(x, params) {
+                if (x < 0) return 1e-10;
+                return params.lambda * Math.exp(-params.lambda * x);
+            },
+            paramValues(params) {
+                return [params.lambda];
+            },
+            paramDisplay(params) {
+                return '\u03BB=' + params.lambda.toFixed(3);
+            }
+        }
+    };
+
+    // ============================================
+    // Gaussian Naive Bayes Classes
+    // ============================================
+
+    /**
+     * GaussianNB - Naive Bayes classifier for continuous 2D data
+     * Supports pluggable distribution types via the Distributions registry.
+     */
+    class GaussianNB {
+        constructor() {
+            this.params = [];   // per-class per-feature params: [[params_f0, params_f1], ...]
+            this.priors = [];   // per-class priors
+            this.classes = [];
+            this.distType = 'gaussian';
+        }
+
+        fit(X, y) {
+            this.classes = [...new Set(y)].sort();
+            this.params = [];
+            this.priors = [];
+            const n = y.length;
+            const dist = Distributions[this.distType];
+
+            for (const cls of this.classes) {
+                const indices = [];
+                for (let i = 0; i < n; i++) {
+                    if (y[i] === cls) indices.push(i);
+                }
+                this.priors.push(indices.length / n);
+
+                const featureParams = [];
+                for (let f = 0; f < 2; f++) {
+                    const values = indices.map(idx => X[idx][f]);
+                    featureParams.push(dist.fit(values));
+                }
+                this.params.push(featureParams);
+            }
+        }
+
+        predict(testPoint) {
+            const dist = Distributions[this.distType];
+            const pdfs = [];      // per-class: [pdf_x1, pdf_x2]
+            const unnormalized = [];
+            for (let k = 0; k < this.classes.length; k++) {
+                const pdf1 = dist.pdf(testPoint[0], this.params[k][0]);
+                const pdf2 = dist.pdf(testPoint[1], this.params[k][1]);
+                pdfs.push([pdf1, pdf2]);
+                unnormalized.push(this.priors[k] * pdf1 * pdf2);
+            }
+            const total = unnormalized.reduce((s, v) => s + v, 0);
+            const normalized = unnormalized.map(v => v / total);
+            let predicted = 0;
+            for (let k = 1; k < normalized.length; k++) {
+                if (normalized[k] > normalized[predicted]) predicted = k;
+            }
+            return { pdfs, unnormalized, normalized, predicted };
+        }
+    }
+
+    /**
+     * Dataset generation helper - converts VizLib generator output to X, y arrays
+     */
+    function generateDataset(name, n, noiseLevel) {
+        const gen = VizLib.DatasetGenerators;
+        let points;
+        switch (name) {
+            case 'moons': points = gen.moons(n, noiseLevel); break;
+            case 'circles': points = gen.circles(n, noiseLevel); break;
+            case 'blobs': points = gen.blobs(n, 3); break;
+            case 'linear': points = gen.linear(n, noiseLevel); break;
+            case 'xor': points = gen.xor(n, noiseLevel); break;
+            case 'spiral': points = gen.spiral(n, noiseLevel); break;
+            case 'blobs4': points = generateBlobs(n, 4, noiseLevel); break;
+            case 'blobs5': points = generateBlobs(n, 5, noiseLevel); break;
+            default: points = gen.moons(n, noiseLevel);
+        }
+        const X = points.map(p => [p.x, p.y]);
+        const y = points.map(p => p.classLabel);
+        return { X, y };
+    }
+
+    /** Generate blobs with arbitrary number of centers */
+    function generateBlobs(n, numBlobs, noiseLevel) {
+        const points = [];
+        const std = 0.05 + noiseLevel * 0.3;
+        const nPerBlob = Math.floor(n / numBlobs);
+        // Arrange centers in a circle
+        const cx = 0.5, cy = 0.5, radius = 0.3;
+        const centers = [];
+        for (let b = 0; b < numBlobs; b++) {
+            const angle = (b / numBlobs) * Math.PI * 2 - Math.PI / 2;
+            centers.push({ x: cx + radius * Math.cos(angle), y: cy + radius * Math.sin(angle) });
+        }
+        for (let b = 0; b < numBlobs; b++) {
+            for (let i = 0; i < nPerBlob; i++) {
+                const x = centers[b].x + (Math.random() - 0.5 + Math.random() - 0.5) * std;
+                const y = centers[b].y + (Math.random() - 0.5 + Math.random() - 0.5) * std;
+                points.push({ x: Math.max(0.02, Math.min(0.98, x)), y: Math.max(0.02, Math.min(0.98, y)), classLabel: b });
+            }
+        }
+        return points;
+    }
+
+    /**
+     * Get theme colors for Gaussian NB renderers
+     */
+    function getGnbColors() {
+        const isDark = document.documentElement.getAttribute('data-theme') === 'gruvbox-dark';
+        const classColors = isDark
+            ? ['#83a598', '#fb4934', '#b8bb26', '#fe8019', '#8ec07c']
+            : ['#3b82f6', '#ef4444', '#22c55e', '#f59e0b', '#06b6d4'];
+        return {
+            isDark,
+            bg: isDark ? '#1d2021' : '#fafafa',
+            text: isDark ? '#ebdbb2' : '#333333',
+            muted: isDark ? '#a89984' : '#999999',
+            grid: isDark ? '#3c3836' : '#e9ecef',
+            class0: classColors[0],
+            class1: classColors[1],
+            testPt: isDark ? '#d3869b' : '#a855f7',
+            class0Light: isDark ? 'rgba(131,165,152,0.3)' : 'rgba(59,130,246,0.3)',
+            class1Light: isDark ? 'rgba(251,73,52,0.3)' : 'rgba(239,68,68,0.3)',
+            classColors,
+        };
+    }
+
+    // ============================================
+    // ScatterRenderer
+    // ============================================
+    class ScatterRenderer {
+        constructor(canvas) {
+            this.canvas = canvas;
+            this.ctx = null;
+            this.dpr = 1;
+            this.width = 0;
+            this.height = 0;
+            this.mapper = null;
+        }
+
+        setup() {
+            const result = VizLib.setupHiDPICanvas(this.canvas);
+            this.ctx = result.ctx;
+            this.dpr = result.dpr;
+            this.width = result.logicalWidth;
+            this.height = result.logicalHeight;
+        }
+
+        render(X, y, testPoint, dataRange, highlightClass) {
+            const ctx = this.ctx;
+            if (!ctx) return;
+            const c = getGnbColors();
+            const pad = { top: 10, right: 10, bottom: 24, left: 24 };
+
+            VizLib.resetCanvasTransform(ctx, this.dpr);
+            VizLib.clearCanvas(ctx, this.width, this.height, c.bg);
+
+            const plotW = this.width - pad.left - pad.right;
+            const plotH = this.height - pad.top - pad.bottom;
+            this.mapper = new VizLib.CanvasUtils.CoordinateMapper(
+                pad.left, pad.top, plotW, plotH,
+                dataRange.xMin, dataRange.xMax, dataRange.yMin, dataRange.yMax
+            );
+
+            // Light grid
+            ctx.strokeStyle = c.grid;
+            ctx.lineWidth = 0.5;
+            const nTicks = 5;
+            for (let i = 0; i <= nTicks; i++) {
+                const frac = i / nTicks;
+                const dx = dataRange.xMin + frac * (dataRange.xMax - dataRange.xMin);
+                const dy = dataRange.yMin + frac * (dataRange.yMax - dataRange.yMin);
+                const px = this.mapper.dataToCanvas(dx, 0);
+                const py = this.mapper.dataToCanvas(0, dy);
+                ctx.beginPath();
+                ctx.moveTo(px.x, pad.top);
+                ctx.lineTo(px.x, pad.top + plotH);
+                ctx.stroke();
+                ctx.beginPath();
+                ctx.moveTo(pad.left, py.y);
+                ctx.lineTo(pad.left + plotW, py.y);
+                ctx.stroke();
+            }
+
+            // Axis labels
+            ctx.fillStyle = c.muted;
+            ctx.font = '10px sans-serif';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'top';
+            ctx.fillText('Feature 1', pad.left + plotW / 2, this.height - 12);
+            ctx.save();
+            ctx.translate(10, pad.top + plotH / 2);
+            ctx.rotate(-Math.PI / 2);
+            ctx.fillText('Feature 2', 0, 0);
+            ctx.restore();
+
+            // Data points
+            for (let i = 0; i < X.length; i++) {
+                const dimmed = highlightClass !== null && y[i] !== highlightClass;
+                ctx.globalAlpha = dimmed ? 0.08 : 0.6;
+                const pt = this.mapper.dataToCanvas(X[i][0], X[i][1]);
+                const color = c.classColors[y[i]] || c.classColors[0];
+                ctx.fillStyle = color;
+                ctx.strokeStyle = color;
+                drawClassMarker(ctx, pt.x, pt.y, y[i], 3);
+            }
+            ctx.globalAlpha = 1;
+
+            // Test point dashed lines + question mark
+            if (testPoint) {
+                const tp = this.mapper.dataToCanvas(testPoint[0], testPoint[1]);
+
+                // Dashed lines from canvas edges to the test point (no gap at labels)
+                ctx.strokeStyle = c.testPt;
+                ctx.lineWidth = 0.8;
+                ctx.setLineDash([3, 3]);
+                // Vertical: canvas bottom edge up to test point
+                ctx.beginPath();
+                ctx.moveTo(tp.x, this.height);
+                ctx.lineTo(tp.x, tp.y);
+                ctx.stroke();
+                // Horizontal: canvas left edge across to test point
+                ctx.beginPath();
+                ctx.moveTo(0, tp.y);
+                ctx.lineTo(tp.x, tp.y);
+                ctx.stroke();
+                ctx.setLineDash([]);
+
+                drawTestPointMarker(ctx, tp.x, tp.y, c.testPt);
+            }
+        }
+
+        getDataFromClick(canvasX, canvasY) {
+            if (!this.mapper) return null;
+            return this.mapper.canvasToData(canvasX, canvasY);
+        }
+    }
+
+    // ============================================
+    // Feature1DistRenderer (bottom, horizontal)
+    // ============================================
+    class Feature1DistRenderer {
+        constructor(canvas) {
+            this.canvas = canvas;
+            this.ctx = null;
+            this.dpr = 1;
+            this.width = 0;
+            this.height = 0;
+        }
+
+        setup() {
+            const result = VizLib.setupHiDPICanvas(this.canvas);
+            this.ctx = result.ctx;
+            this.dpr = result.dpr;
+            this.width = result.logicalWidth;
+            this.height = result.logicalHeight;
+        }
+
+        render(gnb, testPoint, dataRange, prediction, X, y, highlightClass) {
+            const ctx = this.ctx;
+            if (!ctx) return;
+            const c = getGnbColors();
+            // Pad must align with scatter: same left pad
+            const pad = { top: 4, right: 10, bottom: 8, left: 24 };
+
+            VizLib.resetCanvasTransform(ctx, this.dpr);
+            VizLib.clearCanvas(ctx, this.width, this.height, c.bg);
+
+            const plotW = this.width - pad.left - pad.right;
+            const plotH = this.height - pad.top - pad.bottom;
+
+            // Compute max PDF for Y scale
+            let maxPdf = 0;
+            const nSamples = 150;
+            const curves = [];
+            for (let k = 0; k < gnb.classes.length; k++) {
+                const pts = [];
+                for (let i = 0; i <= nSamples; i++) {
+                    const x = dataRange.xMin + (i / nSamples) * (dataRange.xMax - dataRange.xMin);
+                    const pdf = Distributions[gnb.distType].pdf(x, gnb.params[k][0]);
+                    pts.push({ x, pdf });
+                    if (pdf > maxPdf) maxPdf = pdf;
+                }
+                curves.push(pts);
+            }
+            const pdfMax = maxPdf * 1.2;
+
+            const mapper = new VizLib.CanvasUtils.CoordinateMapper(
+                pad.left, pad.top, plotW, plotH,
+                dataRange.xMin, dataRange.xMax, 0, pdfMax
+            );
+
+            // Rug plot: draw data points along the baseline
+            if (X && y) {
+                const rugY = pdfMax * 0.04;
+                for (let i = 0; i < X.length; i++) {
+                    const dimmed = highlightClass !== null && y[i] !== highlightClass;
+                    ctx.globalAlpha = dimmed ? 0.08 : 0.6;
+                    const pt = mapper.dataToCanvas(X[i][0], rugY);
+                    const color = c.classColors[y[i]] || c.classColors[0];
+                    ctx.fillStyle = color;
+                    ctx.strokeStyle = color;
+                    drawClassMarker(ctx, pt.x, pt.y, y[i], 2.5);
+                }
+                ctx.globalAlpha = 1;
+            }
+
+            // Draw curves
+            const classColors = c.classColors;
+            for (let k = 0; k < curves.length; k++) {
+                const dimmed = highlightClass !== null && k !== highlightClass;
+                ctx.globalAlpha = dimmed ? 0.1 : 1;
+                ctx.strokeStyle = classColors[k];
+                ctx.lineWidth = 1.5;
+                ctx.beginPath();
+                for (let i = 0; i <= nSamples; i++) {
+                    const pt = mapper.dataToCanvas(curves[k][i].x, curves[k][i].pdf);
+                    if (i === 0) ctx.moveTo(pt.x, pt.y);
+                    else ctx.lineTo(pt.x, pt.y);
+                }
+                ctx.stroke();
+
+                // Green star + class-colored dashed line to Y axis
+                if (testPoint && prediction) {
+                    const pdfVal = prediction.pdfs[k][0];
+                    const sp = mapper.dataToCanvas(testPoint[0], pdfVal);
+                    const axisX = pad.left;
+
+                    // Dashed line from star to Y axis in class color
+                    ctx.strokeStyle = classColors[k];
+                    ctx.lineWidth = 0.8;
+                    ctx.setLineDash([3, 3]);
+                    ctx.beginPath();
+                    ctx.moveTo(sp.x, sp.y);
+                    ctx.lineTo(axisX, sp.y);
+                    ctx.stroke();
+                    ctx.setLineDash([]);
+
+                    // PDF value badge at axis
+                    drawBadgeLabel(ctx, pdfVal.toFixed(2), axisX - 3, sp.y, classColors[k], 'right', 'middle');
+
+                    drawSmallTestMarker(ctx, sp.x, sp.y, c.testPt);
+                }
+                ctx.globalAlpha = 1;
+            }
+
+            // Vertical line at test point x1 (extend to top of canvas for seamless connection)
+            if (testPoint) {
+                const tp = mapper.dataToCanvas(testPoint[0], 0);
+                ctx.strokeStyle = c.testPt;
+                ctx.lineWidth = 0.8;
+                ctx.setLineDash([3, 3]);
+                ctx.beginPath();
+                ctx.moveTo(tp.x, 0);
+                ctx.lineTo(tp.x, pad.top + plotH);
+                ctx.stroke();
+                ctx.setLineDash([]);
+            }
+        }
+    }
+
+    // ============================================
+    // Feature2DistRenderer (left, vertical)
+    // ============================================
+    class Feature2DistRenderer {
+        constructor(canvas) {
+            this.canvas = canvas;
+            this.ctx = null;
+            this.dpr = 1;
+            this.width = 0;
+            this.height = 0;
+        }
+
+        setup() {
+            const result = VizLib.setupHiDPICanvas(this.canvas);
+            this.ctx = result.ctx;
+            this.dpr = result.dpr;
+            this.width = result.logicalWidth;
+            this.height = result.logicalHeight;
+        }
+
+        render(gnb, testPoint, dataRange, prediction, X, y, highlightClass) {
+            const ctx = this.ctx;
+            if (!ctx) return;
+            const c = getGnbColors();
+            // Pad: right edge aligns with scatter's left edge
+            const pad = { top: 10, right: 4, bottom: 24, left: 8 };
+
+            VizLib.resetCanvasTransform(ctx, this.dpr);
+            VizLib.clearCanvas(ctx, this.width, this.height, c.bg);
+
+            const plotW = this.width - pad.left - pad.right;
+            const plotH = this.height - pad.top - pad.bottom;
+
+            // Compute max PDF for X scale (horizontal axis is PDF, grows left-to-right)
+            let maxPdf = 0;
+            const nSamples = 150;
+            const curves = [];
+            for (let k = 0; k < gnb.classes.length; k++) {
+                const pts = [];
+                for (let i = 0; i <= nSamples; i++) {
+                    const yVal = dataRange.yMin + (i / nSamples) * (dataRange.yMax - dataRange.yMin);
+                    const pdf = Distributions[gnb.distType].pdf(yVal, gnb.params[k][1]);
+                    pts.push({ y: yVal, pdf });
+                    if (pdf > maxPdf) maxPdf = pdf;
+                }
+                curves.push(pts);
+            }
+            const pdfMax = maxPdf * 1.2;
+
+            const classColors = c.classColors;
+
+            // Helper: map data y to canvas y (same as scatter)
+            const dataToCanvasY = (dy) => {
+                return pad.top + plotH - ((dy - dataRange.yMin) / (dataRange.yMax - dataRange.yMin)) * plotH;
+            };
+            // Helper: map pdf value to canvas x (grows rightward from left edge)
+            const pdfToCanvasX = (pdf) => {
+                return pad.left + (pdf / pdfMax) * plotW;
+            };
+
+            // Rug plot: draw data points along the left edge
+            if (X && y) {
+                const rugX = pdfToCanvasX(pdfMax * 0.04);
+                for (let i = 0; i < X.length; i++) {
+                    const dimmed = highlightClass !== null && y[i] !== highlightClass;
+                    ctx.globalAlpha = dimmed ? 0.08 : 0.6;
+                    const cy = dataToCanvasY(X[i][1]);
+                    const color = classColors[y[i]] || classColors[0];
+                    ctx.fillStyle = color;
+                    ctx.strokeStyle = color;
+                    drawClassMarker(ctx, rugX, cy, y[i], 2.5);
+                }
+                ctx.globalAlpha = 1;
+            }
+
+            for (let k = 0; k < curves.length; k++) {
+                const dimmed = highlightClass !== null && k !== highlightClass;
+                ctx.globalAlpha = dimmed ? 0.1 : 1;
+                ctx.strokeStyle = classColors[k];
+                ctx.lineWidth = 1.5;
+                ctx.beginPath();
+                for (let i = 0; i <= nSamples; i++) {
+                    const cx = pdfToCanvasX(curves[k][i].pdf);
+                    const cy = dataToCanvasY(curves[k][i].y);
+                    if (i === 0) ctx.moveTo(cx, cy);
+                    else ctx.lineTo(cx, cy);
+                }
+                ctx.stroke();
+
+                // Green star + class-colored dashed line to X axis (bottom)
+                if (testPoint && prediction) {
+                    const pdfVal = prediction.pdfs[k][1];
+                    const sx = pdfToCanvasX(pdfVal);
+                    const sy = dataToCanvasY(testPoint[1]);
+                    const axisY = pad.top + plotH;
+
+                    // Dashed line from star to X axis in class color
+                    ctx.strokeStyle = classColors[k];
+                    ctx.lineWidth = 0.8;
+                    ctx.setLineDash([3, 3]);
+                    ctx.beginPath();
+                    ctx.moveTo(sx, sy);
+                    ctx.lineTo(sx, axisY);
+                    ctx.stroke();
+                    ctx.setLineDash([]);
+
+                    // PDF value badge at axis
+                    drawBadgeLabel(ctx, pdfVal.toFixed(2), sx, axisY + 2, classColors[k], 'center', 'top');
+
+                    drawSmallTestMarker(ctx, sx, sy, c.testPt);
+                }
+                ctx.globalAlpha = 1;
+            }
+
+            // Horizontal line at test point y (extend to right edge for seamless connection)
+            if (testPoint) {
+                const ty = dataToCanvasY(testPoint[1]);
+                ctx.strokeStyle = c.testPt;
+                ctx.lineWidth = 0.8;
+                ctx.setLineDash([3, 3]);
+                ctx.beginPath();
+                ctx.moveTo(pad.left, ty);
+                ctx.lineTo(this.width, ty);
+                ctx.stroke();
+                ctx.setLineDash([]);
+            }
+        }
+    }
+
+    /** Class icon helper */
+    function classIcon(k) {
+        const icons = ['\u25CF', '\u2717', '\u25B3', '\u25C6', '\u25A0'];
+        return icons[k] || '\u25CF';
+    }
+
+    /** Draw a data point marker for the given class index */
+    function drawClassMarker(ctx, x, y, classIdx, size) {
+        switch (classIdx) {
+            case 0: // Circle
+                ctx.beginPath();
+                ctx.arc(x, y, size, 0, Math.PI * 2);
+                ctx.fill();
+                break;
+            case 1: // X mark
+                ctx.lineWidth = size * 0.5;
+                ctx.beginPath();
+                ctx.moveTo(x - size, y - size);
+                ctx.lineTo(x + size, y + size);
+                ctx.moveTo(x + size, y - size);
+                ctx.lineTo(x - size, y + size);
+                ctx.stroke();
+                break;
+            case 2: // Triangle
+                ctx.beginPath();
+                ctx.moveTo(x, y - size);
+                ctx.lineTo(x + size, y + size * 0.7);
+                ctx.lineTo(x - size, y + size * 0.7);
+                ctx.closePath();
+                ctx.fill();
+                break;
+            case 3: // Diamond
+                ctx.beginPath();
+                ctx.moveTo(x, y - size);
+                ctx.lineTo(x + size, y);
+                ctx.lineTo(x, y + size);
+                ctx.lineTo(x - size, y);
+                ctx.closePath();
+                ctx.fill();
+                break;
+            default: // Square
+                ctx.fillRect(x - size * 0.7, y - size * 0.7, size * 1.4, size * 1.4);
+                break;
+        }
+    }
+
+    /** Draw text inside a colored rounded-rect badge on canvas */
+    function drawBadgeLabel(ctx, text, x, y, color, align, baseline) {
+        ctx.font = '8px sans-serif';
+        const m = ctx.measureText(text);
+        const padH = 3, padV = 2, radius = 2;
+        const w = m.width + padH * 2;
+        const h = 10 + padV * 2;
+
+        // Compute top-left of badge based on alignment
+        let bx = x - padH;
+        if (align === 'right') bx = x - m.width - padH;
+        else if (align === 'center') bx = x - m.width / 2 - padH;
+
+        let by = y - 5 - padV;
+        if (baseline === 'top') by = y - padV;
+        else if (baseline === 'bottom') by = y - 10 - padV;
+
+        // Background rounded rect
+        const r2 = Math.min(radius, w / 2, h / 2);
+        ctx.fillStyle = color;
+        ctx.globalAlpha = 0.15;
+        ctx.beginPath();
+        ctx.moveTo(bx + r2, by);
+        ctx.lineTo(bx + w - r2, by);
+        ctx.quadraticCurveTo(bx + w, by, bx + w, by + r2);
+        ctx.lineTo(bx + w, by + h - r2);
+        ctx.quadraticCurveTo(bx + w, by + h, bx + w - r2, by + h);
+        ctx.lineTo(bx + r2, by + h);
+        ctx.quadraticCurveTo(bx, by + h, bx, by + h - r2);
+        ctx.lineTo(bx, by + r2);
+        ctx.quadraticCurveTo(bx, by, bx + r2, by);
+        ctx.closePath();
+        ctx.fill();
+        ctx.globalAlpha = 0.3;
+        ctx.strokeStyle = color;
+        ctx.lineWidth = 0.5;
+        ctx.stroke();
+        ctx.globalAlpha = 1;
+
+        // Text
+        ctx.fillStyle = color;
+        ctx.textAlign = align;
+        ctx.textBaseline = baseline;
+        ctx.fillText(text, x, y);
+    }
+
+    /** Draw a purple question mark test point marker */
+    function drawTestPointMarker(ctx, cx, cy, color) {
+        // Circle background — solid light purple
+        const isDark = document.documentElement.getAttribute('data-theme') === 'gruvbox-dark';
+        ctx.fillStyle = isDark ? '#4a3050' : '#e9d5ff';
+        ctx.beginPath();
+        ctx.arc(cx, cy, 8, 0, Math.PI * 2);
+        ctx.fill();
+        // Border
+        ctx.strokeStyle = color;
+        ctx.lineWidth = 1.5;
+        ctx.beginPath();
+        ctx.arc(cx, cy, 8, 0, Math.PI * 2);
+        ctx.stroke();
+        // Question mark text
+        ctx.fillStyle = color;
+        ctx.font = 'bold 12px sans-serif';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText('?', cx, cy + 1);
+    }
+
+    /** Draw a small purple question mark on distribution curves */
+    function drawSmallTestMarker(ctx, cx, cy, color) {
+        const isDark = document.documentElement.getAttribute('data-theme') === 'gruvbox-dark';
+        ctx.fillStyle = isDark ? '#4a3050' : '#e9d5ff';
+        ctx.beginPath();
+        ctx.arc(cx, cy, 5, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.strokeStyle = color;
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        ctx.arc(cx, cy, 5, 0, Math.PI * 2);
+        ctx.stroke();
+        ctx.fillStyle = color;
+        ctx.font = 'bold 8px sans-serif';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText('?', cx, cy + 0.5);
+    }
+
+    // ============================================
+    // CalcPanelRenderer
+    // ============================================
+    class CalcPanelRenderer {
+        render(el, gnb, testPoint, prediction, highlightClass) {
+            if (!el) return;
+            if (!prediction) {
+                el.innerHTML = '<span class="formula-note">Click a point on the scatter plot to see the calculation breakdown.</span>';
+                return;
+            }
+
+            const qBadge = '<span class="gnb-val-badge gnb-val-test-pt">?</span>';
+            const x1Badge = '<span class="gnb-val-badge gnb-val-test-pt">x\u2081=' + testPoint[0].toFixed(2) + '</span>';
+            const x2Badge = '<span class="gnb-val-badge gnb-val-test-pt">x\u2082=' + testPoint[1].toFixed(2) + '</span>';
+
+            let html = '';
+            html += '<div class="gnb-calc-title">P(Class | ' + qBadge + ') \u221D P(Class) \u00B7 P(x\u2081|Class) \u00B7 P(x\u2082|Class)</div>';
+
+            html += '<div style="font-size:11px;margin-bottom:8px;opacity:0.7">Test point: ' + qBadge + ' = (' + testPoint[0].toFixed(3) + ', ' + testPoint[1].toFixed(3) + ')</div>';
+
+            const dist = Distributions[gnb.distType];
+            for (let k = 0; k < gnb.classes.length; k++) {
+                const cls = 'gnb-class-' + k;
+                const pdf1 = prediction.pdfs[k][0];
+                const pdf2 = prediction.pdfs[k][1];
+                const prior = gnb.priors[k];
+                const paramStr1 = dist.paramDisplay(gnb.params[k][0]);
+                const paramStr2 = dist.paramDisplay(gnb.params[k][1]);
+
+                const selected = highlightClass === k ? ' gnb-class-selected' : '';
+                const dimmed = highlightClass !== null && highlightClass !== k ? ' gnb-class-dimmed' : '';
+                html += '<div class="gnb-calc-class-block gnb-clickable-class' + selected + dimmed + '" data-gnb-class="' + k + '">';
+                html += '<div class="' + cls + '" style="font-weight:700;margin-bottom:4px">' + classIcon(k) + ' Class ' + k + '</div>';
+                const valCls = 'gnb-val-badge gnb-val-class-' + k;
+                const pdf1Badge = '<span class="' + valCls + '">' + pdf1.toExponential(3) + '</span>';
+                const pdf2Badge = '<span class="' + valCls + '">' + pdf2.toExponential(3) + '</span>';
+
+                html += '<div class="gnb-calc-row"><span>P(Class ' + k + ')</span><span>' + prior.toFixed(3) + '</span></div>';
+                html += '<div class="gnb-calc-row"><span>P(' + x1Badge + ' | ' + paramStr1 + ')</span>' + pdf1Badge + '</div>';
+                html += '<div class="gnb-calc-row"><span>P(' + x2Badge + ' | ' + paramStr2 + ')</span>' + pdf2Badge + '</div>';
+                html += '<div class="gnb-calc-row gnb-calc-formula-row">';
+                html += '<span>P(C' + k + ') \u00B7 P(x\u2081|C' + k + ') \u00B7 P(x\u2082|C' + k + ')</span>';
+                html += '</div>';
+                html += '<div class="gnb-calc-row gnb-calc-numbers-row">';
+                html += '<span>' + prior.toFixed(3) + ' \u00D7 ' + pdf1Badge + ' \u00D7 ' + pdf2Badge + '</span>';
+                html += '<span style="font-weight:700">= ' + prediction.unnormalized[k].toExponential(3) + '</span>';
+                html += '</div>';
+                html += '</div>';
+            }
+
+            html += '<div class="gnb-calc-result">';
+            for (let k = 0; k < gnb.classes.length; k++) {
+                const cls = 'gnb-class-' + k;
+                const pct = (prediction.normalized[k] * 100).toFixed(1);
+                const winner = k === prediction.predicted ? ' \u2190 predicted' : '';
+                html += '<div class="gnb-calc-row ' + cls + '"><span>' + classIcon(k) + ' P(Class ' + k + ' | <span class="gnb-test-pt">?</span>)</span><span>' + pct + '%' + winner + '</span></div>';
+            }
+            html += '</div>';
+
+            el.innerHTML = html;
+        }
+    }
+
+    // ============================================
+    // GaussianNBController
+    // ============================================
+    class GaussianNBController {
+        constructor() {
+            this.gnb = new GaussianNB();
+            this.scatterRenderer = null;
+            this.dist1Renderer = null;
+            this.dist2Renderer = null;
+            this.calcRenderer = new CalcPanelRenderer();
+            this.X = [];
+            this.y = [];
+            this.testPoint = null;
+            this.dataRange = null;
+            this.prediction = null;
+            this.dataset = 'moons';
+            this.noise = 0.1;
+            this.samples = 100;
+            this.highlightClass = null; // null = all, or class index to highlight
+            this._initialized = false;
+        }
+
+        init() {
+            // Setup canvases
+            const scatterCanvas = document.getElementById('gnb-scatter-canvas');
+            const dist1Canvas = document.getElementById('gnb-dist1-canvas');
+            const dist2Canvas = document.getElementById('gnb-dist2-canvas');
+
+            if (!scatterCanvas || !dist1Canvas || !dist2Canvas) return;
+
+            this.scatterRenderer = new ScatterRenderer(scatterCanvas);
+            this.dist1Renderer = new Feature1DistRenderer(dist1Canvas);
+            this.dist2Renderer = new Feature2DistRenderer(dist2Canvas);
+
+            this.scatterRenderer.setup();
+            this.dist1Renderer.setup();
+            this.dist2Renderer.setup();
+
+            this._regenerate();
+            this._bindEvents();
+            this._initialized = true;
+        }
+
+        _bindEvents() {
+            // Scatter click + drag
+            const scatterCanvas = document.getElementById('gnb-scatter-canvas');
+            if (scatterCanvas) {
+                let dragging = false;
+
+                const moveTestPoint = (clientX, clientY) => {
+                    const rect = scatterCanvas.getBoundingClientRect();
+                    const cx = clientX - rect.left;
+                    const cy = clientY - rect.top;
+                    const dataPt = this.scatterRenderer.getDataFromClick(cx, cy);
+                    if (dataPt) {
+                        this.testPoint = [dataPt.x, dataPt.y];
+                        this.render();
+                    }
+                };
+
+                scatterCanvas.addEventListener('mousedown', (e) => {
+                    dragging = true;
+                    moveTestPoint(e.clientX, e.clientY);
+                });
+                window.addEventListener('mousemove', (e) => {
+                    if (!dragging) return;
+                    e.preventDefault();
+                    moveTestPoint(e.clientX, e.clientY);
+                });
+                window.addEventListener('mouseup', () => { dragging = false; });
+
+                // Touch support
+                scatterCanvas.addEventListener('touchstart', (e) => {
+                    dragging = true;
+                    const t = e.touches[0];
+                    moveTestPoint(t.clientX, t.clientY);
+                    e.preventDefault();
+                }, { passive: false });
+                window.addEventListener('touchmove', (e) => {
+                    if (!dragging) return;
+                    const t = e.touches[0];
+                    moveTestPoint(t.clientX, t.clientY);
+                    e.preventDefault();
+                }, { passive: false });
+                window.addEventListener('touchend', () => { dragging = false; });
+
+                scatterCanvas.style.cursor = 'crosshair';
+            }
+
+            // Dataset dropdown
+            const datasetSelect = document.getElementById('gnb-dataset-select');
+            if (datasetSelect) {
+                datasetSelect.addEventListener('change', (e) => {
+                    this.dataset = e.target.value;
+                    this._regenerate();
+                });
+            }
+
+            // Distribution dropdown
+            const distSelect = document.getElementById('gnb-dist-select');
+            if (distSelect) {
+                distSelect.addEventListener('change', (e) => {
+                    this.gnb.distType = e.target.value;
+                    this.gnb.fit(this.X, this.y);
+                    this.render();
+                });
+            }
+
+            // Noise slider
+            const noiseSlider = document.getElementById('gnb-noise-slider');
+            if (noiseSlider) {
+                noiseSlider.addEventListener('input', (e) => {
+                    this.noise = parseFloat(e.target.value);
+                    document.getElementById('gnb-noise-value').textContent = this.noise.toFixed(2);
+                });
+                noiseSlider.addEventListener('change', () => {
+                    this._regenerate();
+                });
+            }
+
+            // Samples slider
+            const samplesSlider = document.getElementById('gnb-samples-slider');
+            if (samplesSlider) {
+                samplesSlider.addEventListener('input', (e) => {
+                    this.samples = parseInt(e.target.value);
+                    document.getElementById('gnb-samples-value').textContent = this.samples;
+                });
+                samplesSlider.addEventListener('change', () => {
+                    this._regenerate();
+                });
+            }
+
+            // Regenerate button
+            const regenBtn = document.getElementById('gnb-btn-regenerate');
+            if (regenBtn) {
+                regenBtn.addEventListener('click', () => this._regenerate());
+            }
+
+            // Reset button
+            const resetBtn = document.getElementById('gnb-btn-reset');
+            if (resetBtn) {
+                resetBtn.addEventListener('click', () => {
+                    this.dataset = 'moons';
+                    this.noise = 0.1;
+                    this.samples = 100;
+                    this.gnb.distType = 'gaussian';
+                    const ds = document.getElementById('gnb-dataset-select');
+                    if (ds) ds.value = 'moons';
+                    const dsel = document.getElementById('gnb-dist-select');
+                    if (dsel) dsel.value = 'gaussian';
+                    const ns = document.getElementById('gnb-noise-slider');
+                    if (ns) { ns.value = 0.1; document.getElementById('gnb-noise-value').textContent = '0.10'; }
+                    const ss = document.getElementById('gnb-samples-slider');
+                    if (ss) { ss.value = 100; document.getElementById('gnb-samples-value').textContent = '100'; }
+                    this._regenerate();
+                });
+            }
+
+            // Theme change
+            document.addEventListener('themechange', () => {
+                if (this._initialized) this.render();
+            });
+        }
+
+        resize() {
+            if (!this._initialized) return;
+            this.scatterRenderer.setup();
+            this.dist1Renderer.setup();
+            this.dist2Renderer.setup();
+            this.render();
+        }
+
+        _regenerate() {
+            const data = generateDataset(this.dataset, this.samples, this.noise);
+            this.X = data.X;
+            this.y = data.y;
+            this.gnb.fit(this.X, this.y);
+
+            // Pick a random test point from data
+            const idx = Math.floor(Math.random() * this.X.length);
+            this.testPoint = [this.X[idx][0], this.X[idx][1]];
+
+            // Compute data range with padding
+            let xMin = Infinity, xMax = -Infinity, yMin = Infinity, yMax = -Infinity;
+            for (const pt of this.X) {
+                if (pt[0] < xMin) xMin = pt[0];
+                if (pt[0] > xMax) xMax = pt[0];
+                if (pt[1] < yMin) yMin = pt[1];
+                if (pt[1] > yMax) yMax = pt[1];
+            }
+            const padX = (xMax - xMin) * 0.1;
+            const padY = (yMax - yMin) * 0.1;
+            this.dataRange = {
+                xMin: xMin - padX, xMax: xMax + padX,
+                yMin: yMin - padY, yMax: yMax + padY
+            };
+
+            this.highlightClass = null; // Reset highlight on new data
+            this.render();
+        }
+
+        _renderFitPanel() {
+            const el = document.getElementById('gnb-fit-panel');
+            if (!el) return;
+            const gnb = this.gnb;
+
+            let html = '';
+            const dist = Distributions[gnb.distType];
+            html += '<div class="gnb-calc-title">Training: fit ' + dist.name + ' parameters per class per feature</div>';
+
+            for (let k = 0; k < gnb.classes.length; k++) {
+                const cls = 'gnb-class-' + k;
+                const n = this.y.filter(v => v === k).length;
+                const prior = gnb.priors[k];
+
+                const selected = this.highlightClass === k ? ' gnb-class-selected' : '';
+                const dimmed = this.highlightClass !== null && this.highlightClass !== k ? ' gnb-class-dimmed' : '';
+                html += '<div class="gnb-calc-class-block gnb-clickable-class' + selected + dimmed + '" data-gnb-class="' + k + '">';
+                html += '<div class="' + cls + '" style="font-weight:700;margin-bottom:4px">' + classIcon(k) + ' Class ' + k + ' <span style="font-weight:400;opacity:0.7">(n=' + n + ', prior=' + prior.toFixed(3) + ')</span></div>';
+
+                html += '<table class="gnb-fit-table">';
+                html += '<tr><th></th>';
+                for (const label of dist.paramLabels) {
+                    html += '<th>' + label + '</th>';
+                }
+                html += '</tr>';
+                for (let f = 0; f < 2; f++) {
+                    html += '<tr class="' + cls + '">';
+                    html += '<td style="font-weight:600">' + classIcon(k) + ' Feature ' + (f + 1) + '</td>';
+                    for (const val of dist.paramValues(gnb.params[k][f])) {
+                        html += '<td>' + val.toFixed(4) + '</td>';
+                    }
+                    html += '</tr>';
+                }
+                html += '</table>';
+                html += '</div>';
+            }
+
+            el.innerHTML = html;
+        }
+
+        render() {
+            if (!this.scatterRenderer) return;
+            this.prediction = this.gnb.predict(this.testPoint);
+            const hl = this.highlightClass;
+
+            this.scatterRenderer.render(this.X, this.y, this.testPoint, this.dataRange, hl);
+            this.dist1Renderer.render(this.gnb, this.testPoint, this.dataRange, this.prediction, this.X, this.y, hl);
+            this.dist2Renderer.render(this.gnb, this.testPoint, this.dataRange, this.prediction, this.X, this.y, hl);
+
+            const calcPanel = document.getElementById('gnb-calc-panel');
+            this.calcRenderer.render(calcPanel, this.gnb, this.testPoint, this.prediction, hl);
+
+            // Re-render fit panel to update selected/dimmed states
+            this._renderFitPanel();
+
+            // Bind click events on class blocks
+            this._bindClassBlockClicks();
+
+            // Update test point label in header
+            const tpLabel = document.getElementById('gnb-test-point-label');
+            if (tpLabel && this.testPoint) {
+                tpLabel.innerHTML = '? (' + this.testPoint[0].toFixed(2) + ', ' + this.testPoint[1].toFixed(2) + ')';
+            }
+
+            // Update badge with class icon and color
+            const badge = document.getElementById('gnb-result-badge');
+            if (badge && this.prediction) {
+                const cls = this.prediction.predicted;
+                const pct = (this.prediction.normalized[cls] * 100).toFixed(1);
+                badge.className = 'viz-badge gnb-badge-' + cls;
+                badge.textContent = classIcon(cls) + ' Class ' + cls + ' (' + pct + '%)';
+            }
+
+            // Update legend dynamically based on number of classes
+            const legendEl = document.getElementById('gnb-legend');
+            if (legendEl) {
+                let legendHtml = '';
+                for (let k = 0; k < this.gnb.classes.length; k++) {
+                    legendHtml += '<span class="gnb-legend-item"><span class="gnb-legend-swatch class-' + k + '"></span> ' + classIcon(k) + ' Class ' + k + '</span>';
+                }
+                legendHtml += '<span class="gnb-legend-item"><span class="gnb-legend-swatch test-pt"></span> Test Point (click to move)</span>';
+                legendEl.innerHTML = legendHtml;
+            }
+
+        }
+
+        _bindClassBlockClicks() {
+            const blocks = document.querySelectorAll('.gnb-clickable-class[data-gnb-class]');
+            blocks.forEach(block => {
+                block.addEventListener('click', (e) => {
+                    const clickedClass = parseInt(block.getAttribute('data-gnb-class'));
+                    // Toggle: if already selected, deselect (show all)
+                    if (this.highlightClass === clickedClass) {
+                        this.highlightClass = null;
+                    } else {
+                        this.highlightClass = clickedClass;
+                    }
+                    this.render();
+                });
+            });
+        }
+
+    }
+
+    // ============================================
+    // Mode Switching
+    // ============================================
+    let gaussianController = null;
+
+    function switchMode(mode) {
+        const textMode = document.getElementById('nb-text-mode');
+        const gaussianMode = document.getElementById('nb-gaussian-mode');
+
+        if (!textMode || !gaussianMode) return;
+
+        // Sync all toggle buttons across both headers
+        document.querySelectorAll('.nb-mode-toggle .btn').forEach(btn => {
+            const isText = btn.id.startsWith('btn-mode-text');
+            const isGaussian = btn.id.startsWith('btn-mode-gaussian');
+            if (isText) btn.classList.toggle('active', mode === 'text');
+            if (isGaussian) btn.classList.toggle('active', mode === 'gaussian');
+        });
+
+        // Show/hide mode containers
+        textMode.style.display = mode === 'text' ? '' : 'none';
+        gaussianMode.style.display = mode === 'gaussian' ? '' : 'none';
+
+        // Toggle info tab content
+        document.querySelectorAll('.nb-info-text-mode').forEach(el => {
+            el.style.display = mode === 'text' ? '' : 'none';
+        });
+        document.querySelectorAll('.nb-info-gaussian-mode').forEach(el => {
+            el.style.display = mode === 'gaussian' ? '' : 'none';
+        });
+
+        // Lazy-init Gaussian controller
+        if (mode === 'gaussian' && !gaussianController) {
+            gaussianController = new GaussianNBController();
+            // Delay init slightly so the container is visible and canvases have dimensions
+            requestAnimationFrame(() => {
+                gaussianController.init();
+            });
+        } else if (mode === 'gaussian' && gaussianController && gaussianController._initialized) {
+            // Re-setup canvases after being hidden (dimensions may have changed)
+            requestAnimationFrame(() => {
+                gaussianController.resize();
+            });
+        }
+    }
+
+    // ============================================
     // Initialize on DOM ready
     // ============================================
     document.addEventListener('DOMContentLoaded', () => {
         const visualizer = new NaiveBayesVisualizer();
         visualizer.init();
+
+        // Mode toggle buttons (both sets)
+        document.querySelectorAll('.nb-mode-toggle .btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                if (btn.id.startsWith('btn-mode-text')) switchMode('text');
+                else if (btn.id.startsWith('btn-mode-gaussian')) switchMode('gaussian');
+            });
+        });
+
+        // Initialize with continuous (gaussian) mode by default
+        switchMode('gaussian');
+
+        // Resize handler for Gaussian mode
+        let gnbResizeTimeout;
+        window.addEventListener('resize', () => {
+            clearTimeout(gnbResizeTimeout);
+            gnbResizeTimeout = setTimeout(() => {
+                if (gaussianController && gaussianController._initialized) {
+                    gaussianController.resize();
+                }
+            }, 100);
+        });
     });
 
 })();
