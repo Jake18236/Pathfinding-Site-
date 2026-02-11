@@ -286,32 +286,15 @@ cardOrder: 25
                 '},
                 {id: 'math', icon: 'fa-superscript', label: 'Math', content: '
                     <div class="nb-info-text-mode">
-                    <h4><i class="fa fa-superscript"></i> Bayes Theorem</h4>
-                    <div class="math-formula-display">
-                        <code>P(C|x) = P(x|C) &middot; P(C) / P(x)</code>
+                    <h4><i class="fa fa-cogs"></i> Fitted Parameters</h4>
+                    <div id="nb-fit-panel" class="gnb-calc-panel">
+                        <span class="formula-note">Training parameters will appear here.</span>
                     </div>
-                    <p class="formula-note">Where C is the class and x is the feature vector (words).</p>
 
-                    <h4><i class="fa fa-unlink"></i> Naive Independence Assumption</h4>
-                    <div class="math-formula-display">
-                        <code>P(x&#8321;,x&#8322;,...,x&#8345;|C) = &Pi; P(x&#7522;|C)</code>
+                    <h4><i class="fa fa-calculator"></i> Live Calculation</h4>
+                    <div id="nb-calc-panel" class="gnb-calc-panel">
+                        <span class="formula-note">Classify a message to see the calculation breakdown.</span>
                     </div>
-                    <p class="formula-note">Each word is assumed independent given the class.</p>
-
-                    <h4><i class="fa fa-plus-circle"></i> Laplace Smoothing</h4>
-                    <div class="math-formula-display">
-                        <code>P(w|C) = (count(w,C) + &alpha;) / (total(C) + &alpha;&middot;|V|)</code>
-                    </div>
-                    <p class="formula-note">
-                        &alpha; prevents zero probabilities for unseen words. |V| is the vocabulary size.
-                        When &alpha;=1 this is called add-one smoothing.
-                    </p>
-
-                    <h4><i class="fa fa-calculator"></i> Log-Space Computation</h4>
-                    <div class="math-formula-display">
-                        <code>log P(C|x) &prop; log P(C) + &Sigma; log P(x&#7522;|C)</code>
-                    </div>
-                    <p class="formula-note">We work in log-space to avoid floating-point underflow from multiplying many small probabilities.</p>
                     </div>
                     <div class="nb-info-gaussian-mode" style="display:none;">
                     <h4><i class="fa fa-cogs"></i> Fitted Parameters</h4>

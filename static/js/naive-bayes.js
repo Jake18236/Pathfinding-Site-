@@ -431,6 +431,7 @@
 
             // Render training data list
             this._renderTrainingData();
+            this._renderNbFitPanel();
         }
 
         _bindEvents() {
@@ -459,6 +460,7 @@
                     this.classifier.alpha = val;
                     document.getElementById('alpha-value').textContent = val.toFixed(1);
                     document.getElementById('metric-alpha').textContent = val.toFixed(1);
+                    this._renderNbFitPanel();
                     // Re-classify if there is a previous result
                     if (this.lastResult) {
                         this._onClassify();
@@ -618,6 +620,10 @@
 
             // Update metrics
             this._updateMetrics(result);
+
+            // Update math tab panels
+            this._renderNbFitPanel();
+            this._renderNbCalcPanel(result);
         }
 
         _renderResult(result) {
@@ -766,6 +772,7 @@
 
             // Re-render
             this._renderTrainingData();
+            this._renderNbFitPanel();
             this._updateStatus('Added training example');
 
             // Re-classify if there is a previous result
@@ -780,6 +787,7 @@
                 data.splice(index, 1);
                 this.classifier.train(data);
                 this._renderTrainingData();
+                this._renderNbFitPanel();
                     this._updateStatus('Removed training example');
 
                 if (this.lastResult) {
@@ -832,7 +840,124 @@
             }
 
             this._renderTrainingData();
+            this._renderNbFitPanel();
+            this._renderNbCalcPanel(null);
             this._updateStatus('Reset to defaults');
+        }
+
+        _renderNbFitPanel() {
+            const el = document.getElementById('nb-fit-panel');
+            if (!el) return;
+            const cls = this.classifier;
+            const classes = Object.keys(cls.classCounts);
+            if (classes.length === 0) return;
+
+            let html = '';
+            html += '<div class="gnb-calc-title">Training: word frequencies per class</div>';
+
+            for (const label of classes) {
+                const count = cls.classCounts[label];
+                const prior = cls.getPrior(label);
+                const totalWords = cls.classTotalWords[label] || 0;
+                const uniqueWords = Object.keys(cls.classWordCounts[label] || {}).length;
+                const denom = totalWords + cls.alpha * cls.vocabulary.size;
+                const icon = label === 'spam' ? '\u2717' : '\u2713';
+                const Label = label.charAt(0).toUpperCase() + label.slice(1);
+
+                html += '<div class="gnb-calc-class-block">';
+                html += '<div style="font-weight:700;margin-bottom:4px;color:var(--nb-' + label + '-color)">' + icon + ' ' + Label + ' <span style="font-weight:400;opacity:0.7">(n=' + count + ', prior=' + prior.toFixed(3) + ')</span></div>';
+                html += '<table class="gnb-fit-table">';
+                html += '<tr><th>Total words</th><th>Unique words</th><th>Denominator</th></tr>';
+                html += '<tr>';
+                html += '<td>' + totalWords + '</td>';
+                html += '<td>' + uniqueWords + '</td>';
+                html += '<td>' + totalWords + '+' + cls.alpha + '\u00B7' + cls.vocabulary.size + ' = ' + denom.toFixed(1) + '</td>';
+                html += '</tr>';
+                html += '</table>';
+                html += '</div>';
+            }
+
+            html += '<div style="margin-top:8px;font-size:11px;opacity:0.7">';
+            html += 'Vocabulary |V| = ' + cls.vocabulary.size;
+            html += ' \u00B7 Smoothing \u03B1 = ' + cls.alpha.toFixed(1);
+            html += ' \u00B7 Formula: P(w|C) = (count+\u03B1) / (total+\u03B1\u00B7|V|)';
+            html += '</div>';
+
+            el.innerHTML = html;
+        }
+
+        _renderNbCalcPanel(result) {
+            const el = document.getElementById('nb-calc-panel');
+            if (!el) return;
+            if (!result) {
+                el.innerHTML = '<span class="formula-note">Classify a message to see the calculation breakdown.</span>';
+                return;
+            }
+
+            const cls = this.classifier;
+            const classes = ['spam', 'ham'];
+
+            let html = '';
+            html += '<div class="gnb-calc-title">log P(Class | msg) \u221D log P(Class) + \u03A3 log P(w\u1D62|Class)</div>';
+            html += '<div style="font-size:10px;margin-bottom:8px;opacity:0.5">Computed in log-space to prevent underflow from multiplying many small probabilities.</div>';
+
+            // Show test words as badges
+            const wordBadges = result.words.map(w =>
+                '<span class="gnb-val-badge gnb-val-test-pt">' + this._escapeHtml(w) + '</span>'
+            ).join(' ');
+            html += '<div style="font-size:11px;margin-bottom:8px;opacity:0.7">Message: ' + wordBadges + '</div>';
+
+            for (const label of classes) {
+                const isSpam = label === 'spam';
+                const icon = isSpam ? '\u2717' : '\u2713';
+                const Label = label.charAt(0).toUpperCase() + label.slice(1);
+                const prior = result.priors[label];
+                const valCls = 'gnb-val-badge ' + (isSpam ? 'gnb-val-class-1' : 'gnb-val-class-0');
+
+                html += '<div class="gnb-calc-class-block">';
+                html += '<div style="font-weight:700;margin-bottom:4px;color:var(--nb-' + label + '-color)">' + icon + ' ' + Label + '</div>';
+
+                // Prior (show log value)
+                html += '<div class="gnb-calc-row"><span>log P(' + Label + ')</span><span class="' + valCls + '">' + Math.log(prior).toFixed(4) + '</span></div>';
+
+                // Per word likelihood
+                const totalWords = cls.classTotalWords[label] || 0;
+                const V = cls.vocabulary.size;
+                const alpha = cls.alpha;
+                for (const d of result.wordDetails) {
+                    const pWord = isSpam ? d.pSpam : d.pHam;
+                    const logPWord = Math.log(pWord);
+                    const wordCount = (cls.classWordCounts[label] && cls.classWordCounts[label][d.word]) || 0;
+                    const wordBadge = '<span class="gnb-val-badge gnb-val-test-pt">' + this._escapeHtml(d.word) + '</span>';
+
+                    html += '<div class="gnb-calc-row">';
+                    html += '<span>+ log P(' + wordBadge + ' | ' + Label + ') <span style="opacity:0.5">(' + wordCount + '+' + alpha + ')/(' + totalWords + '+' + alpha + '\u00B7' + V + ')</span></span>';
+                    html += '<span class="' + valCls + '">' + logPWord.toFixed(4) + '</span>';
+                    html += '</div>';
+                }
+
+                // Total
+                html += '<div class="gnb-calc-row gnb-calc-formula-row">';
+                html += '<span>log P(' + Label + ' | msg)</span>';
+                html += '<span style="font-weight:700">' + (result.logScores[label] || 0).toFixed(4) + '</span>';
+                html += '</div>';
+
+                html += '</div>';
+            }
+
+            // Normalized result via log-sum-exp
+            html += '<div class="gnb-calc-result">';
+            html += '<div style="font-size:10px;opacity:0.5;margin-bottom:4px">Normalized via log-sum-exp (softmax):</div>';
+            for (const label of classes) {
+                const icon = label === 'spam' ? '\u2717' : '\u2713';
+                const Label = label.charAt(0).toUpperCase() + label.slice(1);
+                const pct = (result.probabilities[label] * 100).toFixed(1);
+                const winner = label === result.predicted ? ' \u2190 predicted' : '';
+                html += '<div class="gnb-calc-row" style="color:var(--nb-' + label + '-color)"><span>' + icon + ' P(' + Label + ' | msg)</span><span>' + pct + '%' + winner + '</span></div>';
+            }
+            html += '</div>';
+
+            el.innerHTML = html;
         }
 
         _updateMetrics(result) {
