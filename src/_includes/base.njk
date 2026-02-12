@@ -769,10 +769,16 @@
 		    </button>
 		    <ul class="nav nav-pills pull-right">
 			{% for item in siteInfo.navigation %}
+			{% if not (tags and tags.indexOf("visualization") > -1 and item.link != "/") %}
 			<li><a href="{{ item.link }}"><i class="fa {{ item.icon }}"></i> <span class="visible-md-inline visible-lg-inline">{{ item.name }}</span></a></li>
+			{% endif %}
 			{% endfor %}
 		    </ul>
+		    {% if tags and tags.indexOf("visualization") > -1 %}
+		    <h1><i class="fa {{ siteInfo.icon }}"></i> E-AI: {{ title }}</h1>
+		    {% else %}
 		    <h1><i class="fa {{ siteInfo.icon }}"></i> {{ siteInfo.title }}</h1>
+		    {% endif %}
 		</div>
 	    </div>
 
