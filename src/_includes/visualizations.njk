@@ -28,17 +28,23 @@
     <div class="col-lg-3 col-md-6 col-sm-6 viz-card-wrapper" style="margin-bottom: 20px;" data-haystack="{{ viz.data.cardHaystack }}">
         <div class="viz-card">
             <a href="{{ viz.url | replace(r/^\//, '') }}" class="viz-card-link">
-                <div class="viz-card-header">
-                    <div class="viz-card-icon">
-                        <i class="fa {{ viz.data.cardIcon }}"></i>
-                    </div>
-                    <h4 class="viz-card-title">{{ viz.data.cardTitle }}</h4>
+                <div class="viz-card-preview">
+                    {% if viz.data.cardImage %}
+                        <img src="{{ viz.data.cardImage }}" alt="{{ viz.data.cardTitle }} preview" loading="lazy">
+                    {% else %}
+                        <div class="viz-card-placeholder">
+                            <i class="fa {{ viz.data.cardIcon }}"></i>
+                        </div>
+                    {% endif %}
                 </div>
-                <p class="viz-card-description">{{ viz.data.cardDescription }}</p>
-                <div class="viz-card-tags">
-                    {% for tag in viz.data.cardTags %}
-                    <span class="viz-tag">{{ tag }}</span>
-                    {% endfor %}
+                <div class="viz-card-body">
+                    <h4 class="viz-card-title">{{ viz.data.cardTitle }}</h4>
+                    <p class="viz-card-description">{{ viz.data.cardDescription }}</p>
+                    <div class="viz-card-tags">
+                        {% for tag in viz.data.cardTags %}
+                        <span class="viz-tag">{{ tag }}</span>
+                        {% endfor %}
+                    </div>
                 </div>
             </a>
         </div>
@@ -66,15 +72,26 @@ window.addEventListener("load", function() {
 </script>
 
 <style>
+/* Flexbox grid to eliminate gaps from uneven card heights */
+.viz-card-grid {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.viz-card-grid .viz-card-wrapper {
+    display: flex;
+}
+
 .viz-card {
-    border: 1px solid #e0e0e0;
-    border-radius: 8px;
-    background: #fff;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
-    height: 100%;
     display: flex;
     flex-direction: column;
+    width: 100%;
+    border-radius: 6px;
+    border: 1px solid #ddd;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+    overflow: hidden;
+    background: #fff;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
 .viz-card:hover {
@@ -86,7 +103,6 @@ window.addEventListener("load", function() {
     display: flex;
     flex-direction: column;
     height: 100%;
-    padding: 20px;
     text-decoration: none;
     color: inherit;
 }
@@ -97,41 +113,60 @@ window.addEventListener("load", function() {
     color: inherit;
 }
 
-.viz-card-header {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    margin-bottom: 12px;
+/* Screenshot preview thumbnail */
+.viz-card-preview {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    overflow: hidden;
+    background: #f7f7f7;
+    border-bottom: 1px solid #e0e0e0;
 }
 
-.viz-card-icon {
-    width: 40px;
-    height: 40px;
-    border-radius: 8px;
-    background: #002b5c;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
+.viz-card-preview img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
 }
 
-.viz-card-icon i {
-    font-size: 18px;
-    color: #fff;
+.viz-card:hover .viz-card-preview img {
+    transform: scale(1.03);
+}
+
+.viz-card-placeholder {
+    width: 100%;
+    height: 100%;
+    display: grid;
+    place-items: center;
+}
+
+.viz-card-placeholder i {
+    font-size: 3em;
+    color: #bbb;
+}
+
+/* Card body with text content */
+.viz-card-body {
+    padding: 14px 16px;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
 }
 
 .viz-card-title {
-    font-size: 1.1em;
+    font-size: 0.95em;
     font-weight: 600;
-    margin: 0;
+    margin: 0 0 6px 0;
     color: #1a1a2e;
+    line-height: 1.35;
 }
 
 .viz-card-description {
-    font-size: 0.88em;
+    font-size: 0.82em;
     color: #666;
     line-height: 1.5;
-    margin: 0 0 14px 0;
+    margin: 0 0 10px 0;
     flex: 1;
 }
 
@@ -151,25 +186,24 @@ window.addEventListener("load", function() {
     font-weight: 500;
 }
 
-/* Flexbox grid to eliminate gaps from uneven card heights */
-.viz-card-grid {
-    display: flex;
-    flex-wrap: wrap;
-}
-
-.viz-card-grid .viz-card-wrapper {
-    display: flex;
-}
-
 /* Dark theme support */
 [data-theme="gruvbox-dark"] .viz-card {
     background: #282828;
     border-color: #504945;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.45);
 }
 
 [data-theme="gruvbox-dark"] .viz-card:hover {
     box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+}
+
+[data-theme="gruvbox-dark"] .viz-card-preview {
+    background: #32302f;
+    border-bottom-color: #504945;
+}
+
+[data-theme="gruvbox-dark"] .viz-card-placeholder i {
+    color: #665c54;
 }
 
 [data-theme="gruvbox-dark"] .viz-card-title {
@@ -183,9 +217,5 @@ window.addEventListener("load", function() {
 [data-theme="gruvbox-dark"] .viz-tag {
     background: #3c3836;
     color: #bdae93;
-}
-
-[data-theme="gruvbox-dark"] .viz-card-icon {
-    background: #458588;
 }
 </style>
