@@ -125,6 +125,13 @@
         return sv;
     }
 
+    function mat2x2_matmul(A, B) {
+        return [
+            [A[0][0]*B[0][0] + A[0][1]*B[1][0], A[0][0]*B[0][1] + A[0][1]*B[1][1]],
+            [A[1][0]*B[0][0] + A[1][1]*B[1][0], A[1][0]*B[0][1] + A[1][1]*B[1][1]]
+        ];
+    }
+
     function mat2x2_lerp(A, B, t) {
         return [
             [A[0][0] + (B[0][0] - A[0][0]) * t, A[0][1] + (B[0][1] - A[0][1]) * t],
@@ -400,10 +407,11 @@
             this.rafId = null;
         }
 
-        start(from, to, durationMs) {
+        start(from, to, durationMs, onComplete) {
             this.stop();
             this.animating = true;
             const startTime = performance.now();
+            const completeFn = onComplete || this.onComplete;
 
             const tick = (now) => {
                 const elapsed = now - startTime;
@@ -419,7 +427,7 @@
                 } else {
                     this.animating = false;
                     this.onFrame(to, 1);
-                    if (this.onComplete) this.onComplete();
+                    if (completeFn) completeFn();
                 }
             };
 
@@ -466,6 +474,8 @@
 
             this.dataPoints = this._generateDataPoints();
             this.speed = 5;
+            this.chain = [];
+            this.chainAnimating = false;
 
             this.animation = new AnimationController(
                 (matrix, t) => {
@@ -481,6 +491,7 @@
             );
 
             this._bindControls();
+            this._bindCompositionControls();
             this._bindThemeChange();
             this.render();
             this.updateMetrics(this.currentMatrix);
@@ -566,6 +577,233 @@
                 [parseFloat(this.inputs.w10.value) || 0, parseFloat(this.inputs.w11.value) || 0]
             ];
             this._animateToTarget(W);
+        }
+
+        // ============================================
+        // Composition Chain
+        // ============================================
+        _bindCompositionControls() {
+            document.getElementById('btn-add-chain').addEventListener('click', () => this.addToChain());
+            document.getElementById('btn-chain-step').addEventListener('click', () => this.animateChainStepByStep());
+            document.getElementById('btn-chain-composed').addEventListener('click', () => this.animateChainComposed());
+            document.getElementById('btn-chain-clear').addEventListener('click', () => this.clearChain());
+        }
+
+        _readMatrixInputs() {
+            return [
+                [parseFloat(this.inputs.w00.value) || 0, parseFloat(this.inputs.w01.value) || 0],
+                [parseFloat(this.inputs.w10.value) || 0, parseFloat(this.inputs.w11.value) || 0]
+            ];
+        }
+
+        _getCurrentPresetName() {
+            const select = document.getElementById('preset-select');
+            const presetKey = select.value;
+            const preset = PRESETS[presetKey];
+            const current = this._readMatrixInputs();
+
+            if (preset &&
+                Math.abs(current[0][0] - preset[0][0]) < 0.001 &&
+                Math.abs(current[0][1] - preset[0][1]) < 0.001 &&
+                Math.abs(current[1][0] - preset[1][0]) < 0.001 &&
+                Math.abs(current[1][1] - preset[1][1]) < 0.001) {
+                return select.options[select.selectedIndex].text;
+            }
+            return 'Custom';
+        }
+
+        addToChain() {
+            if (this.chainAnimating) return;
+            const matrix = this._readMatrixInputs();
+            const name = this._getCurrentPresetName();
+            this.chain.push({ matrix: this.copyMatrix(matrix), name });
+            this.updateChainUI();
+        }
+
+        removeFromChain(index) {
+            if (this.chainAnimating) return;
+            this.chain.splice(index, 1);
+            this.updateChainUI();
+        }
+
+        clearChain() {
+            if (this.chainAnimating) return;
+            this.chain = [];
+            this.updateChainUI();
+        }
+
+        computeComposed() {
+            if (this.chain.length === 0) return [[1, 0], [0, 1]];
+            let result = this.copyMatrix(this.chain[0].matrix);
+            for (let i = 1; i < this.chain.length; i++) {
+                result = mat2x2_matmul(this.chain[i].matrix, result);
+            }
+            return result;
+        }
+
+        updateChainUI() {
+            const display = document.getElementById('chain-display');
+            const composedDiv = document.getElementById('chain-composed');
+            const badge = document.getElementById('chain-count-badge');
+            const btnStep = document.getElementById('btn-chain-step');
+            const btnComposed = document.getElementById('btn-chain-composed');
+            const btnClear = document.getElementById('btn-chain-clear');
+
+            const hasChain = this.chain.length > 0;
+            btnStep.disabled = this.chain.length < 2;
+            btnComposed.disabled = this.chain.length < 2;
+            btnClear.disabled = !hasChain;
+            badge.textContent = this.chain.length + (this.chain.length === 1 ? ' transform' : ' transforms');
+
+            if (!hasChain) {
+                display.innerHTML = '<div class="chain-empty">No transforms in chain yet</div>';
+                composedDiv.style.display = 'none';
+                return;
+            }
+
+            // Build chain chips
+            let html = '<div class="chain-items">';
+            this.chain.forEach((entry, i) => {
+                if (i > 0) html += '<span class="chain-arrow">\u2192</span>';
+                const m = entry.matrix;
+                html += '<div class="chain-chip" id="chain-chip-' + i + '">'
+                    + '<div class="chain-chip-header">'
+                    + '<span class="chain-chip-label">W<sub>' + (i + 1) + '</sub></span>'
+                    + '<button class="chain-chip-remove" data-index="' + i + '" title="Remove">\u00d7</button>'
+                    + '</div>'
+                    + '<div class="chain-chip-name">' + entry.name + '</div>'
+                    + '<div class="chain-chip-matrix">'
+                    + '<span>' + m[0][0].toFixed(2) + ', ' + m[0][1].toFixed(2) + '</span><br>'
+                    + '<span>' + m[1][0].toFixed(2) + ', ' + m[1][1].toFixed(2) + '</span>'
+                    + '</div>'
+                    + '</div>';
+            });
+            html += '</div>';
+            display.innerHTML = html;
+
+            // Bind remove buttons
+            display.querySelectorAll('.chain-chip-remove').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    this.removeFromChain(parseInt(e.target.dataset.index));
+                });
+            });
+
+            // Show composed result
+            if (this.chain.length >= 2) {
+                composedDiv.style.display = 'block';
+                const composed = this.computeComposed();
+                const labels = [];
+                for (let i = this.chain.length; i >= 1; i--) {
+                    labels.push('W<sub>' + i + '</sub>');
+                }
+                document.getElementById('composed-equation').innerHTML =
+                    '<span class="composed-label">' + labels.join(' \u00b7 ') + ' =</span>'
+                    + '<span class="composed-matrix">'
+                    + '<span class="matrix-bracket bracket-left">[</span>'
+                    + '<span class="composed-values">'
+                    + '<span>' + composed[0][0].toFixed(3) + ',\u2009' + composed[0][1].toFixed(3) + '</span><br>'
+                    + '<span>' + composed[1][0].toFixed(3) + ',\u2009' + composed[1][1].toFixed(3) + '</span>'
+                    + '</span>'
+                    + '<span class="matrix-bracket bracket-right">]</span>'
+                    + '</span>';
+            } else {
+                composedDiv.style.display = 'none';
+            }
+        }
+
+        _animateAsync(from, to) {
+            return new Promise(resolve => {
+                const duration = 2200 - this.speed * 200;
+                this.animation.start(from, to, duration, () => {
+                    this.currentMatrix = this.copyMatrix(to);
+                    this.displayMatrix = this.copyMatrix(to);
+                    resolve();
+                });
+            });
+        }
+
+        async animateChainStepByStep() {
+            if (this.chain.length < 2 || this.chainAnimating) return;
+            this.chainAnimating = true;
+            this._setChainButtonsEnabled(false);
+
+            // Reset to identity
+            const identity = [[1, 0], [0, 1]];
+            this.currentMatrix = this.copyMatrix(identity);
+            this.displayMatrix = this.copyMatrix(identity);
+            this.render();
+            this.updateMetrics(identity);
+            this.updateDetBadge(identity);
+
+            await new Promise(r => setTimeout(r, 300));
+
+            let accumulated = this.copyMatrix(identity);
+
+            for (let i = 0; i < this.chain.length; i++) {
+                this._highlightChainStep(i);
+                const next = mat2x2_matmul(this.chain[i].matrix, accumulated);
+                await this._animateAsync(accumulated, next);
+                accumulated = next;
+
+                if (i < this.chain.length - 1) {
+                    await new Promise(r => setTimeout(r, 400));
+                }
+            }
+
+            this._setInputs(accumulated);
+            this._clearChainHighlights();
+            this.chainAnimating = false;
+            this._setChainButtonsEnabled(true);
+            this.updateChainUI();
+        }
+
+        async animateChainComposed() {
+            if (this.chain.length < 2 || this.chainAnimating) return;
+            this.chainAnimating = true;
+            this._setChainButtonsEnabled(false);
+
+            const composed = this.computeComposed();
+
+            // Reset to identity
+            const identity = [[1, 0], [0, 1]];
+            this.currentMatrix = this.copyMatrix(identity);
+            this.displayMatrix = this.copyMatrix(identity);
+            this.render();
+            this.updateMetrics(identity);
+            this.updateDetBadge(identity);
+
+            await new Promise(r => setTimeout(r, 300));
+
+            await this._animateAsync(identity, composed);
+
+            this._setInputs(composed);
+            this.chainAnimating = false;
+            this._setChainButtonsEnabled(true);
+            this.updateChainUI();
+        }
+
+        _highlightChainStep(index) {
+            document.querySelectorAll('.chain-chip').forEach((chip, i) => {
+                chip.classList.toggle('chain-chip-active', i === index);
+                chip.classList.toggle('chain-chip-done', i < index);
+            });
+        }
+
+        _clearChainHighlights() {
+            document.querySelectorAll('.chain-chip').forEach(chip => {
+                chip.classList.remove('chain-chip-active');
+                chip.classList.add('chain-chip-done');
+            });
+        }
+
+        _setChainButtonsEnabled(enabled) {
+            const disabled = !enabled;
+            document.getElementById('btn-add-chain').disabled = disabled;
+            document.getElementById('btn-chain-step').disabled = disabled;
+            document.getElementById('btn-chain-composed').disabled = disabled;
+            document.getElementById('btn-chain-clear').disabled = disabled;
+            document.getElementById('btn-transform').disabled = disabled;
+            document.getElementById('btn-reset').disabled = disabled;
         }
 
         _animateToTarget(target) {

@@ -9,6 +9,7 @@ module.exports = {
   ogImage: "static/img/og-default.png",
   icon: "fa-rocket",
   navigation: [
+    { name: "Home", link: "/", icon: "fa-home" },
     { name: "Courses", link: "#courses", icon: "fa-chalkboard-user" },
     { name: "Visualizations", link: "#visualizations", icon: "fa-chart-line" },
     { name: "Learning", link: "#learning", icon: "fa-brain" },

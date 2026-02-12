@@ -114,6 +114,40 @@ cardOrder: 12
                 </div>
             </div>
         </div>
+
+        <!-- Composition Demo Panel -->
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <div class="panel-heading-content">
+                    <span class="panel-title-text"><i class="fa fa-link"></i> Composition</span>
+                    <span class="viz-badge low-loss" id="chain-count-badge">0 transforms</span>
+                </div>
+            </div>
+            <div class="panel-body compact-panel lt-compose-panel">
+                <p class="chain-hint">Build a chain of transforms, then compare step-by-step vs. a single composed matrix — they always reach the same result.</p>
+                <div class="chain-display" id="chain-display">
+                    <div class="chain-empty">No transforms in chain yet</div>
+                </div>
+                <div class="chain-composed" id="chain-composed" style="display:none">
+                    <label class="control-label-sm">Composed Result</label>
+                    <div class="composed-equation" id="composed-equation"></div>
+                </div>
+                <div class="chain-actions">
+                    <button id="btn-add-chain" class="btn btn-sm btn-primary" title="Add current matrix to chain">
+                        <i class="fa fa-plus"></i> Add to Chain
+                    </button>
+                    <button id="btn-chain-step" class="btn btn-sm btn-success" title="Apply each transform sequentially" disabled>
+                        <i class="fa fa-step-forward"></i> Step-by-Step
+                    </button>
+                    <button id="btn-chain-composed" class="btn btn-sm btn-warning" title="Apply single composed transform" disabled>
+                        <i class="fa fa-compress"></i> Composed
+                    </button>
+                    <button id="btn-chain-clear" class="btn btn-sm btn-danger" title="Clear chain" disabled>
+                        <i class="fa fa-trash-o"></i> Clear
+                    </button>
+                </div>
+            </div>
+        </div>
     </div>
 
     <!-- Right Column: Info + Metrics -->
@@ -160,6 +194,27 @@ cardOrder: 12
                         <li><strong>Rotation</strong> mixes features together</li>
                         <li><strong>Projection</strong> collapses dimensions (information loss)</li>
                         <li><strong>Stacking layers</strong> composes multiple transformations</li>
+                    </ul>
+                '},
+                {id: 'compose', icon: 'fa-link', label: 'Compose', content: '
+                    <h4><i class="fa fa-link"></i> Why Composition Matters</h4>
+                    <p>
+                        Applying W₁ then W₂ is identical to the single product matrix W₂·W₁:
+                    </p>
+                    <div class="math-formula-display">
+                        <code>W₂(W₁x) = (W₂ · W₁)x</code>
+                    </div>
+                    <p class="formula-note">
+                        This is why neural networks need <strong>non-linear activations</strong>.
+                        Without them, any stack of linear layers collapses to one matrix —
+                        making depth useless.
+                    </p>
+                    <h4><i class="fa fa-mouse-pointer"></i> Try It</h4>
+                    <ul class="interaction-list">
+                        <li>Pick a preset above, click <strong>Add to Chain</strong></li>
+                        <li>Repeat with a different preset</li>
+                        <li>Click <strong>Step-by-Step</strong> to watch each transform apply</li>
+                        <li>Click <strong>Composed</strong> to see the single-matrix shortcut reach the same result</li>
                     </ul>
                 '},
                 {id: 'concepts', icon: 'fa-key', label: 'Concepts', content: '

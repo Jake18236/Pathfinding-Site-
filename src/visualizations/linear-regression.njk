@@ -19,9 +19,7 @@ cardHaystack: "linear regression gradient descent loss surface residuals best fi
 cardOrder: 13
 ---
 
-{% from "components/legend.njk" import legend %}
 {% from "components/info-tabs.njk" import infoTabs %}
-{% from "components/metrics-panel.njk" import metricsPanel %}
 {% from "components/speed-control.njk" import speedControl %}
 {% from "components/stepper-control.njk" import stepperControl %}
 
@@ -29,92 +27,51 @@ cardOrder: 13
 
 <div class="row" id="main-content">
     {% include "components/share-button.njk" %}
-    <!-- Left Column: Canvas + Controls -->
+    <!-- Left Column: Canvas -->
     <div class="col-md-7">
         <div class="panel panel-default">
             <div class="panel-heading">
-                <div class="panel-heading-content">
-                    <span class="panel-title-text"><i class="fa fa-chart-line"></i> Regression Space</span>
+                <div class="panel-heading-content lr-vis-header">
+                    <div class="lr-header-dropdowns">
+                        <select id="dataset-select" class="form-control input-sm" title="Dataset">
+                            <option value="custom" selected>Custom (click to add)</option>
+                            <option value="linear">Linear + Noise</option>
+                            <option value="quadratic">Quadratic</option>
+                            <option value="sine">Sinusoidal</option>
+                            <option value="cluster">Clusters</option>
+                            <option value="outliers">With Outliers</option>
+                        </select>
+                        <select id="method-select" class="form-control input-sm" title="Method">
+                            <option value="normal" selected>Normal Equation</option>
+                            <option value="gradient">Gradient Descent</option>
+                        </select>
+                    </div>
+                    <span class="lr-header-metrics">
+                        <span class="lr-header-metric" id="header-mse" title="Mean Squared Error">MSE: <span>-</span></span>
+                        <span class="lr-header-metric" id="header-r2" title="R-squared">R²: <span>-</span></span>
+                    </span>
                     <div class="edit-toolbar active" id="edit-toolbar">
                         <div class="btn-group edit-mode-buttons" role="group">
                             <button type="button" class="btn btn-sm btn-default active" data-mode="add" title="Add data points">
-                                <i class="fa fa-plus"></i> Add
+                                <i class="fa fa-plus"></i>
                             </button>
                             <button type="button" class="btn btn-sm btn-default" data-mode="delete" title="Delete points">
-                                <i class="fa fa-minus"></i> Delete
+                                <i class="fa fa-minus"></i>
                             </button>
                         </div>
                         <button id="btn-clear-points" class="btn btn-sm btn-danger" title="Clear all points">
-                            <i class="fa fa-trash"></i> Clear
+                            <i class="fa fa-trash"></i>
                         </button>
                     </div>
                 </div>
             </div>
             <div class="panel-body canvas-panel-body">
                 <div class="canvas-wrapper">
-                    <canvas id="regression-canvas" width="560" height="480"></canvas>
-                    <div id="click-overlay" class="click-overlay">
-                        <span>Click to add data points</span>
-                    </div>
+                    <canvas id="regression-canvas"></canvas>
                 </div>
             </div>
-            <div class="panel-footer legend-footer">
-                {{ legend(
-                    items=[
-                        {class: 'data-point', label: 'Data Point'},
-                        {class: 'fit-line', label: 'Best Fit', type: 'line'},
-                        {class: 'residual-line', label: 'Residual', type: 'line'},
-                        {class: 'gd-line', label: 'GD Line', type: 'line'}
-                    ]
-                ) }}
-            </div>
-        </div>
-
-        <!-- Controls Panel -->
-        <div class="panel panel-default">
-            <div class="panel-heading">
-                <h3 class="panel-title"><i class="fa fa-sliders"></i> Controls</h3>
-            </div>
-            <div class="panel-body compact-panel lr-controls-panel">
-                <div class="lr-options-col">
-                    <div class="lr-option-group">
-                        <div class="option-row">
-                            <label>Dataset:</label>
-                            <select id="dataset-select" class="form-control input-sm">
-                                <option value="custom" selected>Custom (click to add)</option>
-                                <option value="linear">Linear + Noise</option>
-                                <option value="quadratic">Quadratic</option>
-                                <option value="sine">Sinusoidal</option>
-                                <option value="cluster">Clusters</option>
-                                <option value="outliers">With Outliers</option>
-                            </select>
-                        </div>
-                        <div class="option-row">
-                            <label>Method:</label>
-                            <select id="method-select" class="form-control input-sm">
-                                <option value="normal" selected>Normal Equation</option>
-                                <option value="gradient">Gradient Descent</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="lr-option-group" id="gd-options" style="display: none;">
-                        <div class="option-row">
-                            <label>LR:</label>
-                            <input type="range" id="lr-slider" min="0.001" max="0.5" step="0.001" value="0.05">
-                            <span id="lr-value" class="range-value">0.050</span>
-                        </div>
-                        <div class="option-row">
-                            <label>Iterations:</label>
-                            {{ stepperControl(id='iter', value='100', title='', inputWidth='48px') }}
-                        </div>
-                    </div>
-                    <div class="lr-option-group">
-                        <label class="checkbox-label"><input type="checkbox" id="show-residuals"> Show residuals</label>
-                        <label class="checkbox-label"><input type="checkbox" id="show-equation" checked> Show equation</label>
-                    </div>
-                </div>
-
-                <div class="lr-playback-col">
+            <div class="panel-footer lr-footer">
+                <div class="lr-footer-controls">
                     <div class="btn-toolbar" role="toolbar">
                         <button id="btn-fit" class="btn btn-sm btn-success" title="Fit line">
                             <i class="fa fa-play"></i> Fit
@@ -126,10 +83,42 @@ cardOrder: 13
                             <i class="fa fa-refresh"></i>
                         </button>
                     </div>
-                    {{ speedControl(value='6') }}
-                    <div class="playback-status">
-                        <span id="playback-step">Ready</span>
+                    <div class="lr-gd-inline" id="gd-options" style="display: none;">
+                        <label>LR:</label>
+                        <input type="range" id="lr-slider" min="0.001" max="0.5" step="0.001" value="0.05">
+                        <span id="lr-value" class="range-value">0.050</span>
+                        <label>Iters:</label>
+                        {{ stepperControl(id='iter', value='100', title='', inputWidth='48px') }}
                     </div>
+                    {{ speedControl(value='6') }}
+                    <span id="playback-step" class="lr-footer-status">Ready</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Equation Display -->
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <div class="panel-heading-content">
+                    <span class="panel-title-text"><i class="fa fa-pencil"></i> Equation</span>
+                    <div class="lr-degree-controls">
+                        <button id="btn-remove-term" class="btn btn-sm btn-default" title="Remove highest term" disabled>
+                            <i class="fa fa-minus"></i>
+                        </button>
+                        <span id="lr-degree-label" class="lr-degree-label">Linear</span>
+                        <button id="btn-add-term" class="btn btn-sm btn-default" title="Add polynomial term">
+                            <i class="fa fa-plus"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="panel-body lr-equation-panel">
+                <div id="lr-equation-display" class="lr-equation">
+                    <span class="lr-eq-y">y</span>
+                    <span class="lr-eq-op">=</span>
+                    <span class="lr-eq-m">0.00</span><span class="lr-eq-x">x</span>
+                    <span class="lr-eq-op">+</span>
+                    <span class="lr-eq-b">5.00</span>
                 </div>
             </div>
         </div>
@@ -147,7 +136,7 @@ cardOrder: 13
         </div>
     </div>
 
-    <!-- Right Column: Info + Metrics -->
+    <!-- Right Column: Info -->
     <div class="col-md-5">
         {{ infoTabs(
             tabs=[
@@ -163,7 +152,6 @@ cardOrder: 13
                         <li><strong>Choose a dataset</strong> preset to explore patterns</li>
                         <li><strong>Press Fit</strong> to compute the best-fit line</li>
                         <li><strong>Switch to Gradient Descent</strong> to animate training</li>
-                        <li><strong>Toggle residuals</strong> to see error distances</li>
                     </ul>
                 '},
                 {id: 'algorithm', icon: 'fa-book', label: 'Algorithm', content: '
@@ -187,34 +175,11 @@ cardOrder: 13
                     </ol>
                 '},
                 {id: 'math', icon: 'fa-superscript', label: 'Math', content: '
-                    <h4><i class="fa fa-superscript"></i> Mean Squared Error</h4>
-                    <code>MSE = (1/n) Σᵢ (yᵢ − ŷᵢ)²</code>
-                    <p class="formula-desc">Average squared difference between actual and predicted values.</p>
-
-                    <h4>R² Score</h4>
-                    <code>R² = 1 − SS_res / SS_tot</code>
-                    <p class="formula-desc">Proportion of variance explained by the model. R²=1 is perfect fit.</p>
-
-                    <h4>Gradient</h4>
-                    <code>∂MSE/∂m = −(2/n) Σᵢ xᵢ(yᵢ − ŷᵢ)</code>
-                    <p class="formula-desc">Slope gradient — direction to update m.</p>
-                    <code>∂MSE/∂b = −(2/n) Σᵢ (yᵢ − ŷᵢ)</code>
-                    <p class="formula-desc">Intercept gradient — direction to update b.</p>
+                    <h4><i class="fa fa-calculator"></i> Live Calculation</h4>
+                    <div id="lr-calc-panel" class="gnb-calc-panel">
+                        <span class="formula-note">Fit a line to see the calculation breakdown.</span>
+                    </div>
                 '}
-            ]
-        ) }}
-
-        {{ metricsPanel(
-            title='Fit Metrics',
-            icon='fa-bar-chart',
-            metrics=[
-                {icon: 'fa-database', label: 'Points', id: 'metric-points', default: '0'},
-                {icon: 'fa-arrows-h', label: 'Slope (m)', id: 'metric-slope', default: '-'},
-                {icon: 'fa-dot-circle-o', label: 'Intercept (b)', id: 'metric-intercept', default: '-'},
-                {icon: 'fa-exclamation-triangle', label: 'MSE', id: 'metric-mse', default: '-'},
-                {icon: 'fa-check-circle', label: 'R²', id: 'metric-r2', default: '-'},
-                {icon: 'fa-repeat', label: 'Iteration', id: 'metric-iteration', default: '-'},
-                {icon: 'fa-info-circle', label: 'Status', id: 'metric-status', default: 'Add points to begin'}
             ]
         ) }}
 

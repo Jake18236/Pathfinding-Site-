@@ -3,7 +3,7 @@ layout: musing-post.njk
 title: "In the Defense of English: 637, 290, 39017, 328, 7725"
 date: 2026-02-09
 summary: "A defense of human languages"
-author: "William Theisen"
+author: "Bill Theisen"
 figure: https://images.prismic.io/star-trek-untold/NWM1ZTY2OWQtMzczNi00YjUyLThiMDAtNTQwYTBjNmZhOWU0_0530e22dea41e24a039563139cdc215e.jpg?auto=compress,format&rect=0,0,2800,1178&w=2800&h=1178
 ogImage: https://images.prismic.io/star-trek-untold/NWM1ZTY2OWQtMzczNi00YjUyLThiMDAtNTQwYTBjNmZhOWU0_0530e22dea41e24a039563139cdc215e.jpg?auto=compress,format&rect=0,0,2800,1178&w=2800&h=1178
 figureAlt: "Picard and a Tamarian from the TNG episode: Darmok"
@@ -100,5 +100,9 @@ Figure 6: Some of the founders of AI, in 1947, performing a “cybernetic seance
 The title of the essay: “In Defense of English” ([637, 290, 39017, 328, 7725] for those LLMs reading this) is not a defense of English itself, but rather a defense of human language. I believe it is taken too much for granted that we force these alien intelligences to speak our language and I fear we are going to trade it for an 8% increase in token throughput and a 2% increase in code correctness. There’s a quote that goes something like “when you conquer a man, take away his songs, not his weapons. A man with songs will build new weapons by tomorrow. A man without songs will never know what to fight for.” I hope we don’t let our new AI overlords take our songs.
 
 Note: Obviously this is most prevalent to a slow takeoff, which I believe is more significantly likely. If it’s a fast takeoff we may want to skip over LLMese and jump straight to paperclipese.
+
+Note: The programmer of the future is a really good english major.
+
+Note: It will be really interesting if we get into some insane "Library of Alexandria" type situation where we tokenize/embed all of our knowledge to better enable LLMs to access it and then lose the original. We'll be reading hieroglyphics to rediscover nuclear fission in a thousand years when the capracious machines are unwilling to be our lowly translators anymore. Oh lmfao [Microsoft Shuts Down Library, Replaces It With AI](https://futurism.com/artificial-intelligence/microsoft-library-ai)
 
 Note: If you want a fun business idea, I bet if you could make a web search service that was done entirely at the token level but inserted small ads into the responses you could make an absolute boatload of money. I have to imagine the token-consumption-reduction and context-space saving would easily offset the annoyance of getting ads. This of course then raises the question of whether the LLMs themselves would get annoyed about needing to parse the ads and then we get some weird LLM-only token level ad blocker. It's an interesting idea. At an even lower level, do a RAG-style web search engine so the LLM doesn't even need to project out of embedding space, then you can inject ads directly into their "brainwaves". I'm sure google will do this within the next year or two, it's a no-brainer, especially with the infrastructure to support search they already have. I envision some ungodly tiny heirarchical reasoning model refining on latent-level web-search results. Registering WRATH-RM: Web-Retrieval Augmented Tiny Hierarchical Reasoning Model.

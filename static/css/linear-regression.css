@@ -34,115 +34,483 @@
     cursor: crosshair;
     position: relative;
     z-index: 2;
+    width: 100%;
+    aspect-ratio: 5 / 3;
+    background: #fff;
+}
+
+[data-theme="gruvbox-dark"] #regression-canvas {
+    background: var(--viz-bg);
 }
 
 /* ============================================
-   Legend Colors
+   Vis Panel Header – single row, all flex
    ============================================ */
-.legend-color.data-point {
-    background-color: var(--lr-point-color);
-    border-color: var(--lr-point-stroke);
-    border-radius: 50%;
+.lr-vis-header {
+    flex-wrap: nowrap !important;
+    gap: 0.4em !important;
 }
 
-.legend-line.fit-line {
-    background-color: var(--lr-fit-color);
-    height: 3px;
-    width: 24px;
-}
-
-.legend-line.residual-line {
-    background-color: var(--lr-residual-color);
-    height: 2px;
-    width: 24px;
-    border-style: dashed;
-}
-
-.legend-line.gd-line {
-    background-color: var(--lr-gd-color);
-    height: 3px;
-    width: 24px;
-    border-style: dashed;
-}
-
-/* ============================================
-   Controls Panel Layout
-   ============================================ */
-.lr-controls-panel {
+.lr-header-dropdowns {
     display: flex;
-    gap: 20px;
+    gap: 0.25em;
+    flex-shrink: 1;
+    min-width: 0;
 }
 
-.lr-options-col {
-    flex: 1;
+.lr-header-dropdowns select {
+    font-size: 0.75em;
+    padding: 0.15em 0.3em;
+    width: auto;
+    flex-shrink: 1;
+    min-width: 0;
 }
 
-.lr-option-group {
+.lr-header-metrics {
+    display: flex;
+    gap: 0.75em;
+    margin-left: auto;
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+.lr-header-metric {
+    font-family: var(--viz-mono-font);
+    font-size: 0.75em;
+    color: var(--viz-text-muted);
+}
+
+.lr-header-metric span {
+    font-weight: 600;
+    color: var(--viz-text);
+}
+
+/* ============================================
+   Vis Panel Footer (playback controls)
+   ============================================ */
+.lr-footer {
+    padding: 0.4em 0.75em !important;
+}
+
+.lr-footer-controls {
     display: flex;
     align-items: center;
-    gap: 16px;
+    justify-content: center;
+    gap: 0.5em;
     flex-wrap: wrap;
-    margin-bottom: 6px;
 }
 
-.lr-option-group:last-child {
+.lr-footer-controls .btn-toolbar {
+    display: flex;
+    gap: 0.25em;
+    flex-shrink: 0;
+}
+
+.lr-gd-inline {
+    display: flex;
+    align-items: center;
+    gap: 0.4em;
+    font-size: 0.8em;
+}
+
+.lr-gd-inline label {
+    margin: 0;
+    flex-shrink: 0;
+}
+
+.lr-gd-inline input[type="range"] {
+    flex: 1;
+    min-width: 3em;
+}
+
+.lr-footer-status {
+    font-size: 0.8em;
+    color: var(--viz-text-muted);
+    white-space: nowrap;
+}
+
+
+/* ============================================
+   Equation Display Panel
+   ============================================ */
+.lr-equation-panel {
+    display: flex;
+    justify-content: center;
+    padding: 0.75em 1em;
+    overflow: hidden;
+}
+
+.lr-equation {
+    display: flex;
+    align-items: baseline;
+    gap: 0.2em;
+    font-family: 'Georgia', 'Times New Roman', serif;
+    font-size: clamp(1rem, 2vw, 1.75rem);
+    letter-spacing: 0.03em;
+    color: var(--viz-text);
+    white-space: nowrap;
+    transform-origin: center center;
+}
+
+.lr-eq-y {
+    font-style: italic;
+    color: var(--viz-text);
+}
+
+.lr-eq-op {
+    color: var(--viz-text-muted);
+    font-size: 0.85em;
+}
+
+.lr-eq-m {
+    font-family: var(--viz-mono-font);
+    font-size: 0.85em;
+    color: var(--lr-fit-color);
+    font-weight: 600;
+}
+
+.lr-eq-x {
+    font-style: italic;
+    color: var(--viz-text);
+}
+
+.lr-eq-b {
+    font-family: var(--viz-mono-font);
+    font-size: 0.85em;
+    color: #6366f1;
+    font-weight: 600;
+}
+
+[data-theme="gruvbox-dark"] .lr-eq-b {
+    color: #d3869b;
+}
+
+.lr-eq-coeff {
+    font-family: var(--viz-mono-font);
+    font-size: 0.85em;
+    color: #8b5cf6;
+    font-weight: 600;
+}
+
+[data-theme="gruvbox-dark"] .lr-eq-coeff {
+    color: #fabd2f;
+}
+
+/* ============================================
+   Degree Controls (Equation panel heading)
+   ============================================ */
+.lr-degree-controls {
+    display: flex;
+    align-items: center;
+    gap: 0.4em;
+}
+
+.lr-degree-label {
+    font-size: 0.85em;
+    font-weight: 600;
+    text-align: center;
+    color: var(--viz-text);
+}
+
+/* ============================================
+   Calc Panel (Math tab) - shared pattern from NB
+   ============================================ */
+.gnb-calc-panel {
+    margin-top: 0.5em;
+    padding: 0.6em 0.75em;
+    background: var(--viz-hover-bg);
+    border-radius: 6px;
+    border: 1px solid var(--viz-border);
+    font-family: var(--viz-mono-font);
+    font-size: 0.85em;
+    line-height: 1.6;
+    color: var(--viz-text);
+}
+
+.gnb-calc-panel .gnb-calc-title {
+    font-weight: 700;
+    font-size: 1em;
+    margin-bottom: 0.4em;
+    padding-bottom: 0.25em;
+    border-bottom: 1px solid var(--viz-border);
+}
+
+.gnb-calc-panel .gnb-calc-class-block {
+    margin-bottom: 0.5em;
+    padding: 0.4em 0.5em;
+    border-radius: 4px;
+    background: var(--viz-bg);
+}
+
+.gnb-calc-panel .gnb-calc-class-block:last-of-type {
     margin-bottom: 0;
 }
 
-.lr-options-col .option-row {
+.gnb-calc-panel .gnb-calc-row {
     display: flex;
-    align-items: center;
-    gap: 8px;
+    justify-content: space-between;
+    padding: 0.05em 0;
 }
 
-.lr-options-col .option-row > label:first-child {
-    min-width: 55px;
-    font-size: 12px;
-    margin: 0;
+.gnb-calc-panel .gnb-calc-result {
+    margin-top: 0.5em;
+    padding-top: 0.5em;
+    border-top: 2px solid var(--viz-border);
+    font-weight: 600;
+    font-size: 1.08em;
 }
 
-.lr-options-col .option-row select {
-    width: auto;
-    min-width: 120px;
-    font-size: 12px;
+.gnb-calc-formula-row {
+    border-top: 1px solid var(--viz-border);
+    margin-top: 0.2em;
+    padding-top: 0.2em;
+    font-weight: 600;
 }
 
-.lr-options-col .checkbox-label {
-    font-size: 12px;
-    margin-right: 10px;
+.gnb-calc-numbers-row {
+    opacity: 0.8;
+    font-size: 0.9em;
 }
 
-/* Right column: Playback */
-.lr-playback-col {
-    display: flex;
+.gnb-val-badge {
+    display: inline-block;
+    font-family: var(--viz-mono-font);
+    font-size: 0.8em;
+    font-weight: 600;
+    padding: 0.05em 0.35em;
+    border-radius: 3px;
+    vertical-align: baseline;
+}
+
+.gnb-fit-table {
+    width: 100%;
+    font-size: 0.9em;
+    border-collapse: collapse;
+    margin-top: 0.25em;
+}
+
+.gnb-fit-table th {
+    text-align: right;
+    padding: 0.15em 0.5em;
+    font-weight: 600;
+    font-size: 0.85em;
+    opacity: 0.7;
+    border-bottom: 1px solid var(--viz-border);
+}
+
+.gnb-fit-table th:first-child {
+    text-align: left;
+}
+
+.gnb-fit-table td {
+    text-align: right;
+    padding: 0.2em 0.5em;
+}
+
+.gnb-fit-table td:first-child {
+    text-align: left;
+    font-size: 0.85em;
+    opacity: 0.8;
+}
+
+.gnb-fit-table th.gnb-calc-terms-header,
+.gnb-fit-table td/* ============================================
+   Math Fraction Display
+   ============================================ */
+.lr-frac {
+    display: inline-flex;
     flex-direction: column;
     align-items: center;
-    gap: 8px;
-    border-left: 1px solid var(--viz-border);
-    padding-left: 20px;
+    vertical-align: middle;
+    margin: 0.2em 0.15em;
+    border-collapse: collapse;
 }
 
-.lr-playback-col .btn-toolbar {
+.lr-frac-num,
+.lr-frac-den {
+    display: block;
+    padding: 0.1em 0.3em;
+    line-height: 1.3;
+    text-align: center;
+}
+
+.lr-frac-num {
+    border-bottom: 1px solid currentColor;
+    width: 100%;
+}
+
+.lr-math-eq {
     display: flex;
-    gap: 4px;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.2em;
+    padding: 0.3em 0;
+    font-size: 0.95em;
 }
 
-.lr-playback-col .btn-toolbar .btn {
-    padding: 4px 8px;
+.lr-math-eq + .lr-math-eq {
+    padding-top: 0;
+}
+
+.lr-math-label {
+    font-weight: 600;
+}
+
+/* ============================================
+   Matrix Bracket Display
+   ============================================ */
+.lr-matrix {
+    display: inline-block;
+    vertical-align: middle;
+    margin: 0.3em 0.15em;
+    padding: 0.3em 0.5em;
+    border-left: 2px solid var(--viz-text);
+    border-right: 2px solid var(--viz-text);
+    border-radius: 2px;
+}
+
+.lr-matrix table {
+    border-collapse: collapse;
+}
+
+.lr-matrix td {
+    text-align: right;
+    padding: 0.1em 0.4em;
+    font-variant-numeric: tabular-nums;
+    font-size: 0.9em;
+    white-space: nowrap;
+}
+
+.lr-matrix-label {
+    display: inline-block;
+    vertical-align: middle;
+    font-weight: 600;
+    margin-right: 0.3em;
+}
+
+.lr-matrix-row {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.3em;
+    padding: 0.2em 0;
+}
+
+.gnb-calc-terms {
+    text-align: left;
+    font-size: 0.85em;
+    opacity: 0.7;
+    word-break: break-all;
+}
+
+/* Side-by-side columns for polynomial Steps 1 & 2 */
+.lr-calc-columns {
+    display: flex;
+    gap: 0.5em;
+    align-items: flex-start;
+}
+
+.lr-calc-col {
+    flex: 1 1 0;
+    min-width: 0;
+}
+
+/* Per-panel symbolic/numeric toggle icon */
+.calc-sym-toggle {
+    float: right;
+    cursor: pointer;
+    opacity: 0.35;
+    font-size: 0.85em;
+    transition: opacity 0.15s;
+}
+
+.calc-sym-toggle:hover {
+    opacity: 0.8;
+}
+
+/* LR-specific value badge colors */
+.gnb-val-slope {
+    color: var(--lr-fit-color);
+    background: rgba(228, 26, 28, 0.12);
+    border: 1px solid rgba(228, 26, 28, 0.3);
+}
+
+.gnb-val-intercept {
+    color: #6366f1;
+    background: rgba(99, 102, 241, 0.12);
+    border: 1px solid rgba(99, 102, 241, 0.3);
+}
+
+.gnb-val-data {
+    color: var(--lr-point-color);
+    background: rgba(55, 126, 184, 0.12);
+    border: 1px solid rgba(55, 126, 184, 0.3);
+}
+
+.gnb-val-mse {
+    color: #f59e0b;
+    background: rgba(245, 158, 11, 0.12);
+    border: 1px solid rgba(245, 158, 11, 0.3);
+}
+
+.gnb-val-r2 {
+    color: #22c55e;
+    background: rgba(34, 197, 94, 0.12);
+    border: 1px solid rgba(34, 197, 94, 0.3);
+}
+
+.gnb-val-gd {
+    color: var(--lr-gd-color);
+    background: rgba(255, 152, 0, 0.12);
+    border: 1px solid rgba(255, 152, 0, 0.3);
+}
+
+[data-theme="gruvbox-dark"] .gnb-val-slope {
+    color: var(--lr-fit-color);
+    background: rgba(251, 73, 52, 0.15);
+    border-color: rgba(251, 73, 52, 0.3);
+}
+
+[data-theme="gruvbox-dark"] .gnb-val-intercept {
+    color: #d3869b;
+    background: rgba(211, 134, 155, 0.15);
+    border-color: rgba(211, 134, 155, 0.3);
+}
+
+[data-theme="gruvbox-dark"] .gnb-val-data {
+    color: var(--lr-point-color);
+    background: rgba(131, 165, 152, 0.15);
+    border-color: rgba(131, 165, 152, 0.3);
+}
+
+[data-theme="gruvbox-dark"] .gnb-val-mse {
+    color: #fe8019;
+    background: rgba(254, 128, 25, 0.15);
+    border-color: rgba(254, 128, 25, 0.3);
+}
+
+[data-theme="gruvbox-dark"] .gnb-val-r2 {
+    color: #b8bb26;
+    background: rgba(184, 187, 38, 0.15);
+    border-color: rgba(184, 187, 38, 0.3);
+}
+
+[data-theme="gruvbox-dark"] .gnb-val-gd {
+    color: var(--lr-gd-color);
+    background: rgba(254, 128, 25, 0.15);
+    border-color: rgba(254, 128, 25, 0.3);
 }
 
 /* ============================================
    Responsive
    ============================================ */
 @media (max-width: 992px) {
-    .lr-controls-panel {
-        flex-direction: column;
+    .lr-vis-header {
+        flex-wrap: wrap !important;
     }
 
-    .lr-playback-col {
-        border-left: none;
-        border-top: 1px solid var(--viz-border);
-        padding-left: 0;
-        padding-top: 15px;
+    .lr-controls-tab .lr-playback-row {
+        flex-direction: column;
+        align-items: flex-start;
     }
 }
