@@ -1,6 +1,6 @@
 ---
 layout: base.njk
-title: RNN & LSTM Visualizer
+title: RNN Inference Pipeline
 icon: fa-exchange
 navigation:
   - name: "Home"
@@ -11,11 +11,11 @@ extraScript: "static/js/rnn.js"
 tags: visualization
 cardTitle: "RNN & LSTM"
 cardIcon: fa-exchange
-cardDescription: "Watch recurrent neural networks process sequences token by token. Compare vanilla RNN with LSTM gate mechanics."
+cardDescription: "Watch an RNN inference pipeline process text: tokenization, embeddings, recurrent cells, softmax, and token prediction."
 cardTags:
   - Deep Learning
   - Sequences
-cardHaystack: "recurrent neural network rnn lstm gru hidden state gate forget input output sequence vanishing gradient"
+cardHaystack: "recurrent neural network rnn lstm hidden state sequence inference pipeline tokenizer embeddings softmax argmax prediction"
 cardOrder: 24
 cardImage: static/img/vis_cards/rnn.png
 ---
@@ -28,46 +28,32 @@ cardImage: static/img/vis_cards/rnn.png
 
 <div class="row" id="main-content">
     {% include "components/share-button.njk" %}
-    <!-- Left Column: Diagrams + Controls -->
+    <!-- Left Column: Pipeline Canvas + Controls -->
     <div class="col-md-7">
-        <!-- Network Diagram Panel -->
+        <!-- Pipeline Diagram Panel -->
         <div class="panel panel-default">
             <div class="panel-heading">
                 <div class="panel-heading-content">
-                    <span class="panel-title-text"><i class="fa fa-exchange"></i> Network Diagram</span>
+                    <span class="panel-title-text"><i class="fa fa-exchange"></i> RNN Inference Pipeline</span>
                     <span class="viz-badge" id="arch-badge">Vanilla RNN</span>
                 </div>
             </div>
             <div class="panel-body canvas-panel-body">
                 <div class="canvas-wrapper">
-                    <canvas id="network-canvas" width="560" height="300"></canvas>
+                    <canvas id="pipeline-canvas" width="720" height="700"></canvas>
                 </div>
             </div>
             <div class="panel-footer legend-footer">
                 {{ legend(
                     items=[
+                        {class: 'rnn-input-layer', label: 'Input/Embed'},
                         {class: 'rnn-cell-color', label: 'RNN Cell'},
-                        {class: 'rnn-active-cell', label: 'Active Cell'},
-                        {class: 'rnn-input-color', label: 'Input'},
-                        {class: 'rnn-hidden-color', label: 'Hidden State', type: 'dot'},
-                        {class: 'rnn-output-color', label: 'Output', type: 'dot'}
+                        {class: 'rnn-active-cell', label: 'Active'},
+                        {class: 'rnn-output-layer', label: 'Output'},
+                        {class: 'rnn-prob-color', label: 'Probability', type: 'dot'},
+                        {class: 'rnn-hidden-dot', label: 'Hidden State', type: 'dot'}
                     ]
                 ) }}
-            </div>
-        </div>
-
-        <!-- Hidden State Heatmap Panel -->
-        <div class="panel panel-default">
-            <div class="panel-heading">
-                <div class="panel-heading-content">
-                    <span class="panel-title-text"><i class="fa fa-th"></i> Hidden State Heatmap</span>
-                    <span class="viz-badge" id="heatmap-badge">dim = 8</span>
-                </div>
-            </div>
-            <div class="panel-body canvas-panel-body">
-                <div class="canvas-wrapper">
-                    <canvas id="heatmap-canvas" width="560" height="160"></canvas>
-                </div>
             </div>
         </div>
 
@@ -78,40 +64,17 @@ cardImage: static/img/vis_cards/rnn.png
             </div>
             <div class="panel-body compact-panel rnn-controls-panel">
                 <div class="rnn-options-col">
-                    <div class="option-row">
-                        <label>Architecture:</label>
-                        <select id="arch-select" class="form-control input-sm">
-                            <option value="rnn" selected>Vanilla RNN</option>
-                            <option value="lstm">LSTM</option>
-                        </select>
-                    </div>
-                    <div class="option-row">
-                        <label>Input Sequence:</label>
-                        <select id="sequence-select" class="form-control input-sm">
-                            <option value="counting" selected>Counting (1, 2, 3&hellip;)</option>
-                            <option value="sine">Sine Wave Samples</option>
-                            <option value="custom">Custom</option>
-                        </select>
-                    </div>
-                    <div class="option-row" id="custom-seq-row" style="display:none;">
-                        <label>Values:</label>
-                        <input type="text" id="custom-seq-input" class="form-control input-sm" placeholder="e.g. 0.2, -0.5, 0.8, 0.1" />
-                    </div>
-                    <div class="option-row">
-                        <label>Seq Length:</label>
-                        <div class="stepper-control">
-                            <button class="btn btn-xs btn-default" id="seq-len-dec">&minus;</button>
-                            <input type="text" class="stepper-input" id="seq-len-val" value="6" readonly>
-                            <button class="btn btn-xs btn-default" id="seq-len-inc">+</button>
-                        </div>
+                    <div class="rnn-input-row">
+                        <label>Input Text:</label>
+                        <input type="text" id="input-text" class="form-control input-sm" value="I like cute kittens and" />
                     </div>
                 </div>
                 <div class="rnn-actions-col">
                     <div class="btn-toolbar" role="toolbar">
-                        <button id="btn-process" class="btn btn-sm btn-success" title="Process full sequence">
+                        <button id="btn-process" class="btn btn-sm btn-success" title="Process full pipeline">
                             <i class="fa fa-play"></i> Process
                         </button>
-                        <button id="btn-step" class="btn btn-sm btn-info" title="Step one time step">
+                        <button id="btn-step" class="btn btn-sm btn-info" title="Step one phase">
                             <i class="fa fa-step-forward"></i> Step
                         </button>
                         <button id="btn-reset" class="btn btn-sm btn-danger" title="Reset">
@@ -128,113 +91,76 @@ cardImage: static/img/vis_cards/rnn.png
         </div>
     </div>
 
-    <!-- Right Column: Info + Metrics + Gates -->
+    <!-- Right Column: Info + Metrics -->
     <div class="col-md-5">
         {{ infoTabs(
             tabs=[
                 {id: 'about', icon: 'fa-info-circle', label: 'About', active: true, content: '
-                    <h4><i class="fa fa-exchange"></i> Recurrent Neural Networks</h4>
+                    <h4><i class="fa fa-exchange"></i> RNN Inference Pipeline</h4>
                     <p>
-                        A <strong>Recurrent Neural Network (RNN)</strong> processes sequences by
-                        maintaining a hidden state that is updated at each time step. This gives
-                        the network a form of memory over previous inputs.
+                        This visualization shows the complete <strong>inference pipeline</strong> of a
+                        Recurrent Neural Network processing text input, from raw text to predicted output tokens.
                     </p>
                     <p>
-                        <strong>LSTM</strong> (Long Short-Term Memory) adds gating mechanisms to
-                        control what information to forget, store, and output, solving the
-                        vanishing gradient problem of vanilla RNNs.
+                        Data flows <strong>bottom-to-top</strong> through 9 layers: input text &rarr;
+                        tokenizer &rarr; embeddings &rarr; RNN cells &rarr; softmax &rarr;
+                        probability distribution &rarr; argmax &rarr; token decode &rarr; output tokens.
                     </p>
                     <h4><i class="fa fa-mouse-pointer"></i> How to Use</h4>
                     <ul class="interaction-list">
-                        <li><strong>Select an architecture</strong> (Vanilla RNN or LSTM)</li>
-                        <li><strong>Choose an input sequence</strong> from the dropdown</li>
-                        <li><strong>Press Process</strong> to animate the full sequence</li>
-                        <li><strong>Press Step</strong> to advance one time step at a time</li>
-                        <li><strong>Watch the hidden state heatmap</strong> evolve over time</li>
+                        <li><strong>Enter input text</strong> in the text field</li>
+                        <li><strong>Press Process</strong> to animate the full pipeline</li>
+                        <li><strong>Press Step</strong> to advance one phase at a time</li>
+                        <li><strong>Watch data flow</strong> bottom-to-top through each layer</li>
+                        <li><strong>Adjust speed</strong> with the slider</li>
                     </ul>
                 '},
                 {id: 'algorithm', icon: 'fa-book', label: 'Algorithm', content: '
-                    <h4><i class="fa fa-book"></i> Vanilla RNN Update</h4>
+                    <h4><i class="fa fa-book"></i> Pipeline Stages</h4>
                     <ol class="algorithm-list">
-                        <li>Receive input x<sub>t</sub> at time step t</li>
-                        <li>Combine with previous hidden state h<sub>t-1</sub></li>
-                        <li>Apply weight matrices W<sub>h</sub> and W<sub>x</sub></li>
-                        <li>Pass through tanh activation</li>
-                        <li>Output new hidden state h<sub>t</sub></li>
+                        <li><strong>Tokenize</strong>: Split text into word tokens</li>
+                        <li><strong>Embed</strong>: Look up each token&rsquo;s embedding vector</li>
+                        <li><strong>RNN Cell</strong>: h<sub>t</sub> = tanh(W<sub>h</sub>h<sub>t-1</sub> + W<sub>x</sub>e<sub>t</sub> + b)</li>
+                        <li><strong>Output Layer</strong>: y = W<sub>y</sub>h<sub>t</sub> + b<sub>y</sub></li>
+                        <li><strong>Softmax</strong>: Convert logits to probabilities</li>
+                        <li><strong>Argmax</strong>: Select highest probability index</li>
+                        <li><strong>Decode</strong>: Map index back to vocabulary token</li>
                     </ol>
-                    <h4><i class="fa fa-lock"></i> LSTM Gates</h4>
-                    <ul class="formula-list">
-                        <li><strong>Forget Gate (f<sub>t</sub>)</strong> &mdash; decides what to discard from the cell state</li>
-                        <li><strong>Input Gate (i<sub>t</sub>)</strong> &mdash; decides what new information to store</li>
-                        <li><strong>Output Gate (o<sub>t</sub>)</strong> &mdash; decides what to output from the cell state</li>
-                        <li>Cell state C<sub>t</sub> provides a highway for gradient flow</li>
-                    </ul>
                 '},
                 {id: 'math', icon: 'fa-superscript', label: 'Math', content: '
                     <h4><i class="fa fa-superscript"></i> Vanilla RNN</h4>
                     <div class="math-formula-display">
-                        <code>h<sub>t</sub> = tanh(W<sub>h</sub> h<sub>t-1</sub> + W<sub>x</sub> x<sub>t</sub> + b)</code>
+                        <code>h<sub>t</sub> = tanh(W<sub>h</sub> h<sub>t-1</sub> + W<sub>x</sub> x<sub>t</sub> + b<sub>h</sub>)</code>
+                    </div>
+                    <div class="math-formula-display">
+                        <code>y<sub>t</sub> = softmax(W<sub>y</sub> h<sub>t</sub> + b<sub>y</sub>)</code>
                     </div>
                     <p class="formula-note">
-                        W<sub>h</sub> maps hidden-to-hidden, W<sub>x</sub> maps input-to-hidden, b is bias.
+                        W<sub>h</sub> maps hidden-to-hidden, W<sub>x</sub> maps input-to-hidden,
+                        W<sub>y</sub> maps hidden-to-output over the vocabulary.
                     </p>
-                    <h4><i class="fa fa-lock"></i> LSTM Equations</h4>
+                    <h4><i class="fa fa-bar-chart"></i> Softmax</h4>
                     <div class="math-formula-display">
-                        <code>f<sub>t</sub> = &sigma;(W<sub>f</sub> [h<sub>t-1</sub>, x<sub>t</sub>] + b<sub>f</sub>)</code>
-                    </div>
-                    <div class="math-formula-display">
-                        <code>i<sub>t</sub> = &sigma;(W<sub>i</sub> [h<sub>t-1</sub>, x<sub>t</sub>] + b<sub>i</sub>)</code>
-                    </div>
-                    <div class="math-formula-display">
-                        <code>o<sub>t</sub> = &sigma;(W<sub>o</sub> [h<sub>t-1</sub>, x<sub>t</sub>] + b<sub>o</sub>)</code>
-                    </div>
-                    <div class="math-formula-display">
-                        <code>C<sub>t</sub> = f<sub>t</sub> &odot; C<sub>t-1</sub> + i<sub>t</sub> &odot; tanh(W<sub>c</sub> [h<sub>t-1</sub>, x<sub>t</sub>] + b<sub>c</sub>)</code>
-                    </div>
-                    <div class="math-formula-display">
-                        <code>h<sub>t</sub> = o<sub>t</sub> &odot; tanh(C<sub>t</sub>)</code>
+                        <code>softmax(z<sub>i</sub>) = e<sup>z<sub>i</sub></sup> / &Sigma;<sub>j</sub> e<sup>z<sub>j</sub></sup></code>
                     </div>
                     <p class="formula-note">
-                        &sigma; is sigmoid, &odot; is element-wise multiplication.
+                        Converts raw logits into a probability distribution over the vocabulary.
                     </p>
                 '}
             ]
         ) }}
 
         {{ metricsPanel(
-            title='RNN Metrics',
+            title='Pipeline Metrics',
             icon='fa-bar-chart',
             metrics=[
-                {icon: 'fa-clock-o', label: 'Time Step', id: 'metric-timestep', default: '0 / 6'},
+                {icon: 'fa-cog', label: 'Phase', id: 'metric-phase', default: 'Idle'},
+                {icon: 'fa-clock-o', label: 'Timestep', id: 'metric-timestep', default: '0 / 0'},
+                {icon: 'fa-book', label: 'Vocab Size', id: 'metric-vocab-size', default: '-'},
                 {icon: 'fa-arrows-h', label: 'Hidden Dim', id: 'metric-hidden-dim', default: '8'},
-                {icon: 'fa-microchip', label: 'Cell Type', id: 'metric-cell-type', default: 'Vanilla RNN'},
-                {icon: 'fa-sign-in', label: 'Current Input', id: 'metric-current-input', default: '-'},
-                {icon: 'fa-line-chart', label: 'Hidden Norm', id: 'metric-hidden-norm', default: '-'},
+                {icon: 'fa-bullseye', label: 'Predicted', id: 'metric-predicted', default: '-'},
                 {icon: 'fa-info-circle', label: 'Status', id: 'metric-status', default: 'Ready'}
             ]
         ) }}
-
-        <!-- Gate Visualization Panel (LSTM only) -->
-        <div class="panel panel-default" id="gate-panel" style="display:none;">
-            <div class="panel-heading">
-                <h3 class="panel-title"><i class="fa fa-lock"></i> LSTM Gate Values</h3>
-            </div>
-            <div class="panel-body compact-panel">
-                <div class="rnn-gate-row">
-                    <div class="rnn-gate-col">
-                        <label class="control-label-sm rnn-gate-label-forget">Forget Gate (f<sub>t</sub>)</label>
-                        <canvas id="forget-gate-canvas" width="150" height="80"></canvas>
-                    </div>
-                    <div class="rnn-gate-col">
-                        <label class="control-label-sm rnn-gate-label-input">Input Gate (i<sub>t</sub>)</label>
-                        <canvas id="input-gate-canvas" width="150" height="80"></canvas>
-                    </div>
-                    <div class="rnn-gate-col">
-                        <label class="control-label-sm rnn-gate-label-output">Output Gate (o<sub>t</sub>)</label>
-                        <canvas id="output-gate-canvas" width="150" height="80"></canvas>
-                    </div>
-                </div>
-            </div>
-        </div>
     </div>
 </div>

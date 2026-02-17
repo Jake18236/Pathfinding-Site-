@@ -1,5 +1,5 @@
 /**
- * RNN & LSTM Visualizer Styles
+ * RNN Inference Pipeline Visualizer Styles
  * Visualization-specific styles only. Common styles are in visualizations.css.
  */
 
@@ -7,65 +7,68 @@
    CSS Custom Properties
    ============================================ */
 :root {
+    --rnn-input-bg: #e8f5e9;
+    --rnn-input-border: #43a047;
+    --rnn-token-bg: #fff8e1;
+    --rnn-token-border: #f9a825;
+    --rnn-embed-bg: #e8f5e9;
+    --rnn-embed-border: #66bb6a;
     --rnn-cell-bg: #e3f2fd;
     --rnn-cell-border: #1976d2;
     --rnn-cell-active-bg: #fff3e0;
     --rnn-cell-active-border: #ff8c00;
-    --rnn-input-color: #43a047;
-    --rnn-hidden-color: #1976d2;
-    --rnn-output-color: #7b1fa2;
+    --rnn-softmax-bg: #e3f2fd;
+    --rnn-softmax-border: #42a5f5;
+    --rnn-prob-bar: #e53935;
+    --rnn-prob-bar-alt: #ef5350;
+    --rnn-argmax-bg: #f5f5f5;
+    --rnn-argmax-border: #bdbdbd;
+    --rnn-decode-bg: #ffffff;
+    --rnn-decode-border: #e0e0e0;
+    --rnn-output-bg: #e3f2fd;
+    --rnn-output-border: #1565c0;
     --rnn-arrow-color: #666666;
-    --rnn-gate-forget: #e53935;
-    --rnn-gate-input: #43a047;
-    --rnn-gate-output: #1565c0;
-    --rnn-gate-bar-bg: #e0e0e0;
-    --rnn-heatmap-neg: #1565c0;
-    --rnn-heatmap-zero: #ffffff;
-    --rnn-heatmap-pos: #c62828;
-    --rnn-heatmap-border: #ccc;
     --rnn-label-color: #555;
     --rnn-cell-text: #333;
-    --rnn-canvas-grid: #eee;
+    --rnn-ellipsis-color: #999;
+    --rnn-hidden-color: #1976d2;
 }
 
 [data-theme="gruvbox-dark"] {
+    --rnn-input-bg: rgba(184, 187, 38, 0.15);
+    --rnn-input-border: #b8bb26;
+    --rnn-token-bg: rgba(250, 189, 47, 0.15);
+    --rnn-token-border: #fabd2f;
+    --rnn-embed-bg: rgba(184, 187, 38, 0.15);
+    --rnn-embed-border: #b8bb26;
     --rnn-cell-bg: rgba(131, 165, 152, 0.2);
     --rnn-cell-border: #83a598;
     --rnn-cell-active-bg: rgba(254, 128, 25, 0.25);
     --rnn-cell-active-border: #fe8019;
-    --rnn-input-color: #b8bb26;
-    --rnn-hidden-color: #83a598;
-    --rnn-output-color: #d3869b;
+    --rnn-softmax-bg: rgba(131, 165, 152, 0.15);
+    --rnn-softmax-border: #83a598;
+    --rnn-prob-bar: #fb4934;
+    --rnn-prob-bar-alt: #cc241d;
+    --rnn-argmax-bg: rgba(168, 153, 132, 0.15);
+    --rnn-argmax-border: #a89984;
+    --rnn-decode-bg: rgba(235, 219, 178, 0.08);
+    --rnn-decode-border: #665c54;
+    --rnn-output-bg: rgba(131, 165, 152, 0.2);
+    --rnn-output-border: #83a598;
     --rnn-arrow-color: #a89984;
-    --rnn-gate-forget: #fb4934;
-    --rnn-gate-input: #b8bb26;
-    --rnn-gate-output: #83a598;
-    --rnn-gate-bar-bg: #504945;
-    --rnn-heatmap-neg: #83a598;
-    --rnn-heatmap-zero: #282828;
-    --rnn-heatmap-pos: #fb4934;
-    --rnn-heatmap-border: #504945;
     --rnn-label-color: #a89984;
     --rnn-cell-text: #ebdbb2;
-    --rnn-canvas-grid: #3c3836;
+    --rnn-ellipsis-color: #928374;
+    --rnn-hidden-color: #83a598;
 }
 
 /* ============================================
    Canvas
    ============================================ */
-#network-canvas,
-#heatmap-canvas {
+#pipeline-canvas {
     display: block;
     width: 100%;
     cursor: default;
-    background: var(--viz-canvas-bg);
-}
-
-#forget-gate-canvas,
-#input-gate-canvas,
-#output-gate-canvas {
-    display: block;
-    width: 100%;
     background: var(--viz-canvas-bg);
 }
 
@@ -95,6 +98,23 @@
     flex-direction: column;
 }
 
+.rnn-input-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.rnn-input-row label {
+    white-space: nowrap;
+    margin: 0;
+    font-weight: 600;
+    font-size: 12px;
+}
+
+.rnn-input-row .form-control {
+    flex: 1;
+}
+
 /* ============================================
    Speed Control
    ============================================ */
@@ -107,40 +127,13 @@
 }
 
 /* ============================================
-   Gate Visualization Panel
-   ============================================ */
-.rnn-gate-row {
-    display: flex;
-    gap: 10px;
-}
-
-.rnn-gate-col {
-    flex: 1;
-    text-align: center;
-}
-
-.rnn-gate-col .control-label-sm {
-    display: block;
-    margin-bottom: 6px;
-    font-size: 11px;
-    font-weight: 600;
-}
-
-.rnn-gate-label-forget {
-    color: var(--rnn-gate-forget);
-}
-
-.rnn-gate-label-input {
-    color: var(--rnn-gate-input);
-}
-
-.rnn-gate-label-output {
-    color: var(--rnn-gate-output);
-}
-
-/* ============================================
    Legend Overrides
    ============================================ */
+.legend-color.rnn-input-layer {
+    background-color: var(--rnn-input-bg);
+    border: 2px solid var(--rnn-input-border);
+}
+
 .legend-color.rnn-cell-color {
     background-color: var(--rnn-cell-bg);
     border: 2px solid var(--rnn-cell-border);
@@ -151,16 +144,17 @@
     border: 2px solid var(--rnn-cell-active-border);
 }
 
-.legend-color.rnn-input-color {
-    background-color: var(--rnn-input-color);
+.legend-color.rnn-output-layer {
+    background-color: var(--rnn-output-bg);
+    border: 2px solid var(--rnn-output-border);
 }
 
-.legend-dot.rnn-hidden-color {
+.legend-dot.rnn-prob-color {
+    background-color: var(--rnn-prob-bar);
+}
+
+.legend-dot.rnn-hidden-dot {
     background-color: var(--rnn-hidden-color);
-}
-
-.legend-dot.rnn-output-color {
-    background-color: var(--rnn-output-color);
 }
 
 .control-label-sm {
@@ -184,16 +178,5 @@
     .rnn-actions-col .btn-toolbar {
         flex-direction: row;
         justify-content: center;
-    }
-
-    .rnn-gate-row {
-        flex-direction: column;
-    }
-}
-
-@media (max-width: 768px) {
-    .rnn-gate-col canvas {
-        max-width: 200px;
-        margin: 0 auto;
     }
 }
