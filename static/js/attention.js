@@ -1913,8 +1913,6 @@
                 const dotRadius = Math.round(3 * scale);      // corner radius
                 const dotsW = nHeads * (dotSize + dotGap) - dotGap;
                 const dotsStartX = canvasW / 2 - dotsW / 2;
-                const navBtnR = Math.round(11 * scale);
-                const navBtnGap = Math.round(8 * scale);
 
                 // Vertical positioning: concat row sits below the head box with an arrow gap
                 const navArrowGap = Math.round(8 * scale);
@@ -2053,29 +2051,7 @@
                     })(h, self);
                 }
 
-                // Prev arrow button (outside concat box, left)
-                if (this.modelHead > 0) {
-                    const prevCx = concatBoxX - navBtnGap - navBtnR;
-                    const prevG = g.append('g').style('cursor', 'pointer');
-                    prevG.append('circle').attr('cx', prevCx).attr('cy', dotsY).attr('r', navBtnR)
-                        .attr('fill', C.cellBg).attr('stroke', C.cellBorder).attr('stroke-width', 1.2);
-                    prevG.append('text').attr('x', prevCx).attr('y', dotsY)
-                        .attr('text-anchor', 'middle').attr('dominant-baseline', 'central')
-                        .attr('font-size', Math.round(8 * scale)).attr('fill', C.canvasText).text('\u25C0');
-                    prevG.on('click', function() { self.modelHead = Math.max(0, self.modelHead - 1); self.computeLayout(); self.draw(); });
-                }
 
-                // Next arrow button (outside concat box, right)
-                if (this.modelHead < nHeads - 1) {
-                    const nextCx = concatBoxX + concatBoxW + navBtnGap + navBtnR;
-                    const nextG = g.append('g').style('cursor', 'pointer');
-                    nextG.append('circle').attr('cx', nextCx).attr('cy', dotsY).attr('r', navBtnR)
-                        .attr('fill', C.cellBg).attr('stroke', C.cellBorder).attr('stroke-width', 1.2);
-                    nextG.append('text').attr('x', nextCx).attr('y', dotsY)
-                        .attr('text-anchor', 'middle').attr('dominant-baseline', 'central')
-                        .attr('font-size', Math.round(8 * scale)).attr('fill', C.canvasText).text('\u25B6');
-                    nextG.on('click', function() { self.modelHead = Math.min(nHeads - 1, self.modelHead + 1); self.computeLayout(); self.draw(); });
-                }
 
             } else {
                 // ============ SINGLE-HEAD: STAGES 6+7 (original layout) ============
