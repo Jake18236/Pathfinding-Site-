@@ -1823,27 +1823,54 @@
                 // Active card's equation starts after title + arrows
                 const eqTopY = galleryY + titleH + arrowFromProjH;
 
-                // Title bar: "Head h / N"
-                g.append('text')
-                    .attr('x', canvasW / 2).attr('y', galleryY + titleH / 2)
-                    .attr('text-anchor', 'middle').attr('dominant-baseline', 'central')
-                    .attr('font-family', MONO).attr('font-size', 10 * scale).attr('font-weight', '700')
-                    .attr('fill', C.activeBorder)
-                    .text(`Head ${this.modelHead} / ${nHeads}`);
-
                 // Arrows from projections into the active card's equation
                 const arrowStartY = B_eq.stage5Y + B_eq.defaultChipH;
                 const activeHead = activeData.heads[this.modelHead];
 
-                // Draw the full equation for the active head
+                // Draw the full equation for the active head (before the box so we know its bounds)
                 eqResult = drawEquationForHead(
                     leftGroupCenterX, eqTopY,
                     activeHead.Q, activeHead.K, activeHead.V,
                     activeHead.rawScores || activeData.rawScores,
                     activeHead.scaledScores || activeData.scaledScores,
                     activeHead.attentionWeights || activeHead.attention_weights,
-                    String(this.modelHead)
+                    null  // label drawn separately on the box
                 );
+
+                // ---- Head container box: wraps title + equation ----
+                const boxPad = Math.round(10 * scale);
+                // Horizontal: span from context underlay left edge to residual E right edge + padding
+                const boxX = eqResult.ctxUnderlayX - boxPad;
+                const boxY = galleryY;
+                const boxW = (eqResult.resECenterX + eqResult.resETextW / 2 + boxPad) - boxX + boxPad;
+                const boxBottomY = eqResult.ctxUnderlayY + eqResult.ctxUnderlayH + boxPad;
+                const boxH = boxBottomY - boxY;
+
+                // Draw the box behind everything — insert at the start of gB
+                g.insert('rect', ':first-child')
+                    .attr('x', boxX).attr('y', boxY)
+                    .attr('width', boxW).attr('height', boxH)
+                    .attr('rx', 6).attr('ry', 6)
+                    .attr('fill', C.activeBorder).attr('fill-opacity', 0.04)
+                    .attr('stroke', C.activeBorder).attr('stroke-width', 1.5)
+                    .attr('stroke-dasharray', `${4 * scale},${3 * scale}`);
+
+                // Title label on the box top edge
+                const titleLabelW = Math.round(charW * (`Head ${this.modelHead} / ${nHeads}`.length + 2));
+                const titleLabelH = Math.round(titleH * 0.8);
+                const titleLabelX = boxX + boxW / 2 - titleLabelW / 2;
+                const titleLabelY = boxY - titleLabelH / 2;
+                g.append('rect')
+                    .attr('x', titleLabelX).attr('y', titleLabelY)
+                    .attr('width', titleLabelW).attr('height', titleLabelH)
+                    .attr('rx', 3).attr('ry', 3)
+                    .attr('fill', C.canvasBg);
+                g.append('text')
+                    .attr('x', boxX + boxW / 2).attr('y', boxY)
+                    .attr('text-anchor', 'middle').attr('dominant-baseline', 'central')
+                    .attr('font-family', MONO).attr('font-size', 9 * scale).attr('font-weight', '700')
+                    .attr('fill', C.activeBorder)
+                    .text(`Head ${this.modelHead} / ${nHeads}`);
 
                 // Deferred arrows: projections → Q, K^T, V inside the active card
                 curvedArrow(projChipCenters[0], arrowStartY, eqResult.qTargetCenterX, eqResult.qTargetTopY,
