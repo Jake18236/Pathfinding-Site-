@@ -1,276 +1,1153 @@
 /**
- * Transformer & Attention Visualizer Styles
- * Visualization-specific styles only. Common styles are in visualizations.css.
+ * Transformer Attention Mechanism Visualizer Styles
+ *
+ * DOM-based block diagram with click-to-expand layers.
+ * "Precision Instrument" aesthetic: technical schematic, dense, sharp.
+ * Dual theme: bluegold (light) + gruvbox-dark.
+ *
+ * FULLY RESPONSIVE — no hardcoded px for layout/sizing.
+ * Acceptable px: borders, border-radius, cosmetic grid gaps, box-shadow.
  */
 
 /* ============================================
-   CSS Custom Properties
+   Custom Properties — Colors
    ============================================ */
 :root {
-    /* Heatmap gradient: cool (low attention) to warm (high attention) */
+    /* Block colors */
+    --tf-embed-color: #28a745;
+    --tf-embed-bg: rgba(40, 167, 69, 0.12);
+    --tf-embed-border: #28a745;
+
+    --tf-qkv-color: #6f42c1;
+    --tf-qkv-bg: rgba(111, 66, 193, 0.10);
+    --tf-qkv-border: #6f42c1;
+
+    --tf-head-color: #1976d2;
+    --tf-head-bg: rgba(25, 118, 210, 0.10);
+    --tf-head-border: #1976d2;
+
+    --tf-output-color: #dc3545;
+    --tf-output-bg: rgba(220, 53, 69, 0.10);
+    --tf-output-border: #dc3545;
+
+    /* Token word/ID boxes (green tinted) */
+    --tf-token-word-bg: #e1f0e4;
+    --tf-token-word-border: #28a745;
+    --tf-token-word-bg-active: #c8e6c9;
+
+    /* Embedding vector rectangles (yellow/gold) */
+    --tf-embed-vector-bg: #fff5cd;
+    --tf-embed-vector-border: #f9db64;
+
+    /* Diagram bg */
+    --tf-canvas-bg: #fafafa;
+    --tf-text: #333333;
+    --tf-text-muted: #6c757d;
+    --tf-connector: #adb5bd;
+    --tf-arrow-fill: #6c757d;
+
+    /* Hover / expanded */
+    --tf-hover-glow: rgba(25, 118, 210, 0.15);
+    --tf-expand-glow: rgba(25, 118, 210, 0.25);
+    --tf-expanded-bg: #ffffff;
+
+    /* Heatmap (blue gradient for attention weights) */
+    --tf-heatmap-low: #e3f2fd;
+    --tf-heatmap-high: #1565c0;
+
+    /* Shape badge */
+    --tf-badge-bg: rgba(0, 0, 0, 0.06);
+    --tf-badge-text: #555;
+    --tf-badge-border: rgba(0, 0, 0, 0.1);
+
+    /* Bar chart */
+    --tf-bar-primary: #1976d2;
+    --tf-bar-secondary: rgba(25, 118, 210, 0.5);
+    --tf-bar-track: #e9ecef;
+
+    /* Heatmap color ramp (attention weights 0→1) */
     --tf-attn-zero: #f0f4ff;
-    --tf-attn-low: #b3cde3;
-    --tf-attn-mid: #fc8d59;
     --tf-attn-high: #d73027;
-    --tf-attn-max: #7f0000;
 
-    /* Token label colors */
-    --tf-token-text: #333333;
-    --tf-token-highlight: #1565c0;
+    /* Vector heatmap (bipolar: negative→positive) */
+    --tf-pe-positive: #2196f3;
 
-    /* Weight text on cells */
+    /* Text on heatmap cells */
     --tf-weight-text-light: #ffffff;
     --tf-weight-text-dark: #333333;
-
-    /* Input styling */
-    --tf-input-bg: #ffffff;
-    --tf-input-border: #cccccc;
-    --tf-input-focus: #66afe9;
-
-    /* PE visualization */
-    --tf-pe-positive: #2196f3;
-    --tf-pe-negative: #ff5722;
-
-    /* Cell hover */
-    --tf-cell-hover-border: #ffd700;
-
-    /* Head badge */
-    --tf-head-active: #1976d2;
 }
 
 [data-theme="gruvbox-dark"] {
-    --tf-attn-zero: #1d2021;
-    --tf-attn-low: #3c3836;
-    --tf-attn-mid: #fe8019;
+    --tf-embed-color: var(--gruvbox-green);
+    --tf-embed-bg: rgba(184, 187, 38, 0.15);
+    --tf-embed-border: var(--gruvbox-green);
+
+    --tf-qkv-color: var(--gruvbox-purple);
+    --tf-qkv-bg: rgba(211, 134, 155, 0.12);
+    --tf-qkv-border: var(--gruvbox-purple);
+
+    --tf-head-color: var(--gruvbox-blue);
+    --tf-head-bg: rgba(131, 165, 152, 0.12);
+    --tf-head-border: var(--gruvbox-blue);
+
+    --tf-output-color: var(--gruvbox-red);
+    --tf-output-bg: rgba(251, 73, 52, 0.12);
+    --tf-output-border: var(--gruvbox-red);
+
+    /* Token word/ID boxes */
+    --tf-token-word-bg: rgba(184, 187, 38, 0.2);
+    --tf-token-word-border: var(--gruvbox-green);
+    --tf-token-word-bg-active: rgba(184, 187, 38, 0.35);
+
+    /* Embedding vector rectangles */
+    --tf-embed-vector-bg: rgba(250, 189, 47, 0.15);
+    --tf-embed-vector-border: var(--gruvbox-yellow);
+
+    --tf-canvas-bg: #1d2021;
+    --tf-text: #ebdbb2;
+    --tf-text-muted: #928374;
+    --tf-connector: #665c54;
+    --tf-arrow-fill: #a89984;
+
+    --tf-hover-glow: rgba(131, 165, 152, 0.18);
+    --tf-expand-glow: rgba(131, 165, 152, 0.3);
+    --tf-expanded-bg: #282828;
+
+    --tf-heatmap-low: #3c3836;
+    --tf-heatmap-high: #83a598;
+
+    --tf-badge-bg: rgba(235, 219, 178, 0.08);
+    --tf-badge-text: #a89984;
+    --tf-badge-border: rgba(235, 219, 178, 0.15);
+
+    --tf-bar-primary: var(--gruvbox-blue);
+    --tf-bar-secondary: rgba(131, 165, 152, 0.45);
+    --tf-bar-track: #3c3836;
+
+    --tf-attn-zero: #3c3836;
     --tf-attn-high: #fb4934;
-    --tf-attn-max: #cc241d;
-
-    --tf-token-text: #ebdbb2;
-    --tf-token-highlight: #83a598;
-
+    --tf-pe-positive: var(--gruvbox-blue);
     --tf-weight-text-light: #ebdbb2;
     --tf-weight-text-dark: #1d2021;
+}
 
-    --tf-input-bg: #3c3836;
-    --tf-input-border: #504945;
-    --tf-input-focus: #83a598;
-
-    --tf-pe-positive: #83a598;
-    --tf-pe-negative: #fb4934;
-
-    --tf-cell-hover-border: #fabd2f;
-
-    --tf-head-active: #458588;
+/* Dark theme hover shadows */
+[data-theme="gruvbox-dark"] .tf-block--embed:hover {
+    box-shadow: 0 0 0 3px rgba(184, 187, 38, 0.2), 0 2px 8px rgba(184, 187, 38, 0.1);
+}
+[data-theme="gruvbox-dark"] .tf-block--qkv:hover {
+    box-shadow: 0 0 0 3px rgba(211, 134, 155, 0.2), 0 2px 8px rgba(211, 134, 155, 0.1);
+}
+[data-theme="gruvbox-dark"] .tf-block--head:hover {
+    box-shadow: 0 0 0 3px rgba(131, 165, 152, 0.2), 0 2px 8px rgba(131, 165, 152, 0.1);
+}
+[data-theme="gruvbox-dark"] .tf-block--output:hover {
+    box-shadow: 0 0 0 3px rgba(251, 73, 52, 0.2), 0 2px 8px rgba(251, 73, 52, 0.1);
 }
 
 /* ============================================
-   Canvas
+   Custom Properties — Responsive Sizing
    ============================================ */
-#attention-canvas {
-    display: block;
-    width: 100%;
-    cursor: crosshair;
-    background: var(--viz-canvas-bg);
+:root {
+    /* Block sizing */
+    --tf-block-width: clamp(10rem, 42%, 15rem);
+    --tf-block-expanded-width: clamp(15rem, 88%, 26rem);
+    --tf-block-pad-y: clamp(0.35rem, 0.8vw, 0.55rem);
+    --tf-block-pad-x: clamp(0.5rem, 1.2vw, 0.8rem);
+
+    /* Typography scale */
+    --tf-font-token: clamp(0.7rem, 0.6rem + 0.5vw, 0.875rem);
+    --tf-font-title: clamp(0.6rem, 0.5rem + 0.4vw, 0.72rem);
+    --tf-font-label: clamp(0.5rem, 0.42rem + 0.35vw, 0.6rem);
+    --tf-font-data: clamp(0.44rem, 0.38rem + 0.25vw, 0.55rem);
+    --tf-font-badge: clamp(0.44rem, 0.38rem + 0.2vw, 0.56rem);
+
+    /* Heatmap cell sizes */
+    --tf-cell-size: clamp(0.38rem, 0.8vw, 0.625rem);
+
+    /* Arrow */
+    --tf-arrow-len: clamp(0.6rem, 1.5vw, 1rem);
+
+    /* Diagram padding */
+    --tf-diagram-pad: clamp(0.5rem, 2vw, 1rem);
 }
 
-.header-controls {
+/* ============================================
+   Diagram Container
+   ============================================ */
+.tf-diagram {
+    position: relative;
+    width: 100%;
+    min-height: clamp(24rem, 65vh, 42rem);
+    padding: var(--tf-diagram-pad) 0;
+    background-color: var(--tf-canvas-bg);
+    border-radius: 4px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--tf-arrow-len);
+    overflow: hidden;
+}
+
+/* ============================================
+   Tokens Section (horizontal word + ID boxes)
+   ============================================ */
+.tf-tokens {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: clamp(0.15rem, 0.4vw, 0.35rem);
+    margin-bottom: clamp(0.4rem, 1vw, 0.75rem);
+}
+
+/* Token row: labels column + card divs side by side */
+.tf-token-row {
+    display: flex;
+    align-items: stretch;
+    gap: clamp(0.2rem, 0.5vw, 0.35rem);
+    justify-content: center;
+    flex-wrap: nowrap;
+    margin-top: clamp(0.15rem, 0.4vw, 0.3rem);
+}
+
+/* Labels column — mirrors card internal layout */
+.tf-token-labels {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: clamp(0.1rem, 0.3vw, 0.2rem);
+}
+
+.tf-token-label {
+    font: 600 clamp(0.55rem, 0.48rem + 0.3vw, 0.7rem) var(--viz-mono-font);
+    color: var(--tf-text-muted);
+    text-align: right;
+    white-space: nowrap;
     display: flex;
     align-items: center;
-    gap: 12px;
+    justify-content: flex-end;
+}
+
+/* Match card row heights so labels align */
+.tf-token-label:nth-child(1) { min-height: clamp(1.1rem, 0.9rem + 0.6vw, 1.5rem); }
+.tf-token-label:nth-child(2) { min-height: clamp(1.1rem, 0.9rem + 0.6vw, 1.5rem); }
+.tf-token-label:nth-child(3) { min-height: clamp(1.1rem, 0.9rem + 0.6vw, 1.5rem); }
+
+/* Single card per token — one border, no seams */
+.tf-token-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: clamp(0.3rem, 0.6vw, 0.5rem);
+    padding: clamp(0.35rem, 0.6vw, 0.5rem) clamp(0.4rem, 0.7vw, 0.6rem);
+    background: var(--tf-token-word-bg);
+    border: 1px solid var(--tf-token-word-border);
+    border-radius: 4px;
+    transition: background 0.2s ease, border-color 0.2s ease;
+}
+
+.tf-token-card.active {
+    border-color: var(--tf-embed-color);
+    border-width: 2px;
+    background: var(--tf-token-word-bg-active);
+    /* Compensate for thicker border so card doesn't shift */
+    padding: calc(clamp(0.35rem, 0.6vw, 0.5rem) - 1px) calc(clamp(0.4rem, 0.7vw, 0.6rem) - 1px);
+}
+
+.tf-token-card-time {
+    font: 600 clamp(0.6rem, 0.52rem + 0.4vw, 0.8rem) var(--viz-mono-font);
+    color: var(--tf-text-muted);
+    letter-spacing: 0.02em;
+}
+
+.tf-token-card-word {
+    font: 500 clamp(0.75rem, 0.65rem + 0.5vw, 1.1rem) -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    color: var(--tf-text);
+    white-space: nowrap;
+}
+
+.tf-token-card-id {
+    font: 500 clamp(0.75rem, 0.65rem + 0.5vw, 1.1rem) var(--viz-mono-font);
+    color: var(--tf-text);
+    white-space: nowrap;
+}
+
+/* Rainbow column colors — mix against neutral base, not the green token bg */
+.tf-token-color-0 { background: color-mix(in srgb, var(--viz-class-0) 15%, var(--viz-bg)); border-color: color-mix(in srgb, var(--viz-class-0) 50%, var(--viz-border)); }
+.tf-token-color-1 { background: color-mix(in srgb, var(--viz-class-1) 15%, var(--viz-bg)); border-color: color-mix(in srgb, var(--viz-class-1) 50%, var(--viz-border)); }
+.tf-token-color-2 { background: color-mix(in srgb, var(--viz-class-2) 15%, var(--viz-bg)); border-color: color-mix(in srgb, var(--viz-class-2) 50%, var(--viz-border)); }
+.tf-token-color-3 { background: color-mix(in srgb, var(--viz-class-3) 15%, var(--viz-bg)); border-color: color-mix(in srgb, var(--viz-class-3) 50%, var(--viz-border)); }
+.tf-token-color-4 { background: color-mix(in srgb, var(--viz-class-4) 15%, var(--viz-bg)); border-color: color-mix(in srgb, var(--viz-class-4) 50%, var(--viz-border)); }
+.tf-token-color-5 { background: color-mix(in srgb, var(--viz-class-5) 15%, var(--viz-bg)); border-color: color-mix(in srgb, var(--viz-class-5) 50%, var(--viz-border)); }
+.tf-token-color-6 { background: color-mix(in srgb, var(--viz-class-6) 15%, var(--viz-bg)); border-color: color-mix(in srgb, var(--viz-class-6) 50%, var(--viz-border)); }
+.tf-token-color-7 { background: color-mix(in srgb, var(--viz-class-7) 15%, var(--viz-bg)); border-color: color-mix(in srgb, var(--viz-class-7) 50%, var(--viz-border)); }
+.tf-token-color-8 { background: color-mix(in srgb, var(--viz-class-8) 15%, var(--viz-bg)); border-color: color-mix(in srgb, var(--viz-class-8) 50%, var(--viz-border)); }
+.tf-token-color-9 { background: color-mix(in srgb, var(--viz-class-9) 15%, var(--viz-bg)); border-color: color-mix(in srgb, var(--viz-class-9) 50%, var(--viz-border)); }
+
+/* Active state intensifies rainbow color — works on cards and embed ID boxes */
+.tf-token-card.active[class*="tf-token-color-0"],
+.tf-embed-row.active .tf-token-color-0 { background: color-mix(in srgb, var(--viz-class-0) 30%, var(--viz-bg)); border-color: var(--viz-class-0); }
+.tf-token-card.active[class*="tf-token-color-1"],
+.tf-embed-row.active .tf-token-color-1 { background: color-mix(in srgb, var(--viz-class-1) 30%, var(--viz-bg)); border-color: var(--viz-class-1); }
+.tf-token-card.active[class*="tf-token-color-2"],
+.tf-embed-row.active .tf-token-color-2 { background: color-mix(in srgb, var(--viz-class-2) 30%, var(--viz-bg)); border-color: var(--viz-class-2); }
+.tf-token-card.active[class*="tf-token-color-3"],
+.tf-embed-row.active .tf-token-color-3 { background: color-mix(in srgb, var(--viz-class-3) 30%, var(--viz-bg)); border-color: var(--viz-class-3); }
+.tf-token-card.active[class*="tf-token-color-4"],
+.tf-embed-row.active .tf-token-color-4 { background: color-mix(in srgb, var(--viz-class-4) 30%, var(--viz-bg)); border-color: var(--viz-class-4); }
+.tf-token-card.active[class*="tf-token-color-5"],
+.tf-embed-row.active .tf-token-color-5 { background: color-mix(in srgb, var(--viz-class-5) 30%, var(--viz-bg)); border-color: var(--viz-class-5); }
+.tf-token-card.active[class*="tf-token-color-6"],
+.tf-embed-row.active .tf-token-color-6 { background: color-mix(in srgb, var(--viz-class-6) 30%, var(--viz-bg)); border-color: var(--viz-class-6); }
+.tf-token-card.active[class*="tf-token-color-7"],
+.tf-embed-row.active .tf-token-color-7 { background: color-mix(in srgb, var(--viz-class-7) 30%, var(--viz-bg)); border-color: var(--viz-class-7); }
+.tf-token-card.active[class*="tf-token-color-8"],
+.tf-embed-row.active .tf-token-color-8 { background: color-mix(in srgb, var(--viz-class-8) 30%, var(--viz-bg)); border-color: var(--viz-class-8); }
+.tf-token-card.active[class*="tf-token-color-9"],
+.tf-embed-row.active .tf-token-color-9 { background: color-mix(in srgb, var(--viz-class-9) 30%, var(--viz-bg)); border-color: var(--viz-class-9); }
+
+/* ============================================
+   Embeddings Section (yellow table)
+   ============================================ */
+.tf-embeddings {
+    width: 100%;
+    background: var(--tf-embed-vector-bg);
+    border: 2px solid var(--tf-embed-vector-border);
+    border-radius: 4px;
+    padding: clamp(0.3rem, 0.8vw, 0.5rem);
+    display: flex;
+    flex-direction: column;
+    gap: clamp(0.2rem, 0.5vw, 0.4rem);
+}
+
+.tf-embed-row {
+    display: flex;
+    align-items: center;
+    gap: clamp(0.25rem, 0.6vw, 0.5rem);
+    transition: opacity 0.2s ease;
+}
+
+.tf-embed-row-label {
+    font: 600 clamp(0.7rem, 0.6rem + 0.4vw, 0.9rem) Georgia, "Times New Roman", serif;
+    font-style: italic;
+    color: var(--tf-embed-color);
+    white-space: nowrap;
+    min-width: 1.8em;
+    text-align: right;
+    flex-shrink: 0;
+}
+
+.tf-embed-row-label sub {
+    font-size: 0.75em;
+}
+
+.tf-embed-row.active .tf-token-id-box {
+    border-width: 2px;
+}
+
+.tf-embed-row.active .tf-embed-vector {
+    border-width: 2px;
+}
+
+.tf-embed-vector {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: clamp(0.3rem, 0.7vw, 0.5rem);
+    border: 1px solid var(--tf-embed-vector-border);
+    border-radius: 4px;
+    font-size: clamp(0.55rem, 0.45rem + 0.35vw, 0.75rem);
+    font-family: var(--viz-mono-font);
+    color: var(--tf-text-muted);
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.tf-token-id-box {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: clamp(3.5rem, 3rem + 2vw, 5rem);
+    padding: clamp(0.3rem, 0.7vw, 0.5rem) clamp(0.2rem, 0.5vw, 0.4rem);
+    border: 1px solid var(--tf-token-word-border);
+    border-radius: 4px;
+    font-size: clamp(0.6rem, 0.5rem + 0.4vw, 0.85rem);
+    font-family: var(--viz-mono-font);
+    font-weight: 500;
+    color: var(--tf-text);
+    white-space: nowrap;
+    cursor: default;
+    transition: background 0.2s ease, box-shadow 0.2s ease;
 }
 
 /* ============================================
-   Head Toggle Tabs
+   Shared Wrapper (token + embed group)
    ============================================ */
-.head-toggle .btn {
-    padding: 4px 8px;
-    font-size: 11px;
+.tf-tok-embed-group {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: var(--tf-arrow-len);
+    width: fit-content;
+    max-width: 95%;
 }
 
-.head-toggle .btn.active {
-    background: var(--tf-head-active);
-    border-color: var(--tf-head-active);
-    color: #ffffff;
+.tf-tok-embed-group .tf-block {
+    width: 100%;
 }
 
-.head-badge {
-    transition: all 0.3s ease;
+.tf-tok-embed-group .tf-block.expanded {
+    width: 100%;
+}
+
+.tf-tok-embed-group .tf-connector {
+    align-self: center;
+}
+
+/* ============================================
+   Blocks (shared) — Attention-style bold chips
+   ============================================ */
+.tf-block {
+    width: var(--tf-block-width);
+    border-radius: 6px;
+    padding: clamp(0.45rem, 1vw, 0.7rem) clamp(0.6rem, 1.4vw, 1rem);
+    text-align: center;
+    position: relative;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-sizing: border-box;
+    color: var(--tf-text);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+.tf-block--clickable {
+    cursor: pointer;
+}
+
+.tf-block--clickable:hover {
+    transform: scale(1.03);
+    filter: brightness(1.04);
+}
+
+/* Block type variants — thick 2px borders, richer tinted backgrounds */
+.tf-block--embed {
+    background: var(--tf-embed-bg);
+    border: 2px solid var(--tf-embed-border);
+}
+.tf-block--embed:hover {
+    box-shadow: 0 0 0 3px rgba(40, 167, 69, 0.18), 0 2px 8px rgba(40, 167, 69, 0.12);
+}
+
+.tf-block--qkv {
+    background: var(--tf-qkv-bg);
+    border: 2px solid var(--tf-qkv-border);
+}
+.tf-block--qkv:hover {
+    box-shadow: 0 0 0 3px rgba(111, 66, 193, 0.18), 0 2px 8px rgba(111, 66, 193, 0.12);
+}
+
+.tf-block--head {
+    background: var(--tf-head-bg);
+    border: 2px solid var(--tf-head-border);
+}
+.tf-block--head:hover {
+    box-shadow: 0 0 0 3px rgba(25, 118, 210, 0.18), 0 2px 8px rgba(25, 118, 210, 0.12);
+}
+
+.tf-block--output {
+    background: var(--tf-output-bg);
+    border: 2px solid var(--tf-output-border);
+}
+.tf-block--output:hover {
+    box-shadow: 0 0 0 3px rgba(220, 53, 69, 0.18), 0 2px 8px rgba(220, 53, 69, 0.12);
+}
+
+/* Expanded state */
+.tf-block.expanded {
+    width: var(--tf-block-expanded-width);
+    background: var(--tf-expanded-bg);
+    text-align: left;
+    box-shadow: 0 0 0 2px var(--tf-expand-glow);
+    padding: clamp(0.5rem, 1.2vw, 0.75rem) clamp(0.6rem, 1.5vw, 1rem);
+}
+
+.tf-block.expanded.tf-block--embed  { border-color: var(--tf-embed-border); }
+.tf-block.expanded.tf-block--qkv    { border-color: var(--tf-qkv-border); }
+.tf-block.expanded.tf-block--head   { border-color: var(--tf-head-border); }
+.tf-block.expanded.tf-block--output { border-color: var(--tf-output-border); }
+
+/* Token-expand blocks size to content, not the standard expanded width */
+.tf-block--token-expand.expanded {
+    width: fit-content;
+    max-width: 95%;
+}
+
+/* Content toggling */
+.tf-block .tf-expanded-content { display: none; margin-top: 0.5em; }
+.tf-block.expanded .tf-expanded-content { display: block; }
+.tf-block.expanded .tf-collapsed-content { display: none; }
+
+/* ============================================
+   Block Title and Dim
+   ============================================ */
+/* Block title — bold serif italic like attention chips */
+.tf-block-title {
+    font-weight: 700;
+    font-style: italic;
+    font-size: clamp(0.8rem, 0.7rem + 0.6vw, 1.1rem);
+    font-family: Georgia, "Times New Roman", serif;
+    line-height: 1.3;
+    letter-spacing: -0.01em;
+    transition: font-size 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.tf-block--embed .tf-block-title  { color: var(--tf-embed-color); }
+.tf-block--qkv .tf-block-title    { color: var(--tf-qkv-color); }
+.tf-block--head .tf-block-title   { color: var(--tf-head-color); }
+.tf-block--output .tf-block-title { color: var(--tf-output-color); }
+
+/* Dimension label below title — monospace, muted, smaller */
+.tf-block-dim {
+    display: block;
+    font: 500 clamp(0.5rem, 0.42rem + 0.35vw, 0.65rem) var(--viz-mono-font);
+    color: var(--tf-text-muted);
+    margin-top: 0.4em;
+    letter-spacing: 0.02em;
+    text-align: center;
+    font-style: normal;
+}
+
+/* ============================================
+   Shape Badges
+   ============================================ */
+.tf-shape-badge {
+    display: inline-block;
+    font: 500 var(--tf-font-badge) var(--viz-mono-font);
+    padding: 0.05em 0.5em;
+    border-radius: 3px;
+    background: var(--tf-badge-bg);
+    border: 0.5px solid var(--tf-badge-border);
+    color: var(--tf-badge-text);
+    margin: 0.15em 0;
+    line-height: 1.5;
+}
+
+/* ============================================
+   Head Carousel (mirrors RNN cell chain)
+   ============================================ */
+.tf-head-chain {
+    width: 98%;
+    max-width: 100%;
+    padding: clamp(0.2rem, 0.5vw, 0.4rem) 0;
+}
+
+.tf-head-track {
+    display: flex;
+    align-items: center;
+    overflow-x: scroll;
+    overflow-y: visible;
+    padding: clamp(0.5rem, 1vw, 0.8rem) clamp(0.2rem, 0.5vw, 0.3rem);
+    position: relative;
+    scrollbar-width: none;          /* Firefox */
+    -ms-overflow-style: none;       /* IE/Edge */
+    scroll-snap-type: x mandatory;
+}
+.tf-head-track::-webkit-scrollbar { display: none; }
+
+/* Inner wrapper — scrolls with content */
+.tf-head-track-inner {
+    display: flex;
+    align-items: center;
+    gap: clamp(0.5rem, 1.2vw, 1rem);
+    position: relative;
+    min-width: 100%;
+    justify-content: center;
+}
+
+/* Spacers at start/end so edge cards can scroll to center */
+.tf-head-track-spacer {
+    flex-shrink: 0;
+    width: calc(50% - clamp(5rem, 10vw, 8rem));
+}
+
+/* Head card — contains the heatmap */
+.tf-head-card {
+    flex-shrink: 0;
+    scroll-snap-align: center;
+    background: var(--tf-head-bg);
+    border: 2px solid var(--tf-head-border);
+    border-radius: 6px;
+    padding: clamp(0.4rem, 0.8vw, 0.6rem);
+    min-width: clamp(6rem, 14vw, 10rem);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: clamp(0.2rem, 0.4vw, 0.35rem);
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.tf-head-card.active {
+    border-color: var(--tf-head-color);
+    box-shadow: 0 0 0 3px rgba(25, 118, 210, 0.2), 0 2px 8px rgba(25, 118, 210, 0.1);
+}
+
+[data-theme="gruvbox-dark"] .tf-head-card.active {
+    box-shadow: 0 0 0 3px rgba(131, 165, 152, 0.25), 0 2px 8px rgba(131, 165, 152, 0.1);
+}
+
+.tf-head-title {
+    font: 600 clamp(0.55rem, 0.48rem + 0.3vw, 0.7rem) var(--viz-mono-font);
+    color: var(--tf-head-color);
+    text-align: center;
+    white-space: nowrap;
+}
+
+.tf-head-summary {
+    font: 500 clamp(0.42rem, 0.38rem + 0.2vw, 0.55rem) var(--viz-mono-font);
+    color: var(--tf-text-muted);
+    text-align: center;
+}
+
+/* ============================================
+   Head Navigation (arrows + dots)
+   ============================================ */
+.tf-head-nav {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: clamp(0.5rem, 1.2vw, 0.8rem);
+    padding: clamp(0.3rem, 0.6vw, 0.5rem) 0 0;
+}
+
+.tf-head-nav-arrow {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: clamp(1.5rem, 3vw, 2rem);
+    height: clamp(1.5rem, 3vw, 2rem);
+    border-radius: 50%;
+    border: 1.5px solid var(--tf-head-border);
+    background: var(--tf-head-bg);
+    color: var(--tf-head-color);
+    font-size: clamp(0.6rem, 0.5rem + 0.4vw, 0.8rem);
+    cursor: pointer;
+    transition: background 0.15s ease, opacity 0.15s ease;
+    padding: 0;
+}
+
+.tf-head-nav-arrow:hover:not(:disabled) {
+    background: color-mix(in srgb, var(--tf-head-border) 25%, var(--viz-bg));
+}
+
+.tf-head-nav-arrow:disabled {
+    opacity: 0.3;
+    cursor: default;
+}
+
+.tf-head-nav-dots {
+    display: flex;
+    align-items: center;
+    gap: clamp(0.2rem, 0.5vw, 0.35rem);
+}
+
+.tf-head-nav-dot {
+    width: clamp(0.5rem, 1vw, 0.7rem);
+    height: clamp(0.5rem, 1vw, 0.7rem);
+    border-radius: 50%;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    background: var(--tf-text-muted);
+    opacity: 0.4;
+    transition: opacity 0.15s ease, transform 0.15s ease, background 0.15s ease;
+}
+
+.tf-head-nav-dot:hover {
+    opacity: 0.7;
+}
+
+.tf-head-nav-dot.active {
+    opacity: 1;
+    transform: scale(1.25);
+    background: var(--tf-head-color);
+}
+
+/* ============================================
+   Attention Heatmap Grid (inside head cards)
+   ============================================ */
+.tf-heatmap {
+    display: grid;
+    gap: 1px;
+    width: 100%;
+}
+
+.tf-heatmap-corner {
+    /* Empty top-left corner cell */
+}
+
+.tf-heatmap-label-top {
+    font: 500 var(--tf-font-data) var(--viz-mono-font);
+    color: var(--tf-text-muted);
+    text-align: center;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    line-height: 1.2;
+}
+
+.tf-heatmap-label-left {
+    font: 500 var(--tf-font-data) var(--viz-mono-font);
+    color: var(--tf-text-muted);
+    text-align: right;
+    padding-right: 0.3em;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+}
+
+.tf-heatmap-cell {
+    aspect-ratio: 1;
+    border-radius: 2px;
+    transition: background 0.15s ease, outline 0.15s ease;
+    font-size: clamp(0.3rem, 0.3rem + 0.15vw, 0.42rem);
+    font-family: var(--viz-mono-font);
+    color: var(--tf-text);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: var(--tf-cell-size);
+    min-height: var(--tf-cell-size);
+}
+
+.tf-heatmap-cell.row-active {
+    box-shadow: inset 0 0 0 1px var(--tf-head-color);
+}
+
+.tf-heatmap-cell.col-active {
+    box-shadow: inset 0 0 0 1px var(--tf-head-color);
+}
+
+.tf-heatmap-cell:hover {
+    outline: 1.5px solid var(--tf-text-muted);
+    outline-offset: 0;
+    z-index: 1;
+    transform: scale(1.1);
+}
+
+/* ============================================
+   Output Block
+   ============================================ */
+.tf-output-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: clamp(0.3rem, 0.6vw, 0.5rem);
+    padding: clamp(0.35rem, 0.6vw, 0.5rem) clamp(0.4rem, 0.7vw, 0.6rem);
+    background: color-mix(in srgb, var(--tf-output-color) 8%, var(--viz-bg));
+    border: 1px solid color-mix(in srgb, var(--tf-output-color) 35%, var(--viz-border));
+    border-radius: 4px;
+    transition: background 0.2s ease, border-color 0.2s ease;
+}
+
+.tf-output-card.active {
+    border-color: var(--tf-output-color);
+    border-width: 2px;
+    background: color-mix(in srgb, var(--tf-output-color) 15%, var(--viz-bg));
+    padding: calc(clamp(0.35rem, 0.6vw, 0.5rem) - 1px) calc(clamp(0.4rem, 0.7vw, 0.6rem) - 1px);
+}
+
+.tf-output-word {
+    font: 500 clamp(0.75rem, 0.65rem + 0.5vw, 1.1rem) -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    color: var(--tf-text);
+    white-space: nowrap;
+}
+
+.tf-output-vector {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: clamp(0.3rem, 0.7vw, 0.5rem);
+    border: 1px solid color-mix(in srgb, var(--tf-output-color) 30%, var(--viz-border));
+    border-radius: 4px;
+    font-size: clamp(0.55rem, 0.45rem + 0.35vw, 0.75rem);
+    font-family: var(--viz-mono-font);
+    color: var(--tf-text-muted);
+}
+
+/* ── Active timestep vertical histogram ── */
+.tf-hist-panel {
+    margin-bottom: clamp(0.4rem, 0.8vw, 0.6rem);
+    padding: clamp(0.4rem, 0.8vw, 0.6rem);
+    background: color-mix(in srgb, var(--tf-output-color) 5%, var(--viz-bg));
+    border: 1px solid color-mix(in srgb, var(--tf-output-color) 25%, var(--viz-border));
+    border-radius: 4px;
+}
+
+.tf-hist-header {
+    font: 600 clamp(0.6rem, 0.52rem + 0.3vw, 0.75rem) var(--viz-mono-font);
+    color: var(--tf-output-color);
+    margin-bottom: clamp(0.3rem, 0.6vw, 0.5rem);
+    text-align: center;
+}
+
+/* Vertical bar chart: columns side by side, bars grow upward */
+.tf-hist-vchart {
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    gap: clamp(0.4rem, 1vw, 0.8rem);
+    height: clamp(4rem, 8vw, 6rem);
+}
+
+.tf-bar-col {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-end;
+    height: 100%;
+    gap: clamp(0.1rem, 0.2vw, 0.15rem);
+    min-width: clamp(2rem, 4vw, 3.5rem);
+}
+
+.tf-bar-track {
+    width: clamp(1.2rem, 2.5vw, 2rem);
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    background: var(--tf-bar-track);
+    border-radius: 3px;
+    overflow: hidden;
+}
+
+.tf-bar-fill {
+    width: 100%;
+    border-radius: 3px;
+    background: var(--tf-bar-secondary);
+    transition: height 0.25s ease;
+    min-height: 2px;
+}
+
+.tf-bar-fill.primary {
+    background: var(--tf-bar-primary);
+}
+
+.tf-bar-fill.secondary {
+    background: var(--tf-bar-secondary);
+}
+
+.tf-bar-label {
+    font: 600 clamp(0.5rem, 0.42rem + 0.25vw, 0.65rem) var(--viz-mono-font);
+    color: var(--tf-text);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: clamp(2.5rem, 5vw, 4rem);
+    text-align: center;
+}
+
+.tf-bar-pct {
+    font: 500 clamp(0.45rem, 0.4rem + 0.2vw, 0.58rem) var(--viz-mono-font);
+    color: var(--tf-text-muted);
+    white-space: nowrap;
+}
+
+/* ============================================
+   Connector Arrows (simple div arrows between blocks)
+   ============================================ */
+.tf-connector {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    height: var(--tf-arrow-len);
+    flex-shrink: 0;
+}
+
+.tf-connector-line {
+    width: 2px;
+    flex: 1;
+    background: var(--tf-connector);
+}
+
+.tf-connector-arrow {
+    width: 0;
+    height: 0;
+    border-left: 0.3rem solid transparent;
+    border-right: 0.3rem solid transparent;
+    border-top: 0.35rem solid var(--tf-connector);
 }
 
 /* ============================================
    Legend Color Overrides
    ============================================ */
-.legend-color.attn-low {
-    background: linear-gradient(135deg, var(--tf-attn-zero), var(--tf-attn-low));
+.legend-color.tf-embed-legend {
+    background: var(--tf-embed-bg);
+    border: 2px solid var(--tf-embed-border);
 }
 
-.legend-color.attn-mid {
-    background: var(--tf-attn-mid);
+.legend-color.tf-qkv-legend {
+    background: var(--tf-qkv-bg);
+    border: 2px solid var(--tf-qkv-border);
 }
 
-.legend-color.attn-high {
-    background: linear-gradient(135deg, var(--tf-attn-high), var(--tf-attn-max));
+.legend-color.tf-head-legend {
+    background: var(--tf-head-bg);
+    border: 2px solid var(--tf-head-border);
+}
+
+.legend-color.tf-output-legend {
+    background: var(--tf-output-bg);
+    border: 2px solid var(--tf-output-border);
+}
+
+.legend-dot.tf-flow-legend {
+    background: var(--tf-connector);
 }
 
 /* ============================================
-   Controls Layout
+   Controls Panel (inside Controls tab)
    ============================================ */
-.tf-controls-panel {
+.tf-controls-inner {
     display: flex;
-    gap: 20px;
+    flex-direction: column;
+    gap: 0.625rem;
+}
+
+.tf-controls-inner .option-row {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.tf-controls-inner .option-row label {
+    font-size: clamp(0.65rem, 0.6rem + 0.3vw, 0.8rem);
+    margin: 0;
+    white-space: nowrap;
+    min-width: 5.5em;
+}
+
+.tf-controls-inner .option-row select {
+    width: auto;
+    font-size: clamp(0.65rem, 0.6rem + 0.3vw, 0.8rem);
+    padding: 0.2em 0.4em;
+}
+
+.tf-actions-row {
+    display: flex;
+    gap: 0.5rem;
+    margin-top: 0.25rem;
+    justify-content: center;
+}
+
+/* ============================================
+   Math Panel (inside Math tab)
+   ============================================ */
+#tf-math-panel {
+    font-family: var(--viz-mono-font);
+    font-size: clamp(0.625rem, 0.55rem + 0.3vw, 0.8rem);
+    line-height: 1.6;
+    color: var(--viz-text);
+}
+
+.tf-math-section {
+    margin-bottom: 0.625rem;
+    padding: 0.5em 0.625em;
+    background: var(--viz-hover-bg);
+    border-radius: 4px;
+    border: 1px solid var(--viz-border);
+}
+
+.tf-math-section:last-child {
+    margin-bottom: 0;
+}
+
+.tf-math-label {
+    font-weight: 700;
+    font-size: clamp(0.56rem, 0.5rem + 0.25vw, 0.72rem);
+    margin-bottom: 0.3em;
+    padding-bottom: 0.2em;
+    border-bottom: 1px solid var(--viz-border);
+    color: var(--viz-text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+}
+
+.tf-math-values {
+    font-family: var(--viz-mono-font);
+    font-size: clamp(0.5rem, 0.42rem + 0.25vw, 0.65rem);
+    font-weight: 500;
+    display: flex;
+    gap: 0.2em;
+    flex-wrap: wrap;
+    margin: 0.15em 0;
+}
+
+/* ============================================
+   Info tab content styles
+   ============================================ */
+.tf-how-list {
+    padding-left: 1.25em;
+    font-size: clamp(0.7rem, 0.6rem + 0.4vw, 0.85rem);
+    line-height: 1.6;
+}
+
+.tf-how-list li {
+    margin-bottom: 0.4em;
+}
+
+.tf-algo-steps {
+    padding-left: 1.25em;
+    font-size: clamp(0.7rem, 0.6rem + 0.4vw, 0.85rem);
+    line-height: 1.8;
+}
+
+.tf-algo-steps li {
+    margin-bottom: 0.3em;
+}
+
+.tf-formula {
+    margin: 0.5em 0;
+    padding: 0.4em 0.8em;
+    background: var(--viz-hover-bg);
+    border-radius: 4px;
+    font-family: var(--viz-mono-font);
+    font-size: clamp(0.7rem, 0.6rem + 0.4vw, 0.85rem);
+    text-align: center;
+    border: 1px solid var(--viz-border);
+}
+
+/* ============================================
+   QKV Summary (collapsed state)
+   ============================================ */
+.tf-qkv-summary {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: clamp(0.5rem, 1.2vw, 0.8rem);
+    flex-wrap: wrap;
+    padding: clamp(0.15rem, 0.4vw, 0.25rem) 0;
+}
+
+.tf-qkv-label {
+    font: 700 clamp(0.65rem, 0.55rem + 0.4vw, 0.85rem) Georgia, "Times New Roman", serif;
+    font-style: italic;
+    white-space: nowrap;
+}
+
+.tf-qkv-label--q { color: var(--tf-qkv-color); }
+.tf-qkv-label--k { color: var(--tf-head-color); }
+.tf-qkv-label--v { color: var(--tf-output-color); }
+
+.tf-qkv-dim-label {
+    font: 500 clamp(0.5rem, 0.42rem + 0.3vw, 0.65rem) var(--viz-mono-font);
+    color: var(--tf-text-muted);
+    white-space: nowrap;
+}
+
+/* ============================================
+   QKV Expanded Rows
+   ============================================ */
+.tf-qkv-row {
+    display: flex;
+    align-items: center;
+    gap: clamp(0.3rem, 0.7vw, 0.5rem);
+    margin-bottom: clamp(0.2rem, 0.5vw, 0.35rem);
     flex-wrap: wrap;
 }
 
-.tf-input-col {
-    flex: 2;
-    min-width: 200px;
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-}
-
-.tf-options-col {
-    flex: 1.5;
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-    min-width: 180px;
-}
-
-.tf-actions-col {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    justify-content: center;
-    min-width: 140px;
-}
-
 /* ============================================
-   Sentence Input
+   Heatmap Row (inline vector display)
    ============================================ */
-.tf-sentence-input {
-    font-family: var(--viz-mono-font);
-    font-size: 13px;
-    padding: 6px 10px;
-    background: var(--tf-input-bg);
-    border: 1px solid var(--tf-input-border);
-    color: var(--viz-text);
-    border-radius: 3px;
-    transition: border-color 0.2s ease, box-shadow 0.2s ease;
-}
-
-.tf-sentence-input:focus {
-    outline: none;
-    border-color: var(--tf-input-focus);
-    box-shadow: 0 0 0 2px rgba(102, 175, 233, 0.25);
-}
-
-[data-theme="gruvbox-dark"] .tf-sentence-input:focus {
-    box-shadow: 0 0 0 2px rgba(131, 165, 152, 0.25);
-}
-
-/* ============================================
-   Control Label
-   ============================================ */
-.control-label-sm {
-    font-size: 12px;
-    font-weight: 600;
-    margin: 0;
-}
-
-/* ============================================
-   Checkbox Labels
-   ============================================ */
-.checkbox-label {
-    font-size: 12px;
-    margin: 0;
+.tf-heatmap-row {
     display: flex;
     align-items: center;
-    gap: 6px;
-    cursor: pointer;
+    gap: 1px;
+    flex: 1;
+    min-width: 0;
+}
+
+.tf-heatmap-row .tf-heatmap-cell {
+    flex: 1;
+    min-width: clamp(0.5rem, 1vw, 0.8rem);
+    max-width: clamp(1rem, 2vw, 1.5rem);
+    aspect-ratio: 1;
+}
+
+.tf-heatmap-ellipsis {
+    font: 500 clamp(0.6rem, 0.5rem + 0.3vw, 0.8rem) var(--viz-mono-font);
+    color: var(--tf-text-muted);
+    padding: 0 0.2em;
 }
 
 /* ============================================
-   Token Detail Panel
+   Math Panel — Detailed Sections
    ============================================ */
-#token-detail-panel .no-data-message {
-    text-align: center;
-    padding: 15px;
+.tf-math-title {
+    font-weight: 700;
+    font-size: clamp(0.6rem, 0.52rem + 0.3vw, 0.75rem);
+    margin-bottom: 0.3em;
+    padding-bottom: 0.2em;
+    border-bottom: 1px solid var(--viz-border);
     color: var(--viz-text-muted);
-    font-size: 12px;
+    letter-spacing: 0.02em;
 }
 
-#token-detail-panel .no-data-message i {
-    display: block;
-    font-size: 1.5em;
-    margin-bottom: 8px;
-}
-
-.token-detail-table {
-    width: 100%;
-    border-collapse: collapse;
-    font-size: 12px;
-}
-
-.token-detail-table th,
-.token-detail-table td {
-    padding: 4px 8px;
-    border: 1px solid var(--viz-border);
-    text-align: left;
-}
-
-.token-detail-table th {
-    background: var(--viz-hover-bg);
-    font-weight: 600;
-    font-size: 11px;
-}
-
-.token-detail-table td {
-    font-family: var(--viz-mono-font);
-}
-
-.token-detail-table td:last-child {
-    text-align: right;
-}
-
-.token-detail-header {
-    font-size: 13px;
-    font-weight: 600;
-    margin-bottom: 8px;
-    color: var(--viz-text);
-}
-
-.token-detail-header .token-name {
-    color: var(--tf-token-highlight);
-}
-
-.attn-bar-container {
+.tf-math-row {
     display: flex;
-    align-items: center;
-    gap: 6px;
+    align-items: baseline;
+    gap: 0.4em;
+    margin-bottom: 0.15em;
+    flex-wrap: wrap;
 }
 
-.attn-bar {
-    height: 10px;
-    border-radius: 2px;
-    transition: width 0.2s ease;
+.tf-math-value {
+    font-family: var(--viz-mono-font);
+    font-size: clamp(0.5rem, 0.42rem + 0.25vw, 0.65rem);
+    color: var(--tf-text);
+    word-break: break-all;
+}
+
+.tf-math-vector {
+    display: flex;
+    gap: clamp(0.15rem, 0.3vw, 0.25rem);
+    flex-wrap: wrap;
+    margin: 0.15em 0 0.3em;
+}
+
+.tf-vec-cell {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.15em 0.35em;
+    background: var(--tf-badge-bg);
+    border: 0.5px solid var(--tf-badge-border);
+    border-radius: 3px;
+    font: 500 clamp(0.45rem, 0.4rem + 0.2vw, 0.58rem) var(--viz-mono-font);
+    color: var(--tf-text);
+    white-space: nowrap;
 }
 
 /* ============================================
-   Responsive
+   Responsive Refinements
    ============================================ */
 @media (max-width: 992px) {
-    .tf-controls-panel {
-        flex-direction: column;
+    .tf-controls-inner .option-row {
+        flex-wrap: wrap;
     }
 
-    .tf-actions-col {
-        flex-direction: row;
-        justify-content: center;
+    .tf-head-card {
+        min-width: clamp(5rem, 12vw, 8rem);
     }
+}
 
-    .head-toggle .btn {
-        padding: 3px 6px;
-        font-size: 10px;
+@media (max-width: 768px) {
+    .tf-block.expanded {
+        width: 95%;
     }
 }

@@ -1,6 +1,6 @@
 ---
 layout: base.njk
-title: RNN Inference Pipeline
+title: RNN Architecture Visualizer
 icon: fa-exchange
 navigation:
   - name: "Home"
@@ -11,155 +11,154 @@ extraScript: "static/js/rnn.js"
 tags: visualization
 cardTitle: "RNN & LSTM"
 cardIcon: fa-exchange
-cardDescription: "Watch an RNN inference pipeline process text: tokenization, embeddings, recurrent cells, softmax, and token prediction."
+cardDescription: "Explore an interactive RNN architecture diagram: click layers to expand and see embedding lookups, hidden state computations, weight matrices, and next-token predictions."
 cardTags:
   - Deep Learning
   - Sequences
-cardHaystack: "recurrent neural network rnn lstm hidden state sequence inference pipeline tokenizer embeddings softmax argmax prediction"
+cardHaystack: "recurrent neural network rnn lstm hidden state sequence inference pipeline tokenizer embeddings softmax argmax prediction architecture"
 cardOrder: 24
 cardImage: static/img/vis_cards/rnn.png
 ---
 
 {% from "components/legend.njk" import legend %}
 {% from "components/info-tabs.njk" import infoTabs %}
-{% from "components/metrics-panel.njk" import metricsPanel %}
+{% from "components/stepper-control.njk" import stepperControl %}
 
 <link rel="stylesheet" href="static/css/rnn.css">
 
 <div class="row" id="main-content">
     {% include "components/share-button.njk" %}
-    <!-- Left Column: Pipeline Canvas + Controls -->
+    <!-- Left Column: Architecture Diagram -->
     <div class="col-md-7">
-        <!-- Pipeline Diagram Panel -->
         <div class="panel panel-default">
             <div class="panel-heading">
                 <div class="panel-heading-content">
-                    <span class="panel-title-text"><i class="fa fa-exchange"></i> RNN Inference Pipeline</span>
-                    <span class="viz-badge" id="arch-badge">Vanilla RNN</span>
+                    <div class="btn-group btn-group-sm rnn-mode-toggle" role="group">
+                        <button type="button" class="btn btn-default active" id="btn-mode-inference">
+                            <i class="fa fa-play"></i> Inference
+                        </button>
+                        <button type="button" class="btn btn-default" id="btn-mode-training">
+                            <i class="fa fa-graduation-cap"></i> Training
+                        </button>
+                    </div>
+                    <select id="rnn-task-select" class="form-control input-sm rnn-task-select">
+                        <option value="text-generation">Text Generation</option>
+                        <option value="sentiment">Sentiment Analysis</option>
+                        <option value="translation">Machine Translation</option>
+                        <option value="ner">Named Entity Recognition</option>
+                        <option value="summarization">Summarization</option>
+                    </select>
                 </div>
             </div>
-            <div class="panel-body canvas-panel-body">
-                <div class="canvas-wrapper">
-                    <canvas id="pipeline-canvas" width="720" height="700"></canvas>
+            <div class="panel-body compact-panel">
+                <div class="rnn-diagram" id="rnn-diagram" aria-label="RNN Architecture Diagram">
+                    <!-- JS populates: input → embed → cell → output → predicted blocks with arrows -->
                 </div>
             </div>
             <div class="panel-footer legend-footer">
                 {{ legend(
                     items=[
-                        {class: 'rnn-input-layer', label: 'Input/Embed'},
-                        {class: 'rnn-cell-color', label: 'RNN Cell'},
-                        {class: 'rnn-active-cell', label: 'Active'},
-                        {class: 'rnn-output-layer', label: 'Output'},
-                        {class: 'rnn-prob-color', label: 'Probability', type: 'dot'},
-                        {class: 'rnn-hidden-dot', label: 'Hidden State', type: 'dot'}
+                        {class: 'rnn-embed-legend', label: 'Embedding'},
+                        {class: 'rnn-cell-legend', label: 'RNN Cell'},
+                        {class: 'rnn-output-legend', label: 'Output'},
+                        {class: 'rnn-flow-legend', label: 'Data Flow', type: 'dot'}
                     ]
                 ) }}
             </div>
         </div>
-
-        <!-- Controls Panel -->
-        <div class="panel panel-default">
-            <div class="panel-heading">
-                <h3 class="panel-title"><i class="fa fa-sliders"></i> Controls</h3>
-            </div>
-            <div class="panel-body compact-panel rnn-controls-panel">
-                <div class="rnn-options-col">
-                    <div class="rnn-input-row">
-                        <label>Input Text:</label>
-                        <input type="text" id="input-text" class="form-control input-sm" value="I like cute kittens and" />
-                    </div>
-                </div>
-                <div class="rnn-actions-col">
-                    <div class="btn-toolbar" role="toolbar">
-                        <button id="btn-process" class="btn btn-sm btn-success" title="Process full pipeline">
-                            <i class="fa fa-play"></i> Process
-                        </button>
-                        <button id="btn-step" class="btn btn-sm btn-info" title="Step one phase">
-                            <i class="fa fa-step-forward"></i> Step
-                        </button>
-                        <button id="btn-reset" class="btn btn-sm btn-danger" title="Reset">
-                            <i class="fa fa-refresh"></i> Reset
-                        </button>
-                    </div>
-                    <div class="speed-control">
-                        <i class="fa fa-tachometer"></i>
-                        <input type="range" id="speed-slider" min="1" max="10" value="5">
-                        <span id="speed-value" class="range-value">5</span>
-                    </div>
-                </div>
-            </div>
-        </div>
     </div>
 
-    <!-- Right Column: Info + Metrics -->
+    <!-- Right Column: Info Tabs -->
     <div class="col-md-5">
         {{ infoTabs(
             tabs=[
                 {id: 'about', icon: 'fa-info-circle', label: 'About', active: true, content: '
-                    <h4><i class="fa fa-exchange"></i> RNN Inference Pipeline</h4>
+                    <h4><i class="fa fa-exchange"></i> RNN Architecture</h4>
                     <p>
-                        This visualization shows the complete <strong>inference pipeline</strong> of a
-                        Recurrent Neural Network processing text input, from raw text to predicted output tokens.
+                        A <strong>Recurrent Neural Network</strong> processes sequences one token at a time.
+                        At each timestep, the input token is embedded, combined with the previous hidden state,
+                        and transformed to produce an output prediction and a new hidden state.
                     </p>
                     <p>
-                        Data flows <strong>bottom-to-top</strong> through 9 layers: input text &rarr;
-                        tokenizer &rarr; embeddings &rarr; RNN cells &rarr; softmax &rarr;
-                        probability distribution &rarr; argmax &rarr; token decode &rarr; output tokens.
+                        The <strong>hidden state</strong> h<sub>t</sub> carries information from all previous
+                        tokens forward through the sequence &mdash; this is what makes the network
+                        <em>recurrent</em>.
                     </p>
                     <h4><i class="fa fa-mouse-pointer"></i> How to Use</h4>
-                    <ul class="interaction-list">
-                        <li><strong>Enter input text</strong> in the text field</li>
-                        <li><strong>Press Process</strong> to animate the full pipeline</li>
-                        <li><strong>Press Step</strong> to advance one phase at a time</li>
-                        <li><strong>Watch data flow</strong> bottom-to-top through each layer</li>
-                        <li><strong>Adjust speed</strong> with the slider</li>
+                    <ul class="rnn-interaction-list">
+                        <li><strong>Click a block</strong> on the diagram to expand it and see internal weights, matrices, and computations</li>
+                        <li><strong>Click again</strong> or click empty space to collapse back to the overview</li>
+                        <li><strong>Hover</strong> over any block for a quick summary tooltip</li>
+                        <li><strong>Step through timesteps</strong> in the Controls tab to see how hidden state evolves</li>
+                        <li><strong>Change dimensions</strong> to see how network size affects weight matrices</li>
                     </ul>
                 '},
                 {id: 'algorithm', icon: 'fa-book', label: 'Algorithm', content: '
-                    <h4><i class="fa fa-book"></i> Pipeline Stages</h4>
-                    <ol class="algorithm-list">
-                        <li><strong>Tokenize</strong>: Split text into word tokens</li>
-                        <li><strong>Embed</strong>: Look up each token&rsquo;s embedding vector</li>
-                        <li><strong>RNN Cell</strong>: h<sub>t</sub> = tanh(W<sub>h</sub>h<sub>t-1</sub> + W<sub>x</sub>e<sub>t</sub> + b)</li>
-                        <li><strong>Output Layer</strong>: y = W<sub>y</sub>h<sub>t</sub> + b<sub>y</sub></li>
-                        <li><strong>Softmax</strong>: Convert logits to probabilities</li>
-                        <li><strong>Argmax</strong>: Select highest probability index</li>
-                        <li><strong>Decode</strong>: Map index back to vocabulary token</li>
+                    <h4><i class="fa fa-book"></i> Forward Pass</h4>
+                    <ol class="rnn-algo-steps">
+                        <li><strong>Embed:</strong> Look up the input character in the embedding matrix E to get x<sub>t</sub></li>
+                        <li><strong>Hidden state:</strong> Compute h<sub>t</sub> = tanh(W<sub>xh</sub>&middot;x<sub>t</sub> + W<sub>hh</sub>&middot;h<sub>t-1</sub> + b<sub>h</sub>)</li>
+                        <li><strong>Output:</strong> Compute logits y<sub>t</sub> = W<sub>hy</sub>&middot;h<sub>t</sub> + b<sub>y</sub></li>
+                        <li><strong>Softmax:</strong> Convert logits to probabilities over the vocabulary</li>
+                        <li><strong>Predict:</strong> Select the highest-probability character</li>
                     </ol>
+                    <h4><i class="fa fa-repeat"></i> Recurrence</h4>
+                    <p style="font-size:13px;">
+                        The key insight is that h<sub>t</sub> depends on h<sub>t-1</sub>, which depends on
+                        h<sub>t-2</sub>, and so on. This chain allows the network to maintain a
+                        &ldquo;memory&rdquo; of the entire sequence seen so far.
+                    </p>
+                    <div class="rnn-formula">
+                        h<sub>0</sub> &rarr; h<sub>1</sub> &rarr; h<sub>2</sub> &rarr; &hellip; &rarr; h<sub>T</sub>
+                    </div>
                 '},
                 {id: 'math', icon: 'fa-superscript', label: 'Math', content: '
-                    <h4><i class="fa fa-superscript"></i> Vanilla RNN</h4>
-                    <div class="math-formula-display">
-                        <code>h<sub>t</sub> = tanh(W<sub>h</sub> h<sub>t-1</sub> + W<sub>x</sub> x<sub>t</sub> + b<sub>h</sub>)</code>
+                    <h4><i class="fa fa-superscript"></i> Live Computation</h4>
+                    <div id="rnn-math-panel">
+                        <span style="font-size:12px; color:var(--viz-text-muted);">
+                            Step through timesteps to see live computations here.
+                        </span>
                     </div>
-                    <div class="math-formula-display">
-                        <code>y<sub>t</sub> = softmax(W<sub>y</sub> h<sub>t</sub> + b<sub>y</sub>)</code>
+                '},
+                {id: 'controls', icon: 'fa-sliders', label: 'Controls', content: '
+                    <div class="rnn-controls-panel">
+                        <div class="option-row">
+                            <label>Example:</label>
+                            <select id="rnn-example-select" class="form-control input-sm">
+                                <option value="0">hello world</option>
+                                <option value="1">the cat sat</option>
+                                <option value="2">abcabc</option>
+                            </select>
+                        </div>
+                        <div class="option-row">
+                            <label>Timestep:</label>
+                            ' + stepperControl(id='rnn-timestep', value='0', title='Timestep') + '
+                        </div>
+                        <div class="option-row">
+                            <label>Hidden Dim:</label>
+                            <select id="rnn-hidden-dim" class="form-control input-sm">
+                                <option value="16">16</option>
+                                <option value="32">32</option>
+                                <option value="64" selected>64</option>
+                                <option value="128">128</option>
+                            </select>
+                        </div>
+                        <div class="option-row">
+                            <label>Embed Dim:</label>
+                            <select id="rnn-embed-dim" class="form-control input-sm">
+                                <option value="16">16</option>
+                                <option value="32">32</option>
+                                <option value="64">64</option>
+                                <option value="128" selected>128</option>
+                            </select>
+                        </div>
+                        <div class="rnn-actions-row">
+                            <button id="rnn-btn-reset" class="btn btn-sm btn-danger" title="Reset visualization">
+                                <i class="fa fa-undo"></i> Reset
+                            </button>
+                        </div>
                     </div>
-                    <p class="formula-note">
-                        W<sub>h</sub> maps hidden-to-hidden, W<sub>x</sub> maps input-to-hidden,
-                        W<sub>y</sub> maps hidden-to-output over the vocabulary.
-                    </p>
-                    <h4><i class="fa fa-bar-chart"></i> Softmax</h4>
-                    <div class="math-formula-display">
-                        <code>softmax(z<sub>i</sub>) = e<sup>z<sub>i</sub></sup> / &Sigma;<sub>j</sub> e<sup>z<sub>j</sub></sup></code>
-                    </div>
-                    <p class="formula-note">
-                        Converts raw logits into a probability distribution over the vocabulary.
-                    </p>
                 '}
-            ]
-        ) }}
-
-        {{ metricsPanel(
-            title='Pipeline Metrics',
-            icon='fa-bar-chart',
-            metrics=[
-                {icon: 'fa-cog', label: 'Phase', id: 'metric-phase', default: 'Idle'},
-                {icon: 'fa-clock-o', label: 'Timestep', id: 'metric-timestep', default: '0 / 0'},
-                {icon: 'fa-book', label: 'Vocab Size', id: 'metric-vocab-size', default: '-'},
-                {icon: 'fa-arrows-h', label: 'Hidden Dim', id: 'metric-hidden-dim', default: '8'},
-                {icon: 'fa-bullseye', label: 'Predicted', id: 'metric-predicted', default: '-'},
-                {icon: 'fa-info-circle', label: 'Status', id: 'metric-status', default: 'Ready'}
             ]
         ) }}
     </div>

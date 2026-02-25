@@ -11,7 +11,7 @@ extraScript: "static/js/transformer.js"
 tags: visualization
 cardTitle: "Transformers & Attention"
 cardIcon: fa-eye
-cardDescription: "Explore self-attention mechanisms with interactive weight heatmaps, Query/Key/Value computations, and positional encoding."
+cardDescription: "Explore self-attention with an interactive architecture diagram: navigate attention heads in a scrollable gallery, expand Q/K/V projections, and trace how tokens attend to each other."
 cardTags:
   - Deep Learning
   - NLP
@@ -22,192 +22,142 @@ cardImage: static/img/vis_cards/transformer.png
 
 {% from "components/legend.njk" import legend %}
 {% from "components/info-tabs.njk" import infoTabs %}
-{% from "components/metrics-panel.njk" import metricsPanel %}
+{% from "components/stepper-control.njk" import stepperControl %}
 
 <link rel="stylesheet" href="static/css/transformer.css">
 
 <div class="row" id="main-content">
     {% include "components/share-button.njk" %}
-    <!-- Left Column: Heatmap + Controls -->
+    <!-- Left Column: Architecture Diagram -->
     <div class="col-md-7">
         <div class="panel panel-default">
             <div class="panel-heading">
                 <div class="panel-heading-content">
-                    <span class="panel-title-text"><i class="fa fa-th"></i> Attention Heatmap</span>
+                    <span class="panel-title-text"><i class="fa fa-eye"></i> Self-Attention</span>
                     <div class="header-controls">
-                        <div class="btn-group btn-group-sm head-toggle" role="group" id="head-tabs">
-                            <!-- Head tabs filled dynamically -->
-                        </div>
-                        <span class="viz-badge head-badge" id="head-badge">Head 1</span>
+                        <span class="viz-badge" id="tf-head-badge">4 Heads</span>
+                        <span class="viz-badge" id="tf-dim-badge">d=64</span>
                     </div>
                 </div>
             </div>
-            <div class="panel-body canvas-panel-body">
-                <div class="canvas-wrapper">
-                    <canvas id="attention-canvas" width="560" height="400"></canvas>
+            <div class="panel-body compact-panel">
+                <div class="tf-diagram" id="tf-diagram" aria-label="Attention Architecture Diagram">
+                    <!-- JS populates: tokens → embedding → Q/K/V → head carousel → output -->
                 </div>
             </div>
             <div class="panel-footer legend-footer">
                 {{ legend(
                     items=[
-                        {class: 'attn-low', label: 'Low Attention', type: 'color'},
-                        {class: 'attn-mid', label: 'Medium', type: 'color'},
-                        {class: 'attn-high', label: 'High Attention', type: 'color'}
+                        {class: 'tf-embed-legend', label: 'Embedding'},
+                        {class: 'tf-qkv-legend', label: 'Q / K / V'},
+                        {class: 'tf-head-legend', label: 'Attn Head'},
+                        {class: 'tf-output-legend', label: 'Output'},
+                        {class: 'tf-flow-legend', label: 'Data Flow', type: 'dot'}
                     ]
                 ) }}
             </div>
         </div>
-
-        <!-- Controls Panel -->
-        <div class="panel panel-default">
-            <div class="panel-heading">
-                <h3 class="panel-title"><i class="fa fa-sliders"></i> Controls</h3>
-            </div>
-            <div class="panel-body compact-panel tf-controls-panel">
-                <div class="tf-input-col">
-                    <label class="control-label-sm">Input Sentence</label>
-                    <input type="text" id="input-sentence" class="form-control tf-sentence-input"
-                           value="The cat sat on the mat" placeholder="Enter a sentence...">
-                </div>
-
-                <div class="tf-options-col">
-                    <div class="option-row">
-                        <label>Heads:</label>
-                        <div class="stepper-control">
-                            <button class="btn btn-xs btn-default" id="btn-heads-dec"><i class="fa fa-minus"></i></button>
-                            <input type="text" id="num-heads" class="stepper-input" value="4" readonly>
-                            <button class="btn btn-xs btn-default" id="btn-heads-inc"><i class="fa fa-plus"></i></button>
-                        </div>
-                    </div>
-                    <div class="option-row">
-                        <label>Temperature:</label>
-                        <input type="range" id="temperature-slider" min="0.1" max="5.0" step="0.1" value="1.0">
-                        <span id="temperature-value" class="range-value">1.0</span>
-                    </div>
-                    <label class="checkbox-label">
-                        <input type="checkbox" id="toggle-pe"> Show Positional Encoding
-                    </label>
-                </div>
-
-                <div class="tf-actions-col">
-                    <button id="btn-compute" class="btn btn-sm btn-success" title="Compute Attention">
-                        <i class="fa fa-play"></i> Compute Attention
-                    </button>
-                    <button id="btn-reset" class="btn btn-sm btn-danger" title="Reset">
-                        <i class="fa fa-refresh"></i> Reset
-                    </button>
-                </div>
-            </div>
-        </div>
     </div>
 
-    <!-- Right Column: Info + Metrics + Token Detail -->
+    <!-- Right Column: Info Tabs -->
     <div class="col-md-5">
-        {% set aboutContent %}
-                        <h4><i class="fa fa-eye"></i> Self-Attention</h4>
-                        <p>
-                            Self-attention allows each token in a sequence to look at every other
-                            token and decide how much to focus on it. This is the core mechanism
-                            in Transformer models like BERT and GPT.
-                        </p>
-                        <h4><i class="fa fa-key"></i> Key Insights</h4>
-                        <ul class="insight-list">
-                            <li><strong>Parallelizable</strong> &mdash; unlike RNNs, all positions are processed simultaneously</li>
-                            <li><strong>Long-range dependencies</strong> &mdash; any token can attend to any other regardless of distance</li>
-                            <li><strong>Multi-head</strong> &mdash; multiple attention heads capture different relationships</li>
-                        </ul>
-                        <h4><i class="fa fa-mouse-pointer"></i> How to Use</h4>
-                        <ul class="interaction-list">
-                            <li><strong>Enter a sentence</strong> and click Compute Attention</li>
-                            <li><strong>Hover over cells</strong> to see attention weights for a token pair</li>
-                            <li><strong>Switch heads</strong> to see different attention patterns</li>
-                            <li><strong>Adjust temperature</strong> to sharpen or flatten attention</li>
-                        </ul>
-        {% endset %}
-
-        {% set algorithmContent %}
-                        <h4><i class="fa fa-cogs"></i> Q/K/V Computation</h4>
-                        <ul class="algorithm-list">
-                            <li>Each token embedding <code>x<sub>i</sub></code> is projected into three vectors:</li>
-                            <li><strong>Query</strong>: <code>q<sub>i</sub> = W<sub>Q</sub> x<sub>i</sub></code></li>
-                            <li><strong>Key</strong>: <code>k<sub>i</sub> = W<sub>K</sub> x<sub>i</sub></code></li>
-                            <li><strong>Value</strong>: <code>v<sub>i</sub> = W<sub>V</sub> x<sub>i</sub></code></li>
-                        </ul>
-
-                        <h4><i class="fa fa-tasks"></i> Scaled Dot-Product Steps</h4>
-                        <ol class="algorithm-list">
-                            <li>Compute scores: <code>s<sub>ij</sub> = q<sub>i</sub> &middot; k<sub>j</sub></code></li>
-                            <li>Scale: <code>s<sub>ij</sub> / &radic;d<sub>k</sub></code></li>
-                            <li>Apply softmax row-wise to get weights</li>
-                            <li>Weighted sum of values gives the output</li>
-                        </ol>
-
-                        <h4><i class="fa fa-copy"></i> Multi-Head Attention</h4>
-                        <p class="formula-note">
-                            Multiple heads run in parallel with different learned projections,
-                            then their outputs are concatenated and projected back.
-                        </p>
-        {% endset %}
-
-        {% set mathContent %}
-                        <h4><i class="fa fa-superscript"></i> Attention Formula</h4>
-                        <div class="math-formula-display">
-                            <code>Attention(Q,K,V) = softmax(QK<sup>T</sup>/&radic;d<sub>k</sub>)V</code>
-                        </div>
-                        <p class="formula-note">
-                            Where d<sub>k</sub> is the dimension of the key vectors.
-                            Scaling prevents dot products from becoming too large.
-                        </p>
-
-                        <h4><i class="fa fa-bar-chart"></i> Softmax</h4>
-                        <div class="math-formula-display">
-                            <code>softmax(z<sub>i</sub>) = e<sup>z<sub>i</sub></sup> / &Sigma;<sub>j</sub> e<sup>z<sub>j</sub></sup></code>
-                        </div>
-
-                        <h4><i class="fa fa-wave-square"></i> Positional Encoding</h4>
-                        <div class="math-formula-display">
-                            <code>PE<sub>(pos,2i)</sub> = sin(pos / 10000<sup>2i/d</sup>)</code>
-                        </div>
-                        <div class="math-formula-display">
-                            <code>PE<sub>(pos,2i+1)</sub> = cos(pos / 10000<sup>2i/d</sup>)</code>
-                        </div>
-                        <p class="formula-note">
-                            Sinusoidal positional encodings inject word order information into
-                            the model, since attention itself is permutation-invariant.
-                        </p>
-        {% endset %}
-
         {{ infoTabs(
             tabs=[
-                {id: 'about', icon: 'fa-info-circle', label: 'About', active: true, content: aboutContent},
-                {id: 'algorithm', icon: 'fa-cogs', label: 'Algorithm', content: algorithmContent},
-                {id: 'math', icon: 'fa-superscript', label: 'Math', content: mathContent}
+                {id: 'about', icon: 'fa-info-circle', label: 'About', active: true, content: '
+                    <h4><i class="fa fa-eye"></i> Self-Attention</h4>
+                    <p>
+                        Self-attention allows each token in a sequence to look at every other
+                        token and decide how much to focus on it. This is the core mechanism
+                        in Transformer models like BERT and GPT.
+                    </p>
+                    <p>
+                        Each <strong>attention head</strong> learns different relationships &mdash;
+                        one might track syntax, another might link pronouns to their referents.
+                    </p>
+                    <h4><i class="fa fa-mouse-pointer"></i> How to Use</h4>
+                    <ul class="tf-how-list">
+                        <li><strong>Navigate heads</strong> with the carousel &mdash; arrows, dots, or click a card</li>
+                        <li><strong>Click a token</strong> to highlight what it attends to</li>
+                        <li><strong>Expand blocks</strong> by clicking to see internal computations</li>
+                        <li><strong>Adjust controls</strong> &mdash; heads, dimensions, temperature</li>
+                    </ul>
+                '},
+                {id: 'algorithm', icon: 'fa-book', label: 'Algorithm', content: '
+                    <h4><i class="fa fa-book"></i> Scaled Dot-Product Attention</h4>
+                    <ol class="tf-algo-steps">
+                        <li><strong>Embed:</strong> Look up each token in the embedding matrix, add positional encoding</li>
+                        <li><strong>Project:</strong> Multiply by W<sub>Q</sub>, W<sub>K</sub>, W<sub>V</sub> to get Query, Key, Value</li>
+                        <li><strong>Score:</strong> Compute q<sub>i</sub>&middot;k<sub>j</sub> for all token pairs</li>
+                        <li><strong>Scale:</strong> Divide by &radic;d<sub>k</sub></li>
+                        <li><strong>Softmax:</strong> Normalize each row &rarr; attention weights</li>
+                        <li><strong>Attend:</strong> Weighted sum of Values = output</li>
+                    </ol>
+                    <h4><i class="fa fa-copy"></i> Multi-Head Attention</h4>
+                    <p style="font-size:12px;">
+                        Multiple heads run in parallel with different learned W<sub>Q</sub>, W<sub>K</sub>, W<sub>V</sub>.
+                        Outputs are concatenated and projected through W<sub>O</sub>.
+                    </p>
+                    <div class="tf-formula">
+                        Attention(Q,K,V) = softmax(QK<sup>T</sup> / &radic;d<sub>k</sub>)V
+                    </div>
+                '},
+                {id: 'math', icon: 'fa-superscript', label: 'Math', content: '
+                    <h4><i class="fa fa-superscript"></i> Live Computation</h4>
+                    <div id="tf-math-panel">
+                        <span style="font-size:12px; color:var(--viz-text-muted);">
+                            Select a token and navigate heads to see live computations here.
+                        </span>
+                    </div>
+                '},
+                {id: 'controls', icon: 'fa-sliders', label: 'Controls', content: '
+                    <div class="tf-controls-inner">
+                        <div class="option-row">
+                            <label>Example:</label>
+                            <select id="tf-example-select" class="form-control input-sm">
+                                <option value="0">The cat sat on the mat</option>
+                                <option value="1">I like cute kitties and</option>
+                                <option value="2">King is to queen as man</option>
+                            </select>
+                        </div>
+                        <div class="option-row">
+                            <label>Token:</label>
+                            ' + stepperControl(id='tf-token-step', value='0', title='Token') + '
+                        </div>
+                        <div class="option-row">
+                            <label>Heads:</label>
+                            <select id="tf-num-heads" class="form-control input-sm">
+                                <option value="1">1</option>
+                                <option value="2">2</option>
+                                <option value="4" selected>4</option>
+                                <option value="8">8</option>
+                            </select>
+                        </div>
+                        <div class="option-row">
+                            <label>Model Dim:</label>
+                            <select id="tf-model-dim" class="form-control input-sm">
+                                <option value="32">32</option>
+                                <option value="64" selected>64</option>
+                                <option value="128">128</option>
+                            </select>
+                        </div>
+                        <div class="option-row">
+                            <label>Temp:</label>
+                            <input type="range" id="tf-temperature" min="0.1" max="5.0" step="0.1" value="1.0">
+                            <span id="tf-temp-value" class="stepper-value">1.0</span>
+                        </div>
+                        <div class="option-row">
+                            <label class="checkbox-inline tf-pe-label">
+                                <input type="checkbox" id="tf-use-pe" checked> Positional Enc.
+                            </label>
+                        </div>
+                        <div class="tf-actions-row">
+                            <button id="tf-btn-reset" class="btn btn-sm btn-danger">
+                                <i class="fa fa-undo"></i> Reset
+                            </button>
+                        </div>
+                    </div>
+                '}
             ]
         ) }}
-
-        {{ metricsPanel(
-            title='Attention Metrics',
-            icon='fa-bar-chart',
-            metrics=[
-                {icon: 'fa-font', label: 'Tokens', id: 'metric-tokens', default: '6'},
-                {icon: 'fa-copy', label: 'Heads', id: 'metric-heads', default: '4'},
-                {icon: 'fa-cube', label: 'Dimension', id: 'metric-dim', default: '64'},
-                {icon: 'fa-arrow-up', label: 'Max Attention', id: 'metric-max-attn', default: '-'},
-                {icon: 'fa-arrow-down', label: 'Min Attention', id: 'metric-min-attn', default: '-'},
-                {icon: 'fa-info-circle', label: 'Status', id: 'metric-status', default: 'Ready'}
-            ]
-        ) }}
-
-        <!-- Token Detail Panel -->
-        <div class="panel panel-default" id="token-detail-panel">
-            <div class="panel-heading">
-                <h3 class="panel-title"><i class="fa fa-search"></i> Token Detail</h3>
-            </div>
-            <div class="panel-body compact-panel">
-                <div id="token-detail-content">
-                    <p class="no-data-message"><i class="fa fa-hand-pointer-o"></i><br>Hover over a cell in the heatmap to see attention details.</p>
-                </div>
-            </div>
-        </div>
     </div>
 </div>
