@@ -147,7 +147,7 @@ cardImage: static/img/vis_cards/shidoku.png
         {{ algorithmOptions(
             title='Algorithm',
             options=[
-                {type: 'custom', content: '<div class="checkbox disabled-checkbox"><label><input type="checkbox" checked disabled><strong>Backtracking</strong> (base)</label></div>'},
+                {type: 'checkbox', label: '<strong>Backtracking</strong>', id: 'use-bt', checked: true},
                 {type: 'checkbox', label: '<strong>Forward Checking</strong>', id: 'use-fc'},
                 {type: 'checkbox', label: '<strong>MRV</strong> heuristic', id: 'use-mrv'},
                 {type: 'checkbox', label: '<strong>AC-3</strong> preprocessing', id: 'use-ac3'},

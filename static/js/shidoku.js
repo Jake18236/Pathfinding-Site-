@@ -112,7 +112,7 @@
 
     // Algorithm configurations for comparison
     const ALGORITHM_CONFIGS = [
-        { name: 'AC-3 Only', ac3Only: true },
+        { name: 'AC-3 Only', ac3: true, mrv: false, fc: false, mac: false, bt: false },
         { name: 'Plain Backtracking', ac3: false, mrv: false, fc: false, mac: false },
         { name: 'Backtracking + FC', ac3: false, mrv: false, fc: true, mac: false },
         { name: 'Backtracking + MRV', ac3: false, mrv: true, fc: false, mac: false },
@@ -660,7 +660,7 @@
         /**
          * Main solve function
          */
-        solve(puzzle, useAC3 = false, useMRV = false, useFC = false, useMAC = false) {
+        solve(puzzle, useAC3 = false, useMRV = false, useFC = false, useMAC = false, useBT = true) {
             this.reset();
 
             const state = new CSPState();
@@ -699,15 +699,17 @@
                 }
             }
 
-            // Run search
-            let success;
-            if (useMAC) {
-                success = this.mac(state, useMRV);
-            } else {
-                success = this.backtrack(state, useMRV, useFC);
+            // Run search if backtracking is enabled
+            let success = state.isSolved();
+            if (!success && useBT) {
+                if (useMAC) {
+                    success = this.mac(state, useMRV);
+                } else {
+                    success = this.backtrack(state, useMRV, useFC);
+                }
             }
 
-            if (!success) {
+            if (!success && useBT) {
                 this.addStep(StepType.UNSOLVABLE, state, {
                     reason: 'No solution exists'
                 });
@@ -722,39 +724,6 @@
             };
         }
 
-        /**
-         * Solve using AC-3 only (no backtracking search)
-         * This will only succeed if AC-3 alone can deduce all values
-         */
-        solveAC3Only(puzzle) {
-            this.reset();
-
-            const state = new CSPState();
-
-            // Initialize from puzzle string
-            for (let i = 0; i < puzzle.length && i < 16; i++) {
-                const ch = puzzle[i];
-                if (ch >= '1' && ch <= '4') {
-                    const cell = CELLS[i];
-                    const value = parseInt(ch);
-                    state.setFixed(cell, value);
-                }
-            }
-
-            // Run AC-3
-            const consistent = this.ac3(state);
-
-            // Check if puzzle is solved (all cells have exactly one value)
-            const success = consistent && state.isSolved();
-
-            return {
-                success,
-                steps: this.steps,
-                metrics: this.metrics,
-                solution: success ? state : null,
-                treeNodes: this.treeNodes
-            };
-        }
     }
 
     /**
@@ -2392,12 +2361,13 @@
             const useMRV = document.getElementById('use-mrv').checked;
             const useFC = document.getElementById('use-fc').checked;
             const useMAC = document.getElementById('use-mac').checked;
+            const useBT = document.getElementById('use-bt').checked;
 
             this.ui.clearLog();
             this.ui.resetMetrics();
             this.treeViz.clear();
 
-            const result = this.solver.solve(puzzle, useAC3, useMRV, useFC, useMAC);
+            const result = this.solver.solve(puzzle, useAC3, useMRV, useFC, useMAC, useBT);
 
             this.playback.load(result.steps);
             this.playback.play();
@@ -2424,12 +2394,13 @@
                 const useMRV = document.getElementById('use-mrv').checked;
                 const useFC = document.getElementById('use-fc').checked;
                 const useMAC = document.getElementById('use-mac').checked;
+                const useBT = document.getElementById('use-bt').checked;
 
                 this.ui.clearLog();
                 this.ui.resetMetrics();
                 this.treeViz.clear();
 
-                const result = this.solver.solve(puzzle, useAC3, useMRV, useFC, useMAC);
+                const result = this.solver.solve(puzzle, useAC3, useMRV, useFC, useMAC, useBT);
                 this.playback.load(result.steps);
             }
 
@@ -2456,17 +2427,12 @@
                 const startTime = performance.now();
                 let result;
 
-                if (config.ac3Only) {
-                    // Special case: run AC-3 only without backtracking
-                    result = solver.solveAC3Only(puzzle);
-                } else {
-                    result = solver.solve(puzzle, config.ac3, config.mrv, config.fc, config.mac);
-                }
+                result = solver.solve(puzzle, config.ac3, config.mrv, config.fc, config.mac, config.bt !== false);
                 const endTime = performance.now();
 
                 // Determine which metrics are applicable for this algorithm
-                const hasArcChecks = config.ac3Only || config.ac3 || config.mac;
-                const hasSearch = !config.ac3Only;
+                const hasArcChecks = config.ac3 || config.mac;
+                const hasSearch = config.bt !== false;
 
                 // Get the final snapshot from the last step
                 const finalSnapshot = result.steps.length > 0
@@ -2633,11 +2599,11 @@
             // Set the algorithm checkboxes to match this configuration
             if (result.config) {
                 const config = result.config;
-                // For AC-3 Only, set AC-3 checkbox but it won't run search anyway
-                document.getElementById('use-ac3').checked = config.ac3Only || config.ac3 || false;
+                document.getElementById('use-ac3').checked = config.ac3 || false;
                 document.getElementById('use-mrv').checked = config.mrv || false;
                 document.getElementById('use-fc').checked = config.fc || false;
                 document.getElementById('use-mac').checked = config.mac || false;
+                document.getElementById('use-bt').checked = config.bt !== false;
             }
         }
     }
