@@ -916,7 +916,7 @@
             } else {
                 softmaxBoxContentH = defaultChipH + fracGap * 2 + defaultChipH;
             }
-            const softmaxBoxPadY = Math.round(16 * eqScale);
+            const softmaxBoxPadY = Math.round(24 * eqScale);
             const softmaxBoxH = softmaxBoxContentH + softmaxBoxPadY * 2;
             const ctxUnderlayPadLayout = Math.round(8 * eqScale);
             const ctxLabelSpace = Math.round(18 * eqScale);
@@ -1576,7 +1576,7 @@
             // Returns { ctxUnderlayX, ctxUnderlayY, ctxUnderlayW, ctxUnderlayH, qTargetCenterX, qTargetTopY, kTargetCenterX, kTargetTopY, vChipCenterX, vChipTopY, resECenterX, resEChipY, smBoxCenterY }
             function drawEquationForHead(centerX, topY, headQ, headK, headV, headRawScores, headScaledScores, headAttnWeights, headLabel, skipResidualE) {
                 const softmaxBoxPadY_h = B_eq.softmaxBoxPadY;
-                const softmaxBoxPadX_h = Math.round(12 * scale);
+                const softmaxBoxPadX_h = Math.round(6 * scale);
                 const softmaxBoxH_h = B_eq.softmaxBoxH;
 
                 // Compute inner content width
