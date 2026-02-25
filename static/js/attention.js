@@ -1867,22 +1867,13 @@
                     .attr('width', boxW).attr('height', boxH)
                     .attr('rx', 6).attr('ry', 6)
                     .attr('fill', C.activeBorder).attr('fill-opacity', 0.04)
-                    .attr('stroke', C.activeBorder).attr('stroke-width', 1.5)
+                    .attr('stroke', C.activeBorder).attr('stroke-width', 3)
                     .attr('stroke-dasharray', `${4 * scale},${3 * scale}`);
 
-                // Title label on the box top edge
-                const titleLabelW = Math.round(charW * (`Head ${this.modelHead} / ${nHeads}`.length + 2));
-                const titleLabelH = Math.round(titleH * 0.8);
-                const titleLabelX = boxX + boxW / 2 - titleLabelW / 2;
-                const titleLabelY = boxY - titleLabelH / 2;
-                g.append('rect')
-                    .attr('x', titleLabelX).attr('y', titleLabelY)
-                    .attr('width', titleLabelW).attr('height', titleLabelH)
-                    .attr('rx', 3).attr('ry', 3)
-                    .attr('fill', C.canvasBg);
+                // Title label above upper-left corner
                 g.append('text')
-                    .attr('x', boxX + boxW / 2).attr('y', boxY)
-                    .attr('text-anchor', 'middle').attr('dominant-baseline', 'central')
+                    .attr('x', boxX).attr('y', boxY - 5 * scale)
+                    .attr('text-anchor', 'start').attr('dominant-baseline', 'auto')
                     .attr('font-family', MONO).attr('font-size', 9 * scale).attr('font-weight', '700')
                     .attr('fill', C.activeBorder)
                     .text(`Head ${this.modelHead} / ${nHeads}`);
