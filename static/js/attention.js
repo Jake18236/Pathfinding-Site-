@@ -942,7 +942,7 @@
             // Multi-head post-gallery stages: W_O → + E (Concat is now the nav bar)
             const woChipH = defaultChipH;
             const stageConcatH = 0;  // Concat is absorbed into the gallery nav area
-            const stageWoH = multiHead ? arrowH + woChipH : 0;         // arrow + W_O chip
+            const stageWoH = 0;  // W_O is drawn beside the Concat box, not below it
             const stageResidualH = multiHead ? arrowH + defaultChipH : 0; // arrow + output chip (with + E)
             // Stage 8: Arrow from equation/gallery to heatmap
             const stage8H = arrowH;
@@ -1823,6 +1823,8 @@
             // Variable to hold the equation result (for arrow routing and residual)
             let eqResult;
             let concatBoxBottomY = 0;  // set in multi-head nav, used in post-equation
+            let woChipCenterX = 0;    // W_O chip center (drawn beside Concat box)
+            let woChipBottomY = 0;    // W_O chip bottom edge
 
             if (B_eq.multiHead && activeData.heads && activeData.heads.length > 1) {
                 // ============ MULTI-HEAD CAROUSEL ============
@@ -1967,6 +1969,38 @@
                     .attr('fill', C.textMuted)
                     .text(`<${N}, ${dHead}>`);
 
+                // --- W_O chip to the right of the Concat box ---
+                const woGap = Math.round(10 * scale);
+                const concatBoxRightX = concatBoxX + concatBoxW;
+                const woW = charW * 5 + chipPadX * 2;
+                const woCenterY = concatBoxY + concatBoxH / 2;
+                const woX = concatBoxRightX + woGap + Math.round(12 * scale);  // after arrow space
+                const woY_nav = woCenterY - defaultChipH / 2;
+                const woChip = { color: C.sectionTitle, bg: C.canvasBg, border: C.activeBorder };
+                const woG = makeChip(woX, woY_nav, woW, defaultChipH, woChip);
+                woG.append('text')
+                    .attr('x', woX + woW / 2).attr('y', woY_nav + defaultChipH / 2 - 6 * scale)
+                    .attr('text-anchor', 'middle').attr('dominant-baseline', 'central')
+                    .attr('font-family', SERIF).attr('font-size', smallSize).attr('font-weight', 'bold')
+                    .attr('fill', C.sectionTitle).text('\u00b7 W\u2092');
+                chipDimLabel(woG, woX + woW / 2, woY_nav + defaultChipH / 2 + 7 * scale, `<${d}, ${d}>`);
+
+                // Horizontal arrow: Concat box right edge → W_O chip
+                const hArrowY = woCenterY;
+                const hArrowStartX = concatBoxRightX;
+                const hArrowEndX = woX;
+                g.append('line')
+                    .attr('x1', hArrowStartX).attr('y1', hArrowY)
+                    .attr('x2', hArrowEndX).attr('y2', hArrowY)
+                    .attr('stroke', navArrowColor).attr('stroke-width', 1.2 * scale);
+                g.append('polygon')
+                    .attr('points', `${hArrowEndX},${hArrowY} ${hArrowEndX - 4 * scale},${hArrowY - 3 * scale} ${hArrowEndX - 4 * scale},${hArrowY + 3 * scale}`)
+                    .attr('fill', navArrowColor);
+
+                // Store W_O position for post-equation arrow routing
+                woChipCenterX = woX + woW / 2;
+                woChipBottomY = woY_nav + defaultChipH;
+
                 // Draw head squares inside the concat box
                 for (let h = 0; h < nHeads; h++) {
                     const isActiveH = h === this.modelHead;
@@ -2056,30 +2090,15 @@
             let heatmapArrowStartX, heatmapArrowStartY;
 
             if (B_eq.multiHead) {
-                // Multi-head: nav/Concat box → W_O → (+ E) → heatmap
-                // (Concat box is drawn above as the nav squares container)
+                // Multi-head: W_O chip is drawn beside Concat box (in nav section above)
+                // Arrow from W_O down to Output + E → heatmap
                 const concatCenterX = flowCenterX;
 
-                // --- W_O chip ---
-                const woY = B_eq.stageWoY + B_eq.arrowH;
-                const woW = charW * 5 + chipPadX * 2;
-                const woX = concatCenterX - woW / 2;
-                const woChip = { color: C.sectionTitle, bg: C.canvasBg, border: C.activeBorder };
-                const woG = makeChip(woX, woY, woW, defaultChipH, woChip);
-                woG.append('text')
-                    .attr('x', woX + woW / 2).attr('y', woY + defaultChipH / 2 - 6 * scale)
-                    .attr('text-anchor', 'middle').attr('dominant-baseline', 'central')
-                    .attr('font-family', SERIF).attr('font-size', smallSize).attr('font-weight', 'bold')
-                    .attr('fill', C.sectionTitle).text('\u00b7 W\u2092');
-                chipDimLabel(woG, woX + woW / 2, woY + defaultChipH / 2 + 7 * scale, `<${d}, ${d}>`);
-
-                // Arrow from Concat box to W_O
-                arrowLine(concatCenterX, concatBoxBottomY, woY, smArrowColor);
-
-                // --- Residual + E (drawn inline after W_O) ---
+                // --- Residual + E (drawn below W_O, centered on flow) ---
                 const resY = B_eq.stageResidualY + B_eq.arrowH;
                 const outW = charW * 6 + chipPadX * 2;
-                const outX = concatCenterX - outW / 2;
+                const outCenterX = flowCenterX;
+                const outX = outCenterX - outW / 2;
                 // Output chip (result of W_O projection)
                 const outChip = { color: C.sectionTitle, bg: C.canvasBg, border: C.activeBorder };
                 const outG = makeChip(outX, resY, outW, defaultChipH, outChip);
@@ -2105,8 +2124,16 @@
                     .attr('fill', phaseIdx < PHASES.indexOf('SHOW_OUTPUT') ? C.textMuted : chipResE.color).text('E');
                 chipDimLabel(resEChipG, resEX + resEW / 2, resY + defaultChipH / 2 + 7 * scale, `<${N}, ${d}>`);
 
-                // Arrow from W_O to Output
-                arrowLine(concatCenterX, woY + defaultChipH, resY, smArrowColor);
+                // Elbow arrow from W_O chip down then left to Output
+                const elbowMidY = woChipBottomY + (resY - woChipBottomY) / 2;
+                g.append('path')
+                    .attr('d', `M${woChipCenterX},${woChipBottomY} L${woChipCenterX},${elbowMidY} L${outCenterX},${elbowMidY} L${outCenterX},${resY}`)
+                    .attr('fill', 'none').attr('stroke', smArrowColor)
+                    .attr('stroke-width', 1.2 * scale);
+                // Arrowhead at the bottom
+                g.append('polygon')
+                    .attr('points', `${outCenterX},${resY} ${outCenterX - 3.5 * scale},${resY - 5 * scale} ${outCenterX + 3.5 * scale},${resY - 5 * scale}`)
+                    .attr('fill', smArrowColor);
 
                 // Residual skip connection: E → + E chip
                 const skipLineX = resEX + resEW + 10 * scale;
@@ -2116,7 +2143,7 @@
                     .attr('stroke-width', 1.2 * scale)
                     .attr('stroke-dasharray', phaseIdx < PHASES.indexOf('SHOW_OUTPUT') ? `${3 * scale},${3 * scale}` : 'none');
 
-                heatmapArrowStartX = concatCenterX;
+                heatmapArrowStartX = outCenterX;
                 heatmapArrowStartY = resY + defaultChipH;
             } else {
                 // Single-head: residual skip connection → + E (already drawn inside equation)
