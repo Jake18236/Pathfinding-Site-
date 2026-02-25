@@ -1970,7 +1970,8 @@
                     .attr('stroke', C.activeBorder).attr('stroke-width', 1.2);
 
                 // "Concat" label centered on the bottom edge of the box
-                const concatLabelText = `Concat \u2192 <${N}, ${d}>`;
+                const concatDim = nHeads * dHead;
+                const concatLabelText = `Concat \u2192 <${N}, ${concatDim}>`;
                 const concatLabelW = Math.round(charW * (concatLabelText.length + 1.5));
                 const concatLabelH = Math.round(10 * scale);
                 const concatLabelX = concatBoxX + concatBoxW / 2 - concatLabelW / 2;
@@ -2006,7 +2007,7 @@
                     .attr('text-anchor', 'middle').attr('dominant-baseline', 'central')
                     .attr('font-family', SERIF).attr('font-size', smallSize).attr('font-weight', 'bold')
                     .attr('fill', C.sectionTitle).text('\u00b7 W\u2092');
-                chipDimLabel(woG, woX + woW / 2, woY_nav + defaultChipH / 2 + 7 * scale, `<${d}, ${d}>`);
+                chipDimLabel(woG, woX + woW / 2, woY_nav + defaultChipH / 2 + 7 * scale, `<${concatDim}, ${d}>`);
 
                 // Residual skip connection: E embedding → E skip chip (left side, straight down)
                 const resECenterX_nav = resEX_nav + resEW_nav / 2;
