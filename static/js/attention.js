@@ -1610,21 +1610,12 @@
                 const vChipX_h = dotVX_h + charW * 2 + gap;
                 const vChipCenterX_h = vChipX_h + vW_h / 2;
 
-                // Context Vectors underlay
+                // Context Vectors underlay dimensions (used for layout, but no box drawn)
                 const ctxUnderlayPad_h = Math.round(8 * scale);
                 const ctxUnderlayX_h = softmaxBoxX_h - ctxUnderlayPad_h;
                 const ctxUnderlayY_h = softmaxBoxY_h - ctxUnderlayPad_h;
                 const ctxUnderlayW_h = (vChipX_h + vW_h) - softmaxBoxX_h + ctxUnderlayPad_h * 2;
                 const ctxUnderlayH_h = softmaxBoxH_h + ctxUnderlayPad_h * 2;
-                const ctxChipG_h = makeChip(ctxUnderlayX_h, ctxUnderlayY_h, ctxUnderlayW_h, ctxUnderlayH_h, chipCtx);
-                // Dimension label
-                const ctxLabelY_h = ctxUnderlayY_h + ctxUnderlayH_h - 4 * scale;
-                g.append('text')
-                    .attr('x', ctxUnderlayX_h + ctxUnderlayW_h / 2).attr('y', ctxLabelY_h)
-                    .attr('text-anchor', 'middle').attr('dominant-baseline', 'alphabetic')
-                    .attr('font-family', MONO).attr('font-size', 6.3 * scale)
-                    .attr('fill', C.textMuted).attr('opacity', 0.7)
-                    .text(headLabel ? `Head ${headLabel} — <${N}, ${d}>` : `<${N}, ${d}>`);
 
                 // Softmax chip
                 const smBoxChipG_h = makeChip(softmaxBoxX_h, softmaxBoxY_h, softmaxBoxW_h, softmaxBoxH_h, chipSm);
@@ -1904,6 +1895,18 @@
                     phaseIdx < PHASES.indexOf('PROJECT_K') ? C.textMuted : wChips[1].fill,
                     phaseIdx < PHASES.indexOf('PROJECT_K'));
                 curvedArrow(vProjCenterX, arrowStartY, eqResult.vChipCenterX, eqResult.vChipTopY, vArrowColor, vLocked);
+
+                // Clickable overlay on the head container box (toggles ctxVectors expand)
+                g.append('rect')
+                    .attr('x', boxX).attr('y', boxY)
+                    .attr('width', boxW).attr('height', boxH)
+                    .attr('fill', 'transparent').attr('cursor', 'pointer')
+                    .on('click', function() {
+                        if (et.has('ctxVectors')) et.delete('ctxVectors');
+                        else et.add('ctxVectors');
+                        self.computeLayout();
+                        self.draw();
+                    });
 
                 // Nav: colored rounded squares inside a "Concat" box + prev/next arrows
                 const headColors = getHeadColors();
