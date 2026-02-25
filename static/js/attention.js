@@ -799,19 +799,44 @@
                 const scaleFactor = Math.sqrt(d);
                 const scaledScores = rawScores.map(r => r.map(s => s / scaleFactor));
 
+                // Helper: compute per-head scores
+                function computeHeadScores(hData) {
+                    const hd = hData.Q[0].length;
+                    const rs = [];
+                    for (let i = 0; i < N; i++) {
+                        const row = [];
+                        for (let j = 0; j < N; j++) {
+                            let s = 0;
+                            for (let k = 0; k < hd; k++) s += hData.Q[i][k] * hData.K[j][k];
+                            row.push(s);
+                        }
+                        rs.push(row);
+                    }
+                    const sf = Math.sqrt(hd);
+                    return { rawScores: rs, scaleFactor: sf, scaledScores: rs.map(r => r.map(v => v / sf)) };
+                }
+
                 // Get heads - use interpolated weights if animating
                 let heads;
                 if (this.layerAnimating && this.layerAnimProgress > 0) {
                     const interpolated = this.interpolateLayerWeights(this.layerAnimProgress);
-                    heads = interpolated || layerData.heads.map(h => ({
-                        attentionWeights: h.attention_weights,
-                        Q: h.Q, K: h.K, V: h.V, outputs: h.output,
-                    }));
+                    heads = interpolated || layerData.heads.map(h => {
+                        const scores = computeHeadScores(h);
+                        return {
+                            attentionWeights: h.attention_weights,
+                            Q: h.Q, K: h.K, V: h.V, outputs: h.output,
+                            rawScores: scores.rawScores, scaleFactor: scores.scaleFactor, scaledScores: scores.scaledScores,
+                        };
+                    });
                 } else {
-                    heads = layerData.heads.map(h => ({
-                        attentionWeights: h.attention_weights,
-                        Q: h.Q, K: h.K, V: h.V, outputs: h.output,
-                    }));
+                    heads = layerData.heads.map(h => {
+                        const scores = computeHeadScores(h);
+                        return {
+                            attentionWeights: h.attention_weights,
+                            Q: h.Q, K: h.K, V: h.V, outputs: h.output,
+                            rawScores: scores.rawScores, scaleFactor: scores.scaleFactor, scaledScores: scores.scaledScores,
+                        };
+                    });
                 }
 
                 return {
@@ -882,13 +907,7 @@
             const stage4H = branchH;
             // Stage 5: Projection row [E·Wq][E·Wk][E·Wv] (no labels)
             const stage5H = projRowH;
-            // Stage 5b: Head gallery (carousel of mini attention heatmaps)
-            const headCardH = Math.round(N * 8 + 30);  // mini heatmap + title + padding
-            const stageGalleryH = (this.numHeads > 1) ? headCardH + Math.round(25 * eqScale) : 0;
-            // Stage 6: Arrows from projections down to softmax box / V
-            const stage6H = arrowH;
-            // Stage 7: Softmax container box + "· V" at same level
-            // Softmax box content height
+            // Softmax box content height (shared computation for both paths)
             let softmaxBoxContentH;
             if (et.has('softmax') || et.has('scaled')) {
                 softmaxBoxContentH = matH;
@@ -899,13 +918,28 @@
             }
             const softmaxBoxPadY = Math.round(16 * eqScale);
             const softmaxBoxH = softmaxBoxContentH + softmaxBoxPadY * 2;
-            // V chip sits at same level as softmax box; stage 7 is the taller of the two
-            // Context Vectors underlay adds padding + label below
             const ctxUnderlayPadLayout = Math.round(8 * eqScale);
             const ctxLabelSpace = Math.round(18 * eqScale);
             const vContentH = et.has('V') ? matH : defaultChipH;
-            const stage7H = Math.max(softmaxBoxH, vContentH) + ctxUnderlayPadLayout * 2 + ctxLabelSpace;
-            // Stage 8: Arrow from stage 7 to heatmap
+            const equationRowH = Math.max(softmaxBoxH, vContentH) + ctxUnderlayPadLayout * 2 + ctxLabelSpace;
+
+            const multiHead = this.numHeads > 1;
+
+            // Head gallery: when multiHead, the carousel contains the full per-head equation
+            // Active card = full equation height; inactive cards = compact thumbnails
+            const galleryTitleH = Math.round(20 * eqScale);  // "Head 3 / 12" label
+            const galleryNavH = Math.round(20 * eqScale);    // nav dots + arrows
+            const galleryArrowFromProjH = arrowH;             // arrows from projections into the card
+            const headCardEquationH = galleryTitleH + galleryArrowFromProjH + equationRowH;
+            // Thumbnail card for inactive heads
+            const thumbCardH = Math.round(N * 8 + 30);
+            const stageGalleryH = multiHead ? headCardEquationH + galleryNavH : 0;
+
+            // Stage 6: Arrows from projections down to softmax box / V (only in single-head mode)
+            const stage6H = multiHead ? 0 : arrowH;
+            // Stage 7: Softmax equation row (only in single-head mode; in multiHead it's inside the gallery)
+            const stage7H = multiHead ? 0 : equationRowH;
+            // Stage 8: Arrow from equation/gallery to heatmap
             const stage8H = arrowH;
             // Stage 9: Heatmap/output panel
             const heatmapH = Math.round(N * 45 + 60);
@@ -916,6 +950,7 @@
             const flowH = preGallery + stageGalleryH + postGallery;
             const B_eq = {
                 y: y, h: flowH, matCellW, matCellH,
+                multiHead,
                 // Stage Y positions (computed cumulatively)
                 stage1Y: y,
                 stage2Y: y + stage1H,
@@ -930,8 +965,9 @@
                 stage9Y: y + preGallery + stageGalleryH + stage6H + stage7H + stage8H + 20,
                 // Stage heights for drawing
                 stage1H, stage2H, stage3H, stage4H, stage5H, stage6H, stage7H, stage8H, stage9H,
-                softmaxBoxContentH, softmaxBoxPadY, softmaxBoxH, vContentH,
-                defaultChipH, arrowH, branchH, headCardH,
+                softmaxBoxContentH, softmaxBoxPadY, softmaxBoxH, vContentH, equationRowH,
+                defaultChipH, arrowH, branchH,
+                headCardEquationH, thumbCardH, galleryTitleH, galleryNavH, galleryArrowFromProjH,
             };
             y += B_eq.h + ZONE_GAP;
 
@@ -1526,454 +1562,374 @@
                 chipDimLabel(wChipG, wCenterX, projRowY + defaultChipH / 2 + 7 * scale, `<${d}, ${d}>`);
             }
 
-            // ============ STAGE 5b: HEAD GALLERY (inline SVG carousel) ============
-            if (B_eq.stageGalleryH > 0 && activeData.heads && activeData.heads.length > 1) {
-                const galleryY = B_eq.stageGalleryY + 8;
-                const galleryH = B_eq.headCardH;
-                const nHeads = activeData.heads.length;
+            // ============ SHARED EQUATION DRAWING HELPER ============
+            // Draws softmax(Q·K^T/√dk)·V + E for a given head's data.
+            // Returns { ctxUnderlayX, ctxUnderlayY, ctxUnderlayW, ctxUnderlayH, qTargetCenterX, qTargetTopY, kTargetCenterX, kTargetTopY, vChipCenterX, vChipTopY, resECenterX, resEChipY, smBoxCenterY }
+            function drawEquationForHead(centerX, topY, headQ, headK, headV, headRawScores, headScaledScores, headAttnWeights, headLabel) {
+                const softmaxBoxPadY_h = B_eq.softmaxBoxPadY;
+                const softmaxBoxPadX_h = Math.round(12 * scale);
+                const softmaxBoxH_h = B_eq.softmaxBoxH;
 
-                // How many cards can fit
-                const cardW = Math.round(galleryH * 0.85);
-                const cardGap = Math.round(6 * scale);
-                const arrowW = Math.round(18 * scale);
-                const arrowGap = Math.round(6 * scale);
-                const availW = canvasW - arrowW * 2 - arrowGap * 4;
-                const maxVisible = Math.min(nHeads, Math.floor((availW + cardGap) / (cardW + cardGap)));
+                // Compute inner content width
+                let softmaxInnerW;
+                if (fracMode === 'softmax') {
+                    softmaxInnerW = matNxN.w;
+                } else if (fracMode === 'scaled') {
+                    softmaxInnerW = smTextW + gap + lparenW + matNxN.w + rparenW;
+                } else if (fracMode === 'QKT') {
+                    const fracW2 = Math.max(matNxN.w, scTextW);
+                    softmaxInnerW = smTextW + gap + lparenW + fracW2 + rparenW;
+                } else {
+                    const showQMat = fracMode === 'normal' && et.has('Q');
+                    const showKMat = fracMode === 'normal' && et.has('K');
+                    const qW2 = showQMat ? matNxD.w : qTextW;
+                    const kW2 = showKMat ? matNxD.w : kTextW;
+                    const numW2 = qW2 + dotTextW + kW2;
+                    const fracW2 = Math.max(numW2, scTextW);
+                    softmaxInnerW = smTextW + gap + lparenW + fracW2 + rparenW;
+                }
+                const softmaxBoxW_h = softmaxInnerW + softmaxBoxPadX_h * 2;
+                const softmaxBoxX_h = centerX - softmaxBoxW_h / 2;
+                const softmaxBoxY_h = topY + Math.round(8 * scale) + Math.round(4 * scale);
 
-                // Compute visible window based on activeHead
-                let visStart = Math.max(0, this.modelHead - Math.floor(maxVisible / 2));
-                if (visStart + maxVisible > nHeads) visStart = Math.max(0, nHeads - maxVisible);
-                const visEnd = Math.min(nHeads, visStart + maxVisible);
+                // V chip position
+                const showVMatrix = et.has('V');
+                const vW_h = showVMatrix ? matNxD.w : vTextW;
+                const smBoxRightEdge_h = softmaxBoxX_h + softmaxBoxW_h;
+                const dotVGap_h = gap * 1.5;
+                const dotVX_h = smBoxRightEdge_h + dotVGap_h;
+                const vChipX_h = dotVX_h + charW * 2 + gap;
+                const vChipCenterX_h = vChipX_h + vW_h / 2;
 
-                const totalCardsW = (visEnd - visStart) * cardW + (visEnd - visStart - 1) * cardGap;
-                const cardsStartX = (canvasW - totalCardsW) / 2;
+                // Context Vectors underlay
+                const ctxUnderlayPad_h = Math.round(8 * scale);
+                const ctxUnderlayX_h = softmaxBoxX_h - ctxUnderlayPad_h;
+                const ctxUnderlayY_h = softmaxBoxY_h - ctxUnderlayPad_h;
+                const ctxUnderlayW_h = (vChipX_h + vW_h) - softmaxBoxX_h + ctxUnderlayPad_h * 2;
+                const ctxUnderlayH_h = softmaxBoxH_h + ctxUnderlayPad_h * 2;
+                const ctxChipG_h = makeChip(ctxUnderlayX_h, ctxUnderlayY_h, ctxUnderlayW_h, ctxUnderlayH_h, chipCtx);
+                // Dimension label
+                const ctxLabelY_h = ctxUnderlayY_h + ctxUnderlayH_h - 4 * scale;
+                g.append('text')
+                    .attr('x', ctxUnderlayX_h + ctxUnderlayW_h / 2).attr('y', ctxLabelY_h)
+                    .attr('text-anchor', 'middle').attr('dominant-baseline', 'alphabetic')
+                    .attr('font-family', MONO).attr('font-size', 6.3 * scale)
+                    .attr('fill', C.textMuted).attr('opacity', 0.7)
+                    .text(headLabel ? `Head ${headLabel} — <${N}, ${d}>` : `<${N}, ${d}>`);
 
-                // Mini heatmap cell size
-                const heatCellSize = Math.max(3, Math.min(8, Math.floor((cardW - 8) / N)));
-                const heatSize = heatCellSize * N;
+                // Softmax chip
+                const smBoxChipG_h = makeChip(softmaxBoxX_h, softmaxBoxY_h, softmaxBoxW_h, softmaxBoxH_h, chipSm);
+                const smBoxCenterY_h = softmaxBoxY_h + softmaxBoxH_h / 2;
+                let sx_h = softmaxBoxX_h + softmaxBoxPadX_h;
 
-                for (let h = visStart; h < visEnd; h++) {
-                    const cx = cardsStartX + (h - visStart) * (cardW + cardGap);
-                    const isActive = h === this.modelHead;
-                    const weights = activeData.heads[h].attentionWeights || activeData.heads[h].attention_weights;
+                // Track Q/K^T positions
+                let qTCX = centerX - 20 * scale, kTCX = centerX + 20 * scale;
+                let qTTY = softmaxBoxY_h, kTTY = softmaxBoxY_h;
 
-                    const cardG = g.append('g').attr('class', 'head-gallery-card').style('cursor', 'pointer');
+                if (fracMode === 'softmax') {
+                    const matY = smBoxCenterY_h - matNxN.h / 2;
+                    drawMatrixGrid(smBoxChipG_h, sx_h, matY, headAttnWeights, N, N, C.sectionTitle, 2);
+                    dimLabel(sx_h + matNxN.w / 2, matY + matNxN.h, `<${N}, ${N}>`);
+                } else {
+                    g.append('text')
+                        .attr('x', sx_h + smTextW / 2).attr('y', smBoxCenterY_h - 6 * scale)
+                        .attr('text-anchor', 'middle').attr('dominant-baseline', 'central')
+                        .attr('font-family', SERIF).attr('font-size', smallSize).attr('font-weight', 'bold')
+                        .attr('fill', phaseIdx < PHASES.indexOf('APPLY_SOFTMAX') ? C.textMuted : chipSm.color)
+                        .text('softmax');
+                    g.append('text')
+                        .attr('x', sx_h + smTextW / 2).attr('y', smBoxCenterY_h + 7 * scale)
+                        .attr('text-anchor', 'middle').attr('dominant-baseline', 'central')
+                        .attr('font-family', MONO).attr('font-size', 6.3 * scale)
+                        .attr('fill', C.textMuted).attr('opacity', 0.7)
+                        .text(`<${N}, ${N}>`);
+                    sx_h += smTextW + gap;
+                    staticText(sx_h + lparenW / 2, smBoxCenterY_h, '(', mathSize + 10);
+                    sx_h += lparenW;
 
-                    // Card background
-                    cardG.append('rect')
-                        .attr('x', cx).attr('y', galleryY)
-                        .attr('width', cardW).attr('height', galleryH)
-                        .attr('rx', 4).attr('ry', 4)
-                        .attr('fill', isActive ? C.activeGlow : C.cellBg)
-                        .attr('stroke', isActive ? C.activeBorder : C.cellBorder)
-                        .attr('stroke-width', isActive ? 2 : 1);
+                    if (fracMode === 'scaled') {
+                        const matY = smBoxCenterY_h - matNxN.h / 2;
+                        const chipG2 = makeChip(sx_h, matY, matNxN.w, matNxN.h, chipSc, { isMatrix: true });
+                        drawMatrixGrid(chipG2, sx_h, matY, headScaledScores, N, N, C.scaleLabel, 2);
+                        dimLabel(sx_h + matNxN.w / 2, matY + matNxN.h, `<${N}, ${N}>`);
+                        sx_h += matNxN.w;
+                    } else {
+                        const showQMatrix = fracMode === 'normal' && et.has('Q');
+                        const showKMatrix = fracMode === 'normal' && et.has('K');
+                        let numW, numH;
+                        if (fracMode === 'QKT') {
+                            numW = matNxN.w; numH = matNxN.h;
+                        } else if (showQMatrix && showKMatrix) {
+                            numW = matNxD.w + dotTextW + matNxD.w; numH = matNxD.h;
+                        } else if (showQMatrix) {
+                            numW = matNxD.w + dotTextW + kTextW; numH = Math.max(matNxD.h, defaultChipH);
+                        } else if (showKMatrix) {
+                            numW = qTextW + dotTextW + matNxD.w; numH = Math.max(matNxD.h, defaultChipH);
+                        } else {
+                            numW = qTextW + dotTextW + kTextW; numH = defaultChipH;
+                        }
+                        const fracW2 = Math.max(numW, scTextW);
+                        const fracCenterX2 = sx_h + fracW2 / 2;
+                        const numY = smBoxCenterY_h - fracGap / 2 - numH;
 
-                    // Title
-                    cardG.append('text')
-                        .attr('x', cx + cardW / 2).attr('y', galleryY + 10)
-                        .attr('text-anchor', 'middle').attr('dominant-baseline', 'hanging')
-                        .attr('font-family', MONO).attr('font-size', 8).attr('font-weight', '600')
-                        .attr('fill', isActive ? C.activeBorder : C.textMuted)
-                        .text('H' + h);
-
-                    // Mini heatmap
-                    if (weights) {
-                        const heatX = cx + (cardW - heatSize) / 2;
-                        const heatY = galleryY + 20;
-                        for (let i = 0; i < N; i++) {
-                            for (let j = 0; j < N; j++) {
-                                cardG.append('rect')
-                                    .attr('x', heatX + j * heatCellSize)
-                                    .attr('y', heatY + i * heatCellSize)
-                                    .attr('width', heatCellSize - 0.5)
-                                    .attr('height', heatCellSize - 0.5)
-                                    .attr('fill', interpolateHeatColor(weights[i][j], C.heatCool, C.heatMid, C.heatWarm));
+                        if (fracMode === 'QKT') {
+                            const numStartX = fracCenterX2 - matNxN.w / 2;
+                            const chipG2 = makeChip(numStartX, numY, matNxN.w, matNxN.h, chipQKT, { isMatrix: true });
+                            drawMatrixGrid(chipG2, numStartX, numY, headRawScores, N, N, C.scaleLabel);
+                            g.append('text').attr('x', numStartX + matNxN.w / 2).attr('y', numY - 4)
+                                .attr('text-anchor', 'middle').attr('dominant-baseline', 'alphabetic')
+                                .attr('font-family', MONO).attr('font-size', 6.3 * scale)
+                                .attr('fill', C.textMuted).attr('opacity', 0.7).text(`<${N}, ${N}>`);
+                        } else {
+                            const numStartX = fracCenterX2 - numW / 2;
+                            let nx = numStartX;
+                            if (showQMatrix) {
+                                const qY = numY + (numH - matNxD.h) / 2;
+                                const chipG2 = makeChip(nx, qY, matNxD.w, matNxD.h, chipQ, { isMatrix: true });
+                                drawMatrixGrid(chipG2, nx, qY, headQ, N, d, C.qText);
+                                g.append('text').attr('x', nx + matNxD.w / 2).attr('y', qY - 4)
+                                    .attr('text-anchor', 'middle').attr('dominant-baseline', 'alphabetic')
+                                    .attr('font-family', MONO).attr('font-size', 6.3 * scale)
+                                    .attr('fill', C.textMuted).attr('opacity', 0.7).text(`<${N}, ${d}>`);
+                                qTCX = nx + matNxD.w / 2; qTTY = qY;
+                                nx += matNxD.w;
+                            } else {
+                                const qY = numY + (numH - defaultChipH) / 2;
+                                const qChipG = makeChip(nx, qY, qTextW, defaultChipH, chipQ);
+                                qChipG.append('text').attr('x', nx + qTextW / 2).attr('y', qY + defaultChipH / 2 - 6 * scale)
+                                    .attr('text-anchor', 'middle').attr('dominant-baseline', 'central')
+                                    .attr('font-family', SERIF).attr('font-size', mathSize - 1)
+                                    .attr('font-style', 'italic').attr('font-weight', 'bold')
+                                    .attr('fill', phaseIdx < PHASES.indexOf('PROJECT_Q') ? C.textMuted : chipQ.color).text('Q');
+                                chipDimLabel(qChipG, nx + qTextW / 2, qY + defaultChipH / 2 + 7 * scale, `<${N}, ${d}>`);
+                                qTCX = nx + qTextW / 2; qTTY = qY;
+                                nx += qTextW;
+                            }
+                            const dotY = numY + (numH - defaultChipH) / 2;
+                            const dotChipG2 = makeChip(nx, dotY, dotTextW, defaultChipH, chipQKT, { noBrackets: true });
+                            dotChipG2.append('text').attr('x', nx + dotTextW / 2).attr('y', dotY + defaultChipH / 2)
+                                .attr('text-anchor', 'middle').attr('dominant-baseline', 'central')
+                                .attr('font-family', SERIF).attr('font-size', mathSize - 1)
+                                .attr('fill', phaseIdx < PHASES.indexOf('COMPUTE_SCORES') ? C.textMuted : chipQKT.color).text('\u00b7');
+                            nx += dotTextW;
+                            if (showKMatrix) {
+                                const kY = numY + (numH - matNxD.h) / 2;
+                                const chipG2 = makeChip(nx, kY, matNxD.w, matNxD.h, chipK, { isMatrix: true });
+                                drawMatrixGrid(chipG2, nx, kY, headK, N, d, C.kText);
+                                g.append('text').attr('x', nx + matNxD.w / 2).attr('y', kY - 4)
+                                    .attr('text-anchor', 'middle').attr('dominant-baseline', 'alphabetic')
+                                    .attr('font-family', MONO).attr('font-size', 6.3 * scale)
+                                    .attr('fill', C.textMuted).attr('opacity', 0.7).text(`<${d}, ${N}>`);
+                                kTCX = nx + matNxD.w / 2; kTTY = kY;
+                                nx += matNxD.w;
+                            } else {
+                                const kY = numY + (numH - defaultChipH) / 2;
+                                const kChipG = makeChip(nx, kY, kTextW, defaultChipH, chipK);
+                                kChipG.append('text').attr('x', nx + kTextW / 2).attr('y', kY + defaultChipH / 2 - 6 * scale)
+                                    .attr('text-anchor', 'middle').attr('dominant-baseline', 'central')
+                                    .attr('font-family', SERIF).attr('font-size', mathSize - 1)
+                                    .attr('font-style', 'italic').attr('font-weight', 'bold')
+                                    .attr('fill', phaseIdx < PHASES.indexOf('PROJECT_K') ? C.textMuted : chipK.color).text('K\u1d40');
+                                chipDimLabel(kChipG, nx + kTextW / 2, kY + defaultChipH / 2 + 7 * scale, `<${d}, ${N}>`);
+                                kTCX = nx + kTextW / 2; kTTY = kY;
+                                nx += kTextW;
                             }
                         }
+                        // Fraction line
+                        g.append('line').attr('x1', fracCenterX2 - fracW2 / 2 + 2).attr('y1', smBoxCenterY_h)
+                            .attr('x2', fracCenterX2 + fracW2 / 2 - 2).attr('y2', smBoxCenterY_h)
+                            .attr('stroke', C.canvasText).attr('stroke-width', 1.2);
+                        // √dk
+                        const denY = smBoxCenterY_h + fracGap / 2;
+                        const denX = fracCenterX2 - scTextW / 2;
+                        const scChipG2 = makeChip(denX, denY, scTextW, defaultChipH, chipSc);
+                        scChipG2.append('text').attr('x', denX + scTextW / 2).attr('y', denY + defaultChipH / 2 - 6 * scale)
+                            .attr('text-anchor', 'middle').attr('dominant-baseline', 'central')
+                            .attr('font-family', SERIF).attr('font-size', mathSize - 1)
+                            .attr('font-style', 'italic').attr('font-weight', 'bold')
+                            .attr('fill', phaseIdx < PHASES.indexOf('SCALE_SCORES') ? C.textMuted : chipSc.color).text('\u221ad\u2096');
+                        chipDimLabel(scChipG2, denX + scTextW / 2, denY + defaultChipH / 2 + 7 * scale, `= ${Math.round(Math.sqrt(d))}`);
+                        sx_h += fracW2;
                     }
-
-                    // Click handler
-                    (function(idx, viz) {
-                        cardG.on('click', function() {
-                            viz.modelHead = idx;
-                            viz.computeLayout();
-                            viz.draw();
-                        });
-                    })(h, self);
+                    staticText(sx_h + rparenW / 2, smBoxCenterY_h, ')', mathSize + 10);
                 }
 
-                // Nav dots below cards
-                const dotsY = galleryY + galleryH + 6;
+                // "· V"
+                const vLocked_h = phaseIdx < PHASES.indexOf('PROJECT_V');
+                staticText(dotVX_h + charW, smBoxCenterY_h, '\u00b7', mathSize);
+                if (showVMatrix) {
+                    const matY = smBoxCenterY_h - matNxD.h / 2;
+                    const chipG2 = makeChip(vChipX_h, matY, matNxD.w, matNxD.h, chipV, { isMatrix: true });
+                    drawMatrixGrid(chipG2, vChipX_h, matY, headV, N, d, C.vText);
+                    dimLabel(vChipX_h + matNxD.w / 2, matY + matNxD.h, `<${N}, ${d}>`);
+                } else {
+                    const vChipY = smBoxCenterY_h - defaultChipH / 2;
+                    const vChipG2 = makeChip(vChipX_h, vChipY, vTextW, defaultChipH, chipV);
+                    vChipG2.append('text').attr('x', vChipX_h + vTextW / 2).attr('y', vChipY + defaultChipH / 2 - 6 * scale)
+                        .attr('text-anchor', 'middle').attr('dominant-baseline', 'central')
+                        .attr('font-family', SERIF).attr('font-size', mathSize)
+                        .attr('font-style', 'italic').attr('font-weight', 'bold')
+                        .attr('fill', vLocked_h ? C.textMuted : chipV.color).text('V');
+                    chipDimLabel(vChipG2, vChipX_h + vTextW / 2, vChipY + defaultChipH / 2 + 7 * scale, `<${N}, ${d}>`);
+                }
+
+                // "+ E"
+                const plusW_h = charW * 2.5;
+                const resETextW_h = eChipTextW;
+                const plusX_h = ctxUnderlayX_h + ctxUnderlayW_h + gap;
+                const plusColor_h = phaseIdx >= PHASES.indexOf('SHOW_OUTPUT') ? C.canvasText : C.textMuted;
+                staticText(plusX_h + plusW_h / 2, smBoxCenterY_h, '+', mathSize, plusColor_h);
+                const resEChipX_h = plusX_h + plusW_h;
+                const resEChipY_h = smBoxCenterY_h - defaultChipH / 2;
+                const resEChipG_h = makeChip(resEChipX_h, resEChipY_h, resETextW_h, defaultChipH, chipResE);
+                resEChipG_h.append('text').attr('x', resEChipX_h + resETextW_h / 2).attr('y', resEChipY_h + defaultChipH / 2 - 6 * scale)
+                    .attr('text-anchor', 'middle').attr('dominant-baseline', 'central')
+                    .attr('font-family', SERIF).attr('font-size', mathSize - 1)
+                    .attr('font-style', 'italic').attr('font-weight', 'bold')
+                    .attr('fill', phaseIdx < PHASES.indexOf('SHOW_OUTPUT') ? C.textMuted : chipResE.color).text('E');
+                chipDimLabel(resEChipG_h, resEChipX_h + resETextW_h / 2, resEChipY_h + defaultChipH / 2 + 7 * scale, `<${N}, ${d}>`);
+
+                const vChipTopY_h = smBoxCenterY_h - (showVMatrix ? matNxD.h : defaultChipH) / 2;
+                return {
+                    ctxUnderlayX: ctxUnderlayX_h, ctxUnderlayY: ctxUnderlayY_h,
+                    ctxUnderlayW: ctxUnderlayW_h, ctxUnderlayH: ctxUnderlayH_h,
+                    qTargetCenterX: qTCX, qTargetTopY: qTTY,
+                    kTargetCenterX: kTCX, kTargetTopY: kTTY,
+                    vChipCenterX: vChipCenterX_h, vChipTopY: vChipTopY_h,
+                    resECenterX: resEChipX_h + resETextW_h / 2, resEChipY: resEChipY_h,
+                    smBoxCenterY: smBoxCenterY_h,
+                    resETextW: resETextW_h, plusW: plusW_h,
+                };
+            }
+
+            // ============ Shared arrow start positions ============
+            const leftGroupCenterX = (projChipCenters[0] + projChipCenters[1]) / 2;
+            const vProjCenterX = projChipCenters[2];
+            const vLocked = phaseIdx < PHASES.indexOf('PROJECT_V');
+            const vArrowColor = vLocked ? C.textMuted : C.vFill;
+
+            // Variable to hold the equation result (for arrow routing and residual)
+            let eqResult;
+
+            if (B_eq.multiHead && activeData.heads && activeData.heads.length > 1) {
+                // ============ MULTI-HEAD CAROUSEL ============
+                // Active card shows full equation; inactive cards show mini thumbnails
+                const nHeads = activeData.heads.length;
+                const galleryY = B_eq.stageGalleryY;
+                const titleH = B_eq.galleryTitleH;
+                const arrowFromProjH = B_eq.galleryArrowFromProjH;
+                const navH = B_eq.galleryNavH;
+
+                // Active card's equation starts after title + arrows
+                const eqTopY = galleryY + titleH + arrowFromProjH;
+
+                // Title bar: "Head h / N"
+                g.append('text')
+                    .attr('x', canvasW / 2).attr('y', galleryY + titleH / 2)
+                    .attr('text-anchor', 'middle').attr('dominant-baseline', 'central')
+                    .attr('font-family', MONO).attr('font-size', 10 * scale).attr('font-weight', '700')
+                    .attr('fill', C.activeBorder)
+                    .text(`Head ${this.modelHead} / ${nHeads}`);
+
+                // Arrows from projections into the active card's equation
+                const arrowStartY = B_eq.stage5Y + B_eq.defaultChipH;
+                const activeHead = activeData.heads[this.modelHead];
+
+                // Draw the full equation for the active head
+                eqResult = drawEquationForHead(
+                    leftGroupCenterX, eqTopY,
+                    activeHead.Q, activeHead.K, activeHead.V,
+                    activeHead.rawScores || activeData.rawScores,
+                    activeHead.scaledScores || activeData.scaledScores,
+                    activeHead.attentionWeights || activeHead.attention_weights,
+                    String(this.modelHead)
+                );
+
+                // Deferred arrows: projections → Q, K^T, V inside the active card
+                curvedArrow(projChipCenters[0], arrowStartY, eqResult.qTargetCenterX, eqResult.qTargetTopY,
+                    phaseIdx < PHASES.indexOf('PROJECT_Q') ? C.textMuted : wChips[0].fill,
+                    phaseIdx < PHASES.indexOf('PROJECT_Q'));
+                curvedArrow(projChipCenters[1], arrowStartY, eqResult.kTargetCenterX, eqResult.kTargetTopY,
+                    phaseIdx < PHASES.indexOf('PROJECT_K') ? C.textMuted : wChips[1].fill,
+                    phaseIdx < PHASES.indexOf('PROJECT_K'));
+                curvedArrow(vProjCenterX, arrowStartY, eqResult.vChipCenterX, eqResult.vChipTopY, vArrowColor, vLocked);
+
+                // Nav dots + prev/next below the equation
+                const dotsY = galleryY + B_eq.headCardEquationH + navH / 2;
                 const dotR = 3;
                 const dotGap = 8;
                 const dotsW = nHeads * dotGap;
                 const dotsStartX = canvasW / 2 - dotsW / 2;
                 for (let h = 0; h < nHeads; h++) {
-                    const isActive = h === this.modelHead;
+                    const isActiveH = h === this.modelHead;
                     const dotG = g.append('g').style('cursor', 'pointer');
                     dotG.append('circle')
-                        .attr('cx', dotsStartX + h * dotGap + dotR)
-                        .attr('cy', dotsY)
-                        .attr('r', isActive ? dotR + 1 : dotR)
-                        .attr('fill', isActive ? C.activeBorder : C.cellBorder);
+                        .attr('cx', dotsStartX + h * dotGap + dotR).attr('cy', dotsY)
+                        .attr('r', isActiveH ? dotR + 1 : dotR)
+                        .attr('fill', isActiveH ? C.activeBorder : C.cellBorder);
                     (function(idx, viz) {
-                        dotG.on('click', function() {
-                            viz.modelHead = idx;
-                            viz.computeLayout();
-                            viz.draw();
-                        });
+                        dotG.on('click', function() { viz.modelHead = idx; viz.computeLayout(); viz.draw(); });
                     })(h, self);
                 }
-
-                // Prev/next arrows
-                if (visStart > 0) {
-                    const ax = cardsStartX - arrowW - arrowGap;
-                    const ay = galleryY + galleryH / 2;
-                    const arrowG = g.append('g').style('cursor', 'pointer');
-                    arrowG.append('circle').attr('cx', ax + arrowW / 2).attr('cy', ay).attr('r', arrowW / 2)
+                // Prev/next buttons
+                const navBtnR = Math.round(10 * scale);
+                if (this.modelHead > 0) {
+                    const prevG = g.append('g').style('cursor', 'pointer');
+                    prevG.append('circle').attr('cx', dotsStartX - 20).attr('cy', dotsY).attr('r', navBtnR)
                         .attr('fill', C.cellBg).attr('stroke', C.cellBorder);
-                    arrowG.append('text').attr('x', ax + arrowW / 2).attr('y', ay)
+                    prevG.append('text').attr('x', dotsStartX - 20).attr('y', dotsY)
                         .attr('text-anchor', 'middle').attr('dominant-baseline', 'central')
                         .attr('font-family', MONO).attr('font-size', 10).attr('fill', C.canvasText).text('\u25C0');
-                    arrowG.on('click', function() {
-                        self.modelHead = Math.max(0, self.modelHead - 1);
-                        self.computeLayout();
-                        self.draw();
-                    });
+                    prevG.on('click', function() { self.modelHead = Math.max(0, self.modelHead - 1); self.computeLayout(); self.draw(); });
                 }
-                if (visEnd < nHeads) {
-                    const ax = cardsStartX + totalCardsW + arrowGap;
-                    const ay = galleryY + galleryH / 2;
-                    const arrowG = g.append('g').style('cursor', 'pointer');
-                    arrowG.append('circle').attr('cx', ax + arrowW / 2).attr('cy', ay).attr('r', arrowW / 2)
+                if (this.modelHead < nHeads - 1) {
+                    const nextG = g.append('g').style('cursor', 'pointer');
+                    nextG.append('circle').attr('cx', dotsStartX + dotsW + 20).attr('cy', dotsY).attr('r', navBtnR)
                         .attr('fill', C.cellBg).attr('stroke', C.cellBorder);
-                    arrowG.append('text').attr('x', ax + arrowW / 2).attr('y', ay)
+                    nextG.append('text').attr('x', dotsStartX + dotsW + 20).attr('y', dotsY)
                         .attr('text-anchor', 'middle').attr('dominant-baseline', 'central')
                         .attr('font-family', MONO).attr('font-size', 10).attr('fill', C.canvasText).text('\u25B6');
-                    arrowG.on('click', function() {
-                        self.modelHead = Math.min(nHeads - 1, self.modelHead + 1);
-                        self.computeLayout();
-                        self.draw();
-                    });
-                }
-            }
-
-            // ============ STAGE 6: ARROWS FROM PROJECTIONS TO SOFTMAX BOX / V ============
-            // E·Wq and E·Wk center X — left group center
-            const leftGroupCenterX = (projChipCenters[0] + projChipCenters[1]) / 2;
-            // E·Wv center X — right side
-            const vProjCenterX = projChipCenters[2];
-
-            const stage6TopY = B_eq.stage6Y;
-            const stage7TopY = B_eq.stage7Y;
-
-            // Track Q/K^T actual positions (set during softmax box drawing)
-            let qTargetCenterX = leftGroupCenterX - 20 * scale;  // fallback
-            let kTargetCenterX = leftGroupCenterX + 20 * scale;  // fallback
-            let qTargetTopY = stage7TopY;  // fallback — updated to actual chip top Y
-            let kTargetTopY = stage7TopY;  // fallback
-            // Arrows drawn AFTER softmax box so we know exact Q/K positions
-
-            // E·Wv arrow goes down to V at stage 7 level (same as softmax box)
-            const vLocked = phaseIdx < PHASES.indexOf('PROJECT_V');
-            const vArrowColor = vLocked ? C.textMuted : C.vFill;
-            // stage9Y is now the heatmap panel
-
-            // ============ STAGE 7: SOFTMAX BOX + "· V" at same level ============
-            const softmaxBoxPadY = B_eq.softmaxBoxPadY;
-            const softmaxBoxPadX = Math.round(12 * scale);
-            const softmaxBoxH = B_eq.softmaxBoxH;
-
-            // Compute inner content width for the softmax box
-            let softmaxInnerW;
-            if (fracMode === 'softmax') {
-                softmaxInnerW = matNxN.w;
-            } else if (fracMode === 'scaled') {
-                softmaxInnerW = smTextW + gap + lparenW + matNxN.w + rparenW;
-            } else if (fracMode === 'QKT') {
-                const fracW = Math.max(matNxN.w, scTextW);
-                softmaxInnerW = smTextW + gap + lparenW + fracW + rparenW;
-            } else {
-                const showQMat = fracMode === 'normal' && et.has('Q');
-                const showKMat = fracMode === 'normal' && et.has('K');
-                const qW = showQMat ? matNxD.w : qTextW;
-                const kW = showKMat ? matNxD.w : kTextW;
-                const numW = qW + dotTextW + kW;
-                const fracW = Math.max(numW, scTextW);
-                softmaxInnerW = smTextW + gap + lparenW + fracW + rparenW;
-            }
-            const softmaxBoxW = softmaxInnerW + softmaxBoxPadX * 2;
-            const softmaxBoxX = leftGroupCenterX - softmaxBoxW / 2;
-            const softmaxBoxY = stage7TopY + Math.round(8 * scale) + Math.round(4 * scale); // offset for underlay pad + label space
-
-            // Pre-compute V chip position so we can size the Context Vectors underlay
-            const showVMatrix = et.has('V');
-            const vW = showVMatrix ? matNxD.w : vTextW;
-            const smBoxRightEdge = softmaxBoxX + softmaxBoxW;
-            const dotVGap = gap * 1.5;
-            const dotVX = smBoxRightEdge + dotVGap;
-            const vChipX = dotVX + charW * 2 + gap;
-            const vChipCenterX = vChipX + vW / 2;
-
-            // ---- Context Vectors underlay chip (spans softmax box through V chip) ----
-            const ctxUnderlayPad = Math.round(8 * scale);
-            const ctxUnderlayX = softmaxBoxX - ctxUnderlayPad;
-            const ctxUnderlayY = softmaxBoxY - ctxUnderlayPad;
-            const ctxUnderlayW = (vChipX + vW) - softmaxBoxX + ctxUnderlayPad * 2;
-            const ctxUnderlayH = softmaxBoxH + ctxUnderlayPad * 2;
-            const ctxChipG = makeChip(ctxUnderlayX, ctxUnderlayY, ctxUnderlayW, ctxUnderlayH, chipCtx);
-            // Dimension label at bottom of the underlay
-            const ctxLabelY = ctxUnderlayY + ctxUnderlayH - 4 * scale;
-            g.append('text')
-                .attr('x', ctxUnderlayX + ctxUnderlayW / 2).attr('y', ctxLabelY)
-                .attr('text-anchor', 'middle').attr('dominant-baseline', 'alphabetic')
-                .attr('font-family', MONO).attr('font-size', 6.3 * scale)
-                .attr('fill', C.textMuted).attr('opacity', 0.7)
-                .text(`<${N}, ${d}>`);
-
-            // Draw the softmax equation area as one clickable chip (on top of underlay)
-            const smBoxChipG = makeChip(softmaxBoxX, softmaxBoxY, softmaxBoxW, softmaxBoxH, chipSm);
-
-            // Inner content centerY for the softmax box
-            const smBoxCenterY = softmaxBoxY + softmaxBoxH / 2;
-            let sx = softmaxBoxX + softmaxBoxPadX;  // x cursor inside the box
-
-            if (fracMode === 'softmax') {
-                // Entire softmax(…) replaced by attention weight matrix
-                const matY = smBoxCenterY - matNxN.h / 2;
-                drawMatrixGrid(smBoxChipG, sx, matY, activeData.attentionWeights, N, N, C.sectionTitle, 2);
-                dimLabel(sx + matNxN.w / 2, matY + matNxN.h, `<${N}, ${N}>`);
-            } else {
-                // softmax label — plain text (the whole box is clickable)
-                g.append('text')
-                    .attr('x', sx + smTextW / 2).attr('y', smBoxCenterY - 6 * scale)
-                    .attr('text-anchor', 'middle').attr('dominant-baseline', 'central')
-                    .attr('font-family', SERIF).attr('font-size', smallSize).attr('font-weight', 'bold')
-                    .attr('fill', phaseIdx < PHASES.indexOf('APPLY_SOFTMAX') ? C.textMuted : chipSm.color)
-                    .text('softmax');
-                g.append('text')
-                    .attr('x', sx + smTextW / 2).attr('y', smBoxCenterY + 7 * scale)
-                    .attr('text-anchor', 'middle').attr('dominant-baseline', 'central')
-                    .attr('font-family', MONO).attr('font-size', 6.3 * scale)
-                    .attr('fill', C.textMuted).attr('opacity', 0.7)
-                    .text(`<${N}, ${N}>`);
-                sx += smTextW + gap;
-
-                // Opening paren
-                staticText(sx + lparenW / 2, smBoxCenterY, '(', mathSize + 10);
-                sx += lparenW;
-
-                if (fracMode === 'scaled') {
-                    // Entire fraction replaced by scaled scores matrix
-                    const matY = smBoxCenterY - matNxN.h / 2;
-                    const chipG = makeChip(sx, matY, matNxN.w, matNxN.h, chipSc, { isMatrix: true });
-                    drawMatrixGrid(chipG, sx, matY, activeData.scaledScores, N, N, C.scaleLabel, 2);
-                    dimLabel(sx + matNxN.w / 2, matY + matNxN.h, `<${N}, ${N}>`);
-                    sx += matNxN.w;
-                } else {
-                    // --- Draw fraction inside the box ---
-                    const showQMatrix = fracMode === 'normal' && et.has('Q');
-                    const showKMatrix = fracMode === 'normal' && et.has('K');
-                    let numW, numH;
-                    if (fracMode === 'QKT') {
-                        numW = matNxN.w;
-                        numH = matNxN.h;
-                    } else if (showQMatrix && showKMatrix) {
-                        numW = matNxD.w + dotTextW + matNxD.w;
-                        numH = matNxD.h;
-                    } else if (showQMatrix) {
-                        numW = matNxD.w + dotTextW + kTextW;
-                        numH = Math.max(matNxD.h, defaultChipH);
-                    } else if (showKMatrix) {
-                        numW = qTextW + dotTextW + matNxD.w;
-                        numH = Math.max(matNxD.h, defaultChipH);
-                    } else {
-                        numW = qTextW + dotTextW + kTextW;
-                        numH = defaultChipH;
-                    }
-                    const fracW = Math.max(numW, scTextW);
-                    const fracCenterX = sx + fracW / 2;
-                    const numY = smBoxCenterY - fracGap / 2 - numH;
-
-                    if (fracMode === 'QKT') {
-                        const numStartX = fracCenterX - matNxN.w / 2;
-                        const chipG = makeChip(numStartX, numY, matNxN.w, matNxN.h, chipQKT, { isMatrix: true });
-                        drawMatrixGrid(chipG, numStartX, numY, activeData.rawScores, N, N, C.scaleLabel);
-                        g.append('text')
-                            .attr('x', numStartX + matNxN.w / 2).attr('y', numY - 4)
-                            .attr('text-anchor', 'middle').attr('dominant-baseline', 'alphabetic')
-                            .attr('font-family', MONO).attr('font-size', 6.3 * scale)
-                            .attr('fill', C.textMuted).attr('opacity', 0.7)
-                            .text(`<${N}, ${N}>`);
-                    } else {
-                        const numStartX = fracCenterX - numW / 2;
-                        let nx = numStartX;
-
-                        if (showQMatrix) {
-                            const qY = numY + (numH - matNxD.h) / 2;
-                            const chipG = makeChip(nx, qY, matNxD.w, matNxD.h, chipQ, { isMatrix: true });
-                            drawMatrixGrid(chipG, nx, qY, activeData.Q, N, d, C.qText);
-                            g.append('text')
-                                .attr('x', nx + matNxD.w / 2).attr('y', qY - 4)
-                                .attr('text-anchor', 'middle').attr('dominant-baseline', 'alphabetic')
-                                .attr('font-family', MONO).attr('font-size', 6.3 * scale)
-                                .attr('fill', C.textMuted).attr('opacity', 0.7)
-                                .text(`<${N}, ${d}>`);
-                            qTargetCenterX = nx + matNxD.w / 2;
-                            qTargetTopY = qY;
-                            nx += matNxD.w;
-                        } else {
-                            const qY = numY + (numH - defaultChipH) / 2;
-                            const qChipG = makeChip(nx, qY, qTextW, defaultChipH, chipQ);
-                            qChipG.append('text')
-                                .attr('x', nx + qTextW / 2).attr('y', qY + defaultChipH / 2 - 6 * scale)
-                                .attr('text-anchor', 'middle').attr('dominant-baseline', 'central')
-                                .attr('font-family', SERIF).attr('font-size', mathSize - 1)
-                                .attr('font-style', 'italic').attr('font-weight', 'bold')
-                                .attr('fill', phaseIdx < PHASES.indexOf('PROJECT_Q') ? C.textMuted : chipQ.color)
-                                .text('Q');
-                            chipDimLabel(qChipG, nx + qTextW / 2, qY + defaultChipH / 2 + 7 * scale, `<${N}, ${d}>`);
-                            qTargetCenterX = nx + qTextW / 2;
-                            qTargetTopY = qY;
-                            nx += qTextW;
-                        }
-
-                        // · (dot — clickable to show QKT score matrix)
-                        const dotY = numY + (numH - defaultChipH) / 2;
-                        const dotChipG = makeChip(nx, dotY, dotTextW, defaultChipH, chipQKT, { noBrackets: true });
-                        dotChipG.append('text')
-                            .attr('x', nx + dotTextW / 2).attr('y', dotY + defaultChipH / 2)
-                            .attr('text-anchor', 'middle').attr('dominant-baseline', 'central')
-                            .attr('font-family', SERIF).attr('font-size', mathSize - 1)
-                            .attr('fill', phaseIdx < PHASES.indexOf('COMPUTE_SCORES') ? C.textMuted : chipQKT.color)
-                            .text('\u00b7');
-                        nx += dotTextW;
-
-                        if (showKMatrix) {
-                            const kY = numY + (numH - matNxD.h) / 2;
-                            const chipG = makeChip(nx, kY, matNxD.w, matNxD.h, chipK, { isMatrix: true });
-                            drawMatrixGrid(chipG, nx, kY, activeData.K, N, d, C.kText);
-                            g.append('text')
-                                .attr('x', nx + matNxD.w / 2).attr('y', kY - 4)
-                                .attr('text-anchor', 'middle').attr('dominant-baseline', 'alphabetic')
-                                .attr('font-family', MONO).attr('font-size', 6.3 * scale)
-                                .attr('fill', C.textMuted).attr('opacity', 0.7)
-                                .text(`<${d}, ${N}>`);
-                            kTargetCenterX = nx + matNxD.w / 2;
-                            kTargetTopY = kY;
-                            nx += matNxD.w;
-                        } else {
-                            const kY = numY + (numH - defaultChipH) / 2;
-                            const kChipG = makeChip(nx, kY, kTextW, defaultChipH, chipK);
-                            kChipG.append('text')
-                                .attr('x', nx + kTextW / 2).attr('y', kY + defaultChipH / 2 - 6 * scale)
-                                .attr('text-anchor', 'middle').attr('dominant-baseline', 'central')
-                                .attr('font-family', SERIF).attr('font-size', mathSize - 1)
-                                .attr('font-style', 'italic').attr('font-weight', 'bold')
-                                .attr('fill', phaseIdx < PHASES.indexOf('PROJECT_K') ? C.textMuted : chipK.color)
-                                .text('K\u1d40');
-                            chipDimLabel(kChipG, nx + kTextW / 2, kY + defaultChipH / 2 + 7 * scale, `<${d}, ${N}>`);
-                            kTargetCenterX = nx + kTextW / 2;
-                            kTargetTopY = kY;
-                            nx += kTextW;
-                        }
-                    }
-
-                    // Fraction line
-                    g.append('line')
-                        .attr('x1', fracCenterX - fracW / 2 + 2).attr('y1', smBoxCenterY)
-                        .attr('x2', fracCenterX + fracW / 2 - 2).attr('y2', smBoxCenterY)
-                        .attr('stroke', C.canvasText).attr('stroke-width', 1.2);
-
-                    // Denominator: [√dₖ]
-                    const denY = smBoxCenterY + fracGap / 2;
-                    const denX = fracCenterX - scTextW / 2;
-                    const scChipG = makeChip(denX, denY, scTextW, defaultChipH, chipSc);
-                    scChipG.append('text')
-                        .attr('x', denX + scTextW / 2).attr('y', denY + defaultChipH / 2 - 6 * scale)
-                        .attr('text-anchor', 'middle').attr('dominant-baseline', 'central')
-                        .attr('font-family', SERIF).attr('font-size', mathSize - 1)
-                        .attr('font-style', 'italic').attr('font-weight', 'bold')
-                        .attr('fill', phaseIdx < PHASES.indexOf('SCALE_SCORES') ? C.textMuted : chipSc.color)
-                        .text('\u221ad\u2096');
-                    chipDimLabel(scChipG, denX + scTextW / 2, denY + defaultChipH / 2 + 7 * scale, `= ${Math.round(Math.sqrt(d))}`);
-
-                    sx += fracW;
+                    nextG.on('click', function() { self.modelHead = Math.min(nHeads - 1, self.modelHead + 1); self.computeLayout(); self.draw(); });
                 }
 
-                // Closing paren
-                staticText(sx + rparenW / 2, smBoxCenterY, ')', mathSize + 10);
-            }
-
-            // "· V" to the RIGHT of the softmax box closing paren, at stage 7 level
-            staticText(dotVX + charW, smBoxCenterY, '\u00b7', mathSize);
-            if (showVMatrix) {
-                const matY = smBoxCenterY - matNxD.h / 2;
-                const chipG = makeChip(vChipX, matY, matNxD.w, matNxD.h, chipV, { isMatrix: true });
-                drawMatrixGrid(chipG, vChipX, matY, activeData.V, N, d, C.vText);
-                dimLabel(vChipX + matNxD.w / 2, matY + matNxD.h, `<${N}, ${d}>`);
             } else {
-                const vChipY = smBoxCenterY - defaultChipH / 2;
-                const vChipG = makeChip(vChipX, vChipY, vTextW, defaultChipH, chipV);
-                vChipG.append('text')
-                    .attr('x', vChipX + vTextW / 2).attr('y', vChipY + defaultChipH / 2 - 6 * scale)
-                    .attr('text-anchor', 'middle').attr('dominant-baseline', 'central')
-                    .attr('font-family', SERIF).attr('font-size', mathSize)
-                    .attr('font-style', 'italic').attr('font-weight', 'bold')
-                    .attr('fill', vLocked ? C.textMuted : chipV.color)
-                    .text('V');
-                chipDimLabel(vChipG, vChipX + vTextW / 2, vChipY + defaultChipH / 2 + 7 * scale, `<${N}, ${d}>`);
+                // ============ SINGLE-HEAD: STAGES 6+7 (original layout) ============
+                const stage6TopY = B_eq.stage6Y;
+                const stage7TopY = B_eq.stage7Y;
+
+                eqResult = drawEquationForHead(
+                    leftGroupCenterX, stage7TopY,
+                    activeData.Q, activeData.K, activeData.V,
+                    activeData.rawScores, activeData.scaledScores, activeData.attentionWeights,
+                    null
+                );
+
+                // Arrows from projections
+                curvedArrow(vProjCenterX, stage6TopY, eqResult.vChipCenterX, eqResult.vChipTopY, vArrowColor, vLocked);
+                curvedArrow(projChipCenters[0], stage6TopY, eqResult.qTargetCenterX, eqResult.qTargetTopY,
+                    phaseIdx < PHASES.indexOf('PROJECT_Q') ? C.textMuted : wChips[0].fill,
+                    phaseIdx < PHASES.indexOf('PROJECT_Q'));
+                curvedArrow(projChipCenters[1], stage6TopY, eqResult.kTargetCenterX, eqResult.kTargetTopY,
+                    phaseIdx < PHASES.indexOf('PROJECT_K') ? C.textMuted : wChips[1].fill,
+                    phaseIdx < PHASES.indexOf('PROJECT_K'));
             }
 
-            // E·Wv arrow curves to V chip at stage 7 level
-            const vChipTopY = smBoxCenterY - (showVMatrix ? matNxD.h : defaultChipH) / 2;
-            curvedArrow(vProjCenterX, stage6TopY, vChipCenterX, vChipTopY, vArrowColor, vLocked);
-
-            // Deferred arrows: E·Wq → Q and E·Wk → K^T (now we know actual positions)
-            {
-                const wc0 = wChips[0];
-                const w0Locked = phaseIdx < PHASES.indexOf(wc0.phase);
-                const w0Color = w0Locked ? C.textMuted : wc0.fill;
-                curvedArrow(projChipCenters[0], stage6TopY, qTargetCenterX, qTargetTopY, w0Color, w0Locked);
-
-                const wc1 = wChips[1];
-                const w1Locked = phaseIdx < PHASES.indexOf(wc1.phase);
-                const w1Color = w1Locked ? C.textMuted : wc1.fill;
-                curvedArrow(projChipCenters[1], stage6TopY, kTargetCenterX, kTargetTopY, w1Color, w1Locked);
-            }
-
-            // ============ "+ E" next to the Context Vectors underlay (same stage 7 level) ============
-            const plusW = charW * 2.5;
-            const resETextW = eChipTextW;
-            const plusX = ctxUnderlayX + ctxUnderlayW + gap;
-            const plusColor = phaseIdx >= PHASES.indexOf('SHOW_OUTPUT') ? C.canvasText : C.textMuted;
-            staticText(plusX + plusW / 2, smBoxCenterY, '+', mathSize, plusColor);
-            const resEChipX = plusX + plusW;
-            const resEChipY = smBoxCenterY - defaultChipH / 2;
-            const resEChipG = makeChip(resEChipX, resEChipY, resETextW, defaultChipH, chipResE);
-            resEChipG.append('text')
-                .attr('x', resEChipX + resETextW / 2).attr('y', resEChipY + defaultChipH / 2 - 6 * scale)
-                .attr('text-anchor', 'middle').attr('dominant-baseline', 'central')
-                .attr('font-family', SERIF).attr('font-size', mathSize - 1)
-                .attr('font-style', 'italic').attr('font-weight', 'bold')
-                .attr('fill', phaseIdx < PHASES.indexOf('SHOW_OUTPUT') ? C.textMuted : chipResE.color)
-                .text('E');
-            chipDimLabel(resEChipG, resEChipX + resETextW / 2, resEChipY + defaultChipH / 2 + 7 * scale, `<${N}, ${d}>`);
-            const resECenterX = resEChipX + resETextW / 2;
-
-            // Residual skip connection: line from E at top, down the right edge, to E at stage 7
+            // ============ RESIDUAL SKIP CONNECTION ============
             const residualColor = phaseIdx >= PHASES.indexOf('SHOW_OUTPUT') ? C.embedPos : C.textMuted;
-            const skipLineX = Math.max(resECenterX + resETextW / 2 + 10 * scale, ctxUnderlayX + ctxUnderlayW + plusW + resETextW + 15 * scale);
+            const skipLineX = Math.max(
+                eqResult.resECenterX + eqResult.resETextW / 2 + 10 * scale,
+                eqResult.ctxUnderlayX + eqResult.ctxUnderlayW + eqResult.plusW + eqResult.resETextW + 15 * scale
+            );
             g.append('path')
-                .attr('d', `M${flowCenterX + (showEMatrix ? matNxD.w/2 : eChipTextW/2)},${B_eq.stage3Y + (showEMatrix ? matNxD.h : defaultChipH) / 2} L${skipLineX},${B_eq.stage3Y + (showEMatrix ? matNxD.h : defaultChipH) / 2} L${skipLineX},${resEChipY + defaultChipH / 2} L${resECenterX + resETextW / 2},${resEChipY + defaultChipH / 2}`)
+                .attr('d', `M${flowCenterX + (showEMatrix ? matNxD.w/2 : eChipTextW/2)},${B_eq.stage3Y + (showEMatrix ? matNxD.h : defaultChipH) / 2} L${skipLineX},${B_eq.stage3Y + (showEMatrix ? matNxD.h : defaultChipH) / 2} L${skipLineX},${eqResult.resEChipY + defaultChipH / 2} L${eqResult.resECenterX + eqResult.resETextW / 2},${eqResult.resEChipY + defaultChipH / 2}`)
                 .attr('fill', 'none').attr('stroke', residualColor)
                 .attr('stroke-width', 1.2 * scale)
                 .attr('stroke-dasharray', phaseIdx < PHASES.indexOf('SHOW_OUTPUT') ? `${3 * scale},${3 * scale}` : 'none');
 
-            // ============ STAGE 8: ARROW FROM STAGE 7 TO HEATMAP ============
+            // ============ ARROW TO HEATMAP ============
             const smArrowColor = phaseIdx >= PHASES.indexOf('SHOW_OUTPUT') ? C.canvasText : C.textMuted;
-            const heatmapArrowX = ctxUnderlayX + ctxUnderlayW / 2;
-            arrowLine(heatmapArrowX, ctxUnderlayY + ctxUnderlayH, B_eq.stage9Y, smArrowColor);
+            const heatmapArrowX = eqResult.ctxUnderlayX + eqResult.ctxUnderlayW / 2;
+            arrowLine(heatmapArrowX, eqResult.ctxUnderlayY + eqResult.ctxUnderlayH, B_eq.stage9Y, smArrowColor);
 
             // ============ STAGE 9: BOTTOM PANEL (heatmap/output matrix) ============
             const bottomPanelY = B_eq.stage9Y;
