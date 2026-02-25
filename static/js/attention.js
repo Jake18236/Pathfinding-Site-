@@ -1825,6 +1825,7 @@
             let concatBoxBottomY = 0;  // set in multi-head nav, used in post-equation
             let woChipCenterX = 0;    // W_O chip center (drawn beside Concat box)
             let woChipBottomY = 0;    // W_O chip bottom edge
+            const residualColor = phaseIdx >= PHASES.indexOf('SHOW_OUTPUT') ? C.embedPos : C.textMuted;
 
             if (B_eq.multiHead && activeData.heads && activeData.heads.length > 1) {
                 // ============ MULTI-HEAD CAROUSEL ============
@@ -2096,8 +2097,7 @@
                     phaseIdx < PHASES.indexOf('PROJECT_K'));
             }
 
-            // ============ POST-EQUATION: CONCAT → W_O → + E (multi-head) or RESIDUAL (single-head) ============
-            const residualColor = phaseIdx >= PHASES.indexOf('SHOW_OUTPUT') ? C.embedPos : C.textMuted;
+            // ============ POST-EQUATION: RESIDUAL (single-head) or arrow to heatmap ============
             const smArrowColor = phaseIdx >= PHASES.indexOf('SHOW_OUTPUT') ? C.canvasText : C.textMuted;
             let heatmapArrowStartX, heatmapArrowStartY;
 
