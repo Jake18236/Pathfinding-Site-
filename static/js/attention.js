@@ -1917,22 +1917,51 @@
                 // Vertical positioning: concat row sits below the head box with an arrow gap
                 const navArrowGap = Math.round(8 * scale);
                 const concatRowTopY = boxBottomY + navArrowGap + Math.round(12 * scale);
+                const woCenterY = concatRowTopY + defaultChipH / 2;
+                const woY_nav = concatRowTopY;
+                const navArrowColor = phaseIdx >= PHASES.indexOf('SHOW_OUTPUT') ? C.canvasText : C.textMuted;
+                const plusColor = phaseIdx >= PHASES.indexOf('SHOW_OUTPUT') ? C.canvasText : C.textMuted;
+                const woGap = Math.round(6 * scale);
+
+                // Layout order: E + [Concat] · W_O
+                // Measure all widths first to center the whole row
+                const resEW_nav = eChipTextW;
+                const plusTextW = charW * 2.5;
+                const concatBoxPad = Math.round(6 * scale);
+                const concatBoxW = dotsW + concatBoxPad * 2;
+                const woW = charW * 5 + chipPadX * 2;
+                const totalRowW = resEW_nav + plusTextW + concatBoxW + woGap + woW;
+                const rowStartX = canvasW / 2 - totalRowW / 2;
+
+                // --- E chip (residual) ---
+                const resEX_nav = rowStartX;
+                const resEChipG_nav = makeChip(resEX_nav, woY_nav, resEW_nav, defaultChipH, chipResE);
+                resEChipG_nav.append('text')
+                    .attr('x', resEX_nav + resEW_nav / 2).attr('y', woY_nav + defaultChipH / 2 - 6 * scale)
+                    .attr('text-anchor', 'middle').attr('dominant-baseline', 'central')
+                    .attr('font-family', SERIF).attr('font-size', mathSize - 1)
+                    .attr('font-style', 'italic').attr('font-weight', 'bold')
+                    .attr('fill', phaseIdx < PHASES.indexOf('SHOW_OUTPUT') ? C.textMuted : chipResE.color).text('E');
+                chipDimLabel(resEChipG_nav, resEX_nav + resEW_nav / 2, woY_nav + defaultChipH / 2 + 7 * scale, `<${N}, ${d}>`);
+
+                // --- "+" ---
+                const plusStartX = resEX_nav + resEW_nav;
+                staticText(plusStartX + charW * 1.25, woCenterY, '+', mathSize, plusColor);
 
                 // --- Concat container box (same height as W_O chip) ---
-                const concatBoxPad = Math.round(6 * scale);
-                const concatBoxX = dotsStartX - concatBoxPad;
+                const concatBoxX = plusStartX + plusTextW;
                 const concatBoxY = concatRowTopY;
-                const concatBoxW = dotsW + concatBoxPad * 2;
-                const concatBoxH = defaultChipH;  // match W_O chip height
+                const concatBoxH = defaultChipH;
                 concatBoxBottomY = concatBoxY + concatBoxH;
+                const dotsOffsetInBox = concatBoxPad;
+                const actualDotsStartX = concatBoxX + dotsOffsetInBox;
 
                 // Center dot squares vertically within the concat box
-                const dotsY = concatBoxY + concatBoxH / 2;   // vertical center
+                const dotsY = concatBoxY + concatBoxH / 2;
                 const dotsTopY = dotsY - dotSize / 2;
 
                 // Arrow from head box bottom to the concat box
-                const activeSquareCenterX = dotsStartX + this.modelHead * (dotSize + dotGap) + dotSize / 2;
-                const navArrowColor = phaseIdx >= PHASES.indexOf('SHOW_OUTPUT') ? C.canvasText : C.textMuted;
+                const activeSquareCenterX = actualDotsStartX + this.modelHead * (dotSize + dotGap) + dotSize / 2;
                 arrowLine(activeSquareCenterX, boxBottomY, concatBoxY, navArrowColor);
 
                 g.append('rect')
@@ -1948,7 +1977,6 @@
                 const concatLabelH = Math.round(10 * scale);
                 const concatLabelX = concatBoxX + concatBoxW / 2 - concatLabelW / 2;
                 const concatLabelY = concatBoxBottomY - concatLabelH / 2;
-                // Background to mask the box border
                 g.append('rect')
                     .attr('x', concatLabelX).attr('y', concatLabelY)
                     .attr('width', concatLabelW).attr('height', concatLabelH)
@@ -1962,7 +1990,7 @@
                     .attr('fill', C.activeBorder)
                     .text(concatLabelText);
 
-                // Per-head dim label underneath active square (below the concat box)
+                // Per-head dim label underneath active square
                 const dimLabelY = concatBoxBottomY + Math.round(5 * scale);
                 g.append('text')
                     .attr('x', activeSquareCenterX).attr('y', dimLabelY)
@@ -1971,13 +1999,9 @@
                     .attr('fill', C.textMuted)
                     .text(`<${N}, ${dHead}>`);
 
-                // --- · W_O + E to the right of the Concat box ---
-                const woGap = Math.round(6 * scale);
+                // --- · W_O to the right of Concat box ---
                 const concatBoxRightX = concatBoxX + concatBoxW;
-                const woW = charW * 5 + chipPadX * 2;
-                const woCenterY = concatBoxY + concatBoxH / 2;
                 const woX = concatBoxRightX + woGap;
-                const woY_nav = woCenterY - defaultChipH / 2;
                 const woChip = { color: C.sectionTitle, bg: C.canvasBg, border: C.activeBorder };
                 const woG = makeChip(woX, woY_nav, woW, defaultChipH, woChip);
                 woG.append('text')
@@ -1987,27 +2011,12 @@
                     .attr('fill', C.sectionTitle).text('\u00b7 W\u2092');
                 chipDimLabel(woG, woX + woW / 2, woY_nav + defaultChipH / 2 + 7 * scale, `<${d}, ${d}>`);
 
-                // "+ E" right after W_O chip
-                const woRightX = woX + woW;
-                const plusColor = phaseIdx >= PHASES.indexOf('SHOW_OUTPUT') ? C.canvasText : C.textMuted;
-                staticText(woRightX + gap + charW * 1.25, woCenterY, '+', mathSize, plusColor);
-                const resEX_nav = woRightX + gap + charW * 2.5;
-                const resEW_nav = eChipTextW;
-                const resEChipG_nav = makeChip(resEX_nav, woY_nav, resEW_nav, defaultChipH, chipResE);
-                resEChipG_nav.append('text')
-                    .attr('x', resEX_nav + resEW_nav / 2).attr('y', woY_nav + defaultChipH / 2 - 6 * scale)
-                    .attr('text-anchor', 'middle').attr('dominant-baseline', 'central')
-                    .attr('font-family', SERIF).attr('font-size', mathSize - 1)
-                    .attr('font-style', 'italic').attr('font-weight', 'bold')
-                    .attr('fill', phaseIdx < PHASES.indexOf('SHOW_OUTPUT') ? C.textMuted : chipResE.color).text('E');
-                chipDimLabel(resEChipG_nav, resEX_nav + resEW_nav / 2, woY_nav + defaultChipH / 2 + 7 * scale, `<${N}, ${d}>`);
-
-                // Residual skip connection: E chip → + E (left side)
+                // Residual skip connection: E embedding → E chip (left side)
                 const skipLineX_nav = boxX - 10 * scale;
                 const eLeftEdge = flowCenterX - (showEMatrix ? matNxD.w / 2 : eChipTextW / 2);
                 const eMidY = B_eq.stage3Y + (showEMatrix ? matNxD.h : defaultChipH) / 2;
                 g.append('path')
-                    .attr('d', `M${eLeftEdge},${eMidY} L${skipLineX_nav},${eMidY} L${skipLineX_nav},${woCenterY} L${concatBoxX},${woCenterY}`)
+                    .attr('d', `M${eLeftEdge},${eMidY} L${skipLineX_nav},${eMidY} L${skipLineX_nav},${woCenterY} L${resEX_nav},${woCenterY}`)
                     .attr('fill', 'none').attr('stroke', residualColor)
                     .attr('stroke-width', 1.2 * scale)
                     .attr('stroke-dasharray', phaseIdx < PHASES.indexOf('SHOW_OUTPUT') ? `${3 * scale},${3 * scale}` : 'none');
@@ -2020,7 +2029,7 @@
                 for (let h = 0; h < nHeads; h++) {
                     const isActiveH = h === this.modelHead;
                     const hColor = headColors[h % headColors.length];
-                    const dotX = dotsStartX + h * (dotSize + dotGap);
+                    const dotX = actualDotsStartX + h * (dotSize + dotGap);
                     const dotG = g.append('g').style('cursor', 'pointer');
 
                     // Colored rounded square
