@@ -2002,11 +2002,12 @@
                     .attr('fill', phaseIdx < PHASES.indexOf('SHOW_OUTPUT') ? C.textMuted : chipResE.color).text('E');
                 chipDimLabel(resEChipG_nav, resEX_nav + resEW_nav / 2, woY_nav + defaultChipH / 2 + 7 * scale, `<${N}, ${d}>`);
 
-                // Residual skip connection: E chip → + E
-                const resERight_nav = resEX_nav + resEW_nav;
-                const skipLineX_nav = resERight_nav + 10 * scale;
+                // Residual skip connection: E chip → + E (left side)
+                const skipLineX_nav = boxX - 10 * scale;
+                const eLeftEdge = flowCenterX - (showEMatrix ? matNxD.w / 2 : eChipTextW / 2);
+                const eMidY = B_eq.stage3Y + (showEMatrix ? matNxD.h : defaultChipH) / 2;
                 g.append('path')
-                    .attr('d', `M${flowCenterX + (showEMatrix ? matNxD.w/2 : eChipTextW/2)},${B_eq.stage3Y + (showEMatrix ? matNxD.h : defaultChipH) / 2} L${skipLineX_nav},${B_eq.stage3Y + (showEMatrix ? matNxD.h : defaultChipH) / 2} L${skipLineX_nav},${woCenterY} L${resERight_nav},${woCenterY}`)
+                    .attr('d', `M${eLeftEdge},${eMidY} L${skipLineX_nav},${eMidY} L${skipLineX_nav},${woCenterY} L${concatBoxX},${woCenterY}`)
                     .attr('fill', 'none').attr('stroke', residualColor)
                     .attr('stroke-width', 1.2 * scale)
                     .attr('stroke-dasharray', phaseIdx < PHASES.indexOf('SHOW_OUTPUT') ? `${3 * scale},${3 * scale}` : 'none');
@@ -2086,13 +2087,13 @@
                 heatmapArrowStartX = woChipCenterX;
                 heatmapArrowStartY = woChipBottomY;
             } else {
-                // Single-head: residual skip connection → + E (already drawn inside equation)
-                const skipLineX = Math.max(
-                    eqResult.resECenterX + eqResult.resETextW / 2 + 10 * scale,
-                    eqResult.ctxUnderlayX + eqResult.ctxUnderlayW + eqResult.plusW + eqResult.resETextW + 15 * scale
-                );
+                // Single-head: residual skip connection → + E (left side)
+                const skipLineX = eqResult.ctxUnderlayX - 10 * scale;
+                const eLeftEdgeSH = flowCenterX - (showEMatrix ? matNxD.w / 2 : eChipTextW / 2);
+                const eMidYSH = B_eq.stage3Y + (showEMatrix ? matNxD.h : defaultChipH) / 2;
+                const resELeftSH = eqResult.resECenterX - eqResult.resETextW / 2;
                 g.append('path')
-                    .attr('d', `M${flowCenterX + (showEMatrix ? matNxD.w/2 : eChipTextW/2)},${B_eq.stage3Y + (showEMatrix ? matNxD.h : defaultChipH) / 2} L${skipLineX},${B_eq.stage3Y + (showEMatrix ? matNxD.h : defaultChipH) / 2} L${skipLineX},${eqResult.resEChipY + defaultChipH / 2} L${eqResult.resECenterX + eqResult.resETextW / 2},${eqResult.resEChipY + defaultChipH / 2}`)
+                    .attr('d', `M${eLeftEdgeSH},${eMidYSH} L${skipLineX},${eMidYSH} L${skipLineX},${eqResult.resEChipY + defaultChipH / 2} L${resELeftSH},${eqResult.resEChipY + defaultChipH / 2}`)
                     .attr('fill', 'none').attr('stroke', residualColor)
                     .attr('stroke-width', 1.2 * scale)
                     .attr('stroke-dasharray', phaseIdx < PHASES.indexOf('SHOW_OUTPUT') ? `${3 * scale},${3 * scale}` : 'none');
