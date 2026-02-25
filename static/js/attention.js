@@ -1923,18 +1923,27 @@
                 const plusColor = phaseIdx >= PHASES.indexOf('SHOW_OUTPUT') ? C.canvasText : C.textMuted;
                 const woGap = Math.round(6 * scale);
 
-                // Layout order: E + [Concat] · W_O
-                // Measure all widths first to center the whole row
+                // Layout order: E + [Concat · W_O] — combined width matches head box
                 const resEW_nav = eChipTextW;
                 const plusTextW = charW * 2.5;
-                const concatBoxPad = Math.round(6 * scale);
-                const concatBoxW = dotsW + concatBoxPad * 2;
-                const woW = charW * 5 + chipPadX * 2;
-                const totalRowW = resEW_nav + plusTextW + concatBoxW + woGap + woW;
-                const rowStartX = canvasW / 2 - totalRowW / 2;
 
-                // --- E chip (residual) ---
-                const resEX_nav = rowStartX;
+                // Concat + W_O together span boxW, aligned under the head box
+                const woW = charW * 5 + chipPadX * 2;
+                const concatBoxX = boxX;
+                const concatBoxY = concatRowTopY;
+                const concatBoxW = boxW - woGap - woW;  // concat gets remaining width
+                const concatBoxH = defaultChipH;
+                concatBoxBottomY = concatBoxY + concatBoxH;
+
+                // Head squares centered inside the concat box
+                const actualDotsStartX = concatBoxX + (concatBoxW - dotsW) / 2;
+
+                // Center dot squares vertically within the concat box
+                const dotsY = concatBoxY + concatBoxH / 2;
+                const dotsTopY = dotsY - dotSize / 2;
+
+                // --- E chip (residual) to the left ---
+                const resEX_nav = concatBoxX - plusTextW - resEW_nav;
                 const resEChipG_nav = makeChip(resEX_nav, woY_nav, resEW_nav, defaultChipH, chipResE);
                 resEChipG_nav.append('text')
                     .attr('x', resEX_nav + resEW_nav / 2).attr('y', woY_nav + defaultChipH / 2 - 6 * scale)
@@ -1944,26 +1953,15 @@
                     .attr('fill', phaseIdx < PHASES.indexOf('SHOW_OUTPUT') ? C.textMuted : chipResE.color).text('E');
                 chipDimLabel(resEChipG_nav, resEX_nav + resEW_nav / 2, woY_nav + defaultChipH / 2 + 7 * scale, `<${N}, ${d}>`);
 
-                // --- "+" ---
+                // --- "+" between E and Concat ---
                 const plusStartX = resEX_nav + resEW_nav;
                 staticText(plusStartX + charW * 1.25, woCenterY, '+', mathSize, plusColor);
-
-                // --- Concat container box (same height as W_O chip) ---
-                const concatBoxX = plusStartX + plusTextW;
-                const concatBoxY = concatRowTopY;
-                const concatBoxH = defaultChipH;
-                concatBoxBottomY = concatBoxY + concatBoxH;
-                const dotsOffsetInBox = concatBoxPad;
-                const actualDotsStartX = concatBoxX + dotsOffsetInBox;
-
-                // Center dot squares vertically within the concat box
-                const dotsY = concatBoxY + concatBoxH / 2;
-                const dotsTopY = dotsY - dotSize / 2;
 
                 // Arrow from head box bottom to the concat box
                 const activeSquareCenterX = actualDotsStartX + this.modelHead * (dotSize + dotGap) + dotSize / 2;
                 arrowLine(activeSquareCenterX, boxBottomY, concatBoxY, navArrowColor);
 
+                // --- Concat container box ---
                 g.append('rect')
                     .attr('x', concatBoxX).attr('y', concatBoxY)
                     .attr('width', concatBoxW).attr('height', concatBoxH)
@@ -1999,9 +1997,8 @@
                     .attr('fill', C.textMuted)
                     .text(`<${N}, ${dHead}>`);
 
-                // --- · W_O to the right of Concat box ---
-                const concatBoxRightX = concatBoxX + concatBoxW;
-                const woX = concatBoxRightX + woGap;
+                // --- · W_O right-aligned to match head box right edge ---
+                const woX = boxX + boxW - woW;
                 const woChip = { color: C.sectionTitle, bg: C.canvasBg, border: C.activeBorder };
                 const woG = makeChip(woX, woY_nav, woW, defaultChipH, woChip);
                 woG.append('text')
