@@ -1837,12 +1837,19 @@
                     null  // label drawn separately on the box
                 );
 
-                // ---- Head container box: wraps title + equation ----
+                // ---- Head container box: wraps projections + equation ----
                 const boxPad = Math.round(10 * scale);
-                // Horizontal: span from context underlay left edge to residual E right edge + padding
-                const boxX = eqResult.ctxUnderlayX - boxPad;
-                const boxY = galleryY;
-                const boxW = (eqResult.resECenterX + eqResult.resETextW / 2 + boxPad) - boxX + boxPad;
+                // Top: start above the projection row (stage5)
+                const boxY = B_eq.stage5Y - boxPad;
+                // Horizontal: span from leftmost projection chip to residual E right edge
+                const projLeftX = projChipXs[0];
+                const projRightX = projChipXs[2] + wChipW;
+                const eqLeftX = eqResult.ctxUnderlayX;
+                const eqRightX = eqResult.resECenterX + eqResult.resETextW / 2;
+                const boxX = Math.min(projLeftX, eqLeftX) - boxPad;
+                const boxRightX = Math.max(projRightX, eqRightX) + boxPad;
+                const boxW = boxRightX - boxX;
+                // Bottom: below the equation context underlay
                 const boxBottomY = eqResult.ctxUnderlayY + eqResult.ctxUnderlayH + boxPad;
                 const boxH = boxBottomY - boxY;
 
