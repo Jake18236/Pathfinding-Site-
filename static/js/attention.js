@@ -939,6 +939,12 @@
             const stage6H = multiHead ? 0 : arrowH;
             // Stage 7: Softmax equation row (only in single-head mode; in multiHead it's inside the gallery)
             const stage7H = multiHead ? 0 : equationRowH;
+            // Multi-head post-gallery stages: Concat → W_O → + E
+            const concatChipH = defaultChipH;
+            const woChipH = defaultChipH;
+            const stageConcatH = multiHead ? arrowH + concatChipH : 0;  // arrow + Concat chip
+            const stageWoH = multiHead ? arrowH + woChipH : 0;         // arrow + W_O chip
+            const stageResidualH = multiHead ? arrowH + defaultChipH : 0; // arrow + output chip (with + E)
             // Stage 8: Arrow from equation/gallery to heatmap
             const stage8H = arrowH;
             // Stage 9: Heatmap/output panel
@@ -946,7 +952,7 @@
             const stage9H = heatmapH;
 
             const preGallery = stage1H + stage2H + stage3H + stage4H + stage5H;
-            const postGallery = stage6H + stage7H + stage8H + 20 + stage9H;
+            const postGallery = stage6H + stage7H + stageConcatH + stageWoH + stageResidualH + stage8H + 20 + stage9H;
             const flowH = preGallery + stageGalleryH + postGallery;
             const B_eq = {
                 y: y, h: flowH, matCellW, matCellH,
@@ -961,10 +967,14 @@
                 stageGalleryH: stageGalleryH,
                 stage6Y: y + preGallery + stageGalleryH,
                 stage7Y: y + preGallery + stageGalleryH + stage6H,
-                stage8Y: y + preGallery + stageGalleryH + stage6H + stage7H,
-                stage9Y: y + preGallery + stageGalleryH + stage6H + stage7H + stage8H + 20,
+                stageConcatY: y + preGallery + stageGalleryH + stage6H + stage7H,
+                stageWoY: y + preGallery + stageGalleryH + stage6H + stage7H + stageConcatH,
+                stageResidualY: y + preGallery + stageGalleryH + stage6H + stage7H + stageConcatH + stageWoH,
+                stage8Y: y + preGallery + stageGalleryH + stage6H + stage7H + stageConcatH + stageWoH + stageResidualH,
+                stage9Y: y + preGallery + stageGalleryH + stage6H + stage7H + stageConcatH + stageWoH + stageResidualH + stage8H + 20,
                 // Stage heights for drawing
                 stage1H, stage2H, stage3H, stage4H, stage5H, stage6H, stage7H, stage8H, stage9H,
+                stageConcatH, stageWoH, stageResidualH, concatChipH, woChipH,
                 softmaxBoxContentH, softmaxBoxPadY, softmaxBoxH, vContentH, equationRowH,
                 defaultChipH, arrowH, branchH,
                 headCardEquationH, thumbCardH, galleryTitleH, galleryNavH, galleryArrowFromProjH,
@@ -1565,7 +1575,7 @@
             // ============ SHARED EQUATION DRAWING HELPER ============
             // Draws softmax(Q·K^T/√dk)·V + E for a given head's data.
             // Returns { ctxUnderlayX, ctxUnderlayY, ctxUnderlayW, ctxUnderlayH, qTargetCenterX, qTargetTopY, kTargetCenterX, kTargetTopY, vChipCenterX, vChipTopY, resECenterX, resEChipY, smBoxCenterY }
-            function drawEquationForHead(centerX, topY, headQ, headK, headV, headRawScores, headScaledScores, headAttnWeights, headLabel) {
+            function drawEquationForHead(centerX, topY, headQ, headK, headV, headRawScores, headScaledScores, headAttnWeights, headLabel, skipResidualE) {
                 const softmaxBoxPadY_h = B_eq.softmaxBoxPadY;
                 const softmaxBoxPadX_h = Math.round(12 * scale);
                 const softmaxBoxH_h = B_eq.softmaxBoxH;
@@ -1773,21 +1783,24 @@
                     chipDimLabel(vChipG2, vChipX_h + vTextW / 2, vChipY + defaultChipH / 2 + 7 * scale, `<${N}, ${d}>`);
                 }
 
-                // "+ E"
+                // "+ E" (only drawn for single-head; multi-head has Concat → W_O → + E)
                 const plusW_h = charW * 2.5;
                 const resETextW_h = eChipTextW;
-                const plusX_h = ctxUnderlayX_h + ctxUnderlayW_h + gap;
-                const plusColor_h = phaseIdx >= PHASES.indexOf('SHOW_OUTPUT') ? C.canvasText : C.textMuted;
-                staticText(plusX_h + plusW_h / 2, smBoxCenterY_h, '+', mathSize, plusColor_h);
-                const resEChipX_h = plusX_h + plusW_h;
-                const resEChipY_h = smBoxCenterY_h - defaultChipH / 2;
-                const resEChipG_h = makeChip(resEChipX_h, resEChipY_h, resETextW_h, defaultChipH, chipResE);
-                resEChipG_h.append('text').attr('x', resEChipX_h + resETextW_h / 2).attr('y', resEChipY_h + defaultChipH / 2 - 6 * scale)
-                    .attr('text-anchor', 'middle').attr('dominant-baseline', 'central')
-                    .attr('font-family', SERIF).attr('font-size', mathSize - 1)
-                    .attr('font-style', 'italic').attr('font-weight', 'bold')
-                    .attr('fill', phaseIdx < PHASES.indexOf('SHOW_OUTPUT') ? C.textMuted : chipResE.color).text('E');
-                chipDimLabel(resEChipG_h, resEChipX_h + resETextW_h / 2, resEChipY_h + defaultChipH / 2 + 7 * scale, `<${N}, ${d}>`);
+                let resEChipX_h = 0, resEChipY_h = 0;
+                if (!skipResidualE) {
+                    const plusX_h = ctxUnderlayX_h + ctxUnderlayW_h + gap;
+                    const plusColor_h = phaseIdx >= PHASES.indexOf('SHOW_OUTPUT') ? C.canvasText : C.textMuted;
+                    staticText(plusX_h + plusW_h / 2, smBoxCenterY_h, '+', mathSize, plusColor_h);
+                    resEChipX_h = plusX_h + plusW_h;
+                    resEChipY_h = smBoxCenterY_h - defaultChipH / 2;
+                    const resEChipG_h = makeChip(resEChipX_h, resEChipY_h, resETextW_h, defaultChipH, chipResE);
+                    resEChipG_h.append('text').attr('x', resEChipX_h + resETextW_h / 2).attr('y', resEChipY_h + defaultChipH / 2 - 6 * scale)
+                        .attr('text-anchor', 'middle').attr('dominant-baseline', 'central')
+                        .attr('font-family', SERIF).attr('font-size', mathSize - 1)
+                        .attr('font-style', 'italic').attr('font-weight', 'bold')
+                        .attr('fill', phaseIdx < PHASES.indexOf('SHOW_OUTPUT') ? C.textMuted : chipResE.color).text('E');
+                    chipDimLabel(resEChipG_h, resEChipX_h + resETextW_h / 2, resEChipY_h + defaultChipH / 2 + 7 * scale, `<${N}, ${d}>`);
+                }
 
                 const vChipTopY_h = smBoxCenterY_h - (showVMatrix ? matNxD.h : defaultChipH) / 2;
                 return {
@@ -1834,7 +1847,8 @@
                     activeHead.rawScores || activeData.rawScores,
                     activeHead.scaledScores || activeData.scaledScores,
                     activeHead.attentionWeights || activeHead.attention_weights,
-                    null  // label drawn separately on the box
+                    null,  // label drawn separately on the box
+                    true   // skip + E (multi-head has Concat → W_O → + E)
                 );
 
                 // ---- Head container box: wraps projections + equation ----
@@ -1935,7 +1949,8 @@
                     leftGroupCenterX, stage7TopY,
                     activeData.Q, activeData.K, activeData.V,
                     activeData.rawScores, activeData.scaledScores, activeData.attentionWeights,
-                    null
+                    null,
+                    false  // single-head: draw + E inline
                 );
 
                 // Arrows from projections
@@ -1948,22 +1963,110 @@
                     phaseIdx < PHASES.indexOf('PROJECT_K'));
             }
 
-            // ============ RESIDUAL SKIP CONNECTION ============
+            // ============ POST-EQUATION: CONCAT → W_O → + E (multi-head) or RESIDUAL (single-head) ============
             const residualColor = phaseIdx >= PHASES.indexOf('SHOW_OUTPUT') ? C.embedPos : C.textMuted;
-            const skipLineX = Math.max(
-                eqResult.resECenterX + eqResult.resETextW / 2 + 10 * scale,
-                eqResult.ctxUnderlayX + eqResult.ctxUnderlayW + eqResult.plusW + eqResult.resETextW + 15 * scale
-            );
-            g.append('path')
-                .attr('d', `M${flowCenterX + (showEMatrix ? matNxD.w/2 : eChipTextW/2)},${B_eq.stage3Y + (showEMatrix ? matNxD.h : defaultChipH) / 2} L${skipLineX},${B_eq.stage3Y + (showEMatrix ? matNxD.h : defaultChipH) / 2} L${skipLineX},${eqResult.resEChipY + defaultChipH / 2} L${eqResult.resECenterX + eqResult.resETextW / 2},${eqResult.resEChipY + defaultChipH / 2}`)
-                .attr('fill', 'none').attr('stroke', residualColor)
-                .attr('stroke-width', 1.2 * scale)
-                .attr('stroke-dasharray', phaseIdx < PHASES.indexOf('SHOW_OUTPUT') ? `${3 * scale},${3 * scale}` : 'none');
+            const smArrowColor = phaseIdx >= PHASES.indexOf('SHOW_OUTPUT') ? C.canvasText : C.textMuted;
+            let heatmapArrowStartX, heatmapArrowStartY;
+
+            if (B_eq.multiHead) {
+                // Multi-head: Concat → W_O → (+ E) → heatmap
+                const nHeads = activeData.heads.length;
+                const dHead = Math.floor(d / nHeads);
+                const concatCenterX = flowCenterX;
+
+                // --- Concat chip ---
+                const concatY = B_eq.stageConcatY + B_eq.arrowH;
+                const concatW = charW * 7 + chipPadX * 2;
+                const concatX = concatCenterX - concatW / 2;
+                const concatChip = { color: C.sectionTitle, bg: C.canvasBg, border: C.activeBorder };
+                const concatG = makeChip(concatX, concatY, concatW, defaultChipH, concatChip);
+                concatG.append('text')
+                    .attr('x', concatX + concatW / 2).attr('y', concatY + defaultChipH / 2 - 6 * scale)
+                    .attr('text-anchor', 'middle').attr('dominant-baseline', 'central')
+                    .attr('font-family', MONO).attr('font-size', smallSize).attr('font-weight', 'bold')
+                    .attr('fill', C.sectionTitle).text('Concat');
+                chipDimLabel(concatG, concatX + concatW / 2, concatY + defaultChipH / 2 + 7 * scale,
+                    `<${N}, ${nHeads}\u00d7${dHead}> \u2192 <${N}, ${d}>`);
+
+                // Arrow from equation to Concat
+                arrowLine(concatCenterX, eqResult.ctxUnderlayY + eqResult.ctxUnderlayH, concatY, smArrowColor);
+
+                // --- W_O chip ---
+                const woY = B_eq.stageWoY + B_eq.arrowH;
+                const woW = charW * 5 + chipPadX * 2;
+                const woX = concatCenterX - woW / 2;
+                const woChip = { color: C.sectionTitle, bg: C.canvasBg, border: C.activeBorder };
+                const woG = makeChip(woX, woY, woW, defaultChipH, woChip);
+                woG.append('text')
+                    .attr('x', woX + woW / 2).attr('y', woY + defaultChipH / 2 - 6 * scale)
+                    .attr('text-anchor', 'middle').attr('dominant-baseline', 'central')
+                    .attr('font-family', SERIF).attr('font-size', smallSize).attr('font-weight', 'bold')
+                    .attr('fill', C.sectionTitle).text('\u00b7 W\u2092');
+                chipDimLabel(woG, woX + woW / 2, woY + defaultChipH / 2 + 7 * scale, `<${d}, ${d}>`);
+
+                // Arrow from Concat to W_O
+                arrowLine(concatCenterX, concatY + defaultChipH, woY, smArrowColor);
+
+                // --- Residual + E (drawn inline after W_O) ---
+                const resY = B_eq.stageResidualY + B_eq.arrowH;
+                const outW = charW * 6 + chipPadX * 2;
+                const outX = concatCenterX - outW / 2;
+                // Output chip (result of W_O projection)
+                const outChip = { color: C.sectionTitle, bg: C.canvasBg, border: C.activeBorder };
+                const outG = makeChip(outX, resY, outW, defaultChipH, outChip);
+                outG.append('text')
+                    .attr('x', outX + outW / 2).attr('y', resY + defaultChipH / 2 - 6 * scale)
+                    .attr('text-anchor', 'middle').attr('dominant-baseline', 'central')
+                    .attr('font-family', SERIF).attr('font-size', smallSize).attr('font-weight', 'bold')
+                    .attr('fill', C.sectionTitle).text('Output');
+                chipDimLabel(outG, outX + outW / 2, resY + defaultChipH / 2 + 7 * scale, `<${N}, ${d}>`);
+
+                // "+ E" next to the output chip
+                const plusX = outX + outW + gap;
+                const plusColor = phaseIdx >= PHASES.indexOf('SHOW_OUTPUT') ? C.canvasText : C.textMuted;
+                staticText(plusX + charW * 1.25, resY + defaultChipH / 2, '+', mathSize, plusColor);
+                const resEX = plusX + charW * 2.5;
+                const resEW = eChipTextW;
+                const resEChipG = makeChip(resEX, resY, resEW, defaultChipH, chipResE);
+                resEChipG.append('text')
+                    .attr('x', resEX + resEW / 2).attr('y', resY + defaultChipH / 2 - 6 * scale)
+                    .attr('text-anchor', 'middle').attr('dominant-baseline', 'central')
+                    .attr('font-family', SERIF).attr('font-size', mathSize - 1)
+                    .attr('font-style', 'italic').attr('font-weight', 'bold')
+                    .attr('fill', phaseIdx < PHASES.indexOf('SHOW_OUTPUT') ? C.textMuted : chipResE.color).text('E');
+                chipDimLabel(resEChipG, resEX + resEW / 2, resY + defaultChipH / 2 + 7 * scale, `<${N}, ${d}>`);
+
+                // Arrow from W_O to Output
+                arrowLine(concatCenterX, woY + defaultChipH, resY, smArrowColor);
+
+                // Residual skip connection: E → + E chip
+                const skipLineX = resEX + resEW + 10 * scale;
+                g.append('path')
+                    .attr('d', `M${flowCenterX + (showEMatrix ? matNxD.w/2 : eChipTextW/2)},${B_eq.stage3Y + (showEMatrix ? matNxD.h : defaultChipH) / 2} L${skipLineX},${B_eq.stage3Y + (showEMatrix ? matNxD.h : defaultChipH) / 2} L${skipLineX},${resY + defaultChipH / 2} L${resEX + resEW},${resY + defaultChipH / 2}`)
+                    .attr('fill', 'none').attr('stroke', residualColor)
+                    .attr('stroke-width', 1.2 * scale)
+                    .attr('stroke-dasharray', phaseIdx < PHASES.indexOf('SHOW_OUTPUT') ? `${3 * scale},${3 * scale}` : 'none');
+
+                heatmapArrowStartX = concatCenterX;
+                heatmapArrowStartY = resY + defaultChipH;
+            } else {
+                // Single-head: residual skip connection → + E (already drawn inside equation)
+                const skipLineX = Math.max(
+                    eqResult.resECenterX + eqResult.resETextW / 2 + 10 * scale,
+                    eqResult.ctxUnderlayX + eqResult.ctxUnderlayW + eqResult.plusW + eqResult.resETextW + 15 * scale
+                );
+                g.append('path')
+                    .attr('d', `M${flowCenterX + (showEMatrix ? matNxD.w/2 : eChipTextW/2)},${B_eq.stage3Y + (showEMatrix ? matNxD.h : defaultChipH) / 2} L${skipLineX},${B_eq.stage3Y + (showEMatrix ? matNxD.h : defaultChipH) / 2} L${skipLineX},${eqResult.resEChipY + defaultChipH / 2} L${eqResult.resECenterX + eqResult.resETextW / 2},${eqResult.resEChipY + defaultChipH / 2}`)
+                    .attr('fill', 'none').attr('stroke', residualColor)
+                    .attr('stroke-width', 1.2 * scale)
+                    .attr('stroke-dasharray', phaseIdx < PHASES.indexOf('SHOW_OUTPUT') ? `${3 * scale},${3 * scale}` : 'none');
+
+                heatmapArrowStartX = eqResult.ctxUnderlayX + eqResult.ctxUnderlayW / 2;
+                heatmapArrowStartY = eqResult.ctxUnderlayY + eqResult.ctxUnderlayH;
+            }
 
             // ============ ARROW TO HEATMAP ============
-            const smArrowColor = phaseIdx >= PHASES.indexOf('SHOW_OUTPUT') ? C.canvasText : C.textMuted;
-            const heatmapArrowX = eqResult.ctxUnderlayX + eqResult.ctxUnderlayW / 2;
-            arrowLine(heatmapArrowX, eqResult.ctxUnderlayY + eqResult.ctxUnderlayH, B_eq.stage9Y, smArrowColor);
+            arrowLine(heatmapArrowStartX, heatmapArrowStartY, B_eq.stage9Y, smArrowColor);
 
             // ============ STAGE 9: BOTTOM PANEL (heatmap/output matrix) ============
             const bottomPanelY = B_eq.stage9Y;
