@@ -1916,23 +1916,26 @@
                 const navBtnR = Math.round(11 * scale);
                 const navBtnGap = Math.round(8 * scale);
 
-                // Vertical positioning: squares sit below the head box with an arrow gap
+                // Vertical positioning: concat row sits below the head box with an arrow gap
                 const navArrowGap = Math.round(8 * scale);
-                const dotsTopY = boxBottomY + navArrowGap + Math.round(6 * scale);
-                const dotsY = dotsTopY + dotSize / 2;         // center of squares
+                const concatRowTopY = boxBottomY + navArrowGap + Math.round(12 * scale);
 
-                // Arrow from head box bottom to the active head's nav square
-                const activeSquareCenterX = dotsStartX + this.modelHead * (dotSize + dotGap) + dotSize / 2;
-                const navArrowColor = phaseIdx >= PHASES.indexOf('SHOW_OUTPUT') ? C.canvasText : C.textMuted;
-                arrowLine(activeSquareCenterX, boxBottomY, dotsTopY, navArrowColor);
-
-                // --- Concat container box around all head squares ---
+                // --- Concat container box (same height as W_O chip) ---
                 const concatBoxPad = Math.round(6 * scale);
                 const concatBoxX = dotsStartX - concatBoxPad;
-                const concatBoxY = dotsTopY - concatBoxPad;
+                const concatBoxY = concatRowTopY;
                 const concatBoxW = dotsW + concatBoxPad * 2;
-                const concatBoxH = dotSize + concatBoxPad * 2;
+                const concatBoxH = defaultChipH;  // match W_O chip height
                 concatBoxBottomY = concatBoxY + concatBoxH;
+
+                // Center dot squares vertically within the concat box
+                const dotsY = concatBoxY + concatBoxH / 2;   // vertical center
+                const dotsTopY = dotsY - dotSize / 2;
+
+                // Arrow from head box bottom to the concat box
+                const activeSquareCenterX = dotsStartX + this.modelHead * (dotSize + dotGap) + dotSize / 2;
+                const navArrowColor = phaseIdx >= PHASES.indexOf('SHOW_OUTPUT') ? C.canvasText : C.textMuted;
+                arrowLine(activeSquareCenterX, boxBottomY, concatBoxY, navArrowColor);
 
                 g.append('rect')
                     .attr('x', concatBoxX).attr('y', concatBoxY)
