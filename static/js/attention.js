@@ -939,10 +939,9 @@
             const stage6H = multiHead ? 0 : arrowH;
             // Stage 7: Softmax equation row (only in single-head mode; in multiHead it's inside the gallery)
             const stage7H = multiHead ? 0 : equationRowH;
-            // Multi-head post-gallery stages: Concat → W_O → + E
-            const concatChipH = defaultChipH;
+            // Multi-head post-gallery stages: W_O → + E (Concat is now the nav bar)
             const woChipH = defaultChipH;
-            const stageConcatH = multiHead ? arrowH + concatChipH : 0;  // arrow + Concat chip
+            const stageConcatH = 0;  // Concat is absorbed into the gallery nav area
             const stageWoH = multiHead ? arrowH + woChipH : 0;         // arrow + W_O chip
             const stageResidualH = multiHead ? arrowH + defaultChipH : 0; // arrow + output chip (with + E)
             // Stage 8: Arrow from equation/gallery to heatmap
@@ -974,7 +973,7 @@
                 stage9Y: y + preGallery + stageGalleryH + stage6H + stage7H + stageConcatH + stageWoH + stageResidualH + stage8H + 20,
                 // Stage heights for drawing
                 stage1H, stage2H, stage3H, stage4H, stage5H, stage6H, stage7H, stage8H, stage9H,
-                stageConcatH, stageWoH, stageResidualH, concatChipH, woChipH,
+                stageConcatH, stageWoH, stageResidualH, woChipH,
                 softmaxBoxContentH, softmaxBoxPadY, softmaxBoxH, vContentH, equationRowH,
                 defaultChipH, arrowH, branchH,
                 headCardEquationH, thumbCardH, galleryTitleH, galleryNavH, galleryArrowFromProjH,
@@ -1823,6 +1822,7 @@
 
             // Variable to hold the equation result (for arrow routing and residual)
             let eqResult;
+            let concatBoxBottomY = 0;  // set in multi-head nav, used in post-equation
 
             if (B_eq.multiHead && activeData.heads && activeData.heads.length > 1) {
                 // ============ MULTI-HEAD CAROUSEL ============
@@ -1902,27 +1902,72 @@
                     phaseIdx < PHASES.indexOf('PROJECT_K'));
                 curvedArrow(vProjCenterX, arrowStartY, eqResult.vChipCenterX, eqResult.vChipTopY, vArrowColor, vLocked);
 
-                // Nav: colored rounded squares (like RNN cell carousel) + prev/next arrows
+                // Nav: colored rounded squares inside a "Concat" box + prev/next arrows
                 const headColors = getHeadColors();
                 const dHead = Math.floor(d / nHeads);
-                const dotSize = Math.round(14 * scale);      // ~50% larger than before (was 9)
+                const dotSize = Math.round(14 * scale);      // square side length
                 const dotGap = Math.round(4 * scale);         // gap between squares
                 const dotRadius = Math.round(3 * scale);      // corner radius
                 const dotsW = nHeads * (dotSize + dotGap) - dotGap;
                 const dotsStartX = canvasW / 2 - dotsW / 2;
                 const navBtnR = Math.round(11 * scale);
                 const navBtnGap = Math.round(8 * scale);
-                // Vertical positioning: squares sit below the box with an arrow gap
+
+                // Vertical positioning: squares sit below the head box with an arrow gap
                 const navArrowGap = Math.round(8 * scale);
-                const dotsTopY = boxBottomY + navArrowGap + Math.round(6 * scale);  // top of squares
+                const dotsTopY = boxBottomY + navArrowGap + Math.round(6 * scale);
                 const dotsY = dotsTopY + dotSize / 2;         // center of squares
-                const dimLabelY = dotsTopY + dotSize + Math.round(6 * scale); // dim label below active
 
                 // Arrow from head box bottom to the active head's nav square
                 const activeSquareCenterX = dotsStartX + this.modelHead * (dotSize + dotGap) + dotSize / 2;
                 const navArrowColor = phaseIdx >= PHASES.indexOf('SHOW_OUTPUT') ? C.canvasText : C.textMuted;
                 arrowLine(activeSquareCenterX, boxBottomY, dotsTopY, navArrowColor);
 
+                // --- Concat container box around all head squares ---
+                const concatBoxPad = Math.round(6 * scale);
+                const concatBoxX = dotsStartX - concatBoxPad;
+                const concatBoxY = dotsTopY - concatBoxPad;
+                const concatBoxW = dotsW + concatBoxPad * 2;
+                const concatBoxH = dotSize + concatBoxPad * 2;
+                concatBoxBottomY = concatBoxY + concatBoxH;
+
+                g.append('rect')
+                    .attr('x', concatBoxX).attr('y', concatBoxY)
+                    .attr('width', concatBoxW).attr('height', concatBoxH)
+                    .attr('rx', 5).attr('ry', 5)
+                    .attr('fill', C.canvasBg).attr('fill-opacity', 0.6)
+                    .attr('stroke', C.activeBorder).attr('stroke-width', 1.2);
+
+                // "Concat" label centered on the bottom edge of the box
+                const concatLabelText = `Concat \u2192 <${N}, ${d}>`;
+                const concatLabelW = Math.round(charW * (concatLabelText.length + 1.5));
+                const concatLabelH = Math.round(10 * scale);
+                const concatLabelX = concatBoxX + concatBoxW / 2 - concatLabelW / 2;
+                const concatLabelY = concatBoxBottomY - concatLabelH / 2;
+                // Background to mask the box border
+                g.append('rect')
+                    .attr('x', concatLabelX).attr('y', concatLabelY)
+                    .attr('width', concatLabelW).attr('height', concatLabelH)
+                    .attr('rx', 3).attr('ry', 3)
+                    .attr('fill', C.canvasBg);
+                g.append('text')
+                    .attr('x', concatBoxX + concatBoxW / 2).attr('y', concatBoxBottomY)
+                    .attr('text-anchor', 'middle').attr('dominant-baseline', 'central')
+                    .attr('font-family', MONO).attr('font-size', Math.round(6.5 * scale))
+                    .attr('font-weight', '600')
+                    .attr('fill', C.activeBorder)
+                    .text(concatLabelText);
+
+                // Per-head dim label underneath active square (below the concat box)
+                const dimLabelY = concatBoxBottomY + Math.round(5 * scale);
+                g.append('text')
+                    .attr('x', activeSquareCenterX).attr('y', dimLabelY)
+                    .attr('text-anchor', 'middle').attr('dominant-baseline', 'hanging')
+                    .attr('font-family', MONO).attr('font-size', Math.round(6 * scale))
+                    .attr('fill', C.textMuted)
+                    .text(`<${N}, ${dHead}>`);
+
+                // Draw head squares inside the concat box
                 for (let h = 0; h < nHeads; h++) {
                     const isActiveH = h === this.modelHead;
                     const hColor = headColors[h % headColors.length];
@@ -1953,24 +1998,14 @@
                         .attr('opacity', isActiveH ? 1 : 0.6)
                         .text(h);
 
-                    // Dimension label underneath the active square
-                    if (isActiveH) {
-                        g.append('text')
-                            .attr('x', dotX + dotSize / 2).attr('y', dimLabelY)
-                            .attr('text-anchor', 'middle').attr('dominant-baseline', 'hanging')
-                            .attr('font-family', MONO).attr('font-size', Math.round(6 * scale))
-                            .attr('fill', C.textMuted)
-                            .text(`<${N}, ${dHead}>`);
-                    }
-
                     (function(idx, viz) {
                         dotG.on('click', function() { viz.modelHead = idx; viz.computeLayout(); viz.draw(); });
                     })(h, self);
                 }
 
-                // Prev arrow button
+                // Prev arrow button (outside concat box, left)
                 if (this.modelHead > 0) {
-                    const prevCx = dotsStartX - navBtnGap - navBtnR;
+                    const prevCx = concatBoxX - navBtnGap - navBtnR;
                     const prevG = g.append('g').style('cursor', 'pointer');
                     prevG.append('circle').attr('cx', prevCx).attr('cy', dotsY).attr('r', navBtnR)
                         .attr('fill', C.cellBg).attr('stroke', C.cellBorder).attr('stroke-width', 1.2);
@@ -1980,9 +2015,9 @@
                     prevG.on('click', function() { self.modelHead = Math.max(0, self.modelHead - 1); self.computeLayout(); self.draw(); });
                 }
 
-                // Next arrow button
+                // Next arrow button (outside concat box, right)
                 if (this.modelHead < nHeads - 1) {
-                    const nextCx = dotsStartX + dotsW + navBtnGap + navBtnR;
+                    const nextCx = concatBoxX + concatBoxW + navBtnGap + navBtnR;
                     const nextG = g.append('g').style('cursor', 'pointer');
                     nextG.append('circle').attr('cx', nextCx).attr('cy', dotsY).attr('r', navBtnR)
                         .attr('fill', C.cellBg).attr('stroke', C.cellBorder).attr('stroke-width', 1.2);
@@ -2021,27 +2056,9 @@
             let heatmapArrowStartX, heatmapArrowStartY;
 
             if (B_eq.multiHead) {
-                // Multi-head: Concat → W_O → (+ E) → heatmap
-                const nHeads = activeData.heads.length;
-                const dHead = Math.floor(d / nHeads);
+                // Multi-head: nav/Concat box → W_O → (+ E) → heatmap
+                // (Concat box is drawn above as the nav squares container)
                 const concatCenterX = flowCenterX;
-
-                // --- Concat chip ---
-                const concatY = B_eq.stageConcatY + B_eq.arrowH;
-                const concatW = charW * 7 + chipPadX * 2;
-                const concatX = concatCenterX - concatW / 2;
-                const concatChip = { color: C.sectionTitle, bg: C.canvasBg, border: C.activeBorder };
-                const concatG = makeChip(concatX, concatY, concatW, defaultChipH, concatChip);
-                concatG.append('text')
-                    .attr('x', concatX + concatW / 2).attr('y', concatY + defaultChipH / 2 - 6 * scale)
-                    .attr('text-anchor', 'middle').attr('dominant-baseline', 'central')
-                    .attr('font-family', MONO).attr('font-size', smallSize).attr('font-weight', 'bold')
-                    .attr('fill', C.sectionTitle).text('Concat');
-                chipDimLabel(concatG, concatX + concatW / 2, concatY + defaultChipH / 2 + 7 * scale,
-                    `<${N}, ${nHeads}\u00d7${dHead}> \u2192 <${N}, ${d}>`);
-
-                // Arrow from equation to Concat
-                arrowLine(concatCenterX, eqResult.ctxUnderlayY + eqResult.ctxUnderlayH, concatY, smArrowColor);
 
                 // --- W_O chip ---
                 const woY = B_eq.stageWoY + B_eq.arrowH;
@@ -2056,8 +2073,8 @@
                     .attr('fill', C.sectionTitle).text('\u00b7 W\u2092');
                 chipDimLabel(woG, woX + woW / 2, woY + defaultChipH / 2 + 7 * scale, `<${d}, ${d}>`);
 
-                // Arrow from Concat to W_O
-                arrowLine(concatCenterX, concatY + defaultChipH, woY, smArrowColor);
+                // Arrow from Concat box to W_O
+                arrowLine(concatCenterX, concatBoxBottomY, woY, smArrowColor);
 
                 // --- Residual + E (drawn inline after W_O) ---
                 const resY = B_eq.stageResidualY + B_eq.arrowH;
