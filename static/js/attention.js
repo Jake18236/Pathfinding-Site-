@@ -1907,7 +1907,7 @@
 
                 // Nav: colored rounded squares inside a "Concat" box + prev/next arrows
                 const headColors = getHeadColors();
-                const dHead = Math.floor(d / nHeads);
+                const dHead = d;  // each head projects to full d (projection matrices are <d, d>)
                 const dotSize = Math.round(14 * scale);      // square side length
                 const dotGap = Math.round(4 * scale);         // gap between squares
                 const dotRadius = Math.round(3 * scale);      // corner radius
