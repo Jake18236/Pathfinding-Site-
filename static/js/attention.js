@@ -928,7 +928,7 @@
             // Head gallery: when multiHead, the carousel contains the full per-head equation
             // Active card = full equation height; inactive cards = compact thumbnails
             const galleryTitleH = Math.round(20 * eqScale);  // "Head 3 / 12" label
-            const galleryNavH = Math.round(20 * eqScale);    // nav dots + arrows
+            const galleryNavH = Math.round(38 * eqScale);    // nav squares + dim label + arrow from box
             const galleryArrowFromProjH = arrowH;             // arrows from projections into the card
             const headCardEquationH = galleryTitleH + galleryArrowFromProjH + equationRowH;
             // Thumbnail card for inactive heads
@@ -1904,24 +1904,33 @@
 
                 // Nav: colored rounded squares (like RNN cell carousel) + prev/next arrows
                 const headColors = getHeadColors();
-                const dotsY = galleryY + B_eq.headCardEquationH + navH / 2;
-                const dotSize = Math.round(9 * scale);       // square side length
-                const dotGap = Math.round(3 * scale);        // gap between squares
-                const dotRadius = Math.round(2.5 * scale);   // corner radius
+                const dHead = Math.floor(d / nHeads);
+                const dotSize = Math.round(14 * scale);      // ~50% larger than before (was 9)
+                const dotGap = Math.round(4 * scale);         // gap between squares
+                const dotRadius = Math.round(3 * scale);      // corner radius
                 const dotsW = nHeads * (dotSize + dotGap) - dotGap;
                 const dotsStartX = canvasW / 2 - dotsW / 2;
-                const navBtnR = Math.round(10 * scale);
+                const navBtnR = Math.round(11 * scale);
                 const navBtnGap = Math.round(8 * scale);
+                // Vertical positioning: squares sit below the box with an arrow gap
+                const navArrowGap = Math.round(8 * scale);
+                const dotsTopY = boxBottomY + navArrowGap + Math.round(6 * scale);  // top of squares
+                const dotsY = dotsTopY + dotSize / 2;         // center of squares
+                const dimLabelY = dotsTopY + dotSize + Math.round(6 * scale); // dim label below active
+
+                // Arrow from head box bottom to the active head's nav square
+                const activeSquareCenterX = dotsStartX + this.modelHead * (dotSize + dotGap) + dotSize / 2;
+                const navArrowColor = phaseIdx >= PHASES.indexOf('SHOW_OUTPUT') ? C.canvasText : C.textMuted;
+                arrowLine(activeSquareCenterX, boxBottomY, dotsTopY, navArrowColor);
 
                 for (let h = 0; h < nHeads; h++) {
                     const isActiveH = h === this.modelHead;
                     const hColor = headColors[h % headColors.length];
                     const dotX = dotsStartX + h * (dotSize + dotGap);
-                    const dotY = dotsY - dotSize / 2;
                     const dotG = g.append('g').style('cursor', 'pointer');
 
                     // Colored rounded square
-                    const activeScale = isActiveH ? 1.25 : 1;
+                    const activeScale = isActiveH ? 1.2 : 1;
                     const drawSize = Math.round(dotSize * activeScale);
                     const drawX = dotX + dotSize / 2 - drawSize / 2;
                     const drawY = dotsY - drawSize / 2;
@@ -1934,14 +1943,24 @@
                         .attr('stroke-width', isActiveH ? 1.5 : 1)
                         .attr('opacity', isActiveH ? 1 : 0.5);
 
-                    // Head number label inside active square
+                    // Head number label inside square
+                    dotG.append('text')
+                        .attr('x', dotX + dotSize / 2).attr('y', dotsY)
+                        .attr('text-anchor', 'middle').attr('dominant-baseline', 'central')
+                        .attr('font-family', MONO).attr('font-size', Math.round(7 * scale))
+                        .attr('font-weight', isActiveH ? '700' : '500')
+                        .attr('fill', isActiveH ? C.canvasBg : hColor)
+                        .attr('opacity', isActiveH ? 1 : 0.6)
+                        .text(h);
+
+                    // Dimension label underneath the active square
                     if (isActiveH) {
-                        dotG.append('text')
-                            .attr('x', dotX + dotSize / 2).attr('y', dotsY)
-                            .attr('text-anchor', 'middle').attr('dominant-baseline', 'central')
+                        g.append('text')
+                            .attr('x', dotX + dotSize / 2).attr('y', dimLabelY)
+                            .attr('text-anchor', 'middle').attr('dominant-baseline', 'hanging')
                             .attr('font-family', MONO).attr('font-size', Math.round(6 * scale))
-                            .attr('font-weight', '700').attr('fill', C.canvasBg)
-                            .text(h);
+                            .attr('fill', C.textMuted)
+                            .text(`<${N}, ${dHead}>`);
                     }
 
                     (function(idx, viz) {
@@ -1957,7 +1976,7 @@
                         .attr('fill', C.cellBg).attr('stroke', C.cellBorder).attr('stroke-width', 1.2);
                     prevG.append('text').attr('x', prevCx).attr('y', dotsY)
                         .attr('text-anchor', 'middle').attr('dominant-baseline', 'central')
-                        .attr('font-size', Math.round(7 * scale)).attr('fill', C.canvasText).text('\u25C0');
+                        .attr('font-size', Math.round(8 * scale)).attr('fill', C.canvasText).text('\u25C0');
                     prevG.on('click', function() { self.modelHead = Math.max(0, self.modelHead - 1); self.computeLayout(); self.draw(); });
                 }
 
@@ -1969,7 +1988,7 @@
                         .attr('fill', C.cellBg).attr('stroke', C.cellBorder).attr('stroke-width', 1.2);
                     nextG.append('text').attr('x', nextCx).attr('y', dotsY)
                         .attr('text-anchor', 'middle').attr('dominant-baseline', 'central')
-                        .attr('font-size', Math.round(7 * scale)).attr('fill', C.canvasText).text('\u25B6');
+                        .attr('font-size', Math.round(8 * scale)).attr('fill', C.canvasText).text('\u25B6');
                     nextG.on('click', function() { self.modelHead = Math.min(nHeads - 1, self.modelHead + 1); self.computeLayout(); self.draw(); });
                 }
 
