@@ -1,0 +1,251 @@
+---
+layout: base.njk
+title: Attention Mechanism
+icon: fa-crosshairs
+navigation:
+  - name: "Home"
+    link: "index.html"
+    icon: "fa-home"
+permalink: "attention.html"
+extraScript: "static/js/attention.js"
+tags: visualization
+cardTitle: "Attention Mechanism"
+cardIcon: fa-crosshairs
+cardDescription: "Step through scaled dot-product attention: watch Q/K/V projections, score computation, softmax, and value aggregation animate in real time."
+cardTags:
+  - Deep Learning
+  - NLP
+cardHaystack: "attention mechanism scaled dot-product self-attention query key value QKV softmax score matrix projection embedding weighted sum transformer"
+cardOrder: 29
+---
+
+{% from "components/legend.njk" import legend %}
+{% from "components/info-tabs.njk" import infoTabs %}
+{% from "components/metrics-panel.njk" import metricsPanel %}
+
+<script src="https://cdn.jsdelivr.net/npm/d3@7/dist/d3.min.js"></script>
+<link rel="stylesheet" href="static/css/attention.css">
+
+<div class="row" id="main-content">
+    {% include "components/share-button.njk" %}
+    <!-- Left Column: Canvas + Controls -->
+    <div class="col-md-7">
+        <!-- Attention Canvas Panel -->
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <div class="panel-heading-content">
+                    <span class="panel-title-text"><i class="fa fa-crosshairs"></i> Attention Mechanism</span>
+                    <div class="attn-heading-controls">
+                        <div class="attn-heading-control">
+                            <span class="attn-heading-label">Dim:</span>
+                            <div class="attn-stepper">
+                                <button id="btn-dim-down" class="btn btn-xs btn-default"><i class="fa fa-minus"></i></button>
+                                <span id="embed-dim-value" class="stepper-value">64</span>
+                                <button id="btn-dim-up" class="btn btn-xs btn-default"><i class="fa fa-plus"></i></button>
+                            </div>
+                        </div>
+                        <div class="attn-heading-control">
+                            <span class="attn-heading-label">Heads:</span>
+                            <div class="attn-stepper">
+                                <button id="btn-heads-down" class="btn btn-xs btn-default"><i class="fa fa-minus"></i></button>
+                                <span id="num-heads-value" class="stepper-value">12</span>
+                                <button id="btn-heads-up" class="btn btn-xs btn-default"><i class="fa fa-plus"></i></button>
+                            </div>
+                        </div>
+                        <div class="attn-heading-control" id="layer-select-row">
+                            <span class="attn-heading-label">Layer:</span>
+                            <div class="attn-stepper">
+                                <button id="btn-layer-down" class="btn btn-xs btn-default"><i class="fa fa-minus"></i></button>
+                                <span id="layer-value" class="stepper-value">0</span>
+                                <button id="btn-layer-up" class="btn btn-xs btn-default"><i class="fa fa-plus"></i></button>
+                            </div>
+                            <span id="layer-range" class="attn-heading-hint">/ 11</span>
+                            <button id="btn-layer-play" class="btn btn-xs btn-default attn-layer-play-btn" title="Animate through layers">
+                                <i class="fa fa-play"></i>
+                            </button>
+                            <span id="layer-anim-indicator" class="attn-layer-anim-indicator"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="panel-body canvas-panel-body">
+                <div id="head-color-bar" class="attn-head-color-bar visible">
+                    <span class="attn-head-color-bar-label">Overlay:</span>
+                </div>
+                <div id="view-mode-bar" class="attn-view-mode-bar">
+                    <span class="attn-view-mode-label">View:</span>
+                    <div class="attn-view-toggle">
+                        <button id="btn-view-lines" class="btn btn-xs btn-default active">Lines</button>
+                        <button id="btn-view-heatmap" class="btn btn-xs btn-default">Heatmap</button>
+                    </div>
+                    <button id="btn-layer-compare" class="btn btn-xs btn-default attn-layer-compare-btn">
+                        <i class="fa fa-th"></i> Compare Layers
+                    </button>
+                </div>
+                <div id="attention-svg-container" class="attn-svg-container"></div>
+            </div>
+            <div class="panel-footer legend-footer">
+                {{ legend(
+                    items=[
+                        {class: 'attn-token-pill', label: 'Token'},
+                        {class: 'attn-q-vec', label: 'Query (Q)'},
+                        {class: 'attn-k-vec', label: 'Key (K)'},
+                        {class: 'attn-v-vec', label: 'Value (V)'},
+                        {class: 'attn-heatmap-dot', label: 'Attention', type: 'dot'},
+                        {class: 'attn-output-vec', label: 'Output'}
+                    ]
+                ) }}
+            </div>
+        </div>
+
+        <!-- Controls Panel -->
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title"><i class="fa fa-sliders"></i> Controls</h3>
+            </div>
+            <div class="panel-body compact-panel attn-controls-panel">
+                <div class="attn-options-col">
+                    <div class="attn-input-row">
+                        <label>Sentence:</label>
+                        <select id="sentence-select" class="form-control input-sm">
+                            <option value="default">I love cute cats</option>
+                            <option value="short">The cat sat</option>
+                            <option value="long">She saw the red car</option>
+                            <option value="custom">Custom...</option>
+                        </select>
+                    </div>
+                    <div class="attn-input-row" id="custom-sentence-row">
+                        <label>Custom:</label>
+                        <input type="text" id="custom-sentence" class="form-control input-sm" placeholder="3-5 words..." />
+                    </div>
+                    <div class="attn-custom-hint" id="custom-sentence-hint">
+                        <i class="fa fa-info-circle"></i>
+                        Custom sentences use synthetic attention (not real model output)
+                    </div>
+                    <div class="attn-input-row">
+                        <label>Data:</label>
+                        <div class="attn-view-toggle">
+                            <button id="btn-data-synthetic" class="btn btn-xs btn-default">Synthetic</button>
+                            <button id="btn-data-bert" class="btn btn-xs btn-default">BERT</button>
+                            <button id="btn-data-gpt2" class="btn btn-xs btn-default active">GPT-2</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="attn-actions-col">
+                    <div class="btn-toolbar" role="toolbar">
+                        <button id="btn-run" class="btn btn-sm btn-success" title="Auto-play all phases">
+                            <i class="fa fa-play"></i> Run
+                        </button>
+                        <button id="btn-step" class="btn btn-sm btn-info" title="Advance one phase">
+                            <i class="fa fa-step-forward"></i> Step
+                        </button>
+                        <button id="btn-reset" class="btn btn-sm btn-danger" title="Reset">
+                            <i class="fa fa-refresh"></i> Reset
+                        </button>
+                    </div>
+                    <div class="speed-control">
+                        <i class="fa fa-tachometer"></i>
+                        <input type="range" id="speed-slider" min="1" max="10" value="5">
+                        <span id="speed-value" class="range-value">5</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Right Column: Info + Metrics -->
+    <div class="col-md-5">
+        {{ infoTabs(
+            tabs=[
+                {id: 'about', icon: 'fa-info-circle', label: 'About', active: true, content: '
+                    <h4><i class="fa fa-crosshairs"></i> Scaled Dot-Product Attention</h4>
+                    <p>
+                        <strong>Attention</strong> is the core building block of Transformers.
+                        Given input tokens, it computes how much each token should attend to every other
+                        by projecting them into Query, Key, and Value spaces.
+                    </p>
+                    <p>
+                        This visualization animates the internal step-by-step computation, complementing
+                        the companion Transformer visualization (which shows the final heatmap directly).
+                    </p>
+                    <h4><i class="fa fa-lightbulb-o"></i> Key Insights</h4>
+                    <ul class="interaction-list">
+                        <li><strong>Q/K/V</strong> are learned linear projections of input embeddings</li>
+                        <li><strong>Scores</strong> measure query-key similarity via dot product</li>
+                        <li><strong>Scaling</strong> by &radic;d<sub>k</sub> prevents gradient saturation</li>
+                        <li><strong>Softmax</strong> converts scores into a probability distribution</li>
+                        <li><strong>Output</strong> is a weighted mix of Value vectors</li>
+                    </ul>
+                    <h4><i class="fa fa-mouse-pointer"></i> How to Use</h4>
+                    <ul class="interaction-list">
+                        <li><strong>Press Run</strong> to animate all phases automatically</li>
+                        <li><strong>Press Step</strong> to advance one phase at a time</li>
+                        <li><strong>Change sentences</strong> to see different attention patterns</li>
+                        <li><strong>Adjust embed dim</strong> to see how vector size affects computation</li>
+                    </ul>
+                '},
+                {id: 'algorithm', icon: 'fa-book', label: 'Algorithm', content: '
+                    <h4><i class="fa fa-book"></i> Computation Pipeline</h4>
+                    <ol class="algorithm-list">
+                        <li><strong>Embed</strong>: Map each token to a d-dimensional vector</li>
+                        <li><strong>Project Q</strong>: Multiply embeddings by W<sub>Q</sub> to get queries</li>
+                        <li><strong>Project K</strong>: Multiply embeddings by W<sub>K</sub> to get keys</li>
+                        <li><strong>Project V</strong>: Multiply embeddings by W<sub>V</sub> to get values</li>
+                        <li><strong>Score</strong>: Compute Q &middot; K<sup>T</sup> (dot product for each pair)</li>
+                        <li><strong>Scale</strong>: Divide scores by &radic;d<sub>k</sub></li>
+                        <li><strong>Softmax</strong>: Apply softmax row-by-row to get attention weights</li>
+                        <li><strong>Aggregate</strong>: Multiply weights by V to produce output vectors</li>
+                    </ol>
+                    <h4><i class="fa fa-code"></i> Pseudocode</h4>
+                    <pre style="font-size: 11px; margin-top: 8px;">Q = X @ W_Q    # project queries
+K = X @ W_K    # project keys
+V = X @ W_V    # project values
+scores = Q @ K.T          # dot products
+scaled = scores / sqrt(d_k)
+weights = softmax(scaled)  # per row
+output = weights @ V       # weighted sum</pre>
+                '},
+                {id: 'math', icon: 'fa-superscript', label: 'Math', content: '
+                    <h4><i class="fa fa-superscript"></i> Attention Formula</h4>
+                    <div class="math-formula-display">
+                        <code>Attention(Q, K, V) = softmax(QK<sup>T</sup> / &radic;d<sub>k</sub>) V</code>
+                    </div>
+                    <h4><i class="fa fa-arrow-right"></i> Projections</h4>
+                    <div class="math-formula-display">
+                        <code>Q = XW<sub>Q</sub>, &ensp; K = XW<sub>K</sub>, &ensp; V = XW<sub>V</sub></code>
+                    </div>
+                    <p class="formula-note">
+                        Where X is the input embedding matrix and W<sub>Q</sub>, W<sub>K</sub>, W<sub>V</sub> are learned weight matrices.
+                    </p>
+                    <h4><i class="fa fa-th"></i> Dot-Product Score</h4>
+                    <div class="math-formula-display">
+                        <code>score(i, j) = q<sub>i</sub> &middot; k<sub>j</sub> = &Sigma;<sub>d</sub> q<sub>id</sub> k<sub>jd</sub></code>
+                    </div>
+                    <h4><i class="fa fa-balance-scale"></i> Softmax</h4>
+                    <div class="math-formula-display">
+                        <code>softmax(z<sub>i</sub>) = e<sup>z<sub>i</sub></sup> / &Sigma;<sub>j</sub> e<sup>z<sub>j</sub></sup></code>
+                    </div>
+                    <p class="formula-note">
+                        Scaling by &radic;d<sub>k</sub> prevents dot products from growing too large,
+                        which would push softmax into regions with tiny gradients.
+                    </p>
+                '}
+            ]
+        ) }}
+
+        {{ metricsPanel(
+            title='Attention Metrics',
+            icon='fa-bar-chart',
+            metrics=[
+                {icon: 'fa-cog', label: 'Phase', id: 'metric-phase', default: 'Idle'},
+                {icon: 'fa-font', label: 'Tokens', id: 'metric-tokens', default: '-'},
+                {icon: 'fa-arrows-alt', label: 'Embed Dim', id: 'metric-embed-dim', default: '4'},
+                {icon: 'fa-th', label: 'Score Matrix', id: 'metric-score-matrix', default: '-'},
+                {icon: 'fa-arrow-up', label: 'Max Weight', id: 'metric-max-weight', default: '-'},
+                {icon: 'fa-arrow-down', label: 'Min Weight', id: 'metric-min-weight', default: '-'},
+                {icon: 'fa-expand', label: 'Scale Factor', id: 'metric-scale-factor', default: '-'},
+                {icon: 'fa-columns', label: 'Num Heads', id: 'metric-num-heads', default: '4'}
+            ]
+        ) }}
+    </div>
+</div>
