@@ -1902,41 +1902,74 @@
                     phaseIdx < PHASES.indexOf('PROJECT_K'));
                 curvedArrow(vProjCenterX, arrowStartY, eqResult.vChipCenterX, eqResult.vChipTopY, vArrowColor, vLocked);
 
-                // Nav dots + prev/next below the equation
+                // Nav: colored rounded squares (like RNN cell carousel) + prev/next arrows
+                const headColors = getHeadColors();
                 const dotsY = galleryY + B_eq.headCardEquationH + navH / 2;
-                const dotR = 3;
-                const dotGap = 8;
-                const dotsW = nHeads * dotGap;
+                const dotSize = Math.round(9 * scale);       // square side length
+                const dotGap = Math.round(3 * scale);        // gap between squares
+                const dotRadius = Math.round(2.5 * scale);   // corner radius
+                const dotsW = nHeads * (dotSize + dotGap) - dotGap;
                 const dotsStartX = canvasW / 2 - dotsW / 2;
+                const navBtnR = Math.round(10 * scale);
+                const navBtnGap = Math.round(8 * scale);
+
                 for (let h = 0; h < nHeads; h++) {
                     const isActiveH = h === this.modelHead;
+                    const hColor = headColors[h % headColors.length];
+                    const dotX = dotsStartX + h * (dotSize + dotGap);
+                    const dotY = dotsY - dotSize / 2;
                     const dotG = g.append('g').style('cursor', 'pointer');
-                    dotG.append('circle')
-                        .attr('cx', dotsStartX + h * dotGap + dotR).attr('cy', dotsY)
-                        .attr('r', isActiveH ? dotR + 1 : dotR)
-                        .attr('fill', isActiveH ? C.activeBorder : C.cellBorder);
+
+                    // Colored rounded square
+                    const activeScale = isActiveH ? 1.25 : 1;
+                    const drawSize = Math.round(dotSize * activeScale);
+                    const drawX = dotX + dotSize / 2 - drawSize / 2;
+                    const drawY = dotsY - drawSize / 2;
+                    dotG.append('rect')
+                        .attr('x', drawX).attr('y', drawY)
+                        .attr('width', drawSize).attr('height', drawSize)
+                        .attr('rx', dotRadius).attr('ry', dotRadius)
+                        .attr('fill', isActiveH ? hColor : 'none')
+                        .attr('stroke', hColor)
+                        .attr('stroke-width', isActiveH ? 1.5 : 1)
+                        .attr('opacity', isActiveH ? 1 : 0.5);
+
+                    // Head number label inside active square
+                    if (isActiveH) {
+                        dotG.append('text')
+                            .attr('x', dotX + dotSize / 2).attr('y', dotsY)
+                            .attr('text-anchor', 'middle').attr('dominant-baseline', 'central')
+                            .attr('font-family', MONO).attr('font-size', Math.round(6 * scale))
+                            .attr('font-weight', '700').attr('fill', C.canvasBg)
+                            .text(h);
+                    }
+
                     (function(idx, viz) {
                         dotG.on('click', function() { viz.modelHead = idx; viz.computeLayout(); viz.draw(); });
                     })(h, self);
                 }
-                // Prev/next buttons
-                const navBtnR = Math.round(10 * scale);
+
+                // Prev arrow button
                 if (this.modelHead > 0) {
+                    const prevCx = dotsStartX - navBtnGap - navBtnR;
                     const prevG = g.append('g').style('cursor', 'pointer');
-                    prevG.append('circle').attr('cx', dotsStartX - 20).attr('cy', dotsY).attr('r', navBtnR)
-                        .attr('fill', C.cellBg).attr('stroke', C.cellBorder);
-                    prevG.append('text').attr('x', dotsStartX - 20).attr('y', dotsY)
+                    prevG.append('circle').attr('cx', prevCx).attr('cy', dotsY).attr('r', navBtnR)
+                        .attr('fill', C.cellBg).attr('stroke', C.cellBorder).attr('stroke-width', 1.2);
+                    prevG.append('text').attr('x', prevCx).attr('y', dotsY)
                         .attr('text-anchor', 'middle').attr('dominant-baseline', 'central')
-                        .attr('font-family', MONO).attr('font-size', 10).attr('fill', C.canvasText).text('\u25C0');
+                        .attr('font-size', Math.round(7 * scale)).attr('fill', C.canvasText).text('\u25C0');
                     prevG.on('click', function() { self.modelHead = Math.max(0, self.modelHead - 1); self.computeLayout(); self.draw(); });
                 }
+
+                // Next arrow button
                 if (this.modelHead < nHeads - 1) {
+                    const nextCx = dotsStartX + dotsW + navBtnGap + navBtnR;
                     const nextG = g.append('g').style('cursor', 'pointer');
-                    nextG.append('circle').attr('cx', dotsStartX + dotsW + 20).attr('cy', dotsY).attr('r', navBtnR)
-                        .attr('fill', C.cellBg).attr('stroke', C.cellBorder);
-                    nextG.append('text').attr('x', dotsStartX + dotsW + 20).attr('y', dotsY)
+                    nextG.append('circle').attr('cx', nextCx).attr('cy', dotsY).attr('r', navBtnR)
+                        .attr('fill', C.cellBg).attr('stroke', C.cellBorder).attr('stroke-width', 1.2);
+                    nextG.append('text').attr('x', nextCx).attr('y', dotsY)
                         .attr('text-anchor', 'middle').attr('dominant-baseline', 'central')
-                        .attr('font-family', MONO).attr('font-size', 10).attr('fill', C.canvasText).text('\u25B6');
+                        .attr('font-size', Math.round(7 * scale)).attr('fill', C.canvasText).text('\u25B6');
                     nextG.on('click', function() { self.modelHead = Math.min(nHeads - 1, self.modelHead + 1); self.computeLayout(); self.draw(); });
                 }
 
