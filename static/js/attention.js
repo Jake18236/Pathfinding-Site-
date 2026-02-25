@@ -1436,7 +1436,7 @@
             const eChipW = showEMatrix ? matNxD.w : eChipTextW;
             const eChipH = showEMatrix ? matNxD.h : defaultChipH;
             const availableW = canvasW;
-            const flowCenterX = availableW / 2;
+            const flowCenterX = availableW / 2 + Math.round(20 * scale);
 
             // ============ STAGE 1: TOKENS CHIP ============
             const tokChipY = B_eq.stage1Y;
@@ -2008,12 +2008,13 @@
                     .attr('fill', C.sectionTitle).text('\u00b7 W\u2092');
                 chipDimLabel(woG, woX + woW / 2, woY_nav + defaultChipH / 2 + 7 * scale, `<${d}, ${d}>`);
 
-                // Residual skip connection: E embedding → E chip (left side)
-                const skipLineX_nav = boxX - 10 * scale;
+                // Residual skip connection: E embedding → E skip chip (left side, straight down)
+                const resECenterX_nav = resEX_nav + resEW_nav / 2;
+                const skipLineX_nav = resECenterX_nav;
                 const eLeftEdge = flowCenterX - (showEMatrix ? matNxD.w / 2 : eChipTextW / 2);
                 const eMidY = B_eq.stage3Y + (showEMatrix ? matNxD.h : defaultChipH) / 2;
                 g.append('path')
-                    .attr('d', `M${eLeftEdge},${eMidY} L${skipLineX_nav},${eMidY} L${skipLineX_nav},${woCenterY} L${resEX_nav},${woCenterY}`)
+                    .attr('d', `M${eLeftEdge},${eMidY} L${skipLineX_nav},${eMidY} L${skipLineX_nav},${woY_nav}`)
                     .attr('fill', 'none').attr('stroke', residualColor)
                     .attr('stroke-width', 1.2 * scale)
                     .attr('stroke-dasharray', phaseIdx < PHASES.indexOf('SHOW_OUTPUT') ? `${3 * scale},${3 * scale}` : 'none');
