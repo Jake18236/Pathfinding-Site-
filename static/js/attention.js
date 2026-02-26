@@ -431,7 +431,6 @@
 
             // Equation bar state — Set allows multiple chips expanded at once
             this.expandedTerms = new Set();
-            this.eqRightMode = 'matrix';  // 'matrix' (N×d output) | 'bertviz' (N×N attention heatmap)
 
             // Head-lines view state
             this.numHeads = 12;
@@ -752,10 +751,14 @@
             // Head gallery: when multiHead, the carousel contains the full per-head equation
             // Active card = full equation height; inactive cards = compact thumbnails
             const galleryTitleH = Math.round(4 * eqScale);   // minimal gap — title drawn above box, not here
-            // Nav row height: arrow gap (8+12)*scale + concat/WO chip height + dim label space
+            // Nav row height: arrow gap (8+12)*scale + concat box height + dim label space
             const navArrowGapLayout = Math.round(20 * eqScale);  // 8 + 12 scaled
+            const concatPadY_layout = Math.round(6 * eqScale);
+            const concatTitleH_layout = Math.round(14 * eqScale);
+            const concatDotSize_layout = Math.round(19 * eqScale);
+            const concatBoxH_layout = concatPadY_layout + concatTitleH_layout + concatDotSize_layout + concatPadY_layout;
             const navDimLabelH = Math.round(16 * eqScale);
-            const galleryNavH = navArrowGapLayout + defaultChipH + navDimLabelH;
+            const galleryNavH = navArrowGapLayout + Math.max(concatBoxH_layout, defaultChipH) + navDimLabelH;
             const galleryArrowFromProjH = Math.round(4 * eqScale);  // arrows draw themselves; just a tiny gap
             const headCardEquationH = galleryTitleH + projRowH + arrowH + equationRowH;
             // Thumbnail card for inactive heads
@@ -772,14 +775,20 @@
             const stageConcatH = 0;  // Concat is absorbed into the gallery nav area
             const stageWoH = 0;  // W_O is drawn beside the Concat box, not below it
             const stageResidualH = 0;  // + E is drawn beside W_O in the nav row
-            // Stage 8: Arrow from equation/gallery to heatmap
-            const stage8H = arrowH;
-            // Stage 9: Heatmap/output panel
-            const heatmapH = Math.round(N * 45 + 60);
-            const stage9H = heatmapH;
+            // Stage 8: Arrow from equation/gallery to output embedding (shorter in multi-head with combining bracket)
+            const stage8H = multiHead ? Math.round(arrowH * 0.5) : arrowH;
+            // Stage 9: Output embedding block (collapsed chip or expanded per-token rows)
+            const outputExpanded = et.has('output');
+            const outputEmbedInnerH = N * (embedRowH + embedRowGap) - embedRowGap;
+            const outputEmbedTitleH = Math.round(14 * eqScale);
+            const outputEmbedPadY = Math.round(6 * eqScale);
+            const outputEmbedExpandedH = outputEmbedTitleH + outputEmbedInnerH + outputEmbedPadY * 2 + Math.round(16 * eqScale);
+            const outputCollapsedChipH = Math.round(26 * eqScale);
+            const stage9H = outputExpanded ? outputEmbedExpandedH : outputCollapsedChipH + Math.round(16 * eqScale);
 
             const preGallery = stage1H + stage2H + stage3H + stage4H + stage5H;
-            const postGallery = stage6H + stage7H + stageConcatH + stageWoH + stageResidualH + stage8H + 20 + stage9H;
+            const stage8Gap = multiHead ? 6 : 20;
+            const postGallery = stage6H + stage7H + stageConcatH + stageWoH + stageResidualH + stage8H + stage8Gap + stage9H;
             const flowH = preGallery + stageGalleryH + postGallery;
             const B_eq = {
                 y: y, h: flowH, matCellW, matCellH,
@@ -798,7 +807,7 @@
                 stageWoY: y + preGallery + stageGalleryH + stage6H + stage7H + stageConcatH,
                 stageResidualY: y + preGallery + stageGalleryH + stage6H + stage7H + stageConcatH + stageWoH,
                 stage8Y: y + preGallery + stageGalleryH + stage6H + stage7H + stageConcatH + stageWoH + stageResidualH,
-                stage9Y: y + preGallery + stageGalleryH + stage6H + stage7H + stageConcatH + stageWoH + stageResidualH + stage8H + 20,
+                stage9Y: y + preGallery + stageGalleryH + stage6H + stage7H + stageConcatH + stageWoH + stageResidualH + stage8H + stage8Gap,
                 // Stage heights for drawing
                 stage1H, stage2H, stage3H, stage4H, stage5H, stage6H, stage7H, stage8H, stage9H,
                 stageConcatH, stageWoH, stageResidualH, woChipH,
@@ -1323,7 +1332,7 @@
                 .attr('rx', 5).attr('ry', 5)
                 .attr('fill', tokensActive ? C.tokenBg : 'none')
                 .attr('stroke', tokensActive ? C.tokenBorder : C.textMuted)
-                .attr('stroke-width', 1.5)
+                .attr('stroke-width', 3)
                 .attr('opacity', tokensActive ? 1 : 0.4);
 
             // "Tokenization" title
@@ -1679,6 +1688,8 @@
                 // Track Q/K^T positions
                 let qTCX = centerX - 20 * scale, kTCX = centerX + 20 * scale;
                 let qTTY = softmaxBoxY_h, kTTY = softmaxBoxY_h;
+                // Axis arrow targets (set when softmax heatmap is shown)
+                let qAxisX = null, qAxisY = null, kAxisX = null, kAxisY = null;
 
                 // Compute local matrix cell sizes that fit within the box
                 // For NxN matrices: must fit within innerW and innerH (box minus padding)
@@ -1756,7 +1767,7 @@
                             const w = headAttnWeights[i][j];
                             const masked = isCausal && j > i;
                             // Smooth white → yellow → red
-                            const cellColor = masked ? 'none' : interpolateHeatColor(w, '#ffffff', '#fcd34d', '#dc2626');
+                            const cellColor = masked ? 'none' : interpolateHeatColor(w, C.heatCool, C.heatMid, C.heatWarm);
                             smBoxChipG_h.append('rect')
                                 .attr('x', cx).attr('y', cy)
                                 .attr('width', heatCellSize - 3).attr('height', heatCellSize - 3)
@@ -1798,6 +1809,43 @@
                         if (tw > maxTokenTextW) maxTokenTextW = tw;
                     }
                     const rowBoxW = maxTokenTextW + tokenBoxPad * 2;
+
+                    // Pre-compute column label box height (same for all columns)
+                    const colBoxH = labelFontSize + idxFontSize + tokenBoxPad * 2;
+
+                    // --- Q axis underlay strip (rows = queries) ---
+                    const axisStripPad = Math.round(2 * scale);
+                    const qStripX = gridX - tokenBoxGap - rowBoxW - axisStripPad;
+                    const qStripY = gridY - axisStripPad;
+                    const qStripW = rowBoxW + axisStripPad * 2;
+                    const qStripH = gridH + axisStripPad * 2;
+                    smBoxChipG_h.append('rect')
+                        .attr('x', qStripX).attr('y', qStripY)
+                        .attr('width', qStripW).attr('height', qStripH)
+                        .attr('rx', 4).attr('ry', 4)
+                        .attr('fill', C.qBg)
+                        .attr('stroke', C.qBorder).attr('stroke-width', 1.5)
+                        .attr('stroke-opacity', 0.5);
+
+                    // --- K^T axis underlay strip (columns = keys) ---
+                    const kStripX = gridX - axisStripPad;
+                    const kStripY = gridY - tokenBoxGap - colBoxH - axisStripPad;
+                    const kStripW = gridW + axisStripPad * 2;
+                    const kStripH = colBoxH + axisStripPad * 2;
+                    smBoxChipG_h.append('rect')
+                        .attr('x', kStripX).attr('y', kStripY)
+                        .attr('width', kStripW).attr('height', kStripH)
+                        .attr('rx', 4).attr('ry', 4)
+                        .attr('fill', C.kBg)
+                        .attr('stroke', C.kBorder).attr('stroke-width', 1.5)
+                        .attr('stroke-opacity', 0.5);
+
+                    // Save axis arrow targets for projection arrows
+                    qAxisX = qStripX + qStripW / 2;
+                    qAxisY = qStripY;
+                    kAxisX = kStripX + kStripW / 2;
+                    kAxisY = kStripY;
+
                     for (let i = 0; i < N; i++) {
                         const tColor = getTokenClassColor(i);
                         const tBg = tokenColorBgOpaque(tColor, 0.15, baseBg);
@@ -2041,6 +2089,7 @@
                     resECenterX: resEChipX_h + resETextW_h / 2, resEChipY: resEChipY_h,
                     smBoxCenterY: smBoxCenterY_h,
                     resETextW: resETextW_h, plusW: plusW_h,
+                    qAxisX, qAxisY, kAxisX, kAxisY,
                 };
             }
 
@@ -2057,6 +2106,8 @@
             let concatBoxBottomY = 0;  // set in multi-head nav, used in post-equation
             let woChipCenterX = 0;    // W_O chip center (drawn beside Concat box)
             let woChipBottomY = 0;    // W_O chip bottom edge
+            let navRowLeftX = 0;      // leftmost edge of nav row (concat box)
+            let navRowRightX = 0;     // rightmost edge of nav row (E chip)
             const residualColor = phaseIdx >= PHASES.indexOf('SHOW_OUTPUT') ? C.embedPos : C.textMuted;
 
             if (B_eq.multiHead && activeData.heads && activeData.heads.length > 1) {
@@ -2259,18 +2310,26 @@
                     arrowHead(targetX, targetTopY, branchColor);
                 }
 
-                // Straight arrows from projection bottoms to Q/K/V
+                // Arrows from projection bottoms to Q/K/V
                 const arrowStartY_mh = projInsideY + mhProjH;
-                arrowLine(projChipCenters[0], arrowStartY_mh, eqResult.qTargetTopY,
-                    phaseIdx < PHASES.indexOf('PROJECT_Q') ? C.textMuted : wChips[0].fill);
-                arrowLine(projChipCenters[1], arrowStartY_mh, eqResult.kTargetTopY,
-                    phaseIdx < PHASES.indexOf('PROJECT_K') ? C.textMuted : wChips[1].fill);
+                const qProjColor = phaseIdx < PHASES.indexOf('PROJECT_Q') ? C.textMuted : wChips[0].fill;
+                const kProjColor = phaseIdx < PHASES.indexOf('PROJECT_K') ? C.textMuted : wChips[1].fill;
+                if (eqResult.qAxisX != null) {
+                    // Curved arrows to axis label strips on the heatmap
+                    curvedArrow(projChipCenters[0], arrowStartY_mh, eqResult.qAxisX, eqResult.qAxisY, qProjColor);
+                    curvedArrow(projChipCenters[1], arrowStartY_mh, eqResult.kAxisX, eqResult.kAxisY, kProjColor);
+                } else {
+                    // Straight arrows to Q/K chips in the equation
+                    arrowLine(projChipCenters[0], arrowStartY_mh, eqResult.qTargetTopY, qProjColor);
+                    arrowLine(projChipCenters[1], arrowStartY_mh, eqResult.kTargetTopY, kProjColor);
+                }
                 // V arrow exits from V chip's X on the projection, straight down
                 arrowLine(eqResult.vChipCenterX, arrowStartY_mh, eqResult.vChipTopY, vArrowColor);
 
-                // ============ NAV ROW: [Concat · W_O] + E ============
+                // ============ NAV ROW: Concat (full width) + · W_O + E (under embed) ============
                 const dHead = d;
-                const dotSize = Math.round(14 * scale);
+                const dotSize = Math.round(19 * scale);
+                const dotH = dotSize;  // square
                 const dotGap = Math.round(4 * scale);
                 const dotRadius = Math.round(3 * scale);
                 const dotsW = nHeads * (dotSize + dotGap) - dotGap;
@@ -2278,36 +2337,41 @@
                 const navArrowGap = Math.round(8 * scale);
                 const concatRowTopY = boxBottomY + navArrowGap + Math.round(12 * scale);
                 const plusColor = phaseIdx >= PHASES.indexOf('SHOW_OUTPUT') ? C.canvasText : C.textMuted;
-                const woGap = Math.round(6 * scale);
                 const resEW_nav = eChipTextW;
-                const plusTextW = charW * 2.5;
                 const woW = charW * 2.5 + chipPadX * 2;
-                const concatWoDotW = charW * 1.5;  // space for "·" between concat and Wo
                 const concatDim = nHeads * dHead;
 
-                // Concat box sizing (computed first so Wo can center on it)
+                // Concat box sizing — full width of head box
                 const concatTitleH = Math.round(14 * scale);
                 const concatPadY = Math.round(6 * scale);
-                const concatBoxH = concatPadY + concatTitleH + dotSize + concatPadY;
+                const concatBoxH = concatPadY + concatTitleH + dotH + concatPadY;
 
-                // Wo and other elements vertically centered with concat box
+                const concatBoxX = boxX;
+                const concatBoxY = concatRowTopY;
+                const concatBoxW = boxW;
+                concatBoxBottomY = concatBoxY + concatBoxH;
+
+                // W_O + E vertically centered with concat box, positioned under embedding box
                 const woY_nav = concatRowTopY + (concatBoxH - defaultChipH) / 2;
                 const woCenterY = woY_nav + defaultChipH / 2;
 
-                // Layout order: [Concat] · [W_O] + E
-                // Wo right-aligned with head box, concat fills the rest
-                const concatBoxX = boxX;
-                const concatBoxY = concatRowTopY;
-                const concatBoxW = boxW - woW - concatWoDotW;
-                concatBoxBottomY = concatBoxY + concatBoxH;
+                // Layout: · W_O + E centered under the embedding box
+                const embedCenterX_nav = embedContainerX + embedContainerW / 2;
+                const concatWoDotW = charW * 1.5;
+                const plusTextW = charW * 2.5;
+                const woGroupW = concatWoDotW + woW + plusTextW + resEW_nav;
+                const woGroupStartX = embedCenterX_nav - woGroupW / 2;
 
                 // Head squares below title inside the concat box
                 const actualDotsStartX = concatBoxX + (concatBoxW - dotsW) / 2;
-                const dotsY = concatBoxY + concatPadY + concatTitleH + dotSize / 2;
+                const dotsY = concatBoxY + concatPadY + concatTitleH + dotH / 2;
 
-                // Arrow from head box bottom to the concat box
+                // Arrow from head box bottom to the active head square
                 const activeSquareCenterX = actualDotsStartX + this.modelHead * (dotSize + dotGap) + dotSize / 2;
-                arrowLine(activeSquareCenterX, boxBottomY, concatBoxY, activeHeadColor);
+                const activeDrawSize = Math.round(dotSize * 1.2);
+                const activeDrawH = Math.round(dotH * 1.2);
+                const activeSquareTopY = dotsY - activeDrawH / 2;
+                arrowLine(activeSquareCenterX, boxBottomY, activeSquareTopY, activeHeadColor);
 
                 // --- Concat container box ---
                 g.append('rect')
@@ -2315,9 +2379,9 @@
                     .attr('width', concatBoxW).attr('height', concatBoxH)
                     .attr('rx', 5).attr('ry', 5)
                     .attr('fill', C.canvasBg).attr('fill-opacity', 0.6)
-                    .attr('stroke', C.activeBorder).attr('stroke-width', 1.2);
+                    .attr('stroke', C.activeBorder).attr('stroke-width', 2.4);
 
-                // "Concat" title at top of box (styled like Tokenization / Embedding)
+                // "Concat" title at top of box
                 const concatTitleY = concatBoxY + concatPadY + concatTitleH / 2;
                 g.append('text')
                     .attr('x', concatBoxX + concatBoxW / 2).attr('y', concatTitleY)
@@ -2327,17 +2391,16 @@
                     .attr('fill', C.activeBorder)
                     .text('Concat');
 
-                // Per-head dim label under active square, concat dim under box center
+                // Concat dim label under box center
                 const dimLabelY_concat = concatBoxBottomY + Math.round(2 * scale);
-                chipDimLabel(g, activeSquareCenterX, dimLabelY_concat, `<${N}, ${dHead}>`);
                 chipDimLabel(g, concatBoxX + concatBoxW / 2, dimLabelY_concat, `<${N}, ${concatDim}>`);
 
-                // --- "·" between concat box and W_O ---
-                const concatDotX = concatBoxX + concatBoxW + concatWoDotW / 2;
+                // --- "·" before W_O (under embedding box) ---
+                const concatDotX = woGroupStartX + concatWoDotW / 2;
                 staticText(concatDotX, woCenterY, '\u00b7', mathSize, C.canvasText);
 
-                // --- W_O box right-aligned with head box right edge ---
-                const woX = boxX + boxW - woW;
+                // --- W_O box (under embedding box) ---
+                const woX = woGroupStartX + concatWoDotW;
                 const woChip = { color: C.sectionTitle, bg: C.canvasBg, border: C.activeBorder };
                 const woG = makeChip(woX, woY_nav, woW, defaultChipH, woChip);
                 woG.append('text')
@@ -2372,9 +2435,11 @@
                     .attr('stroke-dasharray', residualDashed);
                 arrowHead(resECenterX_nav, woY_nav, residualColor);
 
-                // Store positions for post-equation arrow to heatmap
+                // Store positions for post-equation combining line + arrow to output block
                 woChipCenterX = concatBoxX + concatBoxW / 2;
-                woChipBottomY = woY_nav + defaultChipH;
+                woChipBottomY = Math.max(concatBoxBottomY, woY_nav + defaultChipH);
+                navRowLeftX = concatBoxX;
+                navRowRightX = resEX_nav + resEW_nav;
 
                 // Draw head squares inside the concat box (RNN-style: always tinted, active more prominent)
                 for (let h = 0; h < nHeads; h++) {
@@ -2384,12 +2449,13 @@
                     const dotG = g.append('g').style('cursor', 'pointer');
 
                     const activeScale = isActiveH ? 1.2 : 1;
-                    const drawSize = Math.round(dotSize * activeScale);
-                    const drawX = dotX + dotSize / 2 - drawSize / 2;
-                    const drawY = dotsY - drawSize / 2;
+                    const drawW = Math.round(dotSize * activeScale);
+                    const drawHt = Math.round(dotH * activeScale);
+                    const drawX = dotX + dotSize / 2 - drawW / 2;
+                    const drawY = dotsY - drawHt / 2;
                     dotG.append('rect')
                         .attr('x', drawX).attr('y', drawY)
-                        .attr('width', drawSize).attr('height', drawSize)
+                        .attr('width', drawW).attr('height', drawHt)
                         .attr('rx', dotRadius).attr('ry', dotRadius)
                         .attr('fill', hColor)
                         .attr('fill-opacity', isActiveH ? 0.3 : 0.1)
@@ -2397,14 +2463,25 @@
                         .attr('stroke-width', isActiveH ? 2 : 1.2)
                         .attr('stroke-opacity', isActiveH ? 1 : 0.4);
 
+                    // Head number
+                    const dotCenterX = dotX + dotSize / 2;
                     dotG.append('text')
-                        .attr('x', dotX + dotSize / 2).attr('y', dotsY)
+                        .attr('x', dotCenterX).attr('y', dotsY - Math.round(4 * scale))
                         .attr('text-anchor', 'middle').attr('dominant-baseline', 'central')
                         .attr('font-family', MONO).attr('font-size', Math.round(7 * scale))
                         .attr('font-weight', isActiveH ? '700' : '500')
                         .attr('fill', hColor)
                         .attr('opacity', isActiveH ? 1 : 0.45)
                         .text(h);
+
+                    // Dim label inside box
+                    dotG.append('text')
+                        .attr('x', dotCenterX).attr('y', dotsY + Math.round(5 * scale))
+                        .attr('text-anchor', 'middle').attr('dominant-baseline', 'central')
+                        .attr('font-family', MONO).attr('font-size', Math.round(3.5 * scale))
+                        .attr('fill', hColor)
+                        .attr('opacity', isActiveH ? 0.7 : 0.3)
+                        .text(`<${N},${dHead}>`);
 
                     (function(idx, viz) {
                         dotG.on('click', function() { viz.modelHead = idx; viz.computeLayout(); viz.draw(); });
@@ -2426,23 +2503,53 @@
 
                 // Arrows from projections
                 curvedArrow(vProjCenterX, stage6TopY, eqResult.vChipCenterX, eqResult.vChipTopY, vArrowColor, vLocked);
-                curvedArrow(projChipCenters[0], stage6TopY, eqResult.qTargetCenterX, eqResult.qTargetTopY,
-                    phaseIdx < PHASES.indexOf('PROJECT_Q') ? C.textMuted : wChips[0].fill,
-                    phaseIdx < PHASES.indexOf('PROJECT_Q'));
-                curvedArrow(projChipCenters[1], stage6TopY, eqResult.kTargetCenterX, eqResult.kTargetTopY,
-                    phaseIdx < PHASES.indexOf('PROJECT_K') ? C.textMuted : wChips[1].fill,
-                    phaseIdx < PHASES.indexOf('PROJECT_K'));
+                const qSHColor = phaseIdx < PHASES.indexOf('PROJECT_Q') ? C.textMuted : wChips[0].fill;
+                const kSHColor = phaseIdx < PHASES.indexOf('PROJECT_K') ? C.textMuted : wChips[1].fill;
+                const qSHDashed = phaseIdx < PHASES.indexOf('PROJECT_Q');
+                const kSHDashed = phaseIdx < PHASES.indexOf('PROJECT_K');
+                if (eqResult.qAxisX != null) {
+                    curvedArrow(projChipCenters[0], stage6TopY, eqResult.qAxisX, eqResult.qAxisY, qSHColor, qSHDashed);
+                    curvedArrow(projChipCenters[1], stage6TopY, eqResult.kAxisX, eqResult.kAxisY, kSHColor, kSHDashed);
+                } else {
+                    curvedArrow(projChipCenters[0], stage6TopY, eqResult.qTargetCenterX, eqResult.qTargetTopY, qSHColor, qSHDashed);
+                    curvedArrow(projChipCenters[1], stage6TopY, eqResult.kTargetCenterX, eqResult.kTargetTopY, kSHColor, kSHDashed);
+                }
             }
 
-            // ============ POST-EQUATION: RESIDUAL (single-head) or arrow to heatmap ============
+            // ============ POST-EQUATION: RESIDUAL (single-head) or arrow to output ============
             const smArrowColor = phaseIdx >= PHASES.indexOf('SHOW_OUTPUT') ? C.canvasText : C.textMuted;
-            let heatmapArrowStartX, heatmapArrowStartY;
+            let outputArrowStartX, outputArrowStartY;
 
+            let outputArrowColor = smArrowColor;
             if (B_eq.multiHead) {
-                // Multi-head: Concat · W_O + E is all drawn in the nav section above
-                // Just route an arrow from W_O down to the heatmap
-                heatmapArrowStartX = woChipCenterX;
-                heatmapArrowStartY = woChipBottomY;
+                // Multi-head: horizontal combining bracket spanning Concat...W_O...E, then arrow down
+                const combineGap = Math.round(6 * scale);
+                const combineLineY = woChipBottomY + combineGap;
+                const tickH = Math.round(5 * scale);
+                const overshoot = Math.round(8 * scale);
+
+                const combineColor = C.outputText || '#2e7d32';
+                const combineStroke = 1.2 * scale;
+                const bracketLeft = navRowLeftX - overshoot;
+                const bracketRight = navRowRightX + overshoot;
+                // Horizontal line spanning beyond the nav row edges
+                g.append('line')
+                    .attr('x1', bracketLeft).attr('y1', combineLineY)
+                    .attr('x2', bracketRight).attr('y2', combineLineY)
+                    .attr('stroke', combineColor).attr('stroke-width', combineStroke);
+                // Vertical endcap ticks
+                g.append('line')
+                    .attr('x1', bracketLeft).attr('y1', combineLineY - tickH)
+                    .attr('x2', bracketLeft).attr('y2', combineLineY)
+                    .attr('stroke', combineColor).attr('stroke-width', combineStroke);
+                g.append('line')
+                    .attr('x1', bracketRight).attr('y1', combineLineY - tickH)
+                    .attr('x2', bracketRight).attr('y2', combineLineY)
+                    .attr('stroke', combineColor).attr('stroke-width', combineStroke);
+
+                outputArrowStartX = (navRowLeftX + navRowRightX) / 2;
+                outputArrowStartY = combineLineY;
+                outputArrowColor = combineColor;
             } else {
                 // Single-head: residual skip connection → + E (left side)
                 const skipLineX = eqResult.ctxUnderlayX - 10 * scale;
@@ -2455,300 +2562,170 @@
                     .attr('stroke-width', 1.2 * scale)
                     .attr('stroke-dasharray', phaseIdx < PHASES.indexOf('SHOW_OUTPUT') ? `${3 * scale},${3 * scale}` : 'none');
 
-                heatmapArrowStartX = eqResult.ctxUnderlayX + eqResult.ctxUnderlayW / 2;
-                heatmapArrowStartY = eqResult.ctxUnderlayY + eqResult.ctxUnderlayH;
+                outputArrowStartX = eqResult.ctxUnderlayX + eqResult.ctxUnderlayW / 2;
+                outputArrowStartY = eqResult.ctxUnderlayY + eqResult.ctxUnderlayH;
             }
 
-            // ============ ARROW TO HEATMAP ============
-            arrowLine(heatmapArrowStartX, heatmapArrowStartY, B_eq.stage9Y, smArrowColor);
+            // ============ ARROW TO OUTPUT EMBEDDING ============
+            arrowLine(outputArrowStartX, outputArrowStartY, B_eq.stage9Y, outputArrowColor);
 
-            // ============ STAGE 9: BOTTOM PANEL (heatmap/output matrix) ============
+            // ============ STAGE 9: OUTPUT EMBEDDING BLOCK ============
             const bottomPanelY = B_eq.stage9Y;
             const bottomPanelH = B_eq.stage9H;
-            if (this.eqRightMode === 'matrix') {
-                this.drawInlineOutputMatrix(C, 0, bottomPanelY, bottomPanelH);
-            } else {
-                this.drawInlineAttentionHeatmap(C, 0, bottomPanelY, bottomPanelH);
-            }
+            this.drawOutputEmbeddingBlock(C, bottomPanelY, bottomPanelH);
         }
 
-        // ---- Attention heatmap drawn below the equation ----
-        drawInlineAttentionHeatmap(C, startX, zy, barH) {
+        // ---- Output embedding block drawn below the equation (mirrors input embedding block) ----
+        drawOutputEmbeddingBlock(C, zy, barH) {
             const g = this.gB;
             const phaseIdx = PHASES.indexOf(this.phase);
-            const softmaxIdx = PHASES.indexOf('APPLY_SOFTMAX');
-            const activeData = this.getActiveData();
-            const canvasW = this.layout.canvasW;
-            if (phaseIdx < softmaxIdx || !activeData) return;
-
-            const N = activeData.tokens.length;
-            const heads = activeData.heads;
-            const self = this;
-
-            // Clickable background to toggle to matrix view
-            g.append('rect')
-                .attr('x', 0).attr('y', zy)
-                .attr('width', canvasW).attr('height', barH)
-                .attr('fill', 'transparent').attr('cursor', 'pointer')
-                .on('click', function() { self.eqRightMode = 'matrix'; self.draw(); });
-
-            // Aggregate weights across visible heads
-            const aggWeights = [];
-            let visibleCount = 0;
-            for (let h = 0; h < this.numHeads && h < heads.length; h++) {
-                if (this.visibleHeads[h]) visibleCount++;
-            }
-            for (let i = 0; i < N; i++) {
-                const row = [];
-                for (let j = 0; j < N; j++) {
-                    let sum = 0;
-                    for (let h = 0; h < this.numHeads && h < heads.length; h++) {
-                        if (!this.visibleHeads[h]) continue;
-                        sum += heads[h].attentionWeights[i][j];
-                    }
-                    row.push(visibleCount > 0 ? sum / visibleCount : 0);
-                }
-                aggWeights.push(row);
-            }
-
-            // Layout calculations - center grid in full canvas width
-            const padding = 4;
-            const labelPad = 50;  // space for token labels on left
-            const topLabelPad = 35;  // space for token labels on top
-            const bottomPad = 16;  // space for hint at bottom
-            const availW = canvasW - padding * 2;
-            const availH = barH - topLabelPad - bottomPad;
-            const cellSize = Math.min(
-                availH / N,
-                (availW - labelPad - padding) / N
-            );
-            const gridW = cellSize * N;
-            const gridH = cellSize * N;
-            // Center the grid horizontally in the canvas
-            const gridX = (canvasW - gridW) / 2 + labelPad / 2;
-            const gridY = zy + topLabelPad;
-
-            // Draw row labels (queries - left)
-            for (let i = 0; i < N; i++) {
-                const y = gridY + i * cellSize + cellSize / 2;
-                const label = activeData.tokens[i].length > 5
-                    ? activeData.tokens[i].slice(0, 4) + '…'
-                    : activeData.tokens[i];
-                g.append('text')
-                    .attr('x', gridX - 4).attr('y', y)
-                    .attr('text-anchor', 'end').attr('dominant-baseline', 'central')
-                    .attr('font-family', MONO).attr('font-size', 10)
-                    .attr('fill', C.qText)
-                    .text(label);
-            }
-
-            // Draw column labels (keys - top, rotated)
-            for (let j = 0; j < N; j++) {
-                const x = gridX + j * cellSize + cellSize / 2;
-                const label = activeData.tokens[j].length > 5
-                    ? activeData.tokens[j].slice(0, 4) + '…'
-                    : activeData.tokens[j];
-                g.append('text')
-                    .attr('x', x).attr('y', gridY - 4)
-                    .attr('text-anchor', 'start').attr('dominant-baseline', 'alphabetic')
-                    .attr('font-family', MONO).attr('font-size', 10)
-                    .attr('fill', C.kText)
-                    .attr('transform', `rotate(-45, ${x}, ${gridY - 4})`)
-                    .text(label);
-            }
-
-            // Draw heatmap cells with numbers
-            const fontSize = Math.max(9, Math.min(14, cellSize * 0.35));
-            for (let i = 0; i < N; i++) {
-                for (let j = 0; j < N; j++) {
-                    const x = gridX + j * cellSize;
-                    const y = gridY + i * cellSize;
-                    const w = aggWeights[i][j];
-                    const cellColor = interpolateHeatColor(w, C.heatCool, C.heatMid, C.heatWarm);
-                    g.append('rect')
-                        .attr('x', x).attr('y', y)
-                        .attr('width', cellSize - 1).attr('height', cellSize - 1)
-                        .attr('fill', cellColor)
-                        .attr('rx', 1);
-
-                    // Add weight value as text (use contrasting color)
-                    const textColor = w > 0.5 ? '#fff' : C.canvasText;
-                    const displayVal = w < 0.01 ? '' : (w < 0.1 ? w.toFixed(2).slice(1) : w.toFixed(1));
-                    g.append('text')
-                        .attr('x', x + (cellSize - 1) / 2)
-                        .attr('y', y + (cellSize - 1) / 2)
-                        .attr('text-anchor', 'middle')
-                        .attr('dominant-baseline', 'central')
-                        .attr('font-family', MONO)
-                        .attr('font-size', fontSize)
-                        .attr('fill', textColor)
-                        .text(displayVal);
-                }
-            }
-
-            // Axis labels
-            g.append('text')
-                .attr('x', gridX - 32).attr('y', gridY + gridH / 2)
-                .attr('transform', `rotate(-90, ${gridX - 32}, ${gridY + gridH / 2})`)
-                .attr('text-anchor', 'middle').attr('font-size', 9)
-                .attr('fill', C.textMuted)
-                .text('Query');
-
-            g.append('text')
-                .attr('x', gridX + gridW / 2).attr('y', zy + 10)
-                .attr('text-anchor', 'middle').attr('font-size', 9)
-                .attr('fill', C.textMuted)
-                .text('Key');
-
-            // Dimension label
-            g.append('text')
-                .attr('x', gridX + gridW + 8).attr('y', gridY + gridH / 2)
-                .attr('text-anchor', 'start').attr('dominant-baseline', 'central')
-                .attr('font-family', MONO).attr('font-size', 7)
-                .attr('fill', C.textMuted).attr('opacity', 0.7)
-                .text(`<${N}, ${N}>`);
-
-            // Hint label with toggle icon
-            const hintX = gridX + gridW / 2;
-            const hintY = zy + barH - 4;
-            const hintG = g.append('g')
-                .attr('class', 'toggle-hint')
-                .attr('cursor', 'pointer')
-                .on('click', function() { self.eqRightMode = 'matrix'; self.draw(); });
-
-            hintG.append('text')
-                .attr('x', hintX - 8).attr('y', hintY)
-                .attr('text-anchor', 'middle').attr('dominant-baseline', 'middle')
-                .attr('font-family', MONO).attr('font-size', 10)
-                .attr('fill', C.textMuted).attr('opacity', 0.7)
-                .text('⇄');
-
-            hintG.append('text')
-                .attr('x', hintX + 30).attr('y', hintY)
-                .attr('text-anchor', 'middle').attr('dominant-baseline', 'middle')
-                .attr('font-family', MONO).attr('font-size', 10)
-                .attr('fill', C.textMuted).attr('opacity', 0.7)
-                .text('matrix');
-        }
-
-
-        // ---- Output matrix drawn below the equation (toggle from BertViz) ----
-        drawInlineOutputMatrix(C, startX, zy, barH) {
-            const g = this.gB;
-            const phaseIdx = PHASES.indexOf(this.phase);
-            const softmaxIdx = PHASES.indexOf('APPLY_SOFTMAX');
+            const outputIdx = PHASES.indexOf('SHOW_OUTPUT');
             const activeData = this.getActiveData();
             const canvasW = this.layout.canvasW;
             const isModel = this.layout.isModel;
-            if (phaseIdx < softmaxIdx || !activeData) return;
+            if (phaseIdx < outputIdx || !activeData) return;
 
             const self = this;
+            const et = this.expandedTerms;
+            const expanded = et.has('output');
             const N = activeData.tokens.length;
             const d = isModel ? activeData.Q[0].length : this.embedDim;
-            const outputs = activeData.outputs;
-            const matCellW = this.layout.B_eq.matCellW;
-            const matCellH = this.layout.B_eq.matCellH;
-            const matPad = 6;
+            const { B_eq } = this.layout;
+            const scale = isModel ? 2.25 : 1;
+            const defaultChipH = B_eq.defaultChipH;
+            const MONO = "'SF Mono','Menlo','Monaco','Consolas','Courier New',monospace";
+            const SANS = "'Roboto','Helvetica','Arial',sans-serif";
+            const SERIF = "'Georgia','Times New Roman','Times',serif";
 
-            // Clickable background to toggle back to BertViz
-            g.append('rect')
-                .attr('x', 0).attr('y', zy)
-                .attr('width', canvasW).attr('height', barH)
-                .attr('fill', 'transparent').attr('cursor', 'pointer')
-                .on('click', function() { self.eqRightMode = 'bertviz'; self.draw(); });
-
-            // Center the output matrix in the full canvas
-            const matW = d * matCellW + matPad * 2;
-            const matH = N * matCellH + matPad * 2;
-            const mx = (canvasW - matW) / 2;
-            const my = zy + (barH - matH) / 2;
-
-            // Border + brackets
             const outputColor = C.outputText || '#2e7d32';
-            g.append('rect')
-                .attr('x', mx).attr('y', my).attr('width', matW).attr('height', matH)
-                .attr('rx', 3).attr('ry', 3)
-                .attr('fill', outputColor).attr('opacity', 0.08);
-            g.append('rect')
-                .attr('x', mx).attr('y', my).attr('width', matW).attr('height', matH)
-                .attr('rx', 3).attr('ry', 3)
-                .attr('fill', 'none').attr('stroke', outputColor).attr('stroke-width', 1.2);
+            const baseBg = C.canvasBg || '#ffffff';
+            const embedRowH = B_eq.embedRowH;
+            const embedRowGap = B_eq.embedRowGap;
+            const embedRowStride = B_eq.embedRowStride;
 
-            // Bracket decorations
-            const cap = 4, inset = 1.5;
-            g.append('path')
-                .attr('d', `M${mx+cap+inset},${my+inset} L${mx+inset},${my+inset} L${mx+inset},${my+matH-inset} L${mx+cap+inset},${my+matH-inset}`)
-                .attr('fill', 'none').attr('stroke', outputColor).attr('stroke-width', 1.2);
-            g.append('path')
-                .attr('d', `M${mx+matW-cap-inset},${my+inset} L${mx+matW-inset},${my+inset} L${mx+matW-inset},${my+matH-inset} L${mx+matW-cap-inset},${my+matH-inset}`)
-                .attr('fill', 'none').attr('stroke', outputColor).attr('stroke-width', 1.2);
+            // Clickable wrapper group
+            const outG = g.append('g').attr('cursor', 'pointer')
+                .on('click', function() {
+                    if (et.has('output')) et.delete('output'); else et.add('output');
+                    self.computeLayout();
+                    self.draw();
+                });
 
-            // Matrix values
-            if (isModel) {
-                // Heatmap mode for large matrices
-                let minVal = Infinity, maxVal = -Infinity;
-                for (let i = 0; i < N; i++) {
-                    for (let j = 0; j < d; j++) {
-                        const v = outputs[i][j];
-                        if (v < minVal) minVal = v;
-                        if (v > maxVal) maxVal = v;
-                    }
-                }
-                const absMax = Math.max(Math.abs(minVal), Math.abs(maxVal), 0.001);
-                for (let i = 0; i < N; i++) {
-                    for (let j = 0; j < d; j++) {
-                        const cx = mx + matPad + j * matCellW;
-                        const cy = my + matPad + i * matCellH;
-                        const v = outputs[i][j];
-                        const t = (v / absMax + 1) / 2;
-                        g.append('rect')
-                            .attr('x', cx).attr('y', cy)
-                            .attr('width', matCellW).attr('height', matCellH)
-                            .attr('fill', interpolateHeatColor(t, '#4575b4', '#f7f7f7', '#d73027'));
-                    }
-                }
+            if (!expanded) {
+                // --- Collapsed: compact chip with "Output Embedding" label + dimensions ---
+                const chipH = Math.round(26 * scale);
+                const chipW = Math.round(180 * scale);
+                const chipX = (canvasW - chipW) / 2;
+
+                outG.append('rect')
+                    .attr('x', chipX).attr('y', zy)
+                    .attr('width', chipW).attr('height', chipH)
+                    .attr('rx', 5).attr('ry', 5)
+                    .attr('fill', outputColor)
+                    .attr('fill-opacity', 0.1)
+                    .attr('stroke', outputColor)
+                    .attr('stroke-width', 3);
+
+                outG.append('text')
+                    .attr('x', chipX + chipW / 2).attr('y', zy + chipH / 2 - 4 * scale)
+                    .attr('text-anchor', 'middle').attr('dominant-baseline', 'central')
+                    .attr('font-family', SANS).attr('font-size', Math.round(11 * scale))
+                    .attr('font-weight', 'bold')
+                    .attr('fill', outputColor)
+                    .text('Output Embedding');
+
+                // Dimension label inside chip
+                outG.append('text')
+                    .attr('x', chipX + chipW / 2).attr('y', zy + chipH / 2 + 4 * scale)
+                    .attr('text-anchor', 'middle').attr('dominant-baseline', 'hanging')
+                    .attr('font-family', MONO).attr('font-size', 6.3 * scale)
+                    .attr('fill', C.textMuted).attr('opacity', 0.7)
+                    .text(`<${N}, ${d}>`);
             } else {
+                // --- Expanded: per-token embedding rows ---
+                const embedPadX = Math.round(8 * scale);
+                const embedPadY = Math.round(6 * scale);
+                const embedTitleH = Math.round(14 * scale);
+                const embedInnerH = N * embedRowStride - embedRowGap;
+                const containerH = embedTitleH + embedInnerH + embedPadY * 2;
+
+                const leftPad = Math.round(10 * scale);
+                const rightPad = Math.round(10 * scale);
+                const containerW = Math.round((canvasW - leftPad - rightPad) * 0.38);
+                const containerX = (canvasW - containerW) / 2;
+
+                outG.append('rect')
+                    .attr('x', containerX).attr('y', zy)
+                    .attr('width', containerW).attr('height', containerH)
+                    .attr('rx', 5).attr('ry', 5)
+                    .attr('fill', outputColor)
+                    .attr('fill-opacity', 0.1)
+                    .attr('stroke', outputColor)
+                    .attr('stroke-width', 3);
+
+                // "Output Embedding" title
+                const centerX = containerX + containerW / 2;
+                outG.append('text')
+                    .attr('x', centerX).attr('y', zy + embedPadY + embedTitleH * 0.5)
+                    .attr('text-anchor', 'middle').attr('dominant-baseline', 'central')
+                    .attr('font-family', SANS).attr('font-size', Math.round(11 * scale))
+                    .attr('font-weight', 'bold')
+                    .attr('fill', outputColor)
+                    .text('Output Embedding');
+
+                // Per-token embedding rows
+                const rowStartY = zy + embedPadY + embedTitleH;
+                const tokenIdBoxW = Math.round(28 * scale);
+                const vecBarPad = Math.round(4 * scale);
+
                 for (let i = 0; i < N; i++) {
-                    for (let j = 0; j < d; j++) {
-                        const cx = mx + matPad + j * matCellW;
-                        const cy = my + matPad + i * matCellH;
-                        g.append('text')
-                            .attr('x', cx + matCellW / 2).attr('y', cy + matCellH / 2)
-                            .attr('text-anchor', 'middle').attr('dominant-baseline', 'central')
-                            .attr('font-family', MONO).attr('font-size', 8)
-                            .attr('fill', outputColor)
-                            .text(outputs[i][j].toFixed(1));
-                    }
+                    const ry = rowStartY + i * embedRowStride;
+                    const tokenColor = getTokenClassColor(i);
+                    const tokenBgColor = tokenColorBgOpaque(tokenColor, 0.15, baseBg);
+                    const borderColor = tokenColorBorder(tokenColor, 0.5);
+
+                    const idBoxX = containerX + embedPadX;
+                    outG.append('rect')
+                        .attr('x', idBoxX).attr('y', ry + 1)
+                        .attr('width', tokenIdBoxW).attr('height', embedRowH - 2)
+                        .attr('rx', 2).attr('ry', 2)
+                        .attr('fill', tokenBgColor)
+                        .attr('stroke', borderColor)
+                        .attr('stroke-width', 1.2);
+                    outG.append('text')
+                        .attr('x', idBoxX + tokenIdBoxW / 2).attr('y', ry + embedRowH / 2)
+                        .attr('text-anchor', 'middle').attr('dominant-baseline', 'central')
+                        .attr('font-family', MONO).attr('font-size', Math.round(7 * scale))
+                        .attr('font-weight', 'bold')
+                        .attr('fill', C.canvasText)
+                        .text(activeData.tokens[i]);
+
+                    const vecX = idBoxX + tokenIdBoxW + vecBarPad;
+                    const vecW = containerW - embedPadX * 2 - tokenIdBoxW - vecBarPad;
+                    outG.append('rect')
+                        .attr('x', vecX).attr('y', ry + 1)
+                        .attr('width', vecW).attr('height', embedRowH - 2)
+                        .attr('rx', 2).attr('ry', 2)
+                        .attr('fill', tokenBgColor)
+                        .attr('stroke', borderColor)
+                        .attr('stroke-width', 1.2);
+                    outG.append('text')
+                        .attr('x', vecX + vecW / 2).attr('y', ry + embedRowH / 2)
+                        .attr('text-anchor', 'middle').attr('dominant-baseline', 'central')
+                        .attr('font-family', MONO).attr('font-size', Math.round(6.5 * scale))
+                        .attr('fill', C.textMuted)
+                        .attr('opacity', 0.7)
+                        .text(`<1, ${d}>`);
                 }
+
+                // Dimension label below container
+                outG.append('text')
+                    .attr('x', centerX).attr('y', zy + containerH + 12 * scale)
+                    .attr('text-anchor', 'middle').attr('dominant-baseline', 'hanging')
+                    .attr('font-family', MONO).attr('font-size', 6.3 * scale)
+                    .attr('fill', C.textMuted).attr('opacity', 0.7)
+                    .text(`<${N}, ${d}>`);
             }
-
-            // Dimension label
-            g.append('text')
-                .attr('x', mx + matW + 8).attr('y', my + matH / 2)
-                .attr('text-anchor', 'start').attr('dominant-baseline', 'central')
-                .attr('font-family', MONO).attr('font-size', 7)
-                .attr('fill', C.textMuted).attr('opacity', 0.7)
-                .text(`<${N}, ${d}>`);
-
-            // Label below with toggle hint
-            const hintG = g.append('g')
-                .attr('class', 'toggle-hint')
-                .attr('cursor', 'pointer')
-                .on('click', function() { self.eqRightMode = 'bertviz'; self.draw(); });
-
-            hintG.append('text')
-                .attr('x', mx + matW / 2 - 30).attr('y', my + matH + 10)
-                .attr('text-anchor', 'middle').attr('dominant-baseline', 'hanging')
-                .attr('font-family', MONO).attr('font-size', 10)
-                .attr('fill', C.textMuted).attr('opacity', 0.7)
-                .text('⇄');
-
-            hintG.append('text')
-                .attr('x', mx + matW / 2 + 12).attr('y', my + matH + 10)
-                .attr('text-anchor', 'middle').attr('dominant-baseline', 'hanging')
-                .attr('font-family', MONO).attr('font-size', 10)
-                .attr('fill', C.textMuted).attr('opacity', 0.7)
-                .text('heatmap');
         }
 
         // ============================================

@@ -37,10 +37,10 @@
     --attn-active-glow: rgba(255, 152, 0, 0.5);
     --attn-active-border: #ff9800;
 
-    /* Heatmap gradient */
-    --attn-heat-cool: #42a5f5;
-    --attn-heat-mid: #ff9800;
-    --attn-heat-warm: #e53935;
+    /* Heatmap gradient (blue → green) */
+    --attn-heat-cool: #e8f4f8;
+    --attn-heat-mid: #4da8da;
+    --attn-heat-warm: #10b981;
 
     /* Output vectors */
     --attn-output-fill: #66bb6a;
@@ -99,10 +99,10 @@
     --attn-active-glow: rgba(254, 128, 25, 0.5);
     --attn-active-border: #fe8019;
 
-    /* Heatmap gradient */
-    --attn-heat-cool: #83a598;
-    --attn-heat-mid: #fe8019;
-    --attn-heat-warm: #fb4934;
+    /* Heatmap gradient (blue → green) */
+    --attn-heat-cool: #3c3836;
+    --attn-heat-mid: #458588;
+    --attn-heat-warm: #50d67a;
 
     /* Output vectors */
     --attn-output-fill: #b8bb26;
