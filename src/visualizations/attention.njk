@@ -35,53 +35,9 @@ cardOrder: 29
             <div class="panel-heading">
                 <div class="panel-heading-content">
                     <span class="panel-title-text"><i class="fa fa-crosshairs"></i> Attention Mechanism</span>
-                    <div class="attn-heading-controls">
-                        <div class="attn-heading-control">
-                            <span class="attn-heading-label">Dim:</span>
-                            <div class="attn-stepper">
-                                <button id="btn-dim-down" class="btn btn-xs btn-default"><i class="fa fa-minus"></i></button>
-                                <span id="embed-dim-value" class="stepper-value">64</span>
-                                <button id="btn-dim-up" class="btn btn-xs btn-default"><i class="fa fa-plus"></i></button>
-                            </div>
-                        </div>
-                        <div class="attn-heading-control">
-                            <span class="attn-heading-label">Heads:</span>
-                            <div class="attn-stepper">
-                                <button id="btn-heads-down" class="btn btn-xs btn-default"><i class="fa fa-minus"></i></button>
-                                <span id="num-heads-value" class="stepper-value">12</span>
-                                <button id="btn-heads-up" class="btn btn-xs btn-default"><i class="fa fa-plus"></i></button>
-                            </div>
-                        </div>
-                        <div class="attn-heading-control" id="layer-select-row">
-                            <span class="attn-heading-label">Layer:</span>
-                            <div class="attn-stepper">
-                                <button id="btn-layer-down" class="btn btn-xs btn-default"><i class="fa fa-minus"></i></button>
-                                <span id="layer-value" class="stepper-value">0</span>
-                                <button id="btn-layer-up" class="btn btn-xs btn-default"><i class="fa fa-plus"></i></button>
-                            </div>
-                            <span id="layer-range" class="attn-heading-hint">/ 11</span>
-                            <button id="btn-layer-play" class="btn btn-xs btn-default attn-layer-play-btn" title="Animate through layers">
-                                <i class="fa fa-play"></i>
-                            </button>
-                            <span id="layer-anim-indicator" class="attn-layer-anim-indicator"></span>
-                        </div>
-                    </div>
                 </div>
             </div>
             <div class="panel-body canvas-panel-body">
-                <div id="head-color-bar" class="attn-head-color-bar visible">
-                    <span class="attn-head-color-bar-label">Overlay:</span>
-                </div>
-                <div id="view-mode-bar" class="attn-view-mode-bar">
-                    <span class="attn-view-mode-label">View:</span>
-                    <div class="attn-view-toggle">
-                        <button id="btn-view-lines" class="btn btn-xs btn-default active">Lines</button>
-                        <button id="btn-view-heatmap" class="btn btn-xs btn-default">Heatmap</button>
-                    </div>
-                    <button id="btn-layer-compare" class="btn btn-xs btn-default attn-layer-compare-btn">
-                        <i class="fa fa-th"></i> Compare Layers
-                    </button>
-                </div>
                 <div id="attention-svg-container" class="attn-svg-container"></div>
             </div>
             <div class="panel-footer legend-footer">
@@ -108,9 +64,9 @@ cardOrder: 29
                     <div class="attn-input-row">
                         <label>Sentence:</label>
                         <select id="sentence-select" class="form-control input-sm">
-                            <option value="default">I love cute cats</option>
-                            <option value="short">The cat sat</option>
-                            <option value="long">She saw the red car</option>
+                            <option value="default">I like cute kitties and</option>
+                            <option value="short">the cat sat on</option>
+                            <option value="long">hello world !</option>
                             <option value="custom">Custom...</option>
                         </select>
                     </div>
