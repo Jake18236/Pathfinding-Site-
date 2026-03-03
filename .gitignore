@@ -25,4 +25,6 @@ static/data/originals/
 
 # Raw dataset files (pre-processed outputs live in static/json/)
 data/
+!static/data/
+!static/data/attention/
 *.tar.gz
