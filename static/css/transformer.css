@@ -75,6 +75,16 @@
     --tf-layer-hover-bg: rgba(0, 0, 0, 0.03);
     --tf-layer-expanded-border: #1976d2;
     --tf-layer-label: #555;
+
+    /* FFN block */
+    --tf-ffn-color: #7b1fa2;
+    --tf-ffn-bg: rgba(123, 31, 162, 0.10);
+    --tf-ffn-border: #7b1fa2;
+
+    /* LayerNorm */
+    --tf-ln-color: #00838f;
+    --tf-ln-bg: rgba(0, 131, 143, 0.08);
+    --tf-ln-border: #00838f;
 }
 
 [data-theme="gruvbox-dark"] {
@@ -130,6 +140,16 @@
     --tf-layer-hover-bg: rgba(235, 219, 178, 0.05);
     --tf-layer-expanded-border: var(--gruvbox-blue);
     --tf-layer-label: #a89984;
+
+    /* FFN block */
+    --tf-ffn-color: #d3869b;
+    --tf-ffn-bg: rgba(211, 134, 155, 0.12);
+    --tf-ffn-border: #d3869b;
+
+    /* LayerNorm */
+    --tf-ln-color: #8ec07c;
+    --tf-ln-bg: rgba(142, 192, 124, 0.10);
+    --tf-ln-border: #8ec07c;
 }
 
 /* ============================================
@@ -227,6 +247,16 @@
 .legend-color.tf-cross-legend {
     background: var(--tf-cross-bg);
     border: 2px solid var(--tf-cross-border);
+}
+
+.legend-color.tf-ffn-legend {
+    background: var(--tf-ffn-bg);
+    border: 2px solid var(--tf-ffn-border);
+}
+
+.legend-color.tf-ln-legend {
+    background: var(--tf-ln-bg);
+    border: 2px solid var(--tf-ln-border);
 }
 
 /* Legend items hidden by default, shown per mode via JS on parent .legend-item */
@@ -390,6 +420,39 @@
    ============================================ */
 .tf-svg-container .tf-layer-collapsed:hover rect:first-child {
     stroke-width: 2.5;
+}
+
+/* ============================================
+   Viewport Sizing
+   ============================================ */
+.tf-svg-container {
+    max-height: 85vh;
+    overflow-y: auto;
+}
+
+/* ============================================
+   Disabled Controls
+   ============================================ */
+.tf-controls-inner select:disabled,
+.tf-controls-inner input:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* ============================================
+   Data Mode Badge
+   ============================================ */
+.tf-data-badge {
+    background: var(--viz-info-bg) !important;
+    border-color: var(--viz-info-border) !important;
+    color: var(--viz-info-border) !important;
+    font-weight: 600;
+}
+
+[data-theme="gruvbox-dark"] .tf-data-badge {
+    background: rgba(131, 165, 152, 0.2) !important;
+    border-color: var(--gruvbox-blue) !important;
+    color: var(--gruvbox-blue) !important;
 }
 
 /* ============================================

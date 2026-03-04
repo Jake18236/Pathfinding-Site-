@@ -50,6 +50,7 @@ cardImage: static/img/vis_cards/transformer.png
                         <span class="viz-badge" id="tf-layer-badge">12 Layers</span>
                         <span class="viz-badge" id="tf-head-badge">4 Heads</span>
                         <span class="viz-badge" id="tf-dim-badge">d=64</span>
+                        <span class="viz-badge tf-data-badge" id="tf-data-badge" style="display:none;"></span>
                     </div>
                 </div>
             </div>
@@ -64,6 +65,8 @@ cardImage: static/img/vis_cards/transformer.png
                         {class: 'tf-embed-legend', label: 'Embedding'},
                         {class: 'tf-qkv-legend', label: 'Q / K / V'},
                         {class: 'tf-head-legend', label: 'Attn Head'},
+                        {class: 'tf-ffn-legend', label: 'FFN'},
+                        {class: 'tf-ln-legend', label: 'LayerNorm'},
                         {class: 'tf-output-legend', label: 'Output'},
                         {class: 'tf-mask-legend tf-legend-mask', label: 'Causal Mask'},
                         {class: 'tf-cross-legend tf-legend-cross', label: 'Cross-Attn'},
@@ -130,6 +133,13 @@ cardImage: static/img/vis_cards/transformer.png
                 '},
                 {id: 'controls', icon: 'fa-sliders', label: 'Controls', content: '
                     <div class="tf-controls-inner">
+                        <div class="option-row">
+                            <label>Data:</label>
+                            <div class="btn-group btn-group-sm" id="tf-data-mode-toggle">
+                                <button class="btn btn-default active" id="btn-data-synthetic">Synthetic</button>
+                                <button class="btn btn-default" id="btn-data-real">Real Model</button>
+                            </div>
+                        </div>
                         <div class="option-row">
                             <label id="tf-example-label">Example:</label>
                             <select id="tf-example-select" class="form-control input-sm">

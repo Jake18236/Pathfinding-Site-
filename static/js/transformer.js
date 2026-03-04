@@ -405,7 +405,13 @@
             layerBorder:        g('--tf-layer-border'),
             layerHoverBg:       g('--tf-layer-hover-bg'),
             layerExpandedBorder:g('--tf-layer-expanded-border'),
-            layerLabel:         g('--tf-layer-label')
+            layerLabel:         g('--tf-layer-label'),
+            ffnColor:           g('--tf-ffn-color'),
+            ffnBg:              g('--tf-ffn-bg'),
+            ffnBorder:          g('--tf-ffn-border'),
+            lnColor:            g('--tf-ln-color'),
+            lnBg:               g('--tf-ln-bg'),
+            lnBorder:           g('--tf-ln-border')
         };
     }
 
@@ -458,6 +464,12 @@
         this.expandedDecResult = null;
         this.expandedDecCrossModel = null;
         this.expandedDecCrossResult = null;
+
+        // Real data mode
+        this.dataMode = 'synthetic';  // 'synthetic' | 'real'
+        this.realDataCache = {};
+        this.realData = null;
+        this.isLoading = false;
 
         this.svg = this.container.append('svg')
             .attr('viewBox', '0 0 ' + CANVAS_W + ' 700')
@@ -518,6 +530,17 @@
     }
 
     TransformerViz.prototype.rebuildModel = function () {
+        var self = this;
+
+        if (this.dataMode === 'real') {
+            this.loadRealData(function () {
+                self._rebuildModelFromRealData();
+                self.draw();
+            });
+            return;
+        }
+
+        // Synthetic mode
         if (this.archMode === 'original') {
             var ed = EXAMPLES_ENC_DEC[this.exIdx];
             this.encEmbResult = computeTokenEmbeddings(ed.source, this.embedDim, 12345, this.usePE);
@@ -542,8 +565,81 @@
         this.updateStepperDisplay();
     };
 
+    TransformerViz.prototype._rebuildModelFromRealData = function () {
+        var rd = this.realData;
+        if (!rd) return;
+
+        if (this.archMode === 'original') {
+            // MarianMT
+            this.numHeads = rd.num_heads;
+            this.numEncLayers = rd.num_enc_layers;
+            this.numDecLayers = rd.num_dec_layers;
+            this.embedDim = rd.hidden_size;
+
+            // Build fake token objects for compatibility
+            var srcTokens = [];
+            for (var i = 0; i < rd.source_tokens.length; i++) {
+                srcTokens.push({ word: rd.source_tokens[i], id: i });
+            }
+            var tgtTokens = [];
+            for (var j = 0; j < rd.target_tokens.length; j++) {
+                tgtTokens.push({ word: rd.target_tokens[j], id: j });
+            }
+
+            // Store as fake example data
+            this._realSrcTokens = srcTokens;
+            this._realTgtTokens = tgtTokens;
+
+            // Minimal embeddings (not real, but needed for structure)
+            this.encEmbResult = { embeddings: [], pe: [], embedded: [] };
+            this.decEmbResult = { embeddings: [], pe: [], embedded: [] };
+
+            var maxSrc = srcTokens.length - 1;
+            var maxTgt = tgtTokens.length - 1;
+            if (this.activeToken > maxSrc) this.activeToken = maxSrc;
+            if (this.activeTargetToken > maxTgt) this.activeTargetToken = maxTgt;
+
+            // Clamp expanded layer indices
+            if (this.expandedEncLayerIdx >= this.numEncLayers) this.expandedEncLayerIdx = this.numEncLayers - 1;
+            if (this.expandedDecLayerIdx >= this.numDecLayers) this.expandedDecLayerIdx = this.numDecLayers - 1;
+        } else {
+            // BERT / GPT-2
+            this.numHeads = rd.num_heads;
+            this.numLayers = rd.num_layers;
+            this.embedDim = rd.hidden_size;
+
+            var tokens = [];
+            for (var k = 0; k < rd.tokens.length; k++) {
+                tokens.push({ word: rd.tokens[k], id: k });
+            }
+            this._realTokens = tokens;
+
+            this.embResult = { embeddings: [], pe: [], embedded: [] };
+            var maxT = tokens.length - 1;
+            if (this.activeToken > maxT) this.activeToken = maxT;
+
+            // Clamp expanded layer index
+            if (this.expandedLayerIdx >= this.numLayers) this.expandedLayerIdx = this.numLayers - 1;
+        }
+
+        if (this.activeHead >= this.numHeads) this.activeHead = this.numHeads - 1;
+        if (this.activeHeadEnc >= this.numHeads) this.activeHeadEnc = this.numHeads - 1;
+        if (this.activeHeadDec >= this.numHeads) this.activeHeadDec = this.numHeads - 1;
+        if (this.activeHeadCross >= this.numHeads) this.activeHeadCross = this.numHeads - 1;
+
+        this.computeExpandedLayer();
+        this.updateStepperDisplay();
+    };
+
     // ─── Compute Only the Expanded Layer's Forward Pass ─────────────
     TransformerViz.prototype.computeExpandedLayer = function () {
+        // Real data path
+        if (this.dataMode === 'real' && this.realData) {
+            this._computeExpandedLayerReal();
+            return;
+        }
+
+        // Synthetic path
         if (this.archMode === 'original') {
             // Expanded encoder layer
             if (this.expandedEncLayerIdx >= 0 && this.encEmbResult) {
@@ -584,7 +680,7 @@
             }
         } else {
             // BERT/GPT-2: single stack
-            if (this.embResult) {
+            if (this.embResult && this.expandedLayerIdx >= 0) {
                 var model = buildLayerModel(this.embedDim, this.numHeads, this.expandedLayerIdx, 'encoder');
                 var embedded = this.embResult.embedded;
                 var n = embedded.length;
@@ -600,8 +696,145 @@
                 }
                 this.expandedModel = model;
                 this.expandedResult = { heads: heads, concat: concat };
+            } else {
+                this.expandedModel = null;
+                this.expandedResult = null;
             }
         }
+    };
+
+    // ─── Compute Expanded Layer from Real Data ──────────────────────
+    TransformerViz.prototype._computeExpandedLayerReal = function () {
+        var rd = this.realData;
+        var headDim = rd.head_dim;
+        var numHeads = rd.num_heads;
+        var hiddenSize = rd.hidden_size;
+
+        if (this.archMode === 'original') {
+            // MarianMT — encoder
+            if (this.expandedEncLayerIdx >= 0 && rd.encoder_layers && this.expandedEncLayerIdx < rd.encoder_layers.length) {
+                var encLayer = rd.encoder_layers[this.expandedEncLayerIdx];
+                var encHeads = this._extractRealHeads(encLayer.heads, headDim);
+                this.expandedEncModel = { headDim: headDim, numHeads: numHeads, embedDim: hiddenSize };
+                this.expandedEncResult = { heads: encHeads };
+            } else {
+                this.expandedEncModel = null;
+                this.expandedEncResult = null;
+            }
+
+            // MarianMT — decoder
+            if (this.expandedDecLayerIdx >= 0 && rd.decoder_layers && this.expandedDecLayerIdx < rd.decoder_layers.length) {
+                var decLayer = rd.decoder_layers[this.expandedDecLayerIdx];
+
+                // Masked self-attention
+                var decHeads = this._extractRealHeads(decLayer.heads, headDim);
+                this.expandedDecModel = { headDim: headDim, numHeads: numHeads, embedDim: hiddenSize };
+                this.expandedDecResult = { heads: decHeads };
+
+                // Cross-attention
+                var crossHeads = this._extractRealCrossHeads(decLayer.cross_attention_heads, headDim);
+                this.expandedDecCrossModel = { headDim: headDim, numHeads: numHeads, embedDim: hiddenSize };
+                this.expandedDecCrossResult = { heads: crossHeads };
+            } else {
+                this.expandedDecModel = null;
+                this.expandedDecResult = null;
+                this.expandedDecCrossModel = null;
+                this.expandedDecCrossResult = null;
+            }
+        } else {
+            // BERT / GPT-2
+            if (this.expandedLayerIdx >= 0 && rd.layers && this.expandedLayerIdx < rd.layers.length) {
+                var layer = rd.layers[this.expandedLayerIdx];
+                var heads = this._extractRealHeads(layer.heads, headDim);
+
+                // Build concat
+                var nTokens = heads[0].Q.length;
+                var concat = [];
+                for (var i = 0; i < nTokens; i++) {
+                    var c = [];
+                    for (var h = 0; h < numHeads; h++) {
+                        c = c.concat(heads[h].output[i]);
+                    }
+                    concat.push(c);
+                }
+
+                this.expandedModel = { headDim: headDim, numHeads: numHeads, embedDim: hiddenSize };
+                this.expandedResult = { heads: heads, concat: concat };
+            } else {
+                this.expandedModel = null;
+                this.expandedResult = null;
+            }
+        }
+    };
+
+    // Extract head data from real JSON into the format used by the visualization
+    TransformerViz.prototype._extractRealHeads = function (jsonHeads, headDim) {
+        var heads = [];
+        for (var h = 0; h < jsonHeads.length; h++) {
+            var jh = jsonHeads[h];
+            // Reconstruct raw scores from Q and K: score[i][j] = dot(Q[i], K[j]) / sqrt(d_k)
+            var nQ = jh.Q.length;
+            var nK = jh.K.length;
+            var scale = Math.sqrt(headDim);
+            var scores = [];
+            for (var i = 0; i < nQ; i++) {
+                var row = [];
+                for (var j = 0; j < nK; j++) {
+                    row.push(dot(jh.Q[i], jh.K[j]) / scale);
+                }
+                scores.push(row);
+            }
+            heads.push({
+                Q: jh.Q,
+                K: jh.K,
+                V: jh.V,
+                scores: scores,
+                weights: jh.attention_weights,
+                output: jh.output
+            });
+        }
+        return heads;
+    };
+
+    // Extract cross-attention heads (only Q and weights available, no K/V/output)
+    TransformerViz.prototype._extractRealCrossHeads = function (jsonHeads, headDim) {
+        var heads = [];
+        for (var h = 0; h < jsonHeads.length; h++) {
+            var jh = jsonHeads[h];
+            var nQ = jh.Q.length;
+            var nK = jh.attention_weights[0].length;
+            // No K/V/output available; provide empty placeholders
+            var emptyK = [];
+            var emptyV = [];
+            var emptyOutput = [];
+            for (var j = 0; j < nK; j++) {
+                var emptyVec = [];
+                for (var d = 0; d < headDim; d++) emptyVec.push(0);
+                emptyK.push(emptyVec);
+                emptyV.push(emptyVec.slice());
+            }
+            for (var i = 0; i < nQ; i++) {
+                var emptyOut = [];
+                for (var d2 = 0; d2 < headDim; d2++) emptyOut.push(0);
+                emptyOutput.push(emptyOut);
+            }
+            // Scores: not available, use zeros
+            var scores = [];
+            for (var i2 = 0; i2 < nQ; i2++) {
+                var row = [];
+                for (var j2 = 0; j2 < nK; j2++) row.push(0);
+                scores.push(row);
+            }
+            heads.push({
+                Q: jh.Q,
+                K: emptyK,
+                V: emptyV,
+                scores: scores,
+                weights: jh.attention_weights,
+                output: emptyOutput
+            });
+        }
+        return heads;
     };
 
     // ─── Main Draw (branches by architecture mode) ────────────────────
@@ -609,11 +842,16 @@
         this.gB.selectAll('*').remove();
         this.gC.selectAll('*').remove();
 
+        // Fade-in transition
+        this.gB.attr('opacity', 0);
+
         if (this.archMode === 'original') {
             this.drawEncoderDecoder();
         } else {
             this.drawSingleStack();
         }
+
+        this.gB.transition().duration(200).attr('opacity', 1);
 
         this.updateBadges();
         this.updateLegendVisibility();
@@ -714,10 +952,11 @@
                 var v = data[i][j];
                 var t = (v / absMax + 1) / 2;
                 var fillColor = interpolateHeatColor(t, C.heatCool, C.heatMid, C.heatWarm);
-                g.append('rect')
+                var cellRect = g.append('rect')
                     .attr('x', cx).attr('y', cy)
                     .attr('width', cellW - 0.5).attr('height', cellH - 0.5)
                     .attr('fill', fillColor);
+                cellRect.append('title').text('[' + i + ',' + j + '] = ' + v.toFixed(4));
             }
         }
     };
@@ -763,6 +1002,9 @@
 
                 var cellG = g.append('g');
 
+                var rowWord = displayWord(rowTokens[i].word);
+                var colWord = displayWord(colTokens[j].word);
+
                 if (isMasked) {
                     // Masked cell: diagonal stripe pattern
                     cellG.append('rect')
@@ -773,6 +1015,7 @@
                         .attr('stroke', C.maskColor)
                         .attr('stroke-width', 0.5)
                         .attr('stroke-opacity', 0.3);
+                    cellG.append('title').text('"' + rowWord + '" \u2192 "' + colWord + '": masked');
                 } else {
                     var fillColor = interpolateHeatColor(w, C.heatCool, C.heatMid, C.heatWarm);
                     cellG.append('rect')
@@ -795,6 +1038,7 @@
                             .attr('fill', w > 0.5 ? '#fff' : C.text)
                             .text(w.toFixed(2));
                     }
+                    cellG.append('title').text('"' + rowWord + '" \u2192 "' + colWord + '": ' + w.toFixed(4));
                 }
             }
         }
@@ -824,6 +1068,7 @@
         var centerX = CANVAS_W / 2;
 
         var layerG = g.append('g').attr('class', 'tf-layer-collapsed').attr('cursor', 'pointer');
+        layerG.append('title').text('Click to expand Layer ' + (layerIdx + 1) + ': ' + layerType);
 
         layerG.append('rect')
             .attr('x', blockX).attr('y', y)
@@ -913,8 +1158,12 @@
             var cy = cardsY;
             var isActive = (i === this.activeToken);
             var tokColor = getTokenClassColor(i);
+            var isSpecial = isSpecialToken(tokens[i].word);
+            var cardOpacity = isSpecial ? 0.5 : 1.0;
 
             var cardG = g.append('g').attr('class', 'token-card-group');
+            if (isSpecial) cardG.attr('opacity', cardOpacity);
+            cardG.append('title').text('Token ' + i + ': "' + tokens[i].word.trim() + '" (id ' + tokens[i].id + ')');
             cardG.append('rect')
                 .attr('x', cx).attr('y', cy)
                 .attr('width', cardW).attr('height', cardH)
@@ -934,7 +1183,7 @@
                 .attr('x', cx + cardW / 2).attr('y', cy + 24)
                 .attr('text-anchor', 'middle').attr('dominant-baseline', 'central')
                 .attr('font-family', SERIF).attr('font-size', 11).attr('font-weight', 600)
-                .attr('fill', C.text)
+                .attr('fill', isSpecial ? C.textMuted : C.text)
                 .text(displayWord(tokens[i].word));
 
             cardG.append('text')
@@ -1033,12 +1282,59 @@
             .attr('fill', C.textMuted).attr('opacity', 0.7)
             .text('<' + N + ', ' + this.embedDim + '>');
 
+        // PE heatmap (compact sinusoidal pattern visualization)
+        var peHeatmapH = 0;
+        if (this.usePE && embResult && embResult.pe) {
+            var peShowDims = Math.min(8, this.embedDim);
+            var peCellW = Math.min(12, embedBlockW / peShowDims);
+            var peCellH = Math.min(10, 80 / N);
+            var peGridW = peShowDims * peCellW;
+            var peGridH = N * peCellH;
+            var peGridX = embedBlockX + embedBlockW / 2 - peGridW / 2;
+            var peGridY = embedStartY + embedBlockH + 16;
+
+            g.append('text')
+                .attr('x', embedBlockX + embedBlockW / 2)
+                .attr('y', peGridY - 4)
+                .attr('text-anchor', 'middle').attr('dominant-baseline', 'auto')
+                .attr('font-family', MONO).attr('font-size', 7)
+                .attr('fill', C.embedColor).attr('opacity', 0.8)
+                .text('PE Matrix');
+
+            // Draw PE heatmap cells
+            for (var pi = 0; pi < N; pi++) {
+                for (var pj = 0; pj < peShowDims; pj++) {
+                    var peVal = embResult.pe[pi][pj];
+                    var t = (peVal + 1) / 2; // normalize -1..1 to 0..1
+                    var fillColor = interpolateHeatColor(t, C.heatCool, C.heatMid, C.heatWarm);
+                    g.append('rect')
+                        .attr('x', peGridX + pj * peCellW)
+                        .attr('y', peGridY + pi * peCellH)
+                        .attr('width', peCellW - 0.5).attr('height', peCellH - 0.5)
+                        .attr('fill', fillColor)
+                        .attr('rx', 1);
+                }
+            }
+
+            // Dim labels along top
+            for (var dk = 0; dk < peShowDims; dk++) {
+                g.append('text')
+                    .attr('x', peGridX + dk * peCellW + peCellW / 2)
+                    .attr('y', peGridY + peGridH + 6)
+                    .attr('text-anchor', 'middle').attr('dominant-baseline', 'hanging')
+                    .attr('font-family', MONO).attr('font-size', 5.5)
+                    .attr('fill', C.textMuted)
+                    .text(dk);
+            }
+            peHeatmapH = peGridH + 18;
+        }
+
         // Elbow arrow from tokens to embedding
         var tokCenterX = tokBlockX + totalCardsW / 2;
         var embedCenterX = embedBlockX + embedBlockW / 2;
         self.drawElbowArrow(g, C, tokCenterX, cardsY + cardH + 18, embedCenterX, embedStartY - 4);
 
-        var stage1H = Math.max(cardH + 20, embedBlockH) + 18;
+        var stage1H = Math.max(cardH + 20, embedBlockH + peHeatmapH) + 18;
         return y + stage1H + 14; // +14 for bottom padding
     };
 
@@ -1093,14 +1389,19 @@
             .attr('fill', C.textMuted)
             .text('\u25BC');
         collapseG.on('click', function () {
-            // Collapse by expanding layer 0 instead (or keep as-is)
-            self.expandedLayerIdx = 0;
+            self.expandedLayerIdx = -1;
             self.expandedChips = {};
             self.computeExpandedLayer();
             self.draw();
         });
 
         var y = headerY + 24;
+
+        // ─── Pre-LayerNorm (GPT-2 style) ───
+        if (isCausal) {
+            y = this.drawLayerNorm(g, C, y, 'LayerNorm');
+            y += 6;
+        }
 
         // ─── Q/K/V Projection chips ───
         var chipH = 36;
@@ -1287,6 +1588,7 @@
             var isActiveHead = (h === this.activeHead);
 
             var sqG = g.append('g').attr('class', 'head-square');
+            sqG.append('title').text('Head ' + h + (isActiveHead ? ' (active)' : '') + ' — click to switch');
             sqG.append('rect')
                 .attr('x', sqX).attr('y', sqY)
                 .attr('width', concatDotSize).attr('height', concatDotSize)
@@ -1333,6 +1635,24 @@
             .text('<' + N + ', ' + this.embedDim + '>');
 
         y += concatDotSize + 22;
+
+        // ─── LayerNorm (post-attention) ───
+        var isPreNorm = this.archMode === 'gpt2';
+        if (!isPreNorm) {
+            y = this.drawLayerNorm(g, C, y, 'Add & Norm');
+            y += 6;
+        }
+
+        // ─── FFN Block ───
+        var arrowH2 = 16;
+        self.drawArrowDown(g, C, centerX, y, y + arrowH2 - 2);
+        y += arrowH2;
+        y = this.drawFFNBlock(g, C, baseBg, y, N);
+        y += 6;
+
+        // ─── LayerNorm (post-FFN) ───
+        y = this.drawLayerNorm(g, C, y, isPreNorm ? 'Add' : 'Add & Norm');
+        y += 6;
 
         // Update container border height
         borderRect.attr('height', y - startY + 4);
@@ -1447,10 +1767,148 @@
         }
     };
 
+    // ─── LayerNorm Bar ─────────────────────────────────────────────────
+    TransformerViz.prototype.drawLayerNorm = function (g, C, y, label) {
+        var leftPad = 20, rightPad = 20;
+        var blockX = leftPad + 16;
+        var blockW = CANVAS_W - leftPad - rightPad - 32;
+        var blockH = 16;
+
+        g.append('rect')
+            .attr('x', blockX).attr('y', y)
+            .attr('width', blockW).attr('height', blockH)
+            .attr('rx', 3).attr('ry', 3)
+            .attr('fill', C.lnBg)
+            .attr('stroke', C.lnBorder)
+            .attr('stroke-width', 1)
+            .attr('stroke-dasharray', '4,2');
+
+        g.append('text')
+            .attr('x', CANVAS_W / 2).attr('y', y + blockH / 2)
+            .attr('text-anchor', 'middle').attr('dominant-baseline', 'central')
+            .attr('font-family', MONO).attr('font-size', 8).attr('font-weight', 600)
+            .attr('fill', C.lnColor)
+            .text(label || 'LayerNorm');
+
+        return y + blockH;
+    };
+
+    // ─── FFN Block ─────────────────────────────────────────────────────
+    TransformerViz.prototype.drawFFNBlock = function (g, C, baseBg, y, N) {
+        var self = this;
+        var leftPad = 20, rightPad = 20;
+        var blockX = leftPad + 16;
+        var blockW = CANVAS_W - leftPad - rightPad - 32;
+        var centerX = CANVAS_W / 2;
+        var et = this.expandedChips;
+        var expanded = !!et.ffn;
+        var d = this.embedDim;
+        var d4 = d * 4;
+
+        if (!expanded) {
+            // Collapsed FFN: slim bar
+            var barH = 28;
+            var ffnG = g.append('g').attr('cursor', 'pointer');
+            ffnG.append('rect')
+                .attr('x', blockX).attr('y', y)
+                .attr('width', blockW).attr('height', barH)
+                .attr('rx', 4).attr('ry', 4)
+                .attr('fill', C.ffnBg)
+                .attr('stroke', C.ffnBorder)
+                .attr('stroke-width', 1.5);
+            ffnG.append('text')
+                .attr('x', centerX).attr('y', y + barH / 2 - 4)
+                .attr('text-anchor', 'middle').attr('dominant-baseline', 'central')
+                .attr('font-family', SERIF).attr('font-style', 'italic')
+                .attr('font-size', 10).attr('font-weight', 600)
+                .attr('fill', C.ffnColor)
+                .text('FFN (Linear \u2192 ReLU \u2192 Linear) \u25B6');
+            ffnG.append('text')
+                .attr('x', centerX).attr('y', y + barH / 2 + 7)
+                .attr('text-anchor', 'middle').attr('dominant-baseline', 'central')
+                .attr('font-family', MONO).attr('font-size', 7)
+                .attr('fill', C.textMuted)
+                .text('<' + N + ', ' + d + '> \u2192 <' + N + ', ' + d4 + '> \u2192 <' + N + ', ' + d + '>');
+            ffnG.on('click', function () {
+                self.expandedChips.ffn = true;
+                self.draw();
+            });
+            return y + barH;
+        } else {
+            // Expanded FFN: three sub-blocks with arrows
+            var subH = 28;
+            var arrowH = 14;
+            var subGap = 4;
+            var subW = Math.min(120, blockW * 0.3);
+            var totalH = subH * 3 + arrowH * 2 + subGap * 2 + 24;
+
+            var borderRect = g.append('rect')
+                .attr('x', blockX).attr('y', y)
+                .attr('width', blockW).attr('height', totalH)
+                .attr('rx', 4).attr('ry', 4)
+                .attr('fill', baseBg)
+                .attr('stroke', C.ffnBorder)
+                .attr('stroke-width', 2);
+
+            // Header
+            var collapseG = g.append('g').attr('cursor', 'pointer');
+            collapseG.append('text')
+                .attr('x', centerX).attr('y', y + 10)
+                .attr('text-anchor', 'middle').attr('dominant-baseline', 'central')
+                .attr('font-family', SERIF).attr('font-style', 'italic')
+                .attr('font-size', 10).attr('font-weight', 600)
+                .attr('fill', C.ffnColor)
+                .text('Feed-Forward Network \u25BC');
+            collapseG.on('click', function () {
+                self.expandedChips.ffn = false;
+                self.draw();
+            });
+
+            var cy = y + 22;
+
+            // W1: Linear(d, 4d)
+            self.makeChip(g, C, baseBg, centerX - subW / 2, cy, subW, subH, {
+                label: 'W\u2081', color: C.ffnColor, border: C.ffnBorder, bg: C.ffnBg,
+                dimText: '<' + d + ', ' + d4 + '>'
+            });
+            cy += subH + subGap;
+            self.drawArrowDown(g, C, centerX, cy, cy + arrowH - 2);
+            cy += arrowH;
+
+            // ReLU
+            g.append('rect')
+                .attr('x', centerX - 30).attr('y', cy)
+                .attr('width', 60).attr('height', 18)
+                .attr('rx', 3).attr('ry', 3)
+                .attr('fill', C.ffnBg)
+                .attr('stroke', C.ffnBorder)
+                .attr('stroke-width', 1);
+            g.append('text')
+                .attr('x', centerX).attr('y', cy + 9)
+                .attr('text-anchor', 'middle').attr('dominant-baseline', 'central')
+                .attr('font-family', MONO).attr('font-size', 9).attr('font-weight', 600)
+                .attr('fill', C.ffnColor)
+                .text('ReLU');
+            cy += 18 + subGap;
+            self.drawArrowDown(g, C, centerX, cy, cy + arrowH - 2);
+            cy += arrowH;
+
+            // W2: Linear(4d, d)
+            self.makeChip(g, C, baseBg, centerX - subW / 2, cy, subW, subH, {
+                label: 'W\u2082', color: C.ffnColor, border: C.ffnBorder, bg: C.ffnBg,
+                dimText: '<' + d4 + ', ' + d + '>'
+            });
+            cy += subH + 6;
+
+            borderRect.attr('height', cy - y);
+            return cy;
+        }
+    };
+
     // ─── Single Stack Draw (BERT / GPT-2) ───────────────────────────
     TransformerViz.prototype.drawSingleStack = function () {
         var self = this;
-        var tokens = EXAMPLES[this.exIdx].tokens;
+        var tokens = (this.dataMode === 'real' && this._realTokens) ? this._realTokens : EXAMPLES[this.exIdx].tokens;
         var N = tokens.length;
         var C = getThemeColors();
         var et = this.expandedChips;
@@ -1480,7 +1938,7 @@
                         self.draw();
                     };
                 })(li);
-                y = this.drawCollapsedLayer(g, C, baseBg, y, li, this.numLayers, isCausal ? 'Causal Self-Attn' : 'Self-Attn', layerClickFn);
+                y = this.drawCollapsedLayer(g, C, baseBg, y, li, this.numLayers, isCausal ? 'Causal Self-Attn + FFN' : 'Self-Attn + FFN', layerClickFn);
             }
         }
 
@@ -1500,21 +1958,43 @@
 
     // ─── Update Header Badges ─────────────────────────────────────────
     TransformerViz.prototype.updateBadges = function () {
+        var isReal = this.dataMode === 'real' && this.realData;
         var archBadge = document.getElementById('tf-arch-badge');
         if (archBadge) {
             var labels = { bert: 'Encoder Only', gpt2: 'Decoder Only', original: 'Encoder-Decoder' };
             archBadge.textContent = labels[this.archMode] || '';
         }
         var headBadge = document.getElementById('tf-head-badge');
-        if (headBadge) headBadge.textContent = this.numHeads + ' Head' + (this.numHeads > 1 ? 's' : '');
+        if (headBadge) {
+            var headText = this.numHeads + ' Head' + (this.numHeads > 1 ? 's' : '');
+            if (isReal) headText += ' (real)';
+            headBadge.textContent = headText;
+        }
         var dimBadge = document.getElementById('tf-dim-badge');
-        if (dimBadge) dimBadge.textContent = 'd=' + this.embedDim;
+        if (dimBadge) {
+            if (isReal) {
+                dimBadge.textContent = 'd=' + this.realData.hidden_size + ' (d\u2096=' + this.realData.head_dim + ')';
+            } else {
+                dimBadge.textContent = 'd=' + this.embedDim;
+            }
+        }
         var layerBadge = document.getElementById('tf-layer-badge');
         if (layerBadge) {
             if (this.archMode === 'original') {
                 layerBadge.textContent = this.numEncLayers + '+' + this.numDecLayers + ' Layers';
             } else {
                 layerBadge.textContent = this.numLayers + ' Layers';
+            }
+        }
+        // Data mode badge
+        var dataBadge = document.getElementById('tf-data-badge');
+        if (dataBadge) {
+            if (isReal) {
+                var modelNames = { bert: 'Real BERT', gpt2: 'Real GPT-2', original: 'Real MarianMT' };
+                dataBadge.textContent = modelNames[this.archMode] || 'Real';
+                dataBadge.style.display = '';
+            } else {
+                dataBadge.style.display = 'none';
             }
         }
     };
@@ -1539,7 +2019,7 @@
 
         var t = this.activeToken;
         var h = this.activeHead;
-        var tokens = EXAMPLES[this.exIdx].tokens;
+        var tokens = (this.dataMode === 'real' && this._realTokens) ? this._realTokens : EXAMPLES[this.exIdx].tokens;
         var n = tokens.length;
         var headData = this.expandedResult.heads[h];
         var headDim = this.expandedModel ? this.expandedModel.headDim : Math.floor(this.embedDim / this.numHeads);
@@ -1552,17 +2032,21 @@
         var html = '';
 
         // Mode indicator
+        var isRealData = this.dataMode === 'real' && this.realData;
+        var modeStr = isCausal ? 'GPT-2 (Causal)' : 'BERT (Bidirectional)';
+        if (isRealData) modeStr += ' \u2014 Real Data';
         html += '<div class="tf-math-section">';
-        html += '<div class="tf-math-title">' + layerLabel + ' \u2014 ' + (isCausal ? 'GPT-2 (Causal)' : 'BERT (Bidirectional)') + '</div>';
-        html += '<div class="tf-math-row"><span class="tf-math-label">Token:</span><span class="tf-math-value">\u201c' + displayWord(tokens[t].word) + '\u201d (id ' + tokens[t].id + ', pos ' + t + ')</span></div>';
+        html += '<div class="tf-math-title">' + layerLabel + ' \u2014 ' + modeStr + '</div>';
+        html += '<div class="tf-math-row"><span class="tf-math-label">Token:</span><span class="tf-math-value">\u201c' + displayWord(tokens[t].word) + '\u201d (pos ' + t + ')</span></div>';
         html += '</div>';
 
-        // Embedding
+        // Embedding (skip in real data mode where embeddings are not available)
+        if (!isRealData) {
         html += '<div class="tf-math-section">';
         html += '<div class="tf-math-title">Embedding</div>';
         html += '<div class="tf-math-row"><span class="tf-math-label">E[' + tokens[t].id + ']:</span></div>';
         html += '<div class="tf-math-vector">';
-        var emb = this.embResult ? this.embResult.embeddings[t] : [];
+        var emb = (this.embResult && this.embResult.embeddings && this.embResult.embeddings[t]) ? this.embResult.embeddings[t] : [];
         for (var i = 0; i < Math.min(showN, emb.length); i++) {
             html += '<span class="tf-vec-cell">' + emb[i].toFixed(3) + '</span>';
         }
@@ -1572,7 +2056,7 @@
         if (this.usePE) {
             html += '<div class="tf-math-row"><span class="tf-math-label">PE[' + t + ']:</span></div>';
             html += '<div class="tf-math-vector">';
-            var peVec = this.embResult ? this.embResult.pe[t] : [];
+            var peVec = (this.embResult && this.embResult.pe && this.embResult.pe[t]) ? this.embResult.pe[t] : [];
             for (var i = 0; i < Math.min(showN, peVec.length); i++) {
                 html += '<span class="tf-vec-cell">' + peVec[i].toFixed(3) + '</span>';
             }
@@ -1580,6 +2064,7 @@
             html += '</div>';
         }
         html += '</div>';
+        } // end if (!isRealData)
 
         // Q, K, V for active head
         html += '<div class="tf-math-section">';
@@ -1626,7 +2111,12 @@
 
     // ─── Math Panel for Encoder-Decoder Mode ─────────────────────────
     TransformerViz.prototype.updateMathPanelEncDec = function (panel) {
-        var ed = EXAMPLES_ENC_DEC[this.exIdx];
+        var ed;
+        if (this.dataMode === 'real' && this._realSrcTokens) {
+            ed = { source: this._realSrcTokens, target: this._realTgtTokens };
+        } else {
+            ed = EXAMPLES_ENC_DEC[this.exIdx];
+        }
         var block = this.activeBlock;
         var headDim = Math.floor(this.embedDim / this.numHeads);
         var showH = Math.min(6, headDim);
@@ -1702,6 +2192,101 @@
         panel.innerHTML = html;
     };
 
+    // ─── Real Data Loading ──────────────────────────────────────────
+    TransformerViz.prototype.getRealDataFilename = function () {
+        var prefix;
+        if (this.archMode === 'original') {
+            prefix = 'marian';
+        } else if (this.archMode === 'gpt2') {
+            prefix = 'gpt2';
+        } else {
+            prefix = 'bert';
+        }
+        return prefix + '-' + this.exIdx + '.json';
+    };
+
+    TransformerViz.prototype.loadRealData = function (callback) {
+        var self = this;
+        var filename = this.getRealDataFilename();
+
+        // Check cache
+        if (this.realDataCache[filename]) {
+            this.realData = this.realDataCache[filename];
+            callback();
+            return;
+        }
+
+        // Show loading overlay
+        this.isLoading = true;
+        var loadG = this.svg.append('g').attr('class', 'tf-loading-overlay');
+        var vb = this.svg.attr('viewBox').split(' ');
+        var vbW = parseFloat(vb[2]) || CANVAS_W;
+        var vbH = parseFloat(vb[3]) || 700;
+        loadG.append('rect')
+            .attr('x', 0).attr('y', 0)
+            .attr('width', vbW).attr('height', vbH)
+            .attr('fill', 'rgba(0,0,0,0.3)');
+        loadG.append('text')
+            .attr('x', vbW / 2).attr('y', vbH / 2)
+            .attr('text-anchor', 'middle').attr('dominant-baseline', 'central')
+            .attr('font-family', MONO).attr('font-size', 14).attr('font-weight', 700)
+            .attr('fill', '#ffffff')
+            .text('Loading real data\u2026');
+
+        var url = 'static/data/attention/' + filename;
+        fetch(url)
+            .then(function (resp) {
+                if (!resp.ok) throw new Error('HTTP ' + resp.status);
+                return resp.json();
+            })
+            .then(function (data) {
+                self.realDataCache[filename] = data;
+                self.realData = data;
+                self.isLoading = false;
+                loadG.remove();
+                callback();
+            })
+            .catch(function (err) {
+                self.isLoading = false;
+                loadG.remove();
+                console.error('Failed to load real data:', err);
+                // Fall back to synthetic
+                self.dataMode = 'synthetic';
+                self.realData = null;
+                self.updateDataModeButtons();
+                self.rebuildModel();
+                self.draw();
+            });
+    };
+
+    // Helper: check if a token is a special token (for muted rendering)
+    function isSpecialToken(word) {
+        if (!word) return false;
+        if (word.charAt(0) === '[' || word.charAt(0) === '<') return true;
+        if (word.indexOf('##') === 0) return true;
+        return false;
+    }
+
+    TransformerViz.prototype.updateDataModeButtons = function () {
+        var synthBtn = document.getElementById('btn-data-synthetic');
+        var realBtn = document.getElementById('btn-data-real');
+        if (synthBtn && realBtn) {
+            synthBtn.classList.toggle('active', this.dataMode === 'synthetic');
+            realBtn.classList.toggle('active', this.dataMode === 'real');
+        }
+    };
+
+    TransformerViz.prototype.lockControlsForRealData = function (locked) {
+        var headsSelect = document.getElementById('tf-num-heads');
+        var dimSelect = document.getElementById('tf-model-dim');
+        var tempSlider = document.getElementById('tf-temperature');
+        var peToggle = document.getElementById('tf-use-pe');
+        if (headsSelect) headsSelect.disabled = locked;
+        if (dimSelect) dimSelect.disabled = locked;
+        if (tempSlider) tempSlider.disabled = locked;
+        if (peToggle) peToggle.disabled = locked;
+    };
+
     // ─── Architecture Mode Switch ────────────────────────────────────
     TransformerViz.prototype.setArchMode = function (mode) {
         this.archMode = mode;
@@ -1714,7 +2299,7 @@
         this.activeBlock = 'enc';
         this.expandedChips = {};
 
-        // Set layer counts per architecture
+        // Set layer counts per architecture (defaults, overridden if real data loaded)
         if (mode === 'original') {
             this.numEncLayers = 6;
             this.numDecLayers = 6;
@@ -1723,6 +2308,11 @@
         } else {
             this.numLayers = 12;
             this.expandedLayerIdx = 0;
+        }
+
+        // Clear real data since architecture changed (need to load new file)
+        if (this.dataMode === 'real') {
+            this.realData = null;
         }
 
         // Update toggle button states
@@ -1740,7 +2330,10 @@
         if (exLabel) exLabel.textContent = mode === 'original' ? 'Source:' : 'Example:';
 
         this.rebuildModel();
-        this.draw();
+        // For real data, draw() is called in the loadRealData callback
+        if (this.dataMode !== 'real') {
+            this.draw();
+        }
     };
 
     // ─── Expanded Encoder Layer (Original Transformer) ──────────────
@@ -1796,7 +2389,7 @@
             .attr('font-family', MONO).attr('font-size', 12)
             .attr('fill', C.textMuted).text('\u25BC');
         collapseG.on('click', function () {
-            self.expandedEncLayerIdx = 0;
+            self.expandedEncLayerIdx = -1;
             self.expandedChips = {};
             self.computeExpandedLayer();
             self.draw();
@@ -1816,6 +2409,7 @@
                 .attr('rx', 2).attr('ry', 2)
                 .attr('fill', isAct ? hColor : tokenColorBgOpaque(hColor, 0.2, baseBg))
                 .attr('stroke', hColor).attr('stroke-width', isAct ? 2 : 1);
+            sqG.append('title').text('Encoder Head ' + h + (isAct ? ' (active)' : '') + ' — click to switch');
             (function (hi) {
                 sqG.on('click', function () {
                     self.activeHeadEnc = hi;
@@ -1847,6 +2441,18 @@
         }
 
         y += 6;
+
+        // ─── LayerNorm + FFN (encoder) ───
+        y = this.drawLayerNorm(g, C, y, 'Add & Norm');
+        y += 4;
+        var arrowH2 = 14;
+        self.drawArrowDown(g, C, centerX, y, y + arrowH2 - 2);
+        y += arrowH2;
+        y = this.drawFFNBlock(g, C, baseBg, y, N);
+        y += 4;
+        y = this.drawLayerNorm(g, C, y, 'Add & Norm');
+        y += 6;
+
         borderRect.attr('height', y - startY);
         return y;
     };
@@ -1935,6 +2541,7 @@
                 .attr('rx', 2).attr('ry', 2)
                 .attr('fill', isAct ? hColor : tokenColorBgOpaque(hColor, 0.2, baseBg))
                 .attr('stroke', hColor).attr('stroke-width', isAct ? 2 : 1);
+            sqG.append('title').text('Decoder Head ' + h + (isAct ? ' (active)' : '') + ' — click to switch');
             (function (hi) {
                 sqG.on('click', function () {
                     self.activeHeadDec = hi;
@@ -1993,6 +2600,7 @@
                 .attr('rx', 2).attr('ry', 2)
                 .attr('fill', isAct2 ? hColor2 : tokenColorBgOpaque(hColor2, 0.2, baseBg))
                 .attr('stroke', hColor2).attr('stroke-width', isAct2 ? 2 : 1);
+            sqG2.append('title').text('Cross-Attn Head ' + h2 + (isAct2 ? ' (active)' : '') + ' — click to switch');
             (function (hi) {
                 sqG2.on('click', function () {
                     self.activeHeadCross = hi;
@@ -2022,6 +2630,18 @@
         }
 
         y += 6;
+
+        // ─── LayerNorm + FFN (decoder) ───
+        y = this.drawLayerNorm(g, C, y, 'Add & Norm');
+        y += 4;
+        var arrowH3 = 14;
+        self.drawArrowDown(g, C, centerX, y, y + arrowH3 - 2);
+        y += arrowH3;
+        y = this.drawFFNBlock(g, C, baseBg, y, nTgt);
+        y += 4;
+        y = this.drawLayerNorm(g, C, y, 'Add & Norm');
+        y += 6;
+
         borderRect.attr('height', y - startY);
         return y;
     };
@@ -2029,9 +2649,15 @@
     // ─── Encoder-Decoder Draw (Original Transformer) ────────────────
     TransformerViz.prototype.drawEncoderDecoder = function () {
         var self = this;
-        var ed = EXAMPLES_ENC_DEC[this.exIdx];
-        var srcTokens = ed.source;
-        var tgtTokens = ed.target;
+        var srcTokens, tgtTokens;
+        if (this.dataMode === 'real' && this._realSrcTokens) {
+            srcTokens = this._realSrcTokens;
+            tgtTokens = this._realTgtTokens;
+        } else {
+            var ed = EXAMPLES_ENC_DEC[this.exIdx];
+            srcTokens = ed.source;
+            tgtTokens = ed.target;
+        }
         var nSrc = srcTokens.length;
         var nTgt = tgtTokens.length;
         var C = getThemeColors();
@@ -2069,7 +2695,9 @@
             var cx = srcX + i * (cardW + cardGap);
             var isActive = (i === this.activeToken);
             var tokColor = getTokenClassColor(i);
+            var srcSpecial = isSpecialToken(srcTokens[i].word);
             var cardG = g.append('g').attr('class', 'token-card-group');
+            if (srcSpecial) cardG.attr('opacity', 0.5);
             cardG.append('rect').attr('x', cx).attr('y', y)
                 .attr('width', cardW).attr('height', cardH).attr('rx', 4).attr('ry', 4)
                 .attr('fill', tokenColorBgOpaque(tokColor, isActive ? 0.25 : 0.12, baseBg))
@@ -2078,7 +2706,7 @@
             cardG.append('text').attr('x', cx + cardW / 2).attr('y', y + 13)
                 .attr('text-anchor', 'middle').attr('dominant-baseline', 'central')
                 .attr('font-family', SERIF).attr('font-size', 10).attr('font-weight', 600)
-                .attr('fill', C.text).text(displayWord(srcTokens[i].word));
+                .attr('fill', srcSpecial ? C.textMuted : C.text).text(displayWord(srcTokens[i].word));
             cardG.append('text').attr('x', cx + cardW / 2).attr('y', y + 30)
                 .attr('text-anchor', 'middle').attr('dominant-baseline', 'central')
                 .attr('font-family', MONO).attr('font-size', 7).attr('fill', C.textMuted)
@@ -2109,7 +2737,7 @@
                         self.draw();
                     };
                 })(eli);
-                y = this.drawCollapsedLayer(g, C, baseBg, y, eli, this.numEncLayers, 'Self-Attn', encClickFn);
+                y = this.drawCollapsedLayer(g, C, baseBg, y, eli, this.numEncLayers, 'Self-Attn + FFN', encClickFn);
             }
         }
 
@@ -2152,7 +2780,9 @@
             var cx2 = tgtX + i2 * (cardW + cardGap);
             var isActive2 = (i2 === this.activeTargetToken);
             var tokColor2 = getTokenClassColor(i2);
+            var tgtSpecial = isSpecialToken(tgtTokens[i2].word);
             var cardG2 = g.append('g').attr('class', 'token-card-group');
+            if (tgtSpecial) cardG2.attr('opacity', 0.5);
             cardG2.append('rect').attr('x', cx2).attr('y', y)
                 .attr('width', cardW).attr('height', cardH).attr('rx', 4).attr('ry', 4)
                 .attr('fill', tokenColorBgOpaque(tokColor2, isActive2 ? 0.25 : 0.12, baseBg))
@@ -2161,7 +2791,7 @@
             cardG2.append('text').attr('x', cx2 + cardW / 2).attr('y', y + 13)
                 .attr('text-anchor', 'middle').attr('dominant-baseline', 'central')
                 .attr('font-family', SERIF).attr('font-size', 10).attr('font-weight', 600)
-                .attr('fill', C.text).text(displayWord(tgtTokens[i2].word));
+                .attr('fill', tgtSpecial ? C.textMuted : C.text).text(displayWord(tgtTokens[i2].word));
             cardG2.append('text').attr('x', cx2 + cardW / 2).attr('y', y + 30)
                 .attr('text-anchor', 'middle').attr('dominant-baseline', 'central')
                 .attr('font-family', MONO).attr('font-size', 7).attr('fill', C.textMuted)
@@ -2192,7 +2822,7 @@
                         self.draw();
                     };
                 })(dli);
-                y = this.drawCollapsedLayer(g, C, baseBg, y, dli, this.numDecLayers, 'Masked + Cross Attn', decClickFn);
+                y = this.drawCollapsedLayer(g, C, baseBg, y, dli, this.numDecLayers, 'Masked + Cross + FFN', decClickFn);
             }
         }
 
@@ -2219,6 +2849,33 @@
     TransformerViz.prototype.bindEvents = function () {
         var self = this;
 
+        // Data mode toggle (Synthetic / Real)
+        var synthBtn = document.getElementById('btn-data-synthetic');
+        var realBtn = document.getElementById('btn-data-real');
+        if (synthBtn) {
+            synthBtn.addEventListener('click', function () {
+                if (self.dataMode === 'synthetic') return;
+                self.dataMode = 'synthetic';
+                self.realData = null;
+                self.updateDataModeButtons();
+                self.lockControlsForRealData(false);
+                self.expandedChips = {};
+                self.rebuildModel();
+                self.draw();
+            });
+        }
+        if (realBtn) {
+            realBtn.addEventListener('click', function () {
+                if (self.dataMode === 'real') return;
+                self.dataMode = 'real';
+                self.updateDataModeButtons();
+                self.lockControlsForRealData(true);
+                self.expandedChips = {};
+                self.rebuildModel();
+                // draw() is called inside rebuildModel's callback for real data
+            });
+        }
+
         // Architecture toggle buttons
         ['bert', 'gpt2', 'original'].forEach(function (mode) {
             var btn = document.getElementById('btn-arch-' + mode);
@@ -2241,8 +2898,11 @@
                 self.expandedChips = {};
                 // Sync target selector with example
                 if (tgtSelect) tgtSelect.value = this.value;
+                // Clear real data so new file is loaded
+                if (self.dataMode === 'real') self.realData = null;
                 self.rebuildModel();
-                self.draw();
+                // For real data, draw() is called in the callback
+                if (self.dataMode !== 'real') self.draw();
             });
         }
 
@@ -2254,8 +2914,9 @@
                 self.activeTargetToken = 0;
                 self.expandedChips = {};
                 if (exSelect) exSelect.value = this.value;
+                if (self.dataMode === 'real') self.realData = null;
                 self.rebuildModel();
-                self.draw();
+                if (self.dataMode !== 'real') self.draw();
             });
         }
 
@@ -2266,7 +2927,13 @@
             step: 1,
             onChange: function (val) {
                 var maxT;
-                if (self.archMode === 'original') {
+                if (self.dataMode === 'real' && self.realData) {
+                    if (self.archMode === 'original') {
+                        maxT = (self._realSrcTokens ? self._realSrcTokens.length : 1) - 1;
+                    } else {
+                        maxT = (self._realTokens ? self._realTokens.length : 1) - 1;
+                    }
+                } else if (self.archMode === 'original') {
                     maxT = EXAMPLES_ENC_DEC[self.exIdx].source.length - 1;
                 } else {
                     maxT = EXAMPLES[self.exIdx].tokens.length - 1;
@@ -2348,6 +3015,12 @@
                 self.numLayers = 12;
                 self.expandedEncLayerIdx = 0;
                 self.expandedDecLayerIdx = -1;
+
+                // Reset data mode to synthetic
+                self.dataMode = 'synthetic';
+                self.realData = null;
+                self.updateDataModeButtons();
+                self.lockControlsForRealData(false);
 
                 if (exSelect) exSelect.value = '0';
                 if (tgtSelect) tgtSelect.value = '0';

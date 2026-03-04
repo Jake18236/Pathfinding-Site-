@@ -10,7 +10,7 @@
 :root {
     --svm-boundary-color: #333;
     --svm-margin-color: rgba(100, 100, 100, 0.4);
-    --svm-sv-stroke: #ffd700;
+    --svm-sv-stroke: #8b5cf6;
     --svm-sv-stroke-width: 3px;
     --svm-boundary-region-0: rgba(228, 26, 28, 0.08);
     --svm-boundary-region-1: rgba(55, 126, 184, 0.08);
@@ -19,7 +19,7 @@
 [data-theme="gruvbox-dark"] {
     --svm-boundary-color: #ebdbb2;
     --svm-margin-color: rgba(168, 153, 132, 0.4);
-    --svm-sv-stroke: #fabd2f;
+    --svm-sv-stroke: #d3869b;
     --svm-boundary-region-0: rgba(251, 73, 52, 0.1);
     --svm-boundary-region-1: rgba(131, 165, 152, 0.1);
 }
@@ -28,9 +28,41 @@
    Canvas
    ============================================ */
 #svm-canvas {
+    display: block;
+    width: 100%;
+    aspect-ratio: 7 / 6;
     cursor: crosshair;
     position: relative;
     z-index: 2;
+}
+
+/* ============================================
+   Click Overlay
+   ============================================ */
+.click-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0, 0, 0, 0.3);
+    z-index: 5;
+    border-radius: 4px;
+    pointer-events: none;
+}
+
+.click-overlay span {
+    color: #fff;
+    font-size: 1rem;
+    font-weight: 500;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+}
+
+.click-overlay.hidden {
+    display: none;
 }
 
 /* ============================================
@@ -57,78 +89,276 @@
 }
 
 /* ============================================
-   Controls Panel Layout
+   Tooltip
    ============================================ */
-.svm-controls-panel {
-    display: flex;
-    gap: 20px;
-}
-
-.svm-options-col {
-    flex: 1;
-}
-
-.svm-option-group {
-    display: flex;
-    align-items: center;
-    gap: 16px;
-    flex-wrap: wrap;
-    margin-bottom: 6px;
-}
-
-.svm-option-group:last-child {
-    margin-bottom: 0;
-}
-
-.svm-options-col .option-row {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-}
-
-.svm-options-col .option-row > label:first-child {
-    min-width: 50px;
-    font-size: 12px;
-    margin: 0;
-}
-
-.svm-options-col .option-row select {
-    width: auto;
-    min-width: 120px;
-    font-size: 12px;
-}
-
-.svm-options-col .checkbox-label {
-    font-size: 12px;
-    margin-right: 10px;
-}
-
-.svm-playback-col {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 8px;
-    border-left: 1px solid var(--viz-border);
-    padding-left: 20px;
-}
-
-.svm-playback-col .btn {
-    width: 80px;
+#svm-tooltip {
+    font-family: var(--viz-mono-font);
+    font-size: 11px;
+    line-height: 1.5;
+    white-space: nowrap;
+    max-width: none;
 }
 
 /* ============================================
-   Responsive
+   Header Controls Bar
    ============================================ */
-@media (max-width: 992px) {
-    .svm-controls-panel {
-        flex-direction: column;
-    }
+.svm-header-controls {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-wrap: wrap;
+}
 
-    .svm-playback-col {
-        border-left: none;
-        border-top: 1px solid var(--viz-border);
-        padding-left: 0;
-        padding-top: 15px;
-        flex-direction: row;
-    }
+.svm-header-select {
+    width: auto;
+    flex: 0 1 auto;
+    font-size: 11px;
+    height: 26px;
+    padding: 2px 6px;
+}
+
+.svm-header-slider-label {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 11px;
+    font-weight: 600;
+    margin: 0;
+    flex: 1;
+    min-width: 0;
+}
+
+.svm-header-slider-label input[type="range"] {
+    flex: 1;
+    min-width: 40px;
+    max-width: 100px;
+}
+
+.svm-header-slider-label .range-value {
+    font-family: var(--viz-mono-font);
+    font-size: 10px;
+    min-width: 2.5em;
+    text-align: right;
+}
+
+/* ============================================
+   Controls Tab
+   ============================================ */
+.svm-controls-tab .option-row {
+    display: flex;
+    align-items: center;
+    gap: 0.5em;
+    margin-bottom: 0.5em;
+}
+
+.svm-controls-tab .option-row > label:first-child {
+    min-width: 3.5em;
+    font-size: 0.85rem;
+    margin: 0;
+    flex-shrink: 0;
+}
+
+.svm-controls-tab .option-row select {
+    width: auto;
+    flex: 1;
+    min-width: 0;
+    font-size: 0.85rem;
+}
+
+.svm-controls-tab .option-row input[type="range"] {
+    flex: 1;
+    min-width: 0;
+}
+
+.svm-controls-tab .range-value {
+    font-family: var(--viz-mono-font);
+    font-size: 0.8rem;
+    min-width: 3em;
+    text-align: right;
+}
+
+.svm-checkbox-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5em 1em;
+    margin-bottom: 0.75em;
+    margin-top: 0.25em;
+}
+
+.svm-checkbox-group .checkbox-label {
+    font-size: 0.8rem;
+    margin: 0;
+    white-space: nowrap;
+}
+
+.svm-action-buttons {
+    display: flex;
+    align-items: center;
+    gap: 0.5em;
+    margin-top: 0.5em;
+}
+
+.svm-action-buttons .btn {
+    min-width: 5em;
+}
+
+.svm-status-text {
+    font-size: 0.8rem;
+    color: var(--viz-text-muted);
+    margin-left: 0.5em;
+}
+
+/* ============================================
+   Live Math Panels
+   ============================================ */
+.svm-calc-panel {
+    margin-top: 6px;
+    padding: 8px 10px;
+    background: var(--viz-hover-bg);
+    border-radius: 4px;
+    border: 1px solid var(--viz-border);
+    font-family: var(--viz-mono-font);
+    font-size: 11px;
+    line-height: 1.6;
+    color: var(--viz-text);
+}
+
+.svm-calc-panel .formula-note {
+    color: var(--viz-text-muted);
+    font-style: italic;
+    font-family: inherit;
+}
+
+.svm-calc-class-block {
+    margin-bottom: 6px;
+    padding: 5px 7px;
+    border-radius: 3px;
+    background: var(--viz-bg);
+}
+
+.svm-calc-class-block:last-child {
+    margin-bottom: 0;
+}
+
+.svm-calc-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    padding: 1px 0;
+    gap: 0.5em;
+}
+
+.svm-calc-row > span:first-child {
+    flex: 1;
+    min-width: 0;
+}
+
+.svm-calc-formula-row {
+    border-top: 1px solid var(--viz-border);
+    margin-top: 3px;
+    padding-top: 3px;
+    font-weight: 600;
+}
+
+.svm-calc-result {
+    margin-top: 6px;
+    padding-top: 6px;
+    border-top: 2px solid var(--viz-border);
+    font-weight: 600;
+}
+
+.svm-calc-label {
+    font-weight: 700;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    margin-bottom: 3px;
+    color: var(--viz-text-muted);
+}
+
+.svm-val-badge {
+    display: inline-block;
+    font-family: var(--viz-mono-font);
+    font-size: 10px;
+    font-weight: 600;
+    padding: 1px 5px;
+    border-radius: 3px;
+    white-space: nowrap;
+}
+
+.svm-val-positive {
+    color: #16a34a;
+    background: rgba(22, 163, 74, 0.1);
+    border: 1px solid rgba(22, 163, 74, 0.25);
+}
+
+.svm-val-negative {
+    color: #dc2626;
+    background: rgba(220, 38, 38, 0.1);
+    border: 1px solid rgba(220, 38, 38, 0.25);
+}
+
+.svm-val-neutral {
+    color: var(--viz-text-muted);
+    background: var(--viz-hover-bg);
+    border: 1px solid var(--viz-border);
+}
+
+.svm-val-sv {
+    color: var(--svm-sv-stroke);
+    background: rgba(139, 92, 246, 0.1);
+    border: 1px solid rgba(139, 92, 246, 0.25);
+}
+
+.svm-param-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2px 10px;
+}
+
+[data-theme="gruvbox-dark"] .svm-val-positive {
+    color: var(--gruvbox-green);
+    background: rgba(184, 187, 38, 0.12);
+    border-color: rgba(184, 187, 38, 0.3);
+}
+
+[data-theme="gruvbox-dark"] .svm-val-negative {
+    color: var(--gruvbox-red);
+    background: rgba(251, 73, 52, 0.12);
+    border-color: rgba(251, 73, 52, 0.3);
+}
+
+[data-theme="gruvbox-dark"] .svm-val-sv {
+    color: var(--svm-sv-stroke);
+    background: rgba(211, 134, 155, 0.12);
+    border-color: rgba(211, 134, 155, 0.3);
+}
+
+/* ============================================
+   Metrics Table
+   ============================================ */
+.svm-metrics-table {
+    margin-bottom: 0;
+}
+
+.svm-metrics-table td {
+    font-size: 0.85rem;
+    padding: 0.4em 0.6em;
+}
+
+.svm-metrics-table td:first-child {
+    color: var(--viz-text-muted);
+    white-space: nowrap;
+}
+
+.svm-metrics-table td:first-child i {
+    width: 1.2em;
+    text-align: center;
+    margin-right: 0.4em;
+}
+
+.svm-metrics-table td:last-child {
+    font-family: var(--viz-mono-font);
+    text-align: right;
+    font-weight: 600;
 }

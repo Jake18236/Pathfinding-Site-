@@ -17,53 +17,56 @@ cardTags:
   - SVM
 cardHaystack: "support vector machine svm margin kernel rbf polynomial soft margin c parameter classification hyperplane"
 cardOrder: 17
-cardImage: static/img/vis_cards/svm.png
 ---
 
 {% from "components/legend.njk" import legend %}
 {% from "components/info-tabs.njk" import infoTabs %}
-{% from "components/metrics-panel.njk" import metricsPanel %}
-{% from "components/stepper-control.njk" import stepperControl %}
 
 <link rel="stylesheet" href="static/css/svm.css">
 
 <div class="row" id="main-content">
     {% include "components/share-button.njk" %}
-    <!-- Left Column: Canvas + Controls -->
+    <!-- Left Column: Canvas -->
     <div class="col-md-7">
         <div class="panel panel-default">
             <div class="panel-heading">
-                <div class="panel-heading-content">
-                    <span class="panel-title-text"><i class="fa fa-arrows-alt"></i> Classification Space</span>
-                    <div class="edit-toolbar active" id="edit-toolbar">
-                        <div class="btn-group edit-mode-buttons" role="group">
-                            <button type="button" class="btn btn-sm btn-default active" data-mode="add" title="Add points">
-                                <i class="fa fa-plus"></i> Add
-                            </button>
-                            <button type="button" class="btn btn-sm btn-default" data-mode="delete" title="Delete points">
-                                <i class="fa fa-minus"></i> Delete
-                            </button>
-                        </div>
-                        <div class="btn-group class-selector" role="group" id="class-selector">
-                            <button type="button" class="btn btn-sm btn-default active" data-class="0" title="Class 0">
-                                <span class="class-dot class-0"></span>
-                            </button>
-                            <button type="button" class="btn btn-sm btn-default" data-class="1" title="Class 1">
-                                <span class="class-dot class-1"></span>
-                            </button>
-                        </div>
-                        <button id="btn-clear-points" class="btn btn-sm btn-danger" title="Clear all points">
-                            <i class="fa fa-trash"></i> Clear
-                        </button>
-                    </div>
+                <div class="panel-heading-content svm-header-controls">
+                    <select id="dataset-select" class="form-control input-sm svm-header-select">
+                        <option value="linear" selected>Linear</option>
+                        <option value="overlap">Overlap</option>
+                        <option value="moons">Moons</option>
+                        <option value="circles">Circles</option>
+                        <option value="xor">XOR</option>
+                        <option value="blobs3">3 Clusters</option>
+                        <option value="blobs5">5 Clusters</option>
+                    </select>
+                    <select id="kernel-select" class="form-control input-sm svm-header-select">
+                        <option value="linear" selected>Linear</option>
+                        <option value="rbf">RBF</option>
+                        <option value="polynomial">Poly</option>
+                    </select>
+                    <label class="svm-header-slider-label">C
+                        <input type="range" id="c-slider" min="-2" max="3" step="0.1" value="1">
+                        <span id="c-value" class="range-value">10.0</span>
+                    </label>
+                    <button id="btn-train" class="btn btn-sm btn-success" title="Train SVM">
+                        <i class="fa fa-play"></i> Train
+                    </button>
+                    <button id="btn-reset" class="btn btn-sm btn-default" title="Reset">
+                        <i class="fa fa-refresh"></i>
+                    </button>
+                    <button id="btn-clear-points" class="btn btn-sm btn-danger" title="Clear all points">
+                        <i class="fa fa-trash"></i>
+                    </button>
                 </div>
             </div>
             <div class="panel-body canvas-panel-body">
                 <div class="canvas-wrapper">
-                    <canvas id="svm-canvas" width="560" height="480"></canvas>
+                    <canvas id="svm-canvas"></canvas>
                     <div id="click-overlay" class="click-overlay">
                         <span>Click to add data points</span>
                     </div>
+                    <div id="svm-tooltip" class="viz-tooltip"></div>
                 </div>
             </div>
             <div class="panel-footer legend-footer">
@@ -78,74 +81,9 @@ cardImage: static/img/vis_cards/svm.png
                 ) }}
             </div>
         </div>
-
-        <!-- Controls Panel -->
-        <div class="panel panel-default">
-            <div class="panel-heading">
-                <h3 class="panel-title"><i class="fa fa-sliders"></i> Controls</h3>
-            </div>
-            <div class="panel-body compact-panel svm-controls-panel">
-                <div class="svm-options-col">
-                    <div class="svm-option-group">
-                        <div class="option-row">
-                            <label>Dataset:</label>
-                            <select id="dataset-select" class="form-control input-sm">
-                                <option value="custom" selected>Custom (click to add)</option>
-                                <option value="linear">Linearly Separable</option>
-                                <option value="overlap">Overlapping</option>
-                                <option value="moons">Moons</option>
-                                <option value="circles">Concentric Circles</option>
-                                <option value="xor">XOR</option>
-                            </select>
-                        </div>
-                        <div class="option-row">
-                            <label>Kernel:</label>
-                            <select id="kernel-select" class="form-control input-sm">
-                                <option value="linear" selected>Linear</option>
-                                <option value="rbf">RBF (Gaussian)</option>
-                                <option value="polynomial">Polynomial</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="svm-option-group">
-                        <div class="option-row">
-                            <label>C:</label>
-                            <input type="range" id="c-slider" min="-2" max="3" step="0.1" value="1">
-                            <span id="c-value" class="range-value">10.0</span>
-                        </div>
-                        <div class="option-row" id="gamma-row">
-                            <label>Gamma:</label>
-                            <input type="range" id="gamma-slider" min="-2" max="2" step="0.1" value="0">
-                            <span id="gamma-value" class="range-value">1.00</span>
-                        </div>
-                        <div class="option-row" id="degree-row" style="display:none;">
-                            <label>Degree:</label>
-                            {{ stepperControl(id='degree', value='3', title='Degree') }}
-                        </div>
-                    </div>
-                    <div class="svm-option-group">
-                        <label class="checkbox-label"><input type="checkbox" id="show-margin" checked> Show margin</label>
-                        <label class="checkbox-label"><input type="checkbox" id="show-boundary" checked> Show boundary</label>
-                        <label class="checkbox-label"><input type="checkbox" id="show-sv" checked> Highlight SVs</label>
-                    </div>
-                </div>
-
-                <div class="svm-playback-col">
-                    <button id="btn-train" class="btn btn-sm btn-success" title="Train SVM">
-                        <i class="fa fa-play"></i> Train
-                    </button>
-                    <button id="btn-reset" class="btn btn-sm btn-danger" title="Reset">
-                        <i class="fa fa-refresh"></i> Reset
-                    </button>
-                    <div class="playback-status">
-                        <span id="playback-step">Ready</span>
-                    </div>
-                </div>
-            </div>
-        </div>
     </div>
 
-    <!-- Right Column: Info + Metrics -->
+    <!-- Right Column: Info Tabs -->
     <div class="col-md-5">
         {{ infoTabs(
             tabs=[
@@ -159,10 +97,12 @@ cardImage: static/img/vis_cards/svm.png
                     <h4><i class="fa fa-mouse-pointer"></i> How to Use</h4>
                     <ul class="interaction-list">
                         <li><strong>Click canvas</strong> to add points (select class first)</li>
+                        <li><strong>Drag points</strong> to move them — boundary updates live</li>
                         <li><strong>Choose a dataset</strong> to explore different patterns</li>
                         <li><strong>Press Train</strong> to fit the SVM</li>
                         <li><strong>Adjust C</strong> to control soft margin trade-off</li>
                         <li><strong>Switch kernels</strong> for non-linear boundaries</li>
+                        <li><strong>Hover points</strong> to see details and SV status</li>
                     </ul>
                 '},
                 {id: 'algorithm', icon: 'fa-book', label: 'Algorithm', content: '
@@ -183,38 +123,52 @@ cardImage: static/img/vis_cards/svm.png
                     </ul>
                 '},
                 {id: 'math', icon: 'fa-superscript', label: 'Math', content: '
-                    <h4><i class="fa fa-superscript"></i> Primal Formulation</h4>
-                    <code>min ½||w||² + C Σᵢ ξᵢ</code>
-                    <p class="formula-desc">Minimize weight norm (maximize margin) with slack variables ξᵢ for soft margin.</p>
+                    <h4><i class="fa fa-cogs"></i> Fitted Model</h4>
+                    <div id="svm-fit-panel" class="svm-calc-panel">
+                        <span class="formula-note">Train the SVM to see model parameters.</span>
+                    </div>
 
-                    <h4>Constraints</h4>
-                    <code>yᵢ(w·xᵢ + b) ≥ 1 − ξᵢ</code>
-                    <p class="formula-desc">Each point must be on correct side (within slack).</p>
-
-                    <h4>C Parameter</h4>
-                    <p>Controls the trade-off between margin width and misclassification:</p>
-                    <ul class="algorithm-list">
-                        <li><strong>Large C:</strong> Narrow margin, fewer errors (overfit risk)</li>
-                        <li><strong>Small C:</strong> Wide margin, more errors (underfit risk)</li>
-                    </ul>
-
-                    <h4>Margin Width</h4>
-                    <code>margin = 2 / ||w||</code>
-                    <p class="formula-desc">Distance between the two margin boundaries.</p>
+                    <h4><i class="fa fa-calculator"></i> Live Classification</h4>
+                    <div id="svm-calc-panel" class="svm-calc-panel">
+                        <span class="formula-note">Hover a point to see the classification breakdown.</span>
+                    </div>
+                '},
+                {id: 'controls', icon: 'fa-sliders', label: 'Controls', content: '
+                    <div class="svm-controls-tab">
+                        <div class="option-row" id="gamma-row">
+                            <label>Gamma:</label>
+                            <input type="range" id="gamma-slider" min="-2" max="3" step="0.1" value="1">
+                            <span id="gamma-value" class="range-value">10.00</span>
+                        </div>
+                        <div class="option-row" id="degree-row" style="display:none;">
+                            <label>Degree:</label>
+                            <div class="stepper-control">
+                                <button id="degree-minus" class="btn btn-xs btn-default" title="Decrease Degree">&#8722;</button>
+                                <input type="text" id="degree-value" class="stepper-input" value="3" readonly>
+                                <button id="degree-plus" class="btn btn-xs btn-default" title="Increase Degree">+</button>
+                            </div>
+                        </div>
+                        <div class="svm-checkbox-group">
+                            <label class="checkbox-label"><input type="checkbox" id="show-margin" checked> Show margin</label>
+                            <label class="checkbox-label"><input type="checkbox" id="show-boundary" checked> Show boundary</label>
+                            <label class="checkbox-label"><input type="checkbox" id="show-sv" checked> Highlight SVs</label>
+                        </div>
+                        <span id="playback-step" class="svm-status-text"></span>
+                    </div>
+                '},
+                {id: 'metrics', icon: 'fa-bar-chart', label: 'Metrics', content: '
+                    <table class="table table-condensed svm-metrics-table">
+                        <tbody>
+                            <tr><td><i class="fa fa-database"></i> Points</td><td id="metric-points">0</td></tr>
+                            <tr><td><i class="fa fa-layer-group"></i> Classes</td><td id="metric-classes">2</td></tr>
+                            <tr><td><i class="fa fa-bullseye"></i> Support Vectors</td><td id="metric-sv">-</td></tr>
+                            <tr><td><i class="fa fa-arrows-h"></i> Margin Width</td><td id="metric-margin">-</td></tr>
+                            <tr><td><i class="fa fa-check-circle"></i> Accuracy</td><td id="metric-accuracy">-</td></tr>
+                            <tr><td><i class="fa fa-sliders"></i> Kernel</td><td id="metric-kernel">Linear</td></tr>
+                            <tr><td><i class="fa fa-info-circle"></i> Status</td><td id="metric-status">Add points to begin</td></tr>
+                        </tbody>
+                    </table>
                 '}
-            ]
-        ) }}
-
-        {{ metricsPanel(
-            title='SVM Metrics',
-            icon='fa-bar-chart',
-            metrics=[
-                {icon: 'fa-database', label: 'Points', id: 'metric-points', default: '0'},
-                {icon: 'fa-bullseye', label: 'Support Vectors', id: 'metric-sv', default: '-'},
-                {icon: 'fa-arrows-h', label: 'Margin Width', id: 'metric-margin', default: '-'},
-                {icon: 'fa-check-circle', label: 'Accuracy', id: 'metric-accuracy', default: '-'},
-                {icon: 'fa-sliders', label: 'Kernel', id: 'metric-kernel', default: 'Linear'},
-                {icon: 'fa-info-circle', label: 'Status', id: 'metric-status', default: 'Add points to begin'}
             ]
         ) }}
     </div>
