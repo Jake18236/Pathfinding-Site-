@@ -25,6 +25,7 @@ cardImage: static/img/vis_cards/transformer.png
 {% from "components/stepper-control.njk" import stepperControl %}
 
 <link rel="stylesheet" href="static/css/transformer.css">
+<script src="https://d3js.org/d3.v7.min.js"></script>
 
 <div class="row" id="main-content">
     {% include "components/share-button.njk" %}
@@ -33,16 +34,28 @@ cardImage: static/img/vis_cards/transformer.png
         <div class="panel panel-default">
             <div class="panel-heading">
                 <div class="panel-heading-content">
-                    <span class="panel-title-text"><i class="fa fa-eye"></i> Self-Attention</span>
+                    <div class="btn-group btn-group-sm tf-arch-toggle" role="group">
+                        <button class="btn btn-default active" id="btn-arch-bert">
+                            <i class="fa fa-arrows-left-right"></i> BERT
+                        </button>
+                        <button class="btn btn-default" id="btn-arch-gpt2">
+                            <i class="fa fa-arrow-right"></i> GPT-2
+                        </button>
+                        <button class="btn btn-default" id="btn-arch-original">
+                            <i class="fa fa-right-left"></i> Original
+                        </button>
+                    </div>
                     <div class="header-controls">
+                        <span class="viz-badge" id="tf-arch-badge">Encoder Only</span>
+                        <span class="viz-badge" id="tf-layer-badge">12 Layers</span>
                         <span class="viz-badge" id="tf-head-badge">4 Heads</span>
                         <span class="viz-badge" id="tf-dim-badge">d=64</span>
                     </div>
                 </div>
             </div>
             <div class="panel-body compact-panel">
-                <div class="tf-diagram" id="tf-diagram" aria-label="Attention Architecture Diagram">
-                    <!-- JS populates: tokens → embedding → Q/K/V → head carousel → output -->
+                <div id="tf-svg-container" class="tf-svg-container" aria-label="Attention Architecture Diagram">
+                    <!-- D3/SVG diagram rendered by JS -->
                 </div>
             </div>
             <div class="panel-footer legend-footer">
@@ -52,6 +65,8 @@ cardImage: static/img/vis_cards/transformer.png
                         {class: 'tf-qkv-legend', label: 'Q / K / V'},
                         {class: 'tf-head-legend', label: 'Attn Head'},
                         {class: 'tf-output-legend', label: 'Output'},
+                        {class: 'tf-mask-legend tf-legend-mask', label: 'Causal Mask'},
+                        {class: 'tf-cross-legend tf-legend-cross', label: 'Cross-Attn'},
                         {class: 'tf-flow-legend', label: 'Data Flow', type: 'dot'}
                     ]
                 ) }}
@@ -64,22 +79,26 @@ cardImage: static/img/vis_cards/transformer.png
         {{ infoTabs(
             tabs=[
                 {id: 'about', icon: 'fa-info-circle', label: 'About', active: true, content: '
-                    <h4><i class="fa fa-eye"></i> Self-Attention</h4>
+                    <h4><i class="fa fa-eye"></i> Transformer Attention</h4>
                     <p>
-                        Self-attention allows each token in a sequence to look at every other
-                        token and decide how much to focus on it. This is the core mechanism
-                        in Transformer models like BERT and GPT.
+                        Self-attention allows each token to look at every other token and decide
+                        how much to focus on it. This visualization shows <strong>N stacked layers</strong>,
+                        with one layer expandable at a time to show full internals.
+                        Toggle between three architectures:
                     </p>
-                    <p>
-                        Each <strong>attention head</strong> learns different relationships &mdash;
-                        one might track syntax, another might link pronouns to their referents.
-                    </p>
+                    <ul class="tf-how-list">
+                        <li><strong>BERT</strong> (encoder-only) &mdash; 12 layers of bidirectional self-attention</li>
+                        <li><strong>GPT-2</strong> (decoder-only) &mdash; 12 layers of causal self-attention (upper triangle masked)</li>
+                        <li><strong>Original Transformer</strong> (encoder-decoder) &mdash; 6 encoder + 6 decoder layers; decoder has masked self-attention plus cross-attention to encoder</li>
+                    </ul>
                     <h4><i class="fa fa-mouse-pointer"></i> How to Use</h4>
                     <ul class="tf-how-list">
-                        <li><strong>Navigate heads</strong> with the carousel &mdash; arrows, dots, or click a card</li>
-                        <li><strong>Click a token</strong> to highlight what it attends to</li>
-                        <li><strong>Expand blocks</strong> by clicking to see internal computations</li>
-                        <li><strong>Adjust controls</strong> &mdash; heads, dimensions, temperature</li>
+                        <li><strong>Toggle architecture</strong> via buttons in the panel header</li>
+                        <li><strong>Click a collapsed layer</strong> to expand it and see Q/K/V projections, attention heatmap, and concat</li>
+                        <li><strong>Click tokens</strong> to select which query to highlight</li>
+                        <li><strong>Click chips</strong> to expand and see matrices/heatmaps</li>
+                        <li><strong>Switch heads</strong> via colored squares in the head box</li>
+                        <li><strong>Original mode:</strong> expand encoder or decoder layers independently</li>
                     </ul>
                 '},
                 {id: 'algorithm', icon: 'fa-book', label: 'Algorithm', content: '
@@ -112,11 +131,19 @@ cardImage: static/img/vis_cards/transformer.png
                 {id: 'controls', icon: 'fa-sliders', label: 'Controls', content: '
                     <div class="tf-controls-inner">
                         <div class="option-row">
-                            <label>Example:</label>
+                            <label id="tf-example-label">Example:</label>
                             <select id="tf-example-select" class="form-control input-sm">
                                 <option value="0">The cat sat on the mat</option>
                                 <option value="1">I like cute kitties and</option>
                                 <option value="2">King is to queen as man</option>
+                            </select>
+                        </div>
+                        <div class="option-row" id="tf-target-row" style="display: none;">
+                            <label>Target:</label>
+                            <select id="tf-target-select" class="form-control input-sm">
+                                <option value="0">Le chat assis sur le tapis</option>
+                                <option value="1">J&apos;aime les chatons mignons et</option>
+                                <option value="2">Roi est &agrave; reine comme homme</option>
                             </select>
                         </div>
                         <div class="option-row">

@@ -1,0 +1,183 @@
+---
+layout: base.njk
+title: "L1/L2 Regularization Visualizer"
+icon: fa-shield
+navigation:
+  - name: "Home"
+    link: "index.html"
+    icon: "fa-home"
+permalink: "regularization.html"
+extraScript: "static/js/regularization.js"
+tags: visualization
+cardTitle: "L1 & L2 Regularization"
+cardIcon: fa-shield
+cardDescription: "Explore how L1 and L2 penalties reshape the loss surface in 3D. See why L1 produces sparsity and L2 shrinks weights smoothly."
+cardTags:
+  - Regularization
+  - Optimization
+cardHaystack: "regularization l1 l2 lasso ridge elastic net penalty sparsity overfitting weight decay shrinkage constraint"
+cardOrder: 30
+---
+
+{% from "components/info-tabs.njk" import infoTabs %}
+
+<link rel="stylesheet" href="static/css/regularization.css">
+
+<div class="row" id="main-content">
+    {% include "components/share-button.njk" %}
+    <!-- Left Column -->
+    <div class="col-md-7">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <div class="panel-heading-content">
+                    <div class="btn-group btn-group-sm reg-type-toggle" role="group">
+                        <button type="button" class="btn btn-default" data-reg="none">None</button>
+                        <button type="button" class="btn btn-default active" data-reg="l1">L1</button>
+                        <button type="button" class="btn btn-default" data-reg="l2">L2</button>
+                        <button type="button" class="btn btn-default" data-reg="elastic">Elastic</button>
+                    </div>
+                    <div class="btn-group btn-group-sm reg-view-toggle" role="group">
+                        <button type="button" class="btn btn-default active" data-view="3d"><i class="fa fa-cube"></i> 3D</button>
+                        <button type="button" class="btn btn-default" data-view="contour"><i class="fa fa-bullseye"></i> 2D</button>
+                    </div>
+                    <span class="reg-lambda-badge" id="reg-lambda-badge">&lambda; = 1.00</span>
+                </div>
+            </div>
+            <div class="panel-body">
+                <div class="reg-surface-toggles" id="reg-surface-toggles">
+                    <label class="reg-surface-toggle active" data-surface="loss">
+                        <span class="reg-surface-swatch" style="background: var(--reg-loss-color)"></span>
+                        Loss
+                    </label>
+                    <label class="reg-surface-toggle active" data-surface="penalty">
+                        <span class="reg-surface-swatch" id="reg-penalty-swatch"></span>
+                        Penalty
+                    </label>
+                    <label class="reg-surface-toggle" data-surface="total">
+                        <span class="reg-surface-swatch reg-swatch-total"></span>
+                        Total
+                    </label>
+                </div>
+                <canvas id="reg-3d-canvas"></canvas>
+                <canvas id="reg-contour-canvas" style="display:none;"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <!-- Right Column -->
+    <div class="col-md-5">
+        {{ infoTabs(
+            tabs=[
+                {id: 'about', icon: 'fa-info-circle', label: 'About', active: true, content: '
+                    <h4><i class="fa fa-shield"></i> What is Regularization?</h4>
+                    <p>
+                        <strong>Regularization</strong> adds a penalty term to the loss function that discourages
+                        large weights. This prevents overfitting by constraining model complexity.
+                    </p>
+                    <h4><i class="fa fa-question-circle"></i> L1 vs L2: The Key Insight</h4>
+                    <p>
+                        <strong>L1 (Lasso)</strong> adds |w<sub>0</sub>| + |w<sub>1</sub>| &mdash; the constraint region is a
+                        <strong>diamond</strong>. Loss contours hit the diamond at its <em>corners</em> (on the axes),
+                        pushing weights to exactly zero. This produces <strong>sparse</strong> models.
+                    </p>
+                    <p>
+                        <strong>L2 (Ridge)</strong> adds w<sub>0</sub>&sup2; + w<sub>1</sub>&sup2; &mdash; the constraint region is a
+                        <strong>circle</strong>. Loss contours hit the circle at a smooth tangent point, shrinking weights
+                        toward zero but rarely reaching it.
+                    </p>
+                    <h4><i class="fa fa-mouse-pointer"></i> How to Use</h4>
+                    <ul class="norm-interaction-list">
+                        <li><strong>Drag the 3D surface</strong> to rotate and see the loss landscape from any angle</li>
+                        <li><strong>Switch L1/L2/Elastic/None</strong> to see how the penalty reshapes the surface</li>
+                        <li><strong>Adjust &lambda;</strong> to control regularization strength</li>
+                        <li><strong>Watch the contour view</strong> to see the classic textbook diagram update live</li>
+                        <li><strong>Change loss eccentricity</strong> to see how elongated loss contours interact with constraint shapes</li>
+                        <li><strong>Click anywhere on the surface</strong> to drop a ball and watch gradient descent converge</li>
+                    </ul>
+                '},
+                {id: 'algorithm', icon: 'fa-book', label: 'Algorithm', content: '
+                    <h4><i class="fa fa-cogs"></i> Objective Functions</h4>
+                    <div class="math-formula-display">
+                        <code>min L(w) + &lambda; &middot; R(w)</code>
+                    </div>
+
+                    <table class="reg-compare-table">
+                        <thead><tr><th>Type</th><th>Penalty R(w)</th><th>Constraint Shape</th><th>Effect</th></tr></thead>
+                        <tbody>
+                            <tr><td>L1 (Lasso)</td><td>&Sigma;|w<sub>i</sub>|</td><td>Diamond</td><td>Sparse weights</td></tr>
+                            <tr><td>L2 (Ridge)</td><td>&Sigma;w<sub>i</sub>&sup2;</td><td>Circle</td><td>Small weights</td></tr>
+                            <tr><td>Elastic Net</td><td>&alpha;&middot;L1 + (1-&alpha;)&middot;L2</td><td>Rounded diamond</td><td>Both</td></tr>
+                        </tbody>
+                    </table>
+
+                    <h4 style="margin-top:12px"><i class="fa fa-lightbulb-o"></i> Why L1 Produces Sparsity</h4>
+                    <p style="font-size:12px;">
+                        Geometrically: the diamond corners of the L1 constraint protrude along the axes.
+                        Elliptical loss contours are most likely to first touch the diamond at a corner,
+                        where one weight is exactly zero. The more elongated the loss contours, the stronger this effect.
+                    </p>
+                    <p style="font-size:12px;">
+                        Analytically: the L1 gradient is &plusmn;1 regardless of weight magnitude, providing
+                        a constant force toward zero. L2\'s gradient is 2w, which weakens as w approaches zero.
+                    </p>
+                '},
+                {id: 'math', icon: 'fa-superscript', label: 'Math', content: '
+                    <h4><i class="fa fa-calculator"></i> Current Optimum</h4>
+                    <div id="reg-math-panel" class="reg-calc-panel">
+                        <span class="formula-note">Adjust parameters to see the computation.</span>
+                    </div>
+                '},
+                {id: 'controls', icon: 'fa-sliders', label: 'Controls', content: '
+                    <div class="reg-controls-panel">
+                        <div class="option-row">
+                            <label>&lambda; (penalty):</label>
+                            <input type="range" id="reg-lambda-slider" min="0" max="3" step="0.05" value="1">
+                            <span id="reg-lambda-value" class="range-value">1.00</span>
+                        </div>
+                        <div class="option-row">
+                            <label>Eccentricity:</label>
+                            <input type="range" id="reg-ecc-slider" min="1" max="8" step="0.5" value="4">
+                            <span id="reg-ecc-value" class="range-value">4.0</span>
+                        </div>
+                        <div class="option-row">
+                            <label>Loss center w<sub>0</sub>:</label>
+                            <input type="range" id="reg-cx-slider" min="-2" max="2" step="0.1" value="1.5">
+                            <span id="reg-cx-value" class="range-value">1.50</span>
+                        </div>
+                        <div class="option-row">
+                            <label>Loss center w<sub>1</sub>:</label>
+                            <input type="range" id="reg-cy-slider" min="-2" max="2" step="0.1" value="1.0">
+                            <span id="reg-cy-value" class="range-value">1.00</span>
+                        </div>
+                        <div class="option-row">
+                            <label>Elastic &alpha;:</label>
+                            <input type="range" id="reg-alpha-slider" min="0" max="1" step="0.05" value="0.5">
+                            <span id="reg-alpha-value" class="range-value">0.50</span>
+                        </div>
+                        <div class="option-row">
+                            <label>Loss rotation:</label>
+                            <input type="range" id="reg-rot-slider" min="0" max="90" step="5" value="30">
+                            <span id="reg-rot-value" class="range-value">30&deg;</span>
+                        </div>
+                        <div style="margin-top:4px;padding-top:8px;border-top:1px solid var(--viz-border);font-size:11px;font-weight:600;color:var(--viz-text-muted);">
+                            <i class="fa fa-circle"></i> Gradient Descent
+                        </div>
+                        <div class="option-row">
+                            <label>Learning rate:</label>
+                            <input type="range" id="reg-lr-slider" min="0.005" max="0.3" step="0.005" value="0.05">
+                            <span id="reg-lr-value" class="range-value">0.050</span>
+                        </div>
+                        <div class="reg-actions-row">
+                            <button id="reg-clear-path-btn" class="btn btn-sm btn-default">
+                                <i class="fa fa-eraser"></i> Clear Path
+                            </button>
+                            <button id="reg-reset-btn" class="btn btn-sm btn-danger">
+                                <i class="fa fa-undo"></i> Reset
+                            </button>
+                        </div>
+                    </div>
+                '}
+            ]
+        ) }}
+    </div>
+</div>

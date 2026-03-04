@@ -1,0 +1,21 @@
+<div class="row">
+    <div class="page-header">
+        <h2 id="topics"><i class="fa-solid fa-diagram-project"></i> Topics</h2>
+    </div>
+</div>
+
+<div class="row">
+    <p style="margin-bottom: 16px;">
+        Explore the landscape of AI topics and how they connect. Click a node to see its description and links to visualizations.
+    </p>
+</div>
+
+<div class="row">
+    <link rel="stylesheet" href="static/css/topics.css">
+    <div id="topics-graph-container" class="topics-graph-container topics-graph--compact"></div>
+    <a class="topics-explore-link" href="topics.html">Explore full map &rarr;</a>
+</div>
+
+<script type="application/json" id="topics-graph-data">{{ topics | dump | safe }}</script>
+<script src="https://d3js.org/d3.v7.min.js"></script>
+<script src="static/js/topics.js"></script>

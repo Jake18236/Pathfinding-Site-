@@ -1,0 +1,190 @@
+---
+layout: base.njk
+title: Byte Pair Encoding (BPE)
+icon: fa-scissors
+navigation:
+  - name: "Home"
+    link: "index.html"
+    icon: "fa-home"
+permalink: "bpe.html"
+extraScript: "static/js/bpe.js"
+tags: visualization
+cardTitle: "BPE Tokenizer"
+cardIcon: fa-scissors
+cardDescription: "Watch BPE build a subword vocabulary by iteratively merging the most frequent character pairs."
+cardTags:
+  - NLP
+  - Tokenization
+cardHaystack: "byte pair encoding bpe tokenizer subword vocabulary merge frequency compression tokens nlp tokenization"
+cardOrder: 27
+---
+
+{% from "components/legend.njk" import legend %}
+{% from "components/info-tabs.njk" import infoTabs %}
+{% from "components/metrics-panel.njk" import metricsPanel %}
+
+<link rel="stylesheet" href="static/css/bpe.css">
+
+<div class="row" id="main-content">
+    {% include "components/share-button.njk" %}
+    <!-- Left Column: Canvas + Controls -->
+    <div class="col-md-7">
+        <!-- BPE Canvas Panel -->
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <div class="panel-heading-content">
+                    <span class="panel-title-text"><i class="fa fa-scissors"></i> Byte Pair Encoding</span>
+                </div>
+            </div>
+            <div class="panel-body canvas-panel-body">
+                <div class="canvas-wrapper">
+                    <canvas id="bpe-canvas" width="720" height="700"></canvas>
+                </div>
+            </div>
+            <div class="panel-footer legend-footer">
+                {{ legend(
+                    items=[
+                        {class: 'bpe-char-token', label: 'Character'},
+                        {class: 'bpe-merged-token', label: 'Merged'},
+                        {class: 'bpe-active-token', label: 'Active Pair'},
+                        {class: 'bpe-eow-token', label: 'End-of-Word'},
+                        {class: 'bpe-freq-bar', label: 'Frequency', type: 'dot'}
+                    ]
+                ) }}
+            </div>
+        </div>
+
+        <!-- Controls Panel -->
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title"><i class="fa fa-sliders"></i> Controls</h3>
+            </div>
+            <div class="panel-body compact-panel bpe-controls-panel">
+                <div class="bpe-options-col">
+                    <div class="bpe-input-row">
+                        <label>Corpus:</label>
+                        <select id="corpus-select" class="form-control input-sm">
+                            <option value="default">low, low, lowest, newer, wider</option>
+                            <option value="hello">hello, world, hello, there, help, held</option>
+                            <option value="custom">Custom...</option>
+                        </select>
+                    </div>
+                    <div class="bpe-input-row" id="custom-corpus-row">
+                        <label>Custom:</label>
+                        <input type="text" id="custom-corpus" class="form-control input-sm" placeholder="word1, word2, word3, ..." />
+                    </div>
+                    <div class="bpe-input-row">
+                        <label>Max Merges:</label>
+                        <div class="bpe-stepper">
+                            <button id="btn-merges-down" class="btn btn-xs btn-default"><i class="fa fa-minus"></i></button>
+                            <span id="max-merges-value" class="stepper-value">10</span>
+                            <button id="btn-merges-up" class="btn btn-xs btn-default"><i class="fa fa-plus"></i></button>
+                        </div>
+                    </div>
+                </div>
+                <div class="bpe-actions-col">
+                    <div class="btn-toolbar" role="toolbar">
+                        <button id="btn-run" class="btn btn-sm btn-success" title="Auto-play all merge steps">
+                            <i class="fa fa-play"></i> Run
+                        </button>
+                        <button id="btn-step" class="btn btn-sm btn-info" title="Advance one merge cycle">
+                            <i class="fa fa-step-forward"></i> Step
+                        </button>
+                        <button id="btn-reset" class="btn btn-sm btn-danger" title="Reset">
+                            <i class="fa fa-refresh"></i> Reset
+                        </button>
+                    </div>
+                    <div class="speed-control">
+                        <i class="fa fa-tachometer"></i>
+                        <input type="range" id="speed-slider" min="1" max="10" value="5">
+                        <span id="speed-value" class="range-value">5</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Right Column: Info + Metrics -->
+    <div class="col-md-5">
+        {{ infoTabs(
+            tabs=[
+                {id: 'about', icon: 'fa-info-circle', label: 'About', active: true, content: '
+                    <h4><i class="fa fa-scissors"></i> Byte Pair Encoding</h4>
+                    <p>
+                        <strong>BPE</strong> is a subword tokenization algorithm used by most modern LLMs
+                        (GPT, LLaMA, etc.). It iteratively merges the most frequent adjacent pair of tokens,
+                        starting from individual characters, to build a compact vocabulary.
+                    </p>
+                    <p>
+                        Unlike word-level tokenization (huge vocabulary, can&rsquo;t handle new words) or
+                        character-level (too granular, long sequences), BPE finds a middle ground:
+                        common words become single tokens while rare words decompose into meaningful subwords.
+                    </p>
+                    <h4><i class="fa fa-mouse-pointer"></i> How to Use</h4>
+                    <ul class="interaction-list">
+                        <li><strong>Select a corpus</strong> from the dropdown or enter custom words</li>
+                        <li><strong>Press Run</strong> to animate all merge steps automatically</li>
+                        <li><strong>Press Step</strong> to advance one merge cycle at a time</li>
+                        <li><strong>Watch pairs merge</strong> in the tokenization, frequency chart, and vocabulary</li>
+                        <li><strong>Adjust speed</strong> with the slider</li>
+                    </ul>
+                '},
+                {id: 'algorithm', icon: 'fa-book', label: 'Algorithm', content: '
+                    <h4><i class="fa fa-book"></i> BPE Merge Loop</h4>
+                    <ol class="algorithm-list">
+                        <li><strong>Initialize</strong>: Split each word into characters, append end-of-word marker <code>_</code></li>
+                        <li><strong>Count pairs</strong>: For each adjacent token pair across all words, count frequency</li>
+                        <li><strong>Find best pair</strong>: Select the pair with highest frequency</li>
+                        <li><strong>Merge</strong>: Replace every occurrence of the best pair with a single merged token</li>
+                        <li><strong>Add to vocabulary</strong>: Record the new merged token and the merge rule</li>
+                        <li><strong>Repeat</strong> steps 2&ndash;5 until max merges reached</li>
+                    </ol>
+                    <h4><i class="fa fa-code"></i> Pseudocode</h4>
+                    <pre style="font-size: 11px; margin-top: 8px;">vocab = all unique characters + "_"
+for i in 1..max_merges:
+  pairs = count_pairs(corpus)
+  best = argmax(pairs)
+  corpus = merge(corpus, best)
+  vocab.add(best[0] + best[1])
+  rules.add(best &rarr; merged)</pre>
+                '},
+                {id: 'math', icon: 'fa-superscript', label: 'Math', content: '
+                    <h4><i class="fa fa-superscript"></i> Pair Frequency</h4>
+                    <div class="math-formula-display">
+                        <code>freq(a, b) = &Sigma;<sub>w &isin; corpus</sub> count(ab in w) &times; freq(w)</code>
+                    </div>
+                    <p class="formula-note">
+                        Each adjacent pair (a, b) is counted across all words, weighted by word frequency.
+                    </p>
+                    <h4><i class="fa fa-compress"></i> Compression Ratio</h4>
+                    <div class="math-formula-display">
+                        <code>compression = initial_tokens / current_tokens</code>
+                    </div>
+                    <p class="formula-note">
+                        Measures how much the total token count has been reduced by merging.
+                    </p>
+                    <h4><i class="fa fa-book"></i> Vocabulary Growth</h4>
+                    <div class="math-formula-display">
+                        <code>|V<sub>i</sub>| = |V<sub>0</sub>| + i</code>
+                    </div>
+                    <p class="formula-note">
+                        Each merge adds exactly one new token to the vocabulary.
+                    </p>
+                '}
+            ]
+        ) }}
+
+        {{ metricsPanel(
+            title='BPE Metrics',
+            icon='fa-bar-chart',
+            metrics=[
+                {icon: 'fa-cog', label: 'Phase', id: 'metric-phase', default: 'Idle'},
+                {icon: 'fa-compress', label: 'Merge Step', id: 'metric-merge-step', default: '0 / 10'},
+                {icon: 'fa-book', label: 'Vocab Size', id: 'metric-vocab-size', default: '-'},
+                {icon: 'fa-th', label: 'Total Tokens', id: 'metric-total-tokens', default: '-'},
+                {icon: 'fa-area-chart', label: 'Compression', id: 'metric-compression', default: '1.00x'},
+                {icon: 'fa-star', label: 'Best Pair', id: 'metric-best-pair', default: '-'}
+            ]
+        ) }}
+    </div>
+</div>

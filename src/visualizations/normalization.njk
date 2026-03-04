@@ -1,0 +1,178 @@
+---
+layout: base.njk
+title: "Normalization Techniques Visualizer"
+icon: fa-layer-group
+navigation:
+  - name: "Home"
+    link: "index.html"
+    icon: "fa-home"
+permalink: "normalization.html"
+extraScript: "static/js/normalization.js"
+tags: visualization
+cardTitle: "Normalization Techniques"
+cardIcon: fa-layer-group
+cardDescription: "Compare BatchNorm, LayerNorm, InstanceNorm, GroupNorm, and RMSNorm. See which tensor dimensions each technique normalizes over."
+cardTags:
+  - Deep Learning
+  - Normalization
+cardHaystack: "normalization batch layer instance group rms batchnorm layernorm instancenorm groupnorm rmsnorm tensor dimensions deep learning training"
+cardOrder: 35
+---
+
+{% from "components/info-tabs.njk" import infoTabs %}
+{% from "components/stepper-control.njk" import stepperControl %}
+
+<link rel="stylesheet" href="static/css/normalization.css">
+
+<div class="row" id="main-content">
+    {% include "components/share-button.njk" %}
+    <!-- Left Column -->
+    <div class="col-md-7">
+        <!-- Tensor Grid Panel -->
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <div class="panel-heading-content">
+                    <div class="btn-group btn-group-sm norm-type-toggle" role="group">
+                        <button type="button" class="btn btn-default active" data-norm="batch">BN</button>
+                        <button type="button" class="btn btn-default" data-norm="layer">LN</button>
+                        <button type="button" class="btn btn-default" data-norm="instance">IN</button>
+                        <button type="button" class="btn btn-default" data-norm="group">GN</button>
+                        <button type="button" class="btn btn-default" data-norm="rms">RMS</button>
+                    </div>
+                    <span class="norm-shape-badge" id="norm-shape-badge">
+                        [<span class="norm-dim-n">N=2</span>, <span class="norm-dim-c">C=4</span>, <span class="norm-dim-s">S=4</span>]
+                    </span>
+                </div>
+            </div>
+            <div class="panel-body">
+                <canvas id="norm-tensor-canvas"></canvas>
+            </div>
+        </div>
+
+        <!-- Distribution Panel -->
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <div class="panel-heading-content">
+                    <span class="panel-title-text"><i class="fa fa-bar-chart"></i> Distribution: Raw vs Normalized</span>
+                    <span class="norm-lock-badge" id="norm-lock-badge" style="display:none;">
+                        <i class="fa fa-lock"></i> <span id="norm-lock-label">—</span>
+                    </span>
+                </div>
+            </div>
+            <div class="panel-body compact-panel">
+                <canvas id="norm-dist-canvas"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <!-- Right Column -->
+    <div class="col-md-5">
+        {{ infoTabs(
+            tabs=[
+                {id: 'about', icon: 'fa-info-circle', label: 'About', active: true, content: '
+                    <h4><i class="fa fa-layer-group"></i> What is Normalization?</h4>
+                    <p>
+                        <strong>Normalization</strong> rescales activations inside a neural network so they have
+                        zero mean and unit variance. This stabilizes training, allows higher learning rates, and
+                        reduces sensitivity to weight initialization.
+                    </p>
+                    <h4><i class="fa fa-question-circle"></i> Why So Many Types?</h4>
+                    <p>
+                        Different techniques normalize over <strong>different dimensions</strong> of the tensor.
+                        The choice affects what statistics are shared across batch items, channels, and spatial positions
+                        &mdash; which matters for CNNs, Transformers, style transfer, and small-batch training.
+                    </p>
+                    <h4><i class="fa fa-mouse-pointer"></i> How to Use</h4>
+                    <ul class="norm-interaction-list">
+                        <li><strong>Click a norm type</strong> (BN, LN, IN, GN, RMS) to switch techniques</li>
+                        <li><strong>Hover a cell</strong> to highlight all cells in the same normalization group</li>
+                        <li><strong>Click a cell</strong> to lock selection and inspect the math</li>
+                        <li><strong>Adjust dimensions</strong> in Controls to reshape the tensor</li>
+                        <li><strong>Check Math tab</strong> to see the live mean/variance computation</li>
+                    </ul>
+                '},
+                {id: 'algorithm', icon: 'fa-book', label: 'Algorithm', content: '
+                    <h4><i class="fa fa-cogs"></i> General Formula</h4>
+                    <div class="math-formula-display">
+                        <code>y = &gamma; &middot; (x &minus; &mu;) / &radic;(&sigma;&sup2; + &epsilon;) + &beta;</code>
+                    </div>
+                    <p class="formula-note">RMSNorm omits mean centering: y = &gamma; &middot; x / &radic;(mean(x&sup2;) + &epsilon;)</p>
+
+                    <h4><i class="fa fa-table"></i> Reduction Axes per Type</h4>
+                    <table class="norm-axes-table">
+                        <thead>
+                            <tr><th>Type</th><th>Batch (N)</th><th>Channel (C)</th><th>Spatial (S)</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>BatchNorm</td><td class="norm-axis-yes">&check;</td><td class="norm-axis-no">&mdash;</td><td class="norm-axis-yes">&check;</td></tr>
+                            <tr><td>LayerNorm</td><td class="norm-axis-no">&mdash;</td><td class="norm-axis-yes">&check;</td><td class="norm-axis-yes">&check;</td></tr>
+                            <tr><td>InstanceNorm</td><td class="norm-axis-no">&mdash;</td><td class="norm-axis-no">&mdash;</td><td class="norm-axis-yes">&check;</td></tr>
+                            <tr><td>GroupNorm</td><td class="norm-axis-no">&mdash;</td><td class="norm-axis-yes">G</td><td class="norm-axis-yes">&check;</td></tr>
+                            <tr><td>RMSNorm</td><td class="norm-axis-no">&mdash;</td><td class="norm-axis-yes">&check;</td><td class="norm-axis-yes">&check;</td></tr>
+                        </tbody>
+                    </table>
+
+                    <h4 style="margin-top:12px"><i class="fa fa-info-circle"></i> Key Differences</h4>
+                    <ul class="norm-interaction-list" style="font-size:12px;">
+                        <li><strong>BatchNorm</strong> computes stats across the batch &mdash; depends on batch size</li>
+                        <li><strong>LayerNorm</strong> normalizes per-sample &mdash; ideal for Transformers &amp; RNNs</li>
+                        <li><strong>InstanceNorm</strong> normalizes per-channel per-sample &mdash; used in style transfer</li>
+                        <li><strong>GroupNorm</strong> splits channels into groups &mdash; works with any batch size</li>
+                        <li><strong>RMSNorm</strong> skips mean centering &mdash; faster, used in LLaMA/modern LLMs</li>
+                    </ul>
+                '},
+                {id: 'math', icon: 'fa-superscript', label: 'Math', content: '
+                    <h4><i class="fa fa-calculator"></i> Live Computation</h4>
+                    <div id="norm-math-panel" class="norm-calc-panel">
+                        <span class="formula-note">Hover or click a cell to see the computation breakdown.</span>
+                    </div>
+                '},
+                {id: 'controls', icon: 'fa-sliders', label: 'Controls', content: '
+                    <div class="norm-controls-panel">
+                        <div class="option-row">
+                            <label>Batch (N):</label>
+                            <input type="range" id="norm-n-slider" min="1" max="4" step="1" value="2">
+                            <span id="norm-n-value" class="range-value">2</span>
+                        </div>
+                        <div class="option-row">
+                            <label>Channels (C):</label>
+                            <input type="range" id="norm-c-slider" min="2" max="8" step="1" value="4">
+                            <span id="norm-c-value" class="range-value">4</span>
+                        </div>
+                        <div class="option-row">
+                            <label>Spatial (S):</label>
+                            <input type="range" id="norm-s-slider" min="2" max="6" step="1" value="4">
+                            <span id="norm-s-value" class="range-value">4</span>
+                        </div>
+                        <div class="option-row">
+                            <label>Groups (G):</label>
+                            <input type="range" id="norm-g-slider" min="1" max="4" step="1" value="2">
+                            <span id="norm-g-value" class="range-value">2</span>
+                        </div>
+                        <div class="option-row">
+                            <label>Epsilon (&epsilon;):</label>
+                            <input type="range" id="norm-eps-slider" min="-8" max="-2" step="1" value="-5">
+                            <span id="norm-eps-value" class="range-value">1e-5</span>
+                        </div>
+                        <div class="option-row">
+                            <label>Noise Level:</label>
+                            <input type="range" id="norm-noise-slider" min="0.5" max="3" step="0.1" value="1.5">
+                            <span id="norm-noise-value" class="range-value">1.5</span>
+                        </div>
+                        <label class="checkbox-label" style="font-size:12px;">
+                            <input type="checkbox" id="norm-affine-cb" checked> Apply &gamma; / &beta; (affine)
+                        </label>
+                        <div class="norm-actions-row">
+                            <button id="norm-randomize-btn" class="btn btn-sm btn-success">
+                                <i class="fa fa-random"></i> Randomize
+                            </button>
+                            <button id="norm-reset-btn" class="btn btn-sm btn-danger">
+                                <i class="fa fa-undo"></i> Reset
+                            </button>
+                        </div>
+                    </div>
+                '}
+            ]
+        ) }}
+    </div>
+</div>

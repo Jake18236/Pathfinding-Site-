@@ -1,0 +1,31 @@
+---
+layout: base.njk
+title: AI Topics Map
+icon: fa-diagram-project
+permalink: topics.html
+description: "Interactive mind-map of AI topics showing how concepts connect — from foundations like machine learning to applied techniques like RLHF."
+---
+
+<link rel="stylesheet" href="static/css/topics.css">
+
+<div class="row">
+    <div class="col-sm-12">
+        <div class="topics-search-bar">
+            <div class="form-group" style="margin-bottom: 12px;">
+                <label for="topics-search" class="sr-only">Search topics</label>
+                <div class="input-group">
+                    <span class="input-group-addon"><i class="fa fa-search"></i></span>
+                    <input type="text" id="topics-search" class="form-control" placeholder="Search topics by name or category&hellip;">
+                </div>
+            </div>
+        </div>
+
+        <div id="topics-legend" class="topics-legend"></div>
+
+        <div id="topics-graph-container" class="topics-graph-container topics-graph--full"></div>
+    </div>
+</div>
+
+<script type="application/json" id="topics-graph-data">{{ topics | dump | safe }}</script>
+<script src="https://d3js.org/d3.v7.min.js"></script>
+<script src="static/js/topics.js"></script>

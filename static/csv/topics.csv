@@ -1,0 +1,40 @@
+id,name,group,size,description,connections,resources,visualization
+machine-learning,Machine Learning,Foundations,3,The study of algorithms that improve automatically through experience and data.,deep-learning|supervised-learning|unsupervised-learning|reinforcement-learning|optimization,,
+supervised-learning,Supervised Learning,Foundations,2,Learning from labeled input-output pairs to predict outcomes on new data.,linear-regression|logistic-regression|decision-trees|svm|knn,,
+unsupervised-learning,Unsupervised Learning,Foundations,2,Finding hidden patterns in data without labeled examples.,clustering|pca,,
+reinforcement-learning,Reinforcement Learning,Foundations,2,Learning optimal behavior through trial-and-error interaction with an environment.,machine-learning,,reinforcement-learning.html
+optimization,Optimization,Foundations,2,Techniques for finding the best parameters to minimize or maximize an objective function.,backpropagation|linear-regression,,
+statistics,Statistics,Foundations,1,Mathematical methods for collecting and analyzing data to draw conclusions.,naive-bayes|pca|machine-learning,,
+linear-regression,Linear Regression,Foundations,1,Predicting a continuous output as a linear combination of input features.,logistic-regression|supervised-learning,,linear-regression.html
+logistic-regression,Logistic Regression,Foundations,1,Classification by estimating probabilities with a sigmoid function.,linear-regression|cross-entropy,,logistic-regression.html
+decision-trees,Decision Trees,Foundations,1,Tree-structured models that split data on feature thresholds to make predictions.,supervised-learning|entropy,,dtree.html
+svm,Support Vector Machines,Foundations,1,Classification by finding the optimal hyperplane that separates classes with maximum margin.,supervised-learning,,svm.html
+knn,K-Nearest Neighbors,Foundations,1,Classifying data points based on the majority class of their closest neighbors.,supervised-learning,,knn.html
+naive-bayes,Naive Bayes,Foundations,1,Probabilistic classifier using Bayes theorem with feature independence assumptions.,statistics|supervised-learning,,naive-bayes.html
+entropy,Entropy,Foundations,1,A measure of uncertainty or information content in a probability distribution.,cross-entropy|decision-trees,,entropy.html
+cross-entropy,Cross-Entropy,Foundations,1,A loss function measuring the difference between predicted and true probability distributions.,entropy|logistic-regression,,cross-entropy.html
+deep-learning,Deep Learning,Neural Networks,3,Neural networks with multiple hidden layers that learn hierarchical representations.,neural-networks|cnn|rnn|transformer,,
+neural-networks,Neural Networks,Neural Networks,2,Computational models composed of layers of interconnected nodes inspired by biological neurons.,perceptron|activation-functions|backpropagation|deep-learning,,neural-network.html
+perceptron,Perceptron,Neural Networks,1,The simplest neural network unit that computes a weighted sum with a threshold activation.,neural-networks,,perceptron.html
+activation-functions,Activation Functions,Neural Networks,1,Nonlinear functions applied to neuron outputs to introduce representational power.,neural-networks,,
+backpropagation,Backpropagation,Neural Networks,2,Algorithm for computing gradients through the network to update weights via the chain rule.,neural-networks|optimization,,backpropagation.html
+cnn,Convolutional Neural Networks,Vision,2,Networks using convolutional filters to detect spatial patterns in grid-structured data.,deep-learning|image-classification,,cnn.html
+image-classification,Image Classification,Vision,1,Assigning a category label to an entire image based on its visual content.,cnn|computer-vision,,mnist.html
+computer-vision,Computer Vision,Vision,2,Enabling machines to interpret and understand visual information from images and video.,cnn|image-classification|gans,,
+gans,Generative Adversarial Networks,Generative AI,2,Two networks competing to generate increasingly realistic synthetic data.,deep-learning|diffusion-models,,
+diffusion-models,Diffusion Models,Generative AI,2,Generating data by learning to reverse a gradual noising process.,gans|deep-learning,,diffusion.html
+rnn,Recurrent Neural Networks,Neural Networks,2,Networks with loops that process sequential data by maintaining hidden state over time.,deep-learning|transformer|nlp,,rnn.html
+transformer,Transformers,Neural Networks,3,Attention-based architecture that processes sequences in parallel for powerful modeling.,attention|bert|gpt|rnn,,transformer.html
+attention,Attention,Neural Networks,2,Mechanism allowing models to focus on the most relevant parts of the input dynamically.,transformer,,attention.html
+nlp,Natural Language Processing,NLP,3,Enabling computers to understand and generate human language.,word-embeddings|language-models|bpe|rnn|transformer,,
+word-embeddings,Word Embeddings,NLP,1,Dense vector representations of words that capture semantic relationships.,nlp|language-models,,
+language-models,Language Models,NLP,2,Models that predict the probability of word sequences to generate or understand text.,bert|gpt|word-embeddings|nlp,,markov-babbler.html
+bpe,BPE / Tokenization,NLP,1,Breaking text into subword units to build a compact vocabulary for language models.,nlp|language-models,,bpe.html
+bert,BERT,NLP,1,Bidirectional transformer trained on masked language modeling for understanding tasks.,transformer|language-models,,
+gpt,GPT,NLP,2,Autoregressive transformer that generates text by predicting the next token.,transformer|language-models|rlhf,,
+rlhf,RLHF,Applied,2,Fine-tuning language models with human preference feedback via reinforcement learning.,gpt|reinforcement-learning|fine-tuning,,rlhf.html
+prompt-engineering,Prompt Engineering,Applied,1,Designing effective input prompts to guide language model behavior and outputs.,gpt|rag,,
+rag,Retrieval-Augmented Generation,Applied,1,Combining language models with external knowledge retrieval for grounded generation.,prompt-engineering|language-models,,
+fine-tuning,Fine-Tuning,Applied,1,Adapting a pretrained model to a specific task by continuing training on task data.,rlhf|language-models,,
+clustering,Clustering,Foundations,1,Grouping similar data points together without predefined labels.,unsupervised-learning,,clustering.html
+pca,Dimensionality Reduction,Foundations,1,Reducing the number of features while preserving important structure in the data.,unsupervised-learning|statistics,,pca.html

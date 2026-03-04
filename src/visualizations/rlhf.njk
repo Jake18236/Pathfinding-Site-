@@ -1,0 +1,201 @@
+---
+layout: base.njk
+title: RLHF Training Pipeline
+icon: fa-thumbs-up
+navigation:
+  - name: "Home"
+    link: "index.html"
+    icon: "fa-home"
+permalink: "rlhf.html"
+extraScript: "static/js/rlhf.js"
+tags: visualization
+cardTitle: "RLHF Pipeline"
+cardIcon: fa-thumbs-up
+cardDescription: "Explore how Reinforcement Learning from Human Feedback aligns LLMs using preference data, reward models, and PPO."
+cardTags:
+  - LLMs
+  - Alignment
+cardHaystack: "reinforcement learning human feedback rlhf alignment preference reward model ppo proximal policy optimization kl divergence sft fine-tuning"
+cardOrder: 28
+---
+
+{% from "components/legend.njk" import legend %}
+{% from "components/info-tabs.njk" import infoTabs %}
+{% from "components/metrics-panel.njk" import metricsPanel %}
+
+<link rel="stylesheet" href="static/css/rlhf.css">
+
+<div class="row" id="main-content">
+    {% include "components/share-button.njk" %}
+    <!-- Left Column: Canvas + Controls -->
+    <div class="col-md-7">
+        <!-- RLHF Canvas Panel -->
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <div class="panel-heading-content">
+                    <span class="panel-title-text"><i class="fa fa-thumbs-up"></i> RLHF Training Pipeline</span>
+                </div>
+            </div>
+            <div class="panel-body canvas-panel-body">
+                <div class="canvas-wrapper">
+                    <canvas id="rlhf-canvas" width="720" height="700"></canvas>
+                </div>
+            </div>
+            <div class="panel-footer legend-footer">
+                {{ legend(
+                    items=[
+                        {class: 'rlhf-sft-stage', label: 'SFT'},
+                        {class: 'rlhf-rm-stage', label: 'Reward Model'},
+                        {class: 'rlhf-ppo-stage', label: 'PPO'},
+                        {class: 'rlhf-reward-dot', label: 'Avg Reward', type: 'dot'},
+                        {class: 'rlhf-kl-dot', label: 'KL Divergence', type: 'dot'}
+                    ]
+                ) }}
+            </div>
+        </div>
+
+        <!-- Controls Panel -->
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title"><i class="fa fa-sliders"></i> Controls</h3>
+            </div>
+            <div class="panel-body compact-panel rlhf-controls-panel">
+                <div class="rlhf-options-col">
+                    <div class="rlhf-input-row">
+                        <label>Scenario:</label>
+                        <select id="scenario-select" class="form-control input-sm">
+                            <option value="helpfulness">Helpfulness</option>
+                            <option value="safety">Safety</option>
+                        </select>
+                    </div>
+                    <div class="rlhf-beta-row">
+                        <label>KL Coeff (&beta;):</label>
+                        <input type="range" id="beta-slider" min="0.01" max="0.50" step="0.01" value="0.10">
+                        <span id="beta-value" class="range-value">0.10</span>
+                    </div>
+                    <div class="rlhf-input-row">
+                        <label>PPO Steps:</label>
+                        <div class="rlhf-stepper">
+                            <button id="btn-ppo-down" class="btn btn-xs btn-default"><i class="fa fa-minus"></i></button>
+                            <span id="ppo-steps-value" class="stepper-value">8</span>
+                            <button id="btn-ppo-up" class="btn btn-xs btn-default"><i class="fa fa-plus"></i></button>
+                        </div>
+                    </div>
+                </div>
+                <div class="rlhf-actions-col">
+                    <div class="btn-toolbar" role="toolbar">
+                        <button id="btn-run" class="btn btn-sm btn-success" title="Auto-play all phases">
+                            <i class="fa fa-play"></i> Run
+                        </button>
+                        <button id="btn-step" class="btn btn-sm btn-info" title="Advance one phase">
+                            <i class="fa fa-step-forward"></i> Step
+                        </button>
+                        <button id="btn-reset" class="btn btn-sm btn-danger" title="Reset">
+                            <i class="fa fa-refresh"></i> Reset
+                        </button>
+                    </div>
+                    <div class="speed-control">
+                        <i class="fa fa-tachometer"></i>
+                        <input type="range" id="speed-slider" min="1" max="10" value="5">
+                        <span id="speed-value" class="range-value">5</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Right Column: Info + Metrics -->
+    <div class="col-md-5">
+        {{ infoTabs(
+            tabs=[
+                {id: 'about', icon: 'fa-info-circle', label: 'About', active: true, content: '
+                    <h4><i class="fa fa-thumbs-up"></i> RLHF Pipeline</h4>
+                    <p>
+                        <strong>Reinforcement Learning from Human Feedback (RLHF)</strong> is the dominant technique
+                        for aligning large language models (GPT-4, Claude, LLaMA-2-Chat) with human preferences.
+                        It transforms a pre-trained LLM into one that produces helpful, harmless, and honest outputs.
+                    </p>
+                    <p>The pipeline has <strong>3 stages</strong>:</p>
+                    <ol>
+                        <li><strong>SFT</strong> &mdash; Supervised fine-tuning on curated demonstrations</li>
+                        <li><strong>Reward Model</strong> &mdash; Train a reward model from human preference comparisons</li>
+                        <li><strong>PPO</strong> &mdash; Optimize the policy against the reward model using Proximal Policy Optimization, with a KL penalty to prevent diverging too far from the reference policy</li>
+                    </ol>
+                    <h4><i class="fa fa-mouse-pointer"></i> How to Use</h4>
+                    <ul class="interaction-list">
+                        <li><strong>Press Run</strong> to animate the full 3-stage pipeline</li>
+                        <li><strong>Press Step</strong> to advance one phase at a time</li>
+                        <li><strong>Change scenario</strong> to see helpfulness vs. safety alignment</li>
+                        <li><strong>Adjust &beta;</strong> to control how much the policy can diverge from reference</li>
+                        <li><strong>Adjust PPO steps</strong> to control training duration</li>
+                    </ul>
+                '},
+                {id: 'algorithm', icon: 'fa-book', label: 'Algorithm', content: '
+                    <h4><i class="fa fa-book"></i> Reward Model Training</h4>
+                    <p>Uses the <strong>Bradley-Terry model</strong> for pairwise preferences:</p>
+                    <ol class="algorithm-list">
+                        <li>Given prompt x, sample two responses y<sub>w</sub> (preferred) and y<sub>l</sub> (rejected)</li>
+                        <li>Human labels which response is better</li>
+                        <li>Train reward model r(x, y) to satisfy r(x, y<sub>w</sub>) &gt; r(x, y<sub>l</sub>)</li>
+                    </ol>
+                    <h4><i class="fa fa-code"></i> PPO Loop</h4>
+                    <pre style="font-size: 11px; margin-top: 8px;">for step in 1..N:
+  # Sample responses from current policy
+  y ~ &pi;<sub>&theta;</sub>(y | x)
+  # Score with reward model
+  reward = r(x, y)
+  # Compute KL penalty
+  kl = KL(&pi;<sub>&theta;</sub> || &pi;<sub>ref</sub>)
+  # PPO objective with KL constraint
+  J(&theta;) = E[r(x,y) - &beta; &middot; kl]
+  # Update policy via gradient ascent
+  &theta; &larr; &theta; + &alpha; &nabla;<sub>&theta;</sub> J(&theta;)</pre>
+                '},
+                {id: 'math', icon: 'fa-superscript', label: 'Math', content: '
+                    <h4><i class="fa fa-superscript"></i> Reward Model Loss</h4>
+                    <div class="math-formula-display">
+                        <code>L<sub>RM</sub> = &minus;log &sigma;(r(x, y<sub>w</sub>) &minus; r(x, y<sub>l</sub>))</code>
+                    </div>
+                    <p class="formula-note">
+                        Bradley-Terry loss: the reward of the preferred response should exceed the rejected one.
+                    </p>
+                    <h4><i class="fa fa-line-chart"></i> PPO Objective</h4>
+                    <div class="math-formula-display">
+                        <code>J(&theta;) = E<sub>x,y</sub>[r(x, y) &minus; &beta; &middot; KL(&pi;<sub>&theta;</sub> || &pi;<sub>ref</sub>)]</code>
+                    </div>
+                    <p class="formula-note">
+                        Maximize reward while staying close to the reference policy via KL penalty.
+                    </p>
+                    <h4><i class="fa fa-arrows-h"></i> KL Divergence</h4>
+                    <div class="math-formula-display">
+                        <code>KL(P || Q) = &Sigma;<sub>i</sub> P(i) log(P(i) / Q(i))</code>
+                    </div>
+                    <p class="formula-note">
+                        Measures how much the current policy &pi;<sub>&theta;</sub> has diverged from the reference &pi;<sub>ref</sub>.
+                        Higher &beta; penalizes divergence more strongly.
+                    </p>
+                    <h4><i class="fa fa-calculator"></i> Advantage</h4>
+                    <div class="math-formula-display">
+                        <code>A(y) = r(x, y) &minus; mean(r(x, y<sub>i</sub>))</code>
+                    </div>
+                    <p class="formula-note">
+                        Positive advantage means this response is better than average; negative means worse.
+                    </p>
+                '}
+            ]
+        ) }}
+
+        {{ metricsPanel(
+            title='RLHF Metrics',
+            icon='fa-bar-chart',
+            metrics=[
+                {icon: 'fa-cog', label: 'Phase', id: 'metric-phase', default: 'Idle'},
+                {icon: 'fa-repeat', label: 'PPO Step', id: 'metric-ppo-step', default: '- / 8'},
+                {icon: 'fa-line-chart', label: 'Avg Reward', id: 'metric-avg-reward', default: '-'},
+                {icon: 'fa-arrows-h', label: 'KL Divergence', id: 'metric-kl-div', default: '-'},
+                {icon: 'fa-check-circle', label: 'RM Accuracy', id: 'metric-rm-accuracy', default: '-'},
+                {icon: 'fa-random', label: 'Policy Entropy', id: 'metric-entropy', default: '-'}
+            ]
+        ) }}
+    </div>
+</div>
