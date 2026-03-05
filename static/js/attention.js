@@ -51,6 +51,14 @@
         },
     };
 
+    // Map sentence select values to data file indices
+    const SENTENCE_FILE_MAP = {
+        'default': '0',
+        'short': '1',
+        'long': '2',
+        'custom': '0',
+    };
+
     const DIM_OPTIONS = [4, 6, 8];
 
     const PHASES = [
@@ -466,7 +474,7 @@
         async init() {
             // Default to GPT-2 mode — load data before first render
             try {
-                await this.loadModelData('gpt2', 'default');
+                await this.loadModelData('gpt2', SENTENCE_FILE_MAP['default']);
             } catch (e) {
                 console.error('Failed to load GPT-2 data, falling back to synthetic:', e);
                 this.dataMode = 'synthetic';
@@ -502,7 +510,7 @@
                     this.customSentenceHint.classList.remove('visible');
                     if (this.dataMode !== 'synthetic') {
                         try {
-                            await this.loadModelData(this.dataMode, this.sentenceSelect.value);
+                            await this.loadModelData(this.dataMode, SENTENCE_FILE_MAP[this.sentenceSelect.value] || '0');
                         } catch (e) {
                             console.error('Failed to load model data:', e);
                         }
@@ -528,7 +536,7 @@
                     this.reset();
                 } else {
                     this.dataMode = mode;
-                    const sentenceKey = this.sentenceSelect.value === 'custom' ? 'default' : this.sentenceSelect.value;
+                    const sentenceKey = SENTENCE_FILE_MAP[this.sentenceSelect.value] || '0';
                     try {
                         await this.loadModelData(mode, sentenceKey);
                         this.reset();
