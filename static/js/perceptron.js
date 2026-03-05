@@ -12,9 +12,7 @@
     // ============================================
     const CANVAS_WIDTH = 560;
     const CANVAS_HEIGHT = 480;
-    const PADDING = 0;
-    const PLOT_WIDTH = CANVAS_WIDTH;
-    const PLOT_HEIGHT = CANVAS_HEIGHT;
+
 
     const POINT_RADIUS = 6;
     const HIGHLIGHT_RADIUS = 9;
@@ -79,7 +77,7 @@
                     classLabel: 1
                 });
                 const x1 = 0.1 + 0.8 * Math.random();
-                const y1 = x1 - 0.25 + (Math.random() - 0.5) * noise;
+                const y1 = x1 - 0.4 + (Math.random() - 0.5) * noise;
                 this.points.push({
                     x: clamp(x1 + (Math.random() - 0.5) * noise, 0.02, 0.98),
                     y: clamp(y1 + (Math.random() - 0.5) * noise, 0.02, 0.98),
@@ -166,7 +164,7 @@
     // Perceptron Model
     // ============================================
     class PerceptronModel {
-        constructor(learningRate = 0.2) {
+        constructor(learningRate = 0.005) {
             this.learningRate = learningRate;
             this.weights = [0, 0];
             this.bias = 0;
@@ -216,7 +214,7 @@
         constructor(dataset, model, options) {
             this.dataset = dataset;
             this.model = model;
-            this.epochs = options.epochs ?? 5;
+            this.epochs = options.epochs ?? 50;
             this.shuffle = options.shuffle ?? true;
         }
 
@@ -229,7 +227,8 @@
                 const samples = this.shuffle ? this._shuffled(points) : [...points];
                 let mistakes = 0;
 
-                samples.forEach((point, index) => {
+                for (let index = 0; index < samples.length; index++) {
+                    const point = samples[index];
                     const before = {
                         weights: [...this.model.weights],
                         bias: this.model.bias
@@ -290,6 +289,7 @@
                     });
 
                     const accuracy = this._computeAccuracy(this.model.weights, this.model.bias, points);
+                    const misclassifiedIndices = this._computeMisclassifiedIndices(this.model.weights, this.model.bias, points);
                     const redrawStep = this._buildStep({
                         phase: 'redraw',
                         epoch,
@@ -303,11 +303,21 @@
                         mistakes,
                         weights: [...this.model.weights],
                         bias: this.model.bias,
-                        accuracy
+                        accuracy,
+                        misclassifiedIndices
                     });
 
+                    // Share the misclassified set across all 4 phases of this sample
+                    activationStep.misclassifiedIndices = misclassifiedIndices;
+                    predictionStep.misclassifiedIndices = misclassifiedIndices;
+                    updateStep.misclassifiedIndices = misclassifiedIndices;
+                    redrawStep.misclassifiedIndices = misclassifiedIndices;
+
                     steps.push(activationStep, predictionStep, updateStep, redrawStep);
-                });
+                }
+
+                // Early stopping: converged if no mistakes this epoch
+                if (mistakes === 0) break;
             }
 
             return steps;
@@ -330,8 +340,21 @@
                 weights: payload.weights,
                 bias: payload.bias,
                 updateResult: payload.updateResult ?? null,
-                accuracy: payload.accuracy ?? null
+                accuracy: payload.accuracy ?? null,
+                misclassifiedIndices: payload.misclassifiedIndices ?? null
             };
+        }
+
+        _computeMisclassifiedIndices(weights, bias, points) {
+            const set = new Set();
+            points.forEach((point, idx) => {
+                const activation = weights[0] * point.x + weights[1] * point.y + bias;
+                const sign = activation >= 0 ? 1 : -1;
+                if (toLabel(sign) !== point.classLabel) {
+                    set.add(idx);
+                }
+            });
+            return set;
         }
 
         _computeAccuracy(weights, bias, points) {
@@ -411,8 +434,8 @@
 
         dataToCanvas(x, y) {
             return {
-                x: PADDING + x * PLOT_WIDTH,
-                y: PADDING + (1 - y) * PLOT_HEIGHT
+                x: x * CANVAS_WIDTH,
+                y: (1 - y) * CANVAS_HEIGHT
             };
         }
 
@@ -422,6 +445,10 @@
             this._resetTransform();
 
             this.ctx.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
+
+            if (state.showBoundary) {
+                this._drawRegions(state.weights, state.bias);
+            }
             this._drawGrid();
 
             if (state.showBoundary) {
@@ -450,16 +477,16 @@
 
             const steps = 10;
             for (let i = 1; i < steps; i++) {
-                const x = (PLOT_WIDTH / steps) * i;
+                const x = (CANVAS_WIDTH / steps) * i;
                 ctx.beginPath();
                 ctx.moveTo(x, 0);
-                ctx.lineTo(x, PLOT_HEIGHT);
+                ctx.lineTo(x, CANVAS_HEIGHT);
                 ctx.stroke();
 
-                const y = (PLOT_HEIGHT / steps) * i;
+                const y = (CANVAS_HEIGHT / steps) * i;
                 ctx.beginPath();
                 ctx.moveTo(0, y);
-                ctx.lineTo(PLOT_WIDTH, y);
+                ctx.lineTo(CANVAS_WIDTH, y);
                 ctx.stroke();
             }
 
@@ -477,8 +504,14 @@
                 ctx.fill();
 
                 if (isMisclassified) {
-                    ctx.lineWidth = 2;
+                    const s = POINT_RADIUS * 0.7;
                     ctx.strokeStyle = this.misclassifiedColor;
+                    ctx.lineWidth = 2;
+                    ctx.beginPath();
+                    ctx.moveTo(pos.x - s, pos.y - s);
+                    ctx.lineTo(pos.x + s, pos.y + s);
+                    ctx.moveTo(pos.x + s, pos.y - s);
+                    ctx.lineTo(pos.x - s, pos.y + s);
                     ctx.stroke();
                 }
             });
@@ -493,6 +526,57 @@
             ctx.arc(pos.x, pos.y, HIGHLIGHT_RADIUS, 0, Math.PI * 2);
             ctx.fill();
             ctx.globalAlpha = 1;
+        }
+
+        _drawRegions(weights, bias) {
+            const [w1, w2] = weights;
+            if (Math.abs(w1) < 1e-6 && Math.abs(w2) < 1e-6) return;
+
+            const ctx = this.ctx;
+            ctx.save();
+            ctx.globalAlpha = 0.08;
+
+            // For each pixel column, compute where boundary crosses and fill above/below
+            // Positive side (w·x + b > 0) = class 1, negative = class 0
+            const steps = 40;
+            const dx = CANVAS_WIDTH / steps;
+            for (let i = 0; i < steps; i++) {
+                const cx = i * dx;
+                const cx2 = (i + 1) * dx;
+                // Convert canvas x back to data x
+                const dataX1 = cx / CANVAS_WIDTH;
+                const dataX2 = cx2 / CANVAS_WIDTH;
+
+                // Boundary y in data space: w1*x + w2*y + b = 0 => y = (-b - w1*x) / w2
+                // Fill from top of canvas to boundary = one class, boundary to bottom = other
+                // In canvas coords: top = data y=1, bottom = data y=0
+
+                const dataX = (dataX1 + dataX2) / 2;
+
+                if (Math.abs(w2) > 1e-9) {
+                    const boundaryDataY = (-bias - w1 * dataX) / w2;
+                    const boundaryCanvasY = (1 - boundaryDataY) * CANVAS_HEIGHT;
+                    const clampedY = Math.max(0, Math.min(CANVAS_HEIGHT, boundaryCanvasY));
+
+                    // w2 > 0: positive side (class 1) is above boundary in data space = top in canvas
+                    // w2 < 0: positive side is below boundary in data space = bottom in canvas
+                    const topClass = w2 > 0 ? 1 : 0;
+                    const botClass = 1 - topClass;
+
+                    ctx.fillStyle = this.classColors[topClass];
+                    ctx.fillRect(cx, 0, dx, clampedY);
+
+                    ctx.fillStyle = this.classColors[botClass];
+                    ctx.fillRect(cx, clampedY, dx, CANVAS_HEIGHT);
+                } else {
+                    // Vertical line in data space — entire column is one class
+                    const sign = w1 * dataX + bias;
+                    ctx.fillStyle = this.classColors[sign >= 0 ? 1 : 0];
+                    ctx.fillRect(cx, 0, dx, CANVAS_HEIGHT);
+                }
+            }
+
+            ctx.restore();
         }
 
         _drawBoundary(weights, bias) {
@@ -567,23 +651,18 @@
             const [w1, w2] = weights;
             if (Math.abs(w1) < 1e-6 && Math.abs(w2) < 1e-6) return null;
 
-            const points = [];
-            if (Math.abs(w2) > 1e-6) {
-                const yAt0 = (-bias) / w2;
-                const yAt1 = (-bias - w1) / w2;
-                if (yAt0 >= 0 && yAt0 <= 1) points.push({ x: 0, y: yAt0 });
-                if (yAt1 >= 0 && yAt1 <= 1) points.push({ x: 1, y: yAt1 });
+            // Compute two points far apart on the line w1*x + w2*y + b = 0.
+            // Canvas clipping handles the rest — no manual intersection needed.
+            let p1, p2;
+            if (Math.abs(w2) > Math.abs(w1)) {
+                // Line is more horizontal — parameterize by x
+                p1 = { x: -10, y: (-bias - w1 * -10) / w2 };
+                p2 = { x:  10, y: (-bias - w1 *  10) / w2 };
+            } else {
+                // Line is more vertical — parameterize by y
+                p1 = { x: (-bias - w2 * -10) / w1, y: -10 };
+                p2 = { x: (-bias - w2 *  10) / w1, y:  10 };
             }
-            if (Math.abs(w1) > 1e-6) {
-                const xAt0 = (-bias) / w1;
-                const xAt1 = (-bias - w2) / w1;
-                if (xAt0 >= 0 && xAt0 <= 1) points.push({ x: xAt0, y: 0 });
-                if (xAt1 >= 0 && xAt1 <= 1) points.push({ x: xAt1, y: 1 });
-            }
-
-            if (points.length < 2) return null;
-            const p1 = points[0];
-            const p2 = points[1];
 
             const c1 = this.dataToCanvas(p1.x, p1.y);
             const c2 = this.dataToCanvas(p2.x, p2.y);
@@ -653,6 +732,11 @@
 
             this.playback = new PlaybackController({
                 initialSpeed: 6,
+                getDelayFn: (speed) => {
+                    // Speed 1 = 500ms, Speed 6 = 30ms, Speed 10 = 1ms
+                    const delays = [500, 300, 150, 80, 50, 30, 15, 8, 4, 1];
+                    return delays[Math.min(speed - 1, delays.length - 1)] || 30;
+                },
                 onRenderStep: (step) => this._onRenderStep(step),
                 onPlayStateChange: (isPlaying) => this._onPlayStateChange(isPlaying),
                 onStepChange: (index, total) => this._onStepChange(index, total),
@@ -674,10 +758,9 @@
                 this._resetTraining();
             });
 
-            const epochsMinus = document.getElementById('epochs-minus');
-            const epochsPlus = document.getElementById('epochs-plus');
-            epochsMinus?.addEventListener('click', () => this._adjustEpochs(-1));
-            epochsPlus?.addEventListener('click', () => this._adjustEpochs(1));
+            VizLib.DomUtils.wireStepper('epochs-minus', 'epochs-plus', 'epochs-value', {
+                min: 1, max: 50, step: 1, onChange: () => this._resetTraining()
+            });
 
             document.getElementById('show-boundary')?.addEventListener('change', (e) => {
                 this.state.showBoundary = e.target.checked;
@@ -702,15 +785,19 @@
                 const value = parseInt(e.target.value, 10);
                 this.playback?.setSpeed(value);
             });
-        }
 
-        _adjustEpochs(delta) {
-            const input = document.getElementById('epochs-value');
-            if (!input) return;
-            const current = parseInt(input.value, 10);
-            const next = clamp(current + delta, 1, 50);
-            input.value = String(next);
-            this._resetTraining();
+            // Info tab button switching (for btn-group variant)
+            document.querySelectorAll('.info-panel-tabs .btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const tabId = btn.getAttribute('data-tab');
+                    btn.closest('.info-panel-tabs').querySelectorAll('.btn').forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    const panel = btn.closest('.panel');
+                    panel.querySelectorAll('.info-tab-content').forEach(t => t.classList.remove('active'));
+                    const target = panel.querySelector('#tab-' + tabId);
+                    if (target) target.classList.add('active');
+                });
+            });
         }
 
         _resetTraining() {
@@ -720,8 +807,8 @@
 
             const datasetType = document.getElementById('dataset-select')?.value || 'linear';
             const initMode = document.getElementById('init-select')?.value || 'zero';
-            const lr = parseFloat(document.getElementById('lr-slider')?.value || '0.2');
-            const epochs = parseInt(document.getElementById('epochs-value')?.value || '5', 10);
+            const lr = parseFloat(document.getElementById('lr-slider')?.value || '0.005');
+            const epochs = parseInt(document.getElementById('epochs-value')?.value || '50', 10);
             const shuffle = Boolean(document.getElementById('shuffle-toggle')?.checked);
 
             const points = this.dataset.loadDataset(datasetType, DEFAULT_NUM_POINTS);
@@ -733,6 +820,7 @@
             trainingModel.bias = this.model.bias;
             const trainer = new Trainer(points, trainingModel, { epochs, shuffle });
             this.steps = trainer.generateSteps();
+            this.epochs = epochs;
 
             if (this.playback) {
                 this.playback.load(this.steps);
@@ -785,16 +873,12 @@
         _onRenderStep(step) {
             if (!step) return;
 
-            const misclassifiedSet = step.phase === 'redraw'
-                ? this._computeMisclassified(step.weights, step.bias)
-                : this._computeMisclassified(step.weights, step.bias);
-
             this.ui.render({
                 points: this.dataset.points,
                 weights: step.weights,
                 bias: step.bias,
                 currentPoint: step.point,
-                misclassifiedSet,
+                misclassifiedSet: step.misclassifiedIndices,
                 showBoundary: this.state.showBoundary,
                 showVector: this.state.showVector,
                 showMargin: this.state.showMargin
@@ -815,14 +899,20 @@
         _onStepChange(index, total) {
             const display = document.getElementById('playback-step');
             if (display) {
-                const current = Math.max(0, index + 1);
-                display.textContent = `Step: ${current} / ${total}`;
+                const step = this.steps[index];
+                if (step) {
+                    display.textContent = `Epoch ${step.epoch} / ${this.epochs} · Sample ${step.sampleIndex} / ${step.totalSamples}`;
+                } else {
+                    display.textContent = `Epoch 0 / ${this.epochs}`;
+                }
             }
             this._updatePlaybackButtons();
         }
 
         _onPlaybackFinished() {
-            this._setStatus('Finished');
+            const lastStep = this.steps[this.steps.length - 1];
+            const converged = lastStep && lastStep.epoch < this.epochs;
+            this._setStatus(converged ? 'Converged!' : 'Finished');
             this._updatePlaybackButtons();
         }
 

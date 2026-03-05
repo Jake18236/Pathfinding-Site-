@@ -22,9 +22,7 @@ cardImage: static/img/vis_cards/perceptron.png
 
 {% from "components/legend.njk" import legend %}
 {% from "components/info-tabs.njk" import infoTabs %}
-{% from "components/metrics-panel.njk" import metricsPanel %}
 {% from "components/speed-control.njk" import speedControl %}
-{% from "components/stepper-control.njk" import stepperControl %}
 
 <link rel="stylesheet" href="static/css/perceptron.css">
 
@@ -34,13 +32,41 @@ cardImage: static/img/vis_cards/perceptron.png
     <div class="col-md-7">
         <div class="panel panel-default">
             <div class="panel-heading">
-                <div class="panel-heading-content">
-                    <span class="panel-title-text"><i class="fa fa-bullseye"></i> Classification Space</span>
+                <div class="panel-heading-content perceptron-header">
+                    <div class="header-left">
+                        <select id="dataset-select" class="form-control input-sm">
+                            <option value="linear" selected>Linear</option>
+                            <option value="moons">Moons</option>
+                            <option value="xor">XOR</option>
+                            <option value="blobs">Blobs</option>
+                        </select>
+                    </div>
+                    <div class="header-right">
+                        <div class="btn-group btn-group-sm" role="group">
+                            <button id="btn-play" class="btn btn-success" title="Play">
+                                <i class="fa fa-play"></i>
+                            </button>
+                            <button id="btn-pause" class="btn btn-warning" title="Pause" disabled>
+                                <i class="fa fa-pause"></i>
+                            </button>
+                            <button id="btn-step-back" class="btn btn-info" title="Step back" disabled>
+                                <i class="fa fa-step-backward"></i>
+                            </button>
+                            <button id="btn-step-forward" class="btn btn-info" title="Step forward" disabled>
+                                <i class="fa fa-step-forward"></i>
+                            </button>
+                            <button id="btn-reset" class="btn btn-danger" title="Reset">
+                                <i class="fa fa-refresh"></i>
+                            </button>
+                        </div>
+                        {{ speedControl(value='6') }}
+                        <span id="playback-step" class="viz-badge">Epoch 0</span>
+                    </div>
                 </div>
             </div>
             <div class="panel-body canvas-panel-body">
                 <div class="canvas-wrapper">
-                    <canvas id="perceptron-canvas" width="560" height="480"></canvas>
+                    <canvas id="perceptron-canvas"></canvas>
                     <div id="click-overlay" class="click-overlay" style="display: none;">
                         <span>Press Play to train</span>
                     </div>
@@ -57,76 +83,6 @@ cardImage: static/img/vis_cards/perceptron.png
                         {class: 'margin-line', label: 'Margin', type: 'line'}
                     ]
                 ) }}
-            </div>
-        </div>
-
-        <!-- Controls Panel -->
-        <div class="panel panel-default">
-            <div class="panel-heading">
-                <h3 class="panel-title"><i class="fa fa-sliders"></i> Controls</h3>
-            </div>
-            <div class="panel-body compact-panel perceptron-controls-panel">
-                <div class="perceptron-options-col">
-                    <div class="perceptron-option-group">
-                        <div class="option-row">
-                            <label>Dataset:</label>
-                            <select id="dataset-select" class="form-control input-sm">
-                                <option value="linear" selected>Linearly Separable</option>
-                                <option value="moons">Moons (Non-separable)</option>
-                                <option value="xor">XOR (Non-separable)</option>
-                                <option value="blobs">Blobs</option>
-                            </select>
-                        </div>
-                        <div class="option-row">
-                            <label>Init:</label>
-                            <select id="init-select" class="form-control input-sm">
-                                <option value="zero" selected>Zero</option>
-                                <option value="random">Random</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="perceptron-option-group">
-                        <div class="option-row">
-                            <label>LR:</label>
-                            <input type="range" id="lr-slider" min="0.01" max="1" step="0.01" value="0.2">
-                            <span id="lr-value" class="range-value">0.20</span>
-                        </div>
-                        <div class="option-row">
-                            <label>Epochs:</label>
-                            {{ stepperControl(id='epochs', value='5', title='epochs') }}
-                        </div>
-                        <label class="checkbox-label"><input type="checkbox" id="shuffle-toggle" checked> Shuffle each epoch</label>
-                    </div>
-                    <div class="perceptron-option-group">
-                        <label class="checkbox-label"><input type="checkbox" id="show-boundary" checked> Show boundary</label>
-                        <label class="checkbox-label"><input type="checkbox" id="show-vector" checked> Show weight vector</label>
-                        <label class="checkbox-label"><input type="checkbox" id="show-margin"> Show margin</label>
-                    </div>
-                </div>
-
-                <div class="perceptron-playback-col">
-                    <div class="btn-toolbar" role="toolbar">
-                        <button id="btn-play" class="btn btn-sm btn-success" title="Play">
-                            <i class="fa fa-play"></i>
-                        </button>
-                        <button id="btn-pause" class="btn btn-sm btn-warning" title="Pause" disabled>
-                            <i class="fa fa-pause"></i>
-                        </button>
-                        <button id="btn-step-back" class="btn btn-sm btn-info" title="Step back" disabled>
-                            <i class="fa fa-step-backward"></i>
-                        </button>
-                        <button id="btn-step-forward" class="btn btn-sm btn-info" title="Step forward" disabled>
-                            <i class="fa fa-step-forward"></i>
-                        </button>
-                        <button id="btn-reset" class="btn btn-sm btn-danger" title="Reset">
-                            <i class="fa fa-refresh"></i>
-                        </button>
-                    </div>
-                    {{ speedControl(value='6') }}
-                    <div class="playback-status">
-                        <span id="playback-step">Step: 0 / 0</span>
-                    </div>
-                </div>
             </div>
         </div>
     </div>
@@ -155,7 +111,7 @@ cardImage: static/img/vis_cards/perceptron.png
                     <ol class="algorithm-steps">
                         <li>Compute activation <code>a = w·x + b</code></li>
                         <li>Predict <code>ŷ = sign(a)</code></li>
-                        <li>If wrong, update <code>w ← w + η(y - ŷ)x</code></li>
+                        <li>If wrong, update <code>w ← w + η(y - ŷ)x</code></li>
                         <li>Redraw the boundary</li>
                     </ol>
                     <p class="note">
@@ -171,35 +127,70 @@ cardImage: static/img/vis_cards/perceptron.png
                         <li id="step-redraw">Redraw: update boundary and metrics</li>
                     </ol>
                 '},
+                {id: 'controls', icon: 'fa-sliders', label: 'Controls', content: '
+                    <div class="perceptron-tab-controls">
+                        <div class="option-row">
+                            <label>Init:</label>
+                            <select id="init-select" class="form-control input-sm">
+                                <option value="zero">Zero</option>
+                                <option value="random" selected>Random</option>
+                            </select>
+                        </div>
+                        <div class="option-row">
+                            <label>LR:</label>
+                            <input type="range" id="lr-slider" min="0.001" max="1" step="0.001" value="0.005">
+                            <span id="lr-value" class="range-value">0.005</span>
+                        </div>
+                        <div class="option-row">
+                            <label>Epochs:</label>
+                            <div class="stepper-control">
+                                <button id="epochs-minus" class="btn btn-xs btn-default" title="Decrease Epochs">&#8722;</button>
+                                <input type="text" id="epochs-value" class="stepper-input" value="50" readonly>
+                                <button id="epochs-plus" class="btn btn-xs btn-default" title="Increase Epochs">+</button>
+                            </div>
+                        </div>
+                        <div class="option-row checkbox-row">
+                            <label class="checkbox-label"><input type="checkbox" id="shuffle-toggle" checked> Shuffle each epoch</label>
+                        </div>
+                        <hr class="controls-divider">
+                        <div class="option-row checkbox-row">
+                            <label class="checkbox-label"><input type="checkbox" id="show-boundary" checked> Show boundary</label>
+                        </div>
+                        <div class="option-row checkbox-row">
+                            <label class="checkbox-label"><input type="checkbox" id="show-vector" checked> Show weight vector</label>
+                        </div>
+                        <div class="option-row checkbox-row">
+                            <label class="checkbox-label"><input type="checkbox" id="show-margin"> Show margin</label>
+                        </div>
+                    </div>
+                '},
                 {id: 'math', icon: 'fa-superscript', label: 'Math', content: '
                     <h4><i class="fa fa-superscript"></i> Decision Boundary</h4>
                     <p>
                         The boundary is the line where <code>w·x + b = 0</code>. The weight vector <code>w</code>
                         is normal to the line. The margin is proportional to <code>1 / ||w||</code>.
                     </p>
+                '},
+                {id: 'metrics', icon: 'fa-bar-chart', label: 'Metrics', content: '
+                    <table class="table table-condensed metrics-table">
+                        <tbody>
+                            <tr><td><i class="fa fa-repeat"></i> Epoch</td><td id="metric-epoch" class="text-right metric-value">0</td></tr>
+                            <tr><td><i class="fa fa-step-forward"></i> Step</td><td id="metric-step" class="text-right metric-value">0</td></tr>
+                            <tr><td><i class="fa fa-exclamation-triangle"></i> Mistakes</td><td id="metric-mistakes" class="text-right metric-value">0</td></tr>
+                            <tr><td><i class="fa fa-check-circle"></i> Accuracy</td><td id="metric-accuracy" class="text-right metric-value">0%</td></tr>
+                            <tr><td><i class="fa fa-sliders"></i> Weights</td><td id="metric-weights" class="text-right metric-value">[-, -]</td></tr>
+                            <tr><td><i class="fa fa-dot-circle-o"></i> Bias</td><td id="metric-bias" class="text-right metric-value">0.00</td></tr>
+                            <tr><td><i class="fa fa-info-circle"></i> Status</td><td id="metric-status" class="text-right metric-value">Ready</td></tr>
+                        </tbody>
+                    </table>
+                    <div class="sample-metrics">
+                        <div><span class="sample-label">Sample:</span> <span id="metric-sample">-</span></div>
+                        <div><span class="sample-label">Activation:</span> <span id="metric-activation">-</span></div>
+                        <div><span class="sample-label">Prediction:</span> <span id="metric-prediction">-</span></div>
+                        <div><span class="sample-label">Target:</span> <span id="metric-target">-</span></div>
+                    </div>
                 '}
             ]
-        ) }}
-
-        {{ metricsPanel(
-            title='Metrics',
-            metrics=[
-                {icon: 'fa-repeat', label: 'Epoch', id: 'metric-epoch', default: '0'},
-                {icon: 'fa-step-forward', label: 'Step', id: 'metric-step', default: '0'},
-                {icon: 'fa-exclamation-triangle', label: 'Mistakes', id: 'metric-mistakes', default: '0'},
-                {icon: 'fa-check-circle', label: 'Accuracy', id: 'metric-accuracy', default: '0%'},
-                {icon: 'fa-sliders', label: 'Weights', id: 'metric-weights', default: '[-, -]'},
-                {icon: 'fa-dot-circle-o', label: 'Bias', id: 'metric-bias', default: '0.00'},
-                {icon: 'fa-info-circle', label: 'Status', id: 'metric-status', default: 'Ready'}
-            ],
-            extraContent='
-                <div class="sample-metrics">
-                    <div><span class="sample-label">Sample:</span> <span id="metric-sample">-</span></div>
-                    <div><span class="sample-label">Activation:</span> <span id="metric-activation">-</span></div>
-                    <div><span class="sample-label">Prediction:</span> <span id="metric-prediction">-</span></div>
-                    <div><span class="sample-label">Target:</span> <span id="metric-target">-</span></div>
-                </div>
-            '
         ) }}
     </div>
 </div>
