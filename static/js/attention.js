@@ -421,6 +421,7 @@
             // State
             this.sentence = PRESETS['default'].label;
             this.embedDim = 64;
+            this.headDim = 64;   // per-head dimension (embedDim / numHeads)
             this.speed = 5;
             this.data = null;
 
@@ -479,6 +480,7 @@
                 console.error('Failed to load GPT-2 data, falling back to synthetic:', e);
                 this.dataMode = 'synthetic';
                 this.embedDim = 4;
+                this.headDim = 4;
                 this.numHeads = 4;
             }
             this.reset();
@@ -532,6 +534,7 @@
                 if (mode === 'synthetic') {
                     this.dataMode = 'synthetic';
                     this.embedDim = 4;
+                    this.headDim = 4;
                     this.numHeads = 4;
                     this.reset();
                 } else {
@@ -864,10 +867,12 @@
             if (this.dataMode !== 'synthetic' && this.modelData) {
                 // In model mode, use real data dimensions
                 const headData = this.modelData.layers[0].heads[0];
-                this.embedDim = headData.Q[0].length;
                 this.numHeads = this.modelData.layers[0].heads.length;
+                this.headDim = headData.Q[0].length;
+                this.embedDim = this.headDim * this.numHeads;
                 this.data = precompute(this.sentence, 4, 4);  // minimal synthetic fallback
             } else {
+                this.headDim = this.embedDim;  // in synthetic mode, no head splitting
                 this.data = precompute(this.sentence, this.embedDim, this.numHeads);
             }
 
@@ -1013,10 +1018,16 @@
             if (activeData) {
                 const N = activeData.tokens.length;
                 document.getElementById('metric-tokens').textContent = N;
-                document.getElementById('metric-embed-dim').textContent = this.embedDim;
+                const isModel = this.dataMode !== 'synthetic' && this.modelData;
+                if (isModel) {
+                    document.getElementById('metric-embed-dim').textContent =
+                        this.embedDim + ' (' + this.headDim + '/head)';
+                } else {
+                    document.getElementById('metric-embed-dim').textContent = this.embedDim;
+                }
                 document.getElementById('metric-score-matrix').textContent = N + '\u00d7' + N;
                 document.getElementById('metric-scale-factor').textContent =
-                    '\u221a' + this.embedDim + ' = ' + activeData.scaleFactor.toFixed(2);
+                    '\u221ad\u2096 = \u221a' + this.headDim + ' = ' + activeData.scaleFactor.toFixed(2);
 
                 const phaseIdx = PHASES.indexOf(this.phase);
                 const softmaxIdx = PHASES.indexOf('APPLY_SOFTMAX');
@@ -1080,7 +1091,8 @@
             const self = this;
             const activeData = this.getActiveData();
             const N = activeData.tokens.length;
-            const d = isModel ? activeData.Q[0].length : this.embedDim;
+            const d = isModel ? activeData.Q[0].length : this.headDim;
+            const dModel = isModel ? this.embedDim : this.headDim;  // full embedding dim (768 for GPT-2/BERT)
             const matCellW = B_eq.matCellW;
             const matCellH = B_eq.matCellH;
             const matPad = 6;
@@ -1448,7 +1460,7 @@
                 const eChipX = embedContainerX;
                 const eChipG = makeChip(eChipX, embedOffsetY, matNxD.w, matNxD.h, chipE, { isMatrix: true });
                 drawMatrixGrid(eChipG, eChipX, embedOffsetY, activeData.embeddings, N, d, C.embedPos);
-                dimLabel(eChipX + matNxD.w / 2, embedOffsetY + matNxD.h, `<${N}, ${d}>`);
+                dimLabel(eChipX + matNxD.w / 2, embedOffsetY + matNxD.h, `<${N}, ${dModel}>`);
             } else {
                 // Collapsed: RNN-style embedding block with per-token rows
                 const embedG = g.append('g').attr('cursor', 'pointer')
@@ -1523,11 +1535,11 @@
                         .attr('font-family', MONO).attr('font-size', Math.round(6.5 * scale))
                         .attr('fill', C.textMuted)
                         .attr('opacity', 0.7)
-                        .text(`<1, ${d}>`);
+                        .text(`<1, ${dModel}>`);
                 }
 
                 // Dimension label below embed block
-                dimLabel(embedCenterX, embedOffsetY + embedContainerH, `<${N}, ${d}>`);
+                dimLabel(embedCenterX, embedOffsetY + embedContainerH, `<${N}, ${dModel}>`);
             }
 
             // --- Arrow from combined row down to branching (Stage 2) ---
@@ -1620,7 +1632,7 @@
                         .attr('font-style', 'italic').attr('font-weight', 'bold');
                     wLabelText.append('tspan').attr('fill', eLabelColor).text('E\u00b7');
                     wLabelText.append('tspan').attr('fill', wColor).text(wc.label.replace('E\u00b7', ''));
-                    chipDimLabel(wChipG, wCenterX, projRowY_local + defaultChipH / 2 + 7 * scale, `<${d}, ${d}>`);
+                    chipDimLabel(wChipG, wCenterX, projRowY_local + defaultChipH / 2 + 7 * scale, `<${dModel}, ${d}>`);
                 }
             }
 
@@ -2084,7 +2096,7 @@
                         .attr('font-family', SERIF).attr('font-size', mathSize - 1)
                         .attr('font-style', 'italic').attr('font-weight', 'bold')
                         .attr('fill', phaseIdx < PHASES.indexOf('SHOW_OUTPUT') ? C.textMuted : chipResE.color).text('E');
-                    chipDimLabel(resEChipG_h, resEChipX_h + resETextW_h / 2, resEChipY_h + defaultChipH / 2 + 7 * scale, `<${N}, ${d}>`);
+                    chipDimLabel(resEChipG_h, resEChipX_h + resETextW_h / 2, resEChipY_h + defaultChipH / 2 + 7 * scale, `<${N}, ${dModel}>`);
                 }
 
                 const vChipTopY_h = smBoxCenterY_h - (showVMatrix ? matNxD.h : defaultChipH) / 2;
@@ -2291,7 +2303,7 @@
                         .attr('text-anchor', 'middle').attr('dominant-baseline', 'hanging')
                         .attr('font-family', MONO).attr('font-size', dimFontSize)
                         .attr('fill', C.textMuted).attr('opacity', 0.7)
-                        .text(`<${d}, ${d}>`);
+                        .text(`<${fullD}, ${d}>`);
                 }
 
                 // ---- Elbow arrow from embedding box to projections ----
@@ -2416,7 +2428,7 @@
                     .attr('text-anchor', 'middle').attr('dominant-baseline', 'central')
                     .attr('font-family', SERIF).attr('font-size', smallSize).attr('font-weight', 'bold')
                     .attr('fill', C.sectionTitle).text('W\u2092');
-                chipDimLabel(woG, woX + woW / 2, woY_nav + defaultChipH / 2 + 7 * scale, `<${concatDim}, ${d}>`);
+                chipDimLabel(woG, woX + woW / 2, woY_nav + defaultChipH / 2 + 7 * scale, `<${concatDim}, ${dModel}>`);
 
                 // --- "+" after W_O ---
                 const plusStartX_nav = woX + woW;
@@ -2431,7 +2443,7 @@
                     .attr('font-family', SERIF).attr('font-size', mathSize - 1)
                     .attr('font-style', 'italic').attr('font-weight', 'bold')
                     .attr('fill', phaseIdx < PHASES.indexOf('SHOW_OUTPUT') ? C.textMuted : chipResE.color).text('E');
-                chipDimLabel(resEChipG_nav, resEX_nav + resEW_nav / 2, woY_nav + defaultChipH / 2 + 7 * scale, `<${N}, ${d}>`);
+                chipDimLabel(resEChipG_nav, resEX_nav + resEW_nav / 2, woY_nav + defaultChipH / 2 + 7 * scale, `<${N}, ${dModel}>`);
 
                 // ---- Residual skip connection: straight down from embed box to E chip ----
                 const resECenterX_nav = resEX_nav + resEW_nav / 2;
@@ -2597,7 +2609,8 @@
             const et = this.expandedTerms;
             const expanded = et.has('output');
             const N = activeData.tokens.length;
-            const d = isModel ? activeData.Q[0].length : this.embedDim;
+            const d = isModel ? activeData.Q[0].length : this.headDim;
+            const dModel = isModel ? this.embedDim : this.headDim;
             const { B_eq } = this.layout;
             const scale = isModel ? 2.25 : 1;
             const defaultChipH = B_eq.defaultChipH;
@@ -2648,7 +2661,7 @@
                     .attr('text-anchor', 'middle').attr('dominant-baseline', 'hanging')
                     .attr('font-family', MONO).attr('font-size', 6.3 * scale)
                     .attr('fill', C.textMuted).attr('opacity', 0.7)
-                    .text(`<${N}, ${d}>`);
+                    .text(`<${N}, ${dModel}>`);
             } else {
                 // --- Expanded: per-token embedding rows ---
                 const embedPadX = Math.round(8 * scale);
@@ -2723,7 +2736,7 @@
                         .attr('font-family', MONO).attr('font-size', Math.round(6.5 * scale))
                         .attr('fill', C.textMuted)
                         .attr('opacity', 0.7)
-                        .text(`<1, ${d}>`);
+                        .text(`<1, ${dModel}>`);
                 }
 
                 // Dimension label below container
@@ -2732,7 +2745,7 @@
                     .attr('text-anchor', 'middle').attr('dominant-baseline', 'hanging')
                     .attr('font-family', MONO).attr('font-size', 6.3 * scale)
                     .attr('fill', C.textMuted).attr('opacity', 0.7)
-                    .text(`<${N}, ${d}>`);
+                    .text(`<${N}, ${dModel}>`);
             }
         }
 
