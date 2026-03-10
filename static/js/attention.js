@@ -1092,6 +1092,7 @@
             const activeData = this.getActiveData();
             const N = activeData.tokens.length;
             const d = isModel ? activeData.Q[0].length : this.headDim;
+            const dModel = isModel ? this.embedDim : this.headDim;  // full embedding dim (768 for GPT-2/BERT)
             const matCellW = B_eq.matCellW;
             const matCellH = B_eq.matCellH;
             const matPad = 6;
@@ -1459,7 +1460,7 @@
                 const eChipX = embedContainerX;
                 const eChipG = makeChip(eChipX, embedOffsetY, matNxD.w, matNxD.h, chipE, { isMatrix: true });
                 drawMatrixGrid(eChipG, eChipX, embedOffsetY, activeData.embeddings, N, d, C.embedPos);
-                dimLabel(eChipX + matNxD.w / 2, embedOffsetY + matNxD.h, `<${N}, ${d}>`);
+                dimLabel(eChipX + matNxD.w / 2, embedOffsetY + matNxD.h, `<${N}, ${dModel}>`);
             } else {
                 // Collapsed: RNN-style embedding block with per-token rows
                 const embedG = g.append('g').attr('cursor', 'pointer')
@@ -1534,11 +1535,11 @@
                         .attr('font-family', MONO).attr('font-size', Math.round(6.5 * scale))
                         .attr('fill', C.textMuted)
                         .attr('opacity', 0.7)
-                        .text(`<1, ${d}>`);
+                        .text(`<1, ${dModel}>`);
                 }
 
                 // Dimension label below embed block
-                dimLabel(embedCenterX, embedOffsetY + embedContainerH, `<${N}, ${d}>`);
+                dimLabel(embedCenterX, embedOffsetY + embedContainerH, `<${N}, ${dModel}>`);
             }
 
             // --- Arrow from combined row down to branching (Stage 2) ---
@@ -1631,7 +1632,7 @@
                         .attr('font-style', 'italic').attr('font-weight', 'bold');
                     wLabelText.append('tspan').attr('fill', eLabelColor).text('E\u00b7');
                     wLabelText.append('tspan').attr('fill', wColor).text(wc.label.replace('E\u00b7', ''));
-                    chipDimLabel(wChipG, wCenterX, projRowY_local + defaultChipH / 2 + 7 * scale, `<${d}, ${d}>`);
+                    chipDimLabel(wChipG, wCenterX, projRowY_local + defaultChipH / 2 + 7 * scale, `<${dModel}, ${d}>`);
                 }
             }
 
@@ -2095,7 +2096,7 @@
                         .attr('font-family', SERIF).attr('font-size', mathSize - 1)
                         .attr('font-style', 'italic').attr('font-weight', 'bold')
                         .attr('fill', phaseIdx < PHASES.indexOf('SHOW_OUTPUT') ? C.textMuted : chipResE.color).text('E');
-                    chipDimLabel(resEChipG_h, resEChipX_h + resETextW_h / 2, resEChipY_h + defaultChipH / 2 + 7 * scale, `<${N}, ${d}>`);
+                    chipDimLabel(resEChipG_h, resEChipX_h + resETextW_h / 2, resEChipY_h + defaultChipH / 2 + 7 * scale, `<${N}, ${dModel}>`);
                 }
 
                 const vChipTopY_h = smBoxCenterY_h - (showVMatrix ? matNxD.h : defaultChipH) / 2;
@@ -2282,7 +2283,7 @@
                     // Dim labels under E and W, with grey dot between
                     const dimFontSize = 3.5 * scale;
                     const dimLabelY = projInsideY + mhProjH / 2 + 8 * scale;
-                    const fullD = self.headDim;
+                    const fullD = self.embedDim;
                     const wLabelCenterX = wStartX + wPartW / 2;
                     const dimDotCenterX = (eCenterX + wLabelCenterX) / 2;
                     wChipG.append('text')
@@ -2302,7 +2303,7 @@
                         .attr('text-anchor', 'middle').attr('dominant-baseline', 'hanging')
                         .attr('font-family', MONO).attr('font-size', dimFontSize)
                         .attr('fill', C.textMuted).attr('opacity', 0.7)
-                        .text(`<${d}, ${d}>`);
+                        .text(`<${fullD}, ${d}>`);
                 }
 
                 // ---- Elbow arrow from embedding box to projections ----
@@ -2427,7 +2428,7 @@
                     .attr('text-anchor', 'middle').attr('dominant-baseline', 'central')
                     .attr('font-family', SERIF).attr('font-size', smallSize).attr('font-weight', 'bold')
                     .attr('fill', C.sectionTitle).text('W\u2092');
-                chipDimLabel(woG, woX + woW / 2, woY_nav + defaultChipH / 2 + 7 * scale, `<${concatDim}, ${d}>`);
+                chipDimLabel(woG, woX + woW / 2, woY_nav + defaultChipH / 2 + 7 * scale, `<${concatDim}, ${dModel}>`);
 
                 // --- "+" after W_O ---
                 const plusStartX_nav = woX + woW;
@@ -2442,7 +2443,7 @@
                     .attr('font-family', SERIF).attr('font-size', mathSize - 1)
                     .attr('font-style', 'italic').attr('font-weight', 'bold')
                     .attr('fill', phaseIdx < PHASES.indexOf('SHOW_OUTPUT') ? C.textMuted : chipResE.color).text('E');
-                chipDimLabel(resEChipG_nav, resEX_nav + resEW_nav / 2, woY_nav + defaultChipH / 2 + 7 * scale, `<${N}, ${d}>`);
+                chipDimLabel(resEChipG_nav, resEX_nav + resEW_nav / 2, woY_nav + defaultChipH / 2 + 7 * scale, `<${N}, ${dModel}>`);
 
                 // ---- Residual skip connection: straight down from embed box to E chip ----
                 const resECenterX_nav = resEX_nav + resEW_nav / 2;
@@ -2609,6 +2610,7 @@
             const expanded = et.has('output');
             const N = activeData.tokens.length;
             const d = isModel ? activeData.Q[0].length : this.headDim;
+            const dModel = isModel ? this.embedDim : this.headDim;
             const { B_eq } = this.layout;
             const scale = isModel ? 2.25 : 1;
             const defaultChipH = B_eq.defaultChipH;
@@ -2659,7 +2661,7 @@
                     .attr('text-anchor', 'middle').attr('dominant-baseline', 'hanging')
                     .attr('font-family', MONO).attr('font-size', 6.3 * scale)
                     .attr('fill', C.textMuted).attr('opacity', 0.7)
-                    .text(`<${N}, ${d}>`);
+                    .text(`<${N}, ${dModel}>`);
             } else {
                 // --- Expanded: per-token embedding rows ---
                 const embedPadX = Math.round(8 * scale);
@@ -2734,7 +2736,7 @@
                         .attr('font-family', MONO).attr('font-size', Math.round(6.5 * scale))
                         .attr('fill', C.textMuted)
                         .attr('opacity', 0.7)
-                        .text(`<1, ${d}>`);
+                        .text(`<1, ${dModel}>`);
                 }
 
                 // Dimension label below container
@@ -2743,7 +2745,7 @@
                     .attr('text-anchor', 'middle').attr('dominant-baseline', 'hanging')
                     .attr('font-family', MONO).attr('font-size', 6.3 * scale)
                     .attr('fill', C.textMuted).attr('opacity', 0.7)
-                    .text(`<${N}, ${d}>`);
+                    .text(`<${N}, ${dModel}>`);
             }
         }
 
