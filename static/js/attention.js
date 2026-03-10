@@ -421,6 +421,7 @@
             // State
             this.sentence = PRESETS['default'].label;
             this.embedDim = 64;
+            this.headDim = 64;   // per-head dimension (embedDim / numHeads)
             this.speed = 5;
             this.data = null;
 
@@ -479,6 +480,7 @@
                 console.error('Failed to load GPT-2 data, falling back to synthetic:', e);
                 this.dataMode = 'synthetic';
                 this.embedDim = 4;
+                this.headDim = 4;
                 this.numHeads = 4;
             }
             this.reset();
@@ -532,6 +534,7 @@
                 if (mode === 'synthetic') {
                     this.dataMode = 'synthetic';
                     this.embedDim = 4;
+                    this.headDim = 4;
                     this.numHeads = 4;
                     this.reset();
                 } else {
@@ -864,10 +867,12 @@
             if (this.dataMode !== 'synthetic' && this.modelData) {
                 // In model mode, use real data dimensions
                 const headData = this.modelData.layers[0].heads[0];
-                this.embedDim = headData.Q[0].length;
                 this.numHeads = this.modelData.layers[0].heads.length;
+                this.headDim = headData.Q[0].length;
+                this.embedDim = this.headDim * this.numHeads;
                 this.data = precompute(this.sentence, 4, 4);  // minimal synthetic fallback
             } else {
+                this.headDim = this.embedDim;  // in synthetic mode, no head splitting
                 this.data = precompute(this.sentence, this.embedDim, this.numHeads);
             }
 
@@ -1013,10 +1018,16 @@
             if (activeData) {
                 const N = activeData.tokens.length;
                 document.getElementById('metric-tokens').textContent = N;
-                document.getElementById('metric-embed-dim').textContent = this.embedDim;
+                const isModel = this.dataMode !== 'synthetic' && this.modelData;
+                if (isModel) {
+                    document.getElementById('metric-embed-dim').textContent =
+                        this.embedDim + ' (' + this.headDim + '/head)';
+                } else {
+                    document.getElementById('metric-embed-dim').textContent = this.embedDim;
+                }
                 document.getElementById('metric-score-matrix').textContent = N + '\u00d7' + N;
                 document.getElementById('metric-scale-factor').textContent =
-                    '\u221a' + this.embedDim + ' = ' + activeData.scaleFactor.toFixed(2);
+                    '\u221ad\u2096 = \u221a' + this.headDim + ' = ' + activeData.scaleFactor.toFixed(2);
 
                 const phaseIdx = PHASES.indexOf(this.phase);
                 const softmaxIdx = PHASES.indexOf('APPLY_SOFTMAX');
@@ -1080,7 +1091,7 @@
             const self = this;
             const activeData = this.getActiveData();
             const N = activeData.tokens.length;
-            const d = isModel ? activeData.Q[0].length : this.embedDim;
+            const d = isModel ? activeData.Q[0].length : this.headDim;
             const matCellW = B_eq.matCellW;
             const matCellH = B_eq.matCellH;
             const matPad = 6;
@@ -2271,7 +2282,7 @@
                     // Dim labels under E and W, with grey dot between
                     const dimFontSize = 3.5 * scale;
                     const dimLabelY = projInsideY + mhProjH / 2 + 8 * scale;
-                    const fullD = self.embedDim;
+                    const fullD = self.headDim;
                     const wLabelCenterX = wStartX + wPartW / 2;
                     const dimDotCenterX = (eCenterX + wLabelCenterX) / 2;
                     wChipG.append('text')
@@ -2597,7 +2608,7 @@
             const et = this.expandedTerms;
             const expanded = et.has('output');
             const N = activeData.tokens.length;
-            const d = isModel ? activeData.Q[0].length : this.embedDim;
+            const d = isModel ? activeData.Q[0].length : this.headDim;
             const { B_eq } = this.layout;
             const scale = isModel ? 2.25 : 1;
             const defaultChipH = B_eq.defaultChipH;
