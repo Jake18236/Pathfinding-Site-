@@ -1,7 +1,0 @@
-courses:
-  cse10124:
-    repo: wtheisen/nd-cse-10124
-    display_name: "CSE 10124 · Introduction to Using Generative AI"
-  cse30124:
-    repo: wtheisen/nd-cse-30124
-    display_name: "CSE 30124 · Introduction to Artificial Intelligence"
