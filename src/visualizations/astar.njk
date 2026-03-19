@@ -68,6 +68,14 @@ cardImage: static/img/vis_cards/astar.png
                             <button type="button" class="btn btn-sm btn-default" data-mode="erase" title="Erase cells" disabled>
                                 <i class="fa fa-eraser"></i>
                             </button>
+                            <button type="button" class="btn btn-sm btn-default" data-mode="weight" title="Paint tile weight" disabled>
+                                <i class="fa fa-sliders"></i>
+                            </button>
+                        </div>
+                        <div id="tile-weight-control" class="tile-weight-control grid-controls" title="Tile weight applied in Weight mode">
+                            <label for="tile-weight-slider">w</label>
+                            <input type="range" id="tile-weight-slider" min="-5" max="10" step="0.5" value="1" disabled>
+                            <span id="tile-weight-value">1.0</span>
                         </div>
                         <button id="btn-clear-grid" class="btn btn-sm btn-danger grid-controls" title="Clear entire grid" disabled>
                             <i class="fa fa-trash"></i>
@@ -199,7 +207,8 @@ cardImage: static/img/vis_cards/astar.png
                             {value: 'lowg', text: 'Low g'}
                         ]},
                         {type: 'slider', label: 'Weight', id: 'heuristic-weight', min: 1, max: 3, step: 0.1, value: 1, valueId: 'weight-value'},
-                        {type: 'checkbox', label: 'Show f/g/h', id: 'show-values'}
+                        {type: 'checkbox', label: 'Show f/g/h', id: 'show-values'},
+                        {type: 'checkbox', label: 'Show parent chain', id: 'show-parent-chain', checked: true}
                     ]
                 ) }}
             </div>

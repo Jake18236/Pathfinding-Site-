@@ -358,6 +358,7 @@
             this.width = width;
             this.height = height;
             this.cells = [];
+            this.weights = [];
             this.start = null;
             this.goal = null;
             this.clear();
@@ -365,10 +366,13 @@
 
         clear() {
             this.cells = [];
+            this.weights = [];
             for (let y = 0; y < this.height; y++) {
                 this.cells[y] = [];
+                this.weights[y] = [];
                 for (let x = 0; x < this.width; x++) {
                     this.cells[y][x] = CELL_EMPTY;
+                    this.weights[y][x] = 0;
                 }
             }
             this.start = null;
@@ -400,6 +404,20 @@
             }
 
             this.cells[y][x] = type;
+            if (type !== CELL_EMPTY) {
+                this.weights[y][x] = 0;
+            }
+        }
+
+        setWeight(x, y, weight) {
+            if (x < 0 || x >= this.width || y < 0 || y >= this.height) return;
+            if (this.getCell(x, y) !== CELL_EMPTY) return;
+            this.weights[y][x] = Number.isFinite(weight) ? weight : 0;
+        }
+
+        getWeight(x, y) {
+            if (x < 0 || x >= this.width || y < 0 || y >= this.height) return 0;
+            return this.weights[y][x] || 0;
         }
 
         getCell(x, y) {
@@ -439,7 +457,8 @@
                             continue; // Can't cut corner
                         }
                     }
-                    neighbors.push({ x: nx, y: ny, cost: dir.cost });
+                    const weightedCost = dir.cost + this.getWeight(nx, ny);
+                    neighbors.push({ x: nx, y: ny, cost: weightedCost });
                 }
             }
 
@@ -451,6 +470,7 @@
             for (let y = 0; y < this.height; y++) {
                 for (let x = 0; x < this.width; x++) {
                     copy.cells[y][x] = this.cells[y][x];
+                    copy.weights[y][x] = this.weights[y][x];
                 }
             }
             copy.start = this.start ? { ...this.start } : null;
@@ -560,6 +580,7 @@
                 steps.push({
                     type: STEP_EXPAND,
                     current: { x: cx, y: cy, g: cg, h: ch, f: cf },
+                    parentMap: this._serializeParentMap(cameFrom),
                     openList: openSet.toArray().map(n => ({ x: n.x, y: n.y, g: n.g, h: n.h, f: n.f })),
                     closedList: Array.from(closedSet.values()),
                     message: `Expanding (${cx},${cy}) with f=${cf.toFixed(2)}, g=${cg.toFixed(2)}, h=${ch.toFixed(2)}`,
@@ -576,6 +597,7 @@
                     steps.push({
                         type: STEP_GOAL_FOUND,
                         path: path,
+                        parentMap: this._serializeParentMap(cameFrom),
                         openList: openSet.toArray().map(n => ({ x: n.x, y: n.y, g: n.g, h: n.h, f: n.f })),
                         closedList: Array.from(closedSet.values()),
                         message: `Goal found! Path length: ${path.length}, cost: ${cg.toFixed(2)}`,
@@ -601,6 +623,7 @@
                     steps.push({
                         type: STEP_NEIGHBOR_CHECK,
                         current: { x: cx, y: cy, g: cg, h: ch, f: cf },
+                        parentMap: this._serializeParentMap(cameFrom),
                         neighbor: { x: nx, y: ny },
                         tentativeG: tentativeG,
                         existingG: existingG !== undefined ? existingG : null,
@@ -660,6 +683,13 @@
             });
 
             return { success: false, path: [], steps, metrics };
+        }
+
+        _serializeParentMap(cameFrom) {
+            return Array.from(cameFrom.entries()).map(([nodeKey, parent]) => ({
+                nodeKey,
+                parent
+            }));
         }
 
         _reconstructPath(cameFrom, x, y) {
@@ -724,6 +754,7 @@
                 steps.push({
                     type: STEP_EXPAND,
                     current: { x: cx, y: cy, g: cg, h: 0, f: cg },
+                    parentMap: this._serializeParentMap(cameFrom),
                     openList: queue.map(n => ({ x: n.x, y: n.y, g: n.g, h: 0, f: n.g })),
                     closedList: [...closedList],
                     message: `Expanding (${cx},${cy}) at depth ${cg}`,
@@ -739,6 +770,7 @@
                     steps.push({
                         type: STEP_GOAL_FOUND,
                         path: path,
+                        parentMap: this._serializeParentMap(cameFrom),
                         openList: queue.map(n => ({ x: n.x, y: n.y, g: n.g, h: 0, f: n.g })),
                         closedList: [...closedList],
                         message: `Goal found! Path length: ${path.length}, cost: ${cg}`,
@@ -835,6 +867,7 @@
                 steps.push({
                     type: STEP_EXPAND,
                     current: { x: cx, y: cy, g: cg, h: 0, f: cg },
+                    parentMap: this._serializeParentMap(cameFrom),
                     openList: stack.map(n => ({ x: n.x, y: n.y, g: n.g, h: 0, f: n.g })),
                     closedList: [...closedList],
                     message: `Expanding (${cx},${cy}) at depth ${cg}`,
@@ -850,6 +883,7 @@
                     steps.push({
                         type: STEP_GOAL_FOUND,
                         path: path,
+                        parentMap: this._serializeParentMap(cameFrom),
                         openList: stack.map(n => ({ x: n.x, y: n.y, g: n.g, h: 0, f: n.g })),
                         closedList: [...closedList],
                         message: `Goal found! Path length: ${path.length}, cost: ${cg.toFixed(2)}`,
@@ -985,6 +1019,7 @@
                     steps.push({
                         type: STEP_GOAL_FOUND,
                         path: path,
+                        parentMap: this._serializeParentMap(cameFrom),
                         openList: openSet.toArray().map(n => ({ id: n.id, g: n.g, h: n.h, f: n.f })),
                         closedList: Array.from(closedSet.values()),
                         message: `Goal found! Path length: ${path.length}, cost: ${cg.toFixed(2)}`,
@@ -1135,6 +1170,7 @@
                     steps.push({
                         type: STEP_GOAL_FOUND,
                         path: path,
+                        parentMap: this._serializeParentMap(cameFrom),
                         openList: queue.map(n => ({ id: n.id, g: n.g, h: 0, f: n.g })),
                         closedList: [...closedList],
                         message: `Goal found! Path length: ${path.length}, cost: ${cg}`,
@@ -1247,6 +1283,7 @@
                     steps.push({
                         type: STEP_GOAL_FOUND,
                         path: path,
+                        parentMap: this._serializeParentMap(cameFrom),
                         openList: stack.map(n => ({ id: n.id, g: n.g, h: 0, f: n.g })),
                         closedList: [...closedList],
                         message: `Goal found! Path length: ${path.length}, cost: ${cg.toFixed(2)}`,
@@ -1334,6 +1371,8 @@
             this.gridGap = 1;
             this.editingEnabled = false; // Start with editing disabled
             this.simulationRunning = false;
+            this.showParentChain = true;
+            this.activeTileWeight = 1;
             this.initGrid();
             this.initEventListeners();
         }
@@ -1382,6 +1421,10 @@
                     `;
                     cell.appendChild(values);
 
+                    const weightLabel = document.createElement('span');
+                    weightLabel.className = 'cell-weight';
+                    cell.appendChild(weightLabel);
+
                     container.appendChild(cell);
                 }
             }
@@ -1420,6 +1463,7 @@
                     document.querySelectorAll('.edit-mode-buttons .btn').forEach(b => b.classList.remove('active'));
                     btn.classList.add('active');
                     this.editMode = btn.dataset.mode;
+                    this.updateWeightControlVisibility();
                 });
             });
 
@@ -1436,6 +1480,23 @@
                 this.showValues = e.target.checked;
                 this.renderGrid();
             });
+
+            document.getElementById('show-parent-chain')?.addEventListener('change', (e) => {
+                this.showParentChain = e.target.checked;
+            });
+
+            document.getElementById('tile-weight-slider')?.addEventListener('input', (e) => {
+                const value = parseFloat(e.target.value) || 0;
+                this.activeTileWeight = value;
+                const valueEl = document.getElementById('tile-weight-value');
+                if (valueEl) valueEl.textContent = value.toFixed(1);
+            });
+        }
+
+        updateWeightControlVisibility() {
+            const weightControl = document.getElementById('tile-weight-control');
+            if (!weightControl) return;
+            weightControl.classList.toggle('active', this.editMode === 'weight');
         }
 
         handleCellClick(e) {
@@ -1459,6 +1520,9 @@
                     break;
                 case 'erase':
                     this.grid.setCell(x, y, CELL_EMPTY);
+                    break;
+                case 'weight':
+                    this.grid.setWeight(x, y, this.activeTileWeight);
                     break;
             }
 
@@ -1498,6 +1562,7 @@
                 const fSpan = cell.querySelector('.f-value');
                 const gSpan = cell.querySelector('.g-value');
                 const hSpan = cell.querySelector('.h-value');
+                const wSpan = cell.querySelector('.cell-weight');
 
                 if (values && type !== CELL_WALL && type !== CELL_START && type !== CELL_GOAL) {
                     fSpan.textContent = values.f.toFixed(1);
@@ -1507,6 +1572,13 @@
                     fSpan.textContent = '';
                     gSpan.textContent = '';
                     hSpan.textContent = '';
+                }
+
+                const cellWeight = this.grid.getWeight(x, y);
+                if (wSpan && type === CELL_EMPTY && cellWeight !== 0) {
+                    wSpan.textContent = `${cellWeight > 0 ? '+' : ''}${cellWeight.toFixed(1)}`;
+                } else if (wSpan) {
+                    wSpan.textContent = '';
                 }
             });
         }
@@ -1597,6 +1669,10 @@
                     }
                 }
 
+                if (this.showParentChain && step.current && step.parentMap && step.type !== STEP_GOAL_FOUND && step.type !== STEP_NO_SOLUTION) {
+                    this.highlightParentChain(step.current, step.parentMap);
+                }
+
                 // Draw heuristic line from current node to goal (only for algorithms that use a heuristic)
                 const noHeuristicAlgorithms = ['bfs', 'dfs', 'dijkstra'];
                 if (step.current && goal && step.type !== STEP_GOAL_FOUND && step.type !== STEP_NO_SOLUTION && !noHeuristicAlgorithms.includes(this.currentHeuristic)) {
@@ -1632,6 +1708,9 @@
                         cell.classList.add('current');
                     }
                 }
+                if (this.showParentChain && step.current && step.parentMap && step.type !== STEP_GOAL_FOUND && step.type !== STEP_NO_SOLUTION) {
+                    this.highlightParentChain(step.current, step.parentMap);
+                }
                 if (step.path) {
                     for (const node of step.path) {
                         const cell = container.querySelector(`[data-x="${node.x}"][data-y="${node.y}"]`);
@@ -1643,6 +1722,23 @@
                     // Draw path line
                     this.drawPathLine(step.path);
                 }
+            }
+        }
+
+        highlightParentChain(current, parentMapData) {
+            const container = document.getElementById('pathfinding-grid');
+            if (!container) return;
+            const parentMap = new Map(parentMapData.map(({ nodeKey, parent }) => [nodeKey, parent]));
+            let key = `${current.x},${current.y}`;
+            const seen = new Set();
+            while (parentMap.has(key) && !seen.has(key)) {
+                seen.add(key);
+                const parent = parentMap.get(key);
+                const cell = container.querySelector(`[data-x="${parent.x}"][data-y="${parent.y}"]`);
+                if (cell && !cell.classList.contains('start') && !cell.classList.contains('goal')) {
+                    cell.classList.add('parent-chain');
+                }
+                key = `${parent.x},${parent.y}`;
             }
         }
 
@@ -1777,6 +1873,7 @@
             this.editingEnabled = enabled;
             const editButtons = document.querySelectorAll('#edit-mode-buttons .btn');
             const clearBtn = document.getElementById('btn-clear-grid');
+            const tileWeightSlider = document.getElementById('tile-weight-slider');
             const grid = document.getElementById('pathfinding-grid');
 
             editButtons.forEach(btn => {
@@ -1784,6 +1881,9 @@
             });
             if (clearBtn) {
                 clearBtn.disabled = !enabled || this.simulationRunning;
+            }
+            if (tileWeightSlider) {
+                tileWeightSlider.disabled = !enabled || this.simulationRunning;
             }
             if (grid) {
                 grid.classList.toggle('editing-disabled', !enabled || this.simulationRunning);
@@ -1798,12 +1898,14 @@
                     this.editMode = 'wall';
                 }
             }
+            this.updateWeightControlVisibility();
         }
 
         setSimulationRunning(running) {
             this.simulationRunning = running;
             const editButtons = document.querySelectorAll('#edit-mode-buttons .btn');
             const clearBtn = document.getElementById('btn-clear-grid');
+            const tileWeightSlider = document.getElementById('tile-weight-slider');
             const sampleSelect = document.getElementById('sample-select');
             const grid = document.getElementById('pathfinding-grid');
 
@@ -1812,6 +1914,9 @@
             });
             if (clearBtn) {
                 clearBtn.disabled = !this.editingEnabled || running;
+            }
+            if (tileWeightSlider) {
+                tileWeightSlider.disabled = !this.editingEnabled || running;
             }
             if (sampleSelect) {
                 sampleSelect.disabled = running;
