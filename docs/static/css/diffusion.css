@@ -1,0 +1,169 @@
+/**
+ * Diffusion Models Visualizer Styles
+ * Visualization-specific styles only. Common styles are in visualizations.css.
+ */
+
+/* ============================================
+   CSS Custom Properties
+   ============================================ */
+:root {
+    /* Point colors */
+    --diff-original: #377eb8;
+    --diff-noisy: #e41a1c;
+    --diff-noise-low: #4daf4a;
+    --diff-noise-high: #ff7f00;
+
+    /* Schedule chart */
+    --diff-schedule-line: #377eb8;
+    --diff-schedule-fill: rgba(55, 126, 184, 0.15);
+    --diff-schedule-marker: #e41a1c;
+    --diff-schedule-grid: rgba(0, 0, 0, 0.08);
+    --diff-schedule-axis: rgba(0, 0, 0, 0.2);
+    --diff-schedule-text: #666666;
+
+    /* Input styling */
+    --diff-input-bg: #fff;
+    --diff-input-border: #ccc;
+}
+
+[data-theme="gruvbox-dark"] {
+    --diff-original: #83a598;
+    --diff-noisy: #fb4934;
+    --diff-noise-low: #b8bb26;
+    --diff-noise-high: #fe8019;
+
+    --diff-schedule-line: #83a598;
+    --diff-schedule-fill: rgba(131, 165, 152, 0.2);
+    --diff-schedule-marker: #fb4934;
+    --diff-schedule-grid: rgba(168, 153, 132, 0.15);
+    --diff-schedule-axis: rgba(168, 153, 132, 0.3);
+    --diff-schedule-text: #a89984;
+
+    --diff-input-bg: #3c3836;
+    --diff-input-border: #504945;
+}
+
+/* ============================================
+   Canvases
+   ============================================ */
+#diffusion-canvas {
+    display: block;
+    width: 100%;
+    cursor: default;
+    background: var(--viz-canvas-bg);
+}
+
+#schedule-canvas {
+    display: block;
+    width: 100%;
+    cursor: default;
+    background: var(--viz-canvas-bg);
+}
+
+/* ============================================
+   Step Badge
+   ============================================ */
+.step-badge {
+    transition: all 0.3s ease;
+}
+
+/* ============================================
+   Legend Dot Overrides
+   ============================================ */
+.legend-dot.diff-original {
+    background-color: var(--diff-original);
+}
+
+.legend-dot.diff-noisy {
+    background-color: var(--diff-noisy);
+}
+
+.legend-dot.diff-noise-low {
+    background-color: var(--diff-noise-low);
+}
+
+.legend-dot.diff-noise-high {
+    background-color: var(--diff-noise-high);
+}
+
+/* ============================================
+   Controls Layout
+   ============================================ */
+.diff-controls-panel {
+    display: flex;
+    gap: 20px;
+}
+
+.diff-options-col {
+    flex: 1;
+}
+
+.diff-options-col .option-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 6px;
+}
+
+.diff-options-col .option-row:last-child {
+    margin-bottom: 0;
+}
+
+.diff-options-col .option-row > label:first-child {
+    min-width: 80px;
+    font-size: 12px;
+    margin: 0;
+}
+
+.diff-options-col .option-row select {
+    width: auto;
+    min-width: 130px;
+    font-size: 12px;
+}
+
+.diff-options-col .option-row input[type="range"] {
+    flex: 1;
+    min-width: 80px;
+}
+
+/* ============================================
+   Playback Column
+   ============================================ */
+.diff-playback-col {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    border-left: 1px solid var(--viz-border);
+    padding-left: 20px;
+    justify-content: center;
+}
+
+.diff-playback-col .btn-toolbar {
+    display: flex;
+    gap: 6px;
+}
+
+.diff-playback-col .btn-toolbar .btn {
+    padding: 4px 10px;
+    font-size: 12px;
+}
+
+/* ============================================
+   Responsive
+   ============================================ */
+@media (max-width: 992px) {
+    .diff-controls-panel {
+        flex-direction: column;
+    }
+
+    .diff-playback-col {
+        border-left: none;
+        border-top: 1px solid var(--viz-border);
+        padding-left: 0;
+        padding-top: 15px;
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+}

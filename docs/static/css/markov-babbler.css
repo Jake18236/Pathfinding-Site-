@@ -1,0 +1,269 @@
+/**
+ * Markov Babbler Visualization Styles
+ *
+ * Visualization-specific styles only. Common styles are in visualizations.css.
+ */
+
+/* ============================================
+   CSS Custom Properties
+   ============================================ */
+:root {
+    /* Context graph canvas */
+    --babbler-context-bg: #2196F3;
+    --babbler-context-text: #ffffff;
+    --babbler-candidate-bg: #ffffff;
+    --babbler-candidate-border: #dee2e6;
+    --babbler-selected-bg: #FFF9C4;
+    --babbler-selected-border: #FBC02D;
+    --babbler-connection: #90a4ae;
+    --babbler-connection-active: #FBC02D;
+
+    /* Generated text */
+    --babbler-text-bg: #f8f9fa;
+    --babbler-text-border: #dee2e6;
+    --babbler-word-highlight: #FFF9C4;
+    --babbler-word-active-border: #FBC02D;
+    --babbler-backoff-bg: #fff3cd;
+    --babbler-backoff-border: #ffc107;
+
+    /* N-gram table */
+    --babbler-table-bg: #ffffff;
+    --babbler-table-header: #f5f5f5;
+    --babbler-table-border: #dee2e6;
+    --babbler-table-hover: #e3f2fd;
+    --babbler-prob-bar: #2196F3;
+
+    /* Custom corpus */
+    --babbler-textarea-bg: #ffffff;
+    --babbler-textarea-border: #ced4da;
+}
+
+[data-theme="gruvbox-dark"] {
+    --babbler-context-bg: var(--gruvbox-blue);
+    --babbler-context-text: #1d2021;
+    --babbler-candidate-bg: var(--gruvbox-bg1);
+    --babbler-candidate-border: var(--gruvbox-bg2);
+    --babbler-selected-bg: rgba(250, 189, 47, 0.25);
+    --babbler-selected-border: var(--gruvbox-yellow);
+    --babbler-connection: #665c54;
+    --babbler-connection-active: var(--gruvbox-yellow);
+
+    --babbler-text-bg: var(--gruvbox-bg1);
+    --babbler-text-border: var(--gruvbox-bg2);
+    --babbler-word-highlight: rgba(250, 189, 47, 0.2);
+    --babbler-word-active-border: var(--gruvbox-yellow);
+    --babbler-backoff-bg: rgba(254, 128, 25, 0.2);
+    --babbler-backoff-border: var(--gruvbox-orange);
+
+    --babbler-table-bg: var(--gruvbox-bg);
+    --babbler-table-header: var(--gruvbox-bg1);
+    --babbler-table-border: var(--gruvbox-bg2);
+    --babbler-table-hover: rgba(131, 165, 152, 0.15);
+    --babbler-prob-bar: var(--gruvbox-blue);
+
+    --babbler-textarea-bg: var(--gruvbox-bg-dim);
+    --babbler-textarea-border: var(--gruvbox-bg2);
+}
+
+/* ============================================
+   Canvas
+   ============================================ */
+#babbler-canvas {
+    display: block;
+    width: 100%;
+    cursor: default;
+    background: var(--viz-canvas-bg);
+}
+
+.babbler-context-badge {
+    transition: all 0.3s ease;
+}
+
+/* ============================================
+   Legend Colors
+   ============================================ */
+.legend-color.babbler-context-node {
+    background-color: var(--babbler-context-bg);
+}
+
+.legend-color.babbler-candidate-node {
+    background-color: var(--babbler-candidate-bg);
+    border: 2px solid var(--babbler-candidate-border);
+}
+
+.legend-color.babbler-selected-node {
+    background-color: var(--babbler-selected-bg);
+    border: 2px solid var(--babbler-selected-border);
+}
+
+.legend-line.babbler-connection-line {
+    background-color: var(--babbler-connection);
+}
+
+/* ============================================
+   Controls Panel
+   ============================================ */
+.babbler-controls-panel {
+    display: flex;
+    gap: 15px;
+    flex-wrap: wrap;
+}
+
+.babbler-options-col {
+    flex: 1;
+    min-width: 200px;
+}
+
+.babbler-playback-col {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    min-width: 180px;
+}
+
+/* ============================================
+   Custom Corpus
+   ============================================ */
+.custom-corpus-section {
+    margin-bottom: 8px;
+}
+
+.custom-corpus-section textarea {
+    font-size: 12px;
+    resize: vertical;
+    min-height: 60px;
+    background-color: var(--babbler-textarea-bg);
+    border-color: var(--babbler-textarea-border);
+    color: var(--viz-text);
+}
+
+/* ============================================
+   Generated Text Display
+   ============================================ */
+.generated-text-display {
+    min-height: 60px;
+    max-height: 180px;
+    overflow-y: auto;
+    line-height: 1.8;
+    font-size: 14px;
+    font-family: Georgia, 'Times New Roman', serif;
+    color: var(--viz-text);
+}
+
+.generated-word {
+    display: inline;
+    padding: 1px 0;
+    border-radius: 2px;
+    transition: background-color 0.3s ease;
+}
+
+.generated-word.active {
+    background-color: var(--babbler-word-highlight);
+    outline: 1.5px solid var(--babbler-word-active-border);
+    border-radius: 3px;
+    padding: 1px 2px;
+}
+
+.generated-word.backoff {
+    background-color: var(--babbler-backoff-bg);
+    outline: 1px dashed var(--babbler-backoff-border);
+    border-radius: 3px;
+    padding: 1px 2px;
+}
+
+.generated-word.context-word {
+    text-decoration: underline;
+    text-decoration-color: var(--babbler-context-bg);
+    text-decoration-thickness: 2px;
+    text-underline-offset: 2px;
+}
+
+/* ============================================
+   N-gram Candidates Table
+   ============================================ */
+.ngram-table-container {
+    max-height: 260px;
+    overflow-y: auto;
+}
+
+.ngram-table {
+    font-size: 0.85em;
+    margin-bottom: 0;
+    background-color: var(--babbler-table-bg);
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.ngram-table th {
+    background-color: var(--babbler-table-header);
+    font-weight: 600;
+    text-align: center;
+    padding: 5px 8px;
+    color: var(--viz-text);
+    border: 1px solid var(--babbler-table-border);
+    font-size: 0.9em;
+    position: sticky;
+    top: 0;
+    z-index: 1;
+}
+
+.ngram-table td {
+    text-align: center;
+    padding: 3px 6px;
+    vertical-align: middle;
+    color: var(--viz-text);
+    border: 1px solid var(--babbler-table-border);
+}
+
+.ngram-table tr:hover td {
+    background-color: var(--babbler-table-hover);
+}
+
+.ngram-table .word-cell {
+    text-align: left;
+    font-weight: 600;
+    padding-left: 10px;
+    font-family: var(--viz-mono-font);
+}
+
+.ngram-table .prob-cell {
+    font-family: var(--viz-mono-font);
+    font-size: 0.9em;
+}
+
+.prob-bar-cell {
+    padding: 3px 6px;
+    width: 80px;
+}
+
+.prob-bar-wrapper {
+    background-color: var(--babbler-table-header);
+    border-radius: 2px;
+    height: 12px;
+    overflow: hidden;
+}
+
+.prob-bar-fill {
+    height: 100%;
+    background-color: var(--babbler-prob-bar);
+    border-radius: 2px;
+    transition: width 0.3s ease;
+}
+
+.ngram-table tr.selected-row td {
+    background-color: var(--babbler-selected-bg);
+}
+
+/* ============================================
+   Responsive
+   ============================================ */
+@media (max-width: 768px) {
+    .babbler-controls-panel {
+        flex-direction: column;
+    }
+
+    .babbler-options-col,
+    .babbler-playback-col {
+        min-width: 100%;
+    }
+}

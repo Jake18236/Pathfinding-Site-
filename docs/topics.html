@@ -1,0 +1,888 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="bluegold">
+    <head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+
+	<meta name="description" content="Interactive mind-map of AI topics showing how concepts connect — from foundations like machine learning to applied techniques like RLHF.">
+	<meta name="author" content="William Theisen">
+
+	<title>AI Topics Map | Exploring Artificial Intelligence</title>
+
+	<link rel="canonical" href="https://ai.williamtheisen.com/topics.html">
+
+	<!-- Open Graph -->
+	<meta property="og:type" content="website">
+	<meta property="og:title" content="AI Topics Map | Exploring Artificial Intelligence">
+	<meta property="og:description" content="Interactive mind-map of AI topics showing how concepts connect — from foundations like machine learning to applied techniques like RLHF.">
+	<meta property="og:url" content="https://ai.williamtheisen.com/topics.html">
+	<meta property="og:image" content="https://ai.williamtheisen.com/static/img/og-default.png">
+	<meta property="og:site_name" content="Exploring Artificial Intelligence">
+
+	<!-- Twitter Card -->
+	<meta name="twitter:card" content="summary_large_image">
+	<meta name="twitter:title" content="AI Topics Map | Exploring Artificial Intelligence">
+	<meta name="twitter:description" content="Interactive mind-map of AI topics showing how concepts connect — from foundations like machine learning to applied techniques like RLHF.">
+	<meta name="twitter:image" content="https://ai.williamtheisen.com/static/img/og-default.png">
+
+	<!-- JSON-LD Structured Data -->
+	
+	<script type="application/ld+json">
+	{
+		"@context": "https://schema.org",
+		"@type": "WebSite",
+		"name": "Exploring Artificial Intelligence",
+		"description": "Interactive mind-map of AI topics showing how concepts connect — from foundations like machine learning to applied techniques like RLHF.",
+		"url": "https://ai.williamtheisen.com",
+		"author": {
+			"@type": "Person",
+			"name": "William Theisen"
+		}
+	}
+	</script>
+	
+
+	<!-- Theme CSS (toggleable) -->
+	<link id="theme-style" href="static/css/bluegold.css" rel="stylesheet">
+	
+	<script src="https://kit.fontawesome.com/9d2722956c.js" crossorigin="anonymous"></script>
+
+	<style>
+	body {
+	    padding: 10px;
+	}
+	.resource-list {
+	    list-style: none;
+	    padding-left: 0;
+	    margin-bottom: 1.25em;
+	}
+	.resource-credit {
+	    margin-left: 0.5em;
+	    font-size: 0.85em;
+	    color: #777;
+	    font-style: italic;
+	}
+	.resource-credit::before {
+	    content: "\2014";
+	    margin-right: 0.35em;
+	}
+	.teaser-row {
+	    position: relative;
+	    padding-right: 42%;
+	}
+	.teaser-row .teaser-text {
+	    margin-right: 0;
+	}
+	.teaser-row .teaser-image-col {
+	    position: absolute;
+	    right: 0;
+	    top: 0;
+	    height: 100%;
+	    width: 41.66666667%;
+	    display: flex;
+	    align-items: center;
+	    justify-content: center;
+	    padding-left: 15px;
+	    box-sizing: border-box;
+	}
+	.teaser-row .teaser-image {
+	    max-height: 100%;
+	    width: auto;
+	    max-width: 100%;
+	    object-fit: contain;
+	}
+	@media (max-width: 991px) {
+	    .teaser-row {
+	        padding-right: 0;
+	    }
+	    .teaser-row .teaser-image-col {
+	        position: static;
+	        height: auto;
+	        width: 100%;
+	        padding-left: 0;
+	        margin-top: 1em;
+	    }
+	    .teaser-row .teaser-image {
+	        max-height: 320px;
+	    }
+	}
+#library-card-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    margin-top: 10px;
+    max-height: 540px;
+    overflow-y: auto;
+    padding-right: 8px;
+}
+.library-card-wrapper {
+    flex: 1 1 calc(20% - 16px);
+    max-width: calc(20% - 16px);
+    min-width: 180px;
+    display: flex;
+    max-height: 100%;
+}
+    .theme-toggle-btn {
+        position: relative;
+        display: inline-flex;
+        align-items: center;
+        justify-content: space-between;
+        width: 54px;
+        height: 28px;
+        margin-top: 8px;
+        margin-left: 12px;
+        padding: 0 8px;
+        border-radius: 999px;
+        border: 1px solid rgba(15, 23, 42, 0.18);
+        background-color: #f2f6ff;
+        cursor: pointer;
+        transition: background-color 0.25s ease, border-color 0.25s ease;
+    }
+    .theme-toggle-btn:focus {
+        outline: none;
+        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.35);
+    }
+    .theme-toggle-btn .theme-icon,
+    .theme-toggle-btn .theme-toggle-handle {
+        pointer-events: none;
+    }
+    .theme-toggle-btn .theme-icon {
+        font-size: 0.85em;
+        opacity: 0.5;
+        transition: opacity 0.25s ease;
+        position: relative;
+        z-index: 2;
+    }
+    .theme-toggle-btn .theme-icon--sun {
+        color: #f59e0b;
+        opacity: 1;
+    }
+    .theme-toggle-btn .theme-icon--moon {
+        color: #c084fc;
+    }
+    .theme-toggle-btn .theme-toggle-handle {
+        position: absolute;
+        top: 2px;
+        left: 2px;
+        width: 24px;
+        height: 24px;
+        border-radius: 50%;
+        background-color: #ffffff;
+        box-shadow: 0 1px 4px rgba(0, 0, 0, 0.15);
+        transition: transform 0.25s ease, background-color 0.25s ease;
+        z-index: 1;
+    }
+    [data-theme="bluegold"] .theme-toggle-btn {
+        background-color: #f2f6ff;
+        border-color: rgba(15, 23, 42, 0.18);
+    }
+    [data-theme="bluegold"] .theme-toggle-btn .theme-toggle-handle {
+        transform: translateX(0);
+        background-color: #ffffff;
+    }
+    [data-theme="bluegold"] .theme-toggle-btn .theme-icon--sun {
+        opacity: 1;
+    }
+    [data-theme="bluegold"] .theme-toggle-btn .theme-icon--moon {
+        opacity: 0.35;
+    }
+    [data-theme="gruvbox-dark"] .theme-toggle-btn {
+        background-color: #3c3836;
+        border-color: #665c54;
+        color: #ebdbb2;
+    }
+    [data-theme="gruvbox-dark"] .theme-toggle-btn .theme-toggle-handle {
+        transform: translateX(26px);
+        background-color: #1d2021;
+    }
+    [data-theme="gruvbox-dark"] .theme-toggle-btn .theme-icon--sun {
+        opacity: 0.35;
+    }
+    [data-theme="gruvbox-dark"] .theme-toggle-btn .theme-icon--moon {
+        opacity: 1;
+    }
+	.library-card {
+	    display: flex;
+	    flex-direction: column;
+	    width: 100%;
+	    border-radius: 6px;
+	    border: 1px solid #ddd;
+	    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+	    overflow: hidden;
+	    background-color: #fff;
+	    color: #333;
+	}
+	.library-card-cover {
+	    aspect-ratio: 2 / 3;
+	    width: 100%;
+	    min-height: 220px;
+	    max-height: 320px;
+	    background-color: #f7f7f7;
+	    display: grid;
+	    place-items: center;
+	    overflow: hidden;
+	    padding: 6px;
+	}
+	.library-card-cover img {
+	    width: 100%;
+	    height: 100%;
+	    object-fit: contain;
+	    background-color: transparent;
+	}
+	.library-card-body {
+	    flex: 1 1 auto;
+	    display: flex;
+	    flex-direction: column;
+	}
+	.library-card-title {
+	    margin-top: 0;
+	    font-size: 0.95em;
+	    line-height: 1.35;
+	    min-height: 2.7em;
+	}
+	.library-card-meta {
+	    font-size: 0.82em;
+	    color: #555;
+	    margin-bottom: 6px;
+	}
+	.library-card-footer {
+	    display: flex;
+	    align-items: center;
+	    justify-content: space-between;
+	    font-size: 0.78em;
+	}
+	[data-theme="gruvbox-dark"] .library-card {
+	    border-color: #504945;
+	    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.45);
+	    background-color: #282828;
+	    color: #ebdbb2;
+	}
+	[data-theme="gruvbox-dark"] .library-card-cover {
+	    background-color: #32302f;
+	}
+	[data-theme="gruvbox-dark"] .library-card-body {
+	    color: #ebdbb2;
+	}
+	[data-theme="gruvbox-dark"] .library-card-footer {
+	    color: #d5c4a1;
+	}
+	[data-theme="gruvbox-dark"] .library-card-title,
+	[data-theme="gruvbox-dark"] .library-card-meta {
+	    color: #d5c4a1;
+	}
+	/* Learning cards */
+	.learning-card-container {
+	    display: flex;
+	    flex-wrap: wrap;
+	    gap: 16px;
+	    margin-top: 10px;
+	    max-height: 540px;
+	    overflow-y: auto;
+	    padding-right: 8px;
+	}
+	.learning-card-wrapper {
+	    flex: 1 1 calc(25% - 16px);
+	    max-width: calc(25% - 16px);
+	    min-width: 220px;
+	    display: flex;
+	}
+	@media (max-width: 991px) {
+	    .learning-card-wrapper {
+	        flex: 1 1 calc(50% - 16px);
+	        max-width: calc(50% - 16px);
+	    }
+	}
+	@media (max-width: 575px) {
+	    .learning-card-wrapper {
+	        flex: 1 1 100%;
+	        max-width: 100%;
+	    }
+	}
+	.learning-card {
+	    display: flex;
+	    flex-direction: column;
+	    width: 100%;
+	    border-radius: 6px;
+	    border: 1px solid #ddd;
+	    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+	    overflow: hidden;
+	    background-color: #fff;
+	    color: #333;
+	    transition: transform 0.2s ease, box-shadow 0.2s ease;
+	}
+	.learning-card:hover {
+	    transform: translateY(-2px);
+	    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+	}
+	.learning-card-header {
+	    display: flex;
+	    align-items: flex-start;
+	    gap: 12px;
+	    padding: 12px 12px 8px 12px;
+	}
+	.learning-card-icon {
+	    width: 36px;
+	    height: 36px;
+	    border-radius: 6px;
+	    background: #4e73df;
+	    display: flex;
+	    align-items: center;
+	    justify-content: center;
+	    flex-shrink: 0;
+	}
+	.learning-card-icon i {
+	    font-size: 16px;
+	    color: #fff;
+	}
+	.learning-card-icon.tweet-icon {
+	    background: #1da1f2;
+	}
+	.learning-card-title-group {
+	    flex: 1;
+	    min-width: 0;
+	}
+	.learning-card-title {
+	    margin: 0 0 4px 0;
+	    font-size: 0.92em;
+	    font-weight: 600;
+	    line-height: 1.35;
+	}
+	.learning-card-title a {
+	    color: inherit;
+	    text-decoration: none;
+	}
+	.learning-card-title a:hover {
+	    text-decoration: underline;
+	}
+	.learning-card-author {
+	    font-size: 0.82em;
+	    color: #666;
+	    margin: 0;
+	}
+	.learning-card-body {
+	    flex: 1 1 auto;
+	    padding: 0 12px 12px 12px;
+	    font-size: 0.85em;
+	    color: #555;
+	    line-height: 1.5;
+	}
+	.learning-card-body p {
+	    margin: 0;
+	}
+	.learning-card-media {
+	    display: flex;
+	    flex-wrap: wrap;
+	    gap: 6px;
+	    justify-content: center;
+	    padding: 0 12px;
+	    margin-bottom: 8px;
+	}
+	.learning-card-media img {
+	    max-width: 100%;
+	    max-height: 150px;
+	    border-radius: 6px;
+	    object-fit: cover;
+	}
+	.learning-card-footer {
+	    display: flex;
+	    align-items: center;
+	    justify-content: space-between;
+	    padding: 8px 12px;
+	    border-top: 1px solid #eee;
+	    font-size: 0.78em;
+	    margin-top: auto;
+	}
+	.learning-card-type {
+	    padding: 2px 8px;
+	    border-radius: 4px;
+	    background: #f0f0f5;
+	    color: #555;
+	    font-weight: 500;
+	    text-transform: capitalize;
+	}
+	.learning-card-date {
+	    color: #777;
+	}
+	.learning-card-link {
+	    color: #666;
+	    font-size: 1.1em;
+	    transition: color 0.2s ease;
+	}
+	.learning-card-link:hover {
+	    color: #1da1f2;
+	}
+	/* Learning cards dark theme */
+	[data-theme="gruvbox-dark"] .learning-card {
+	    border-color: #504945;
+	    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.45);
+	    background-color: #282828;
+	    color: #ebdbb2;
+	}
+	[data-theme="gruvbox-dark"] .learning-card:hover {
+	    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.55);
+	}
+	[data-theme="gruvbox-dark"] .learning-card-icon {
+	    background: #458588;
+	}
+	[data-theme="gruvbox-dark"] .learning-card-icon.tweet-icon {
+	    background: #83a598;
+	}
+	[data-theme="gruvbox-dark"] .learning-card-title {
+	    color: #ebdbb2;
+	}
+	[data-theme="gruvbox-dark"] .learning-card-author {
+	    color: #a89984;
+	}
+	[data-theme="gruvbox-dark"] .learning-card-body {
+	    color: #bdae93;
+	}
+	[data-theme="gruvbox-dark"] .learning-card-footer {
+	    border-top-color: #504945;
+	}
+	[data-theme="gruvbox-dark"] .learning-card-type {
+	    background: #3c3836;
+	    color: #bdae93;
+	}
+	[data-theme="gruvbox-dark"] .learning-card-date {
+	    color: #a89984;
+	}
+	[data-theme="gruvbox-dark"] .learning-card-link {
+	    color: #a89984;
+	}
+	[data-theme="gruvbox-dark"] .learning-card-link:hover {
+	    color: #83a598;
+	}
+	/* Video thumbnail styles */
+	.learning-card-thumbnail {
+	    position: relative;
+	    aspect-ratio: 16 / 9;
+	    overflow: hidden;
+	    background: #000;
+	    margin: 0 12px 12px 12px;
+	    border-radius: 6px;
+	}
+	.learning-card-thumbnail img {
+	    width: 100%;
+	    height: 100%;
+	    object-fit: cover;
+	    transition: transform 0.2s ease;
+	}
+	.learning-card:hover .learning-card-thumbnail img {
+	    transform: scale(1.03);
+	}
+	.learning-card-play-overlay {
+	    position: absolute;
+	    inset: 0;
+	    display: flex;
+	    align-items: center;
+	    justify-content: center;
+	    background: rgba(0, 0, 0, 0.25);
+	    opacity: 0;
+	    transition: opacity 0.2s ease;
+	}
+	.learning-card-thumbnail:hover .learning-card-play-overlay {
+	    opacity: 1;
+	}
+	.learning-card-play-overlay i {
+	    font-size: 40px;
+	    color: #fff;
+	    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+	}
+	/* Dark theme video thumbnail */
+	[data-theme="gruvbox-dark"] .learning-card-thumbnail {
+	    background: #1d2021;
+	}
+	/* Musings / blog cards */
+	.musings-list {
+	    display: flex;
+	    flex-direction: column;
+	    gap: 16px;
+	}
+	.musing-card {
+	    border-radius: 6px;
+	    border: 1px solid #ddd;
+	    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+	    background-color: #fff;
+	    color: #333;
+	    transition: transform 0.2s ease, box-shadow 0.2s ease;
+	}
+	.musing-card:hover {
+	    transform: translateY(-2px);
+	    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+	}
+	.musing-card-body {
+	    padding: 16px 20px;
+	}
+	.musing-card-title {
+	    margin: 0 0 6px 0;
+	    font-size: 1.05em;
+	    font-weight: 600;
+	    line-height: 1.35;
+	}
+	.musing-card-title a {
+	    color: inherit;
+	    text-decoration: none;
+	}
+	.musing-card-title a:hover {
+	    text-decoration: underline;
+	}
+	.musing-card-date {
+	    font-size: 0.82em;
+	    color: #777;
+	}
+	.musing-card-summary {
+	    margin: 10px 0 0 0;
+	    font-size: 0.9em;
+	    color: #555;
+	    line-height: 1.55;
+	}
+	.musing-card-tags {
+	    display: flex;
+	    flex-wrap: wrap;
+	    gap: 6px;
+	    margin-top: 10px;
+	}
+	.musing-tag {
+	    padding: 2px 10px;
+	    border-radius: 4px;
+	    background: #f0f0f5;
+	    color: #555;
+	    font-size: 0.78em;
+	    font-weight: 500;
+	}
+	/* Musings dark theme */
+	[data-theme="gruvbox-dark"] .musing-card {
+	    border-color: #504945;
+	    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.45);
+	    background-color: #282828;
+	    color: #ebdbb2;
+	}
+	[data-theme="gruvbox-dark"] .musing-card:hover {
+	    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.55);
+	}
+	[data-theme="gruvbox-dark"] .musing-card-title {
+	    color: #ebdbb2;
+	}
+	[data-theme="gruvbox-dark"] .musing-card-date {
+	    color: #a89984;
+	}
+	[data-theme="gruvbox-dark"] .musing-card-summary {
+	    color: #bdae93;
+	}
+	[data-theme="gruvbox-dark"] .musing-tag {
+	    background: #3c3836;
+	    color: #bdae93;
+	}
+	/* Language toggle for bilingual posts */
+	.lang-toggle {
+	    display: inline-flex;
+	    gap: 0;
+	    border-radius: 6px;
+	    overflow: hidden;
+	    border: 1px solid #ddd;
+	    margin-bottom: 20px;
+	}
+	.lang-btn {
+	    padding: 6px 16px;
+	    border: none;
+	    background: #f5f5f5;
+	    color: #555;
+	    font-size: 0.85em;
+	    font-weight: 500;
+	    cursor: pointer;
+	    transition: background-color 0.2s ease, color 0.2s ease;
+	    outline: none;
+	}
+	.lang-btn:not(:last-child) {
+	    border-right: 1px solid #ddd;
+	}
+	.lang-btn:hover {
+	    background: #e8e8ee;
+	}
+	.lang-btn.active {
+	    background: #4e73df;
+	    color: #fff;
+	}
+	.lang-btn:focus-visible {
+	    box-shadow: 0 0 0 3px rgba(78, 115, 223, 0.35);
+	    z-index: 1;
+	    position: relative;
+	}
+	.lang-section { display: none; }
+	.lang-section.active { display: block; }
+	/* Language toggle dark theme */
+	[data-theme="gruvbox-dark"] .lang-toggle {
+	    border-color: #504945;
+	}
+	[data-theme="gruvbox-dark"] .lang-btn {
+	    background: #3c3836;
+	    color: #bdae93;
+	}
+	[data-theme="gruvbox-dark"] .lang-btn:not(:last-child) {
+	    border-right-color: #504945;
+	}
+	[data-theme="gruvbox-dark"] .lang-btn:hover {
+	    background: #504945;
+	}
+	[data-theme="gruvbox-dark"] .lang-btn.active {
+	    background: #458588;
+	    color: #ebdbb2;
+	}
+	[data-theme="gruvbox-dark"] .lang-btn:focus-visible {
+	    box-shadow: 0 0 0 3px rgba(69, 133, 136, 0.35);
+	}
+	/* Language indicator on homepage cards */
+	.musing-card-lang {
+	    display: inline-flex;
+	    align-items: center;
+	    gap: 4px;
+	    font-size: 0.78em;
+	    color: #888;
+	    margin-left: 10px;
+	}
+	.musing-card-lang i { font-size: 0.9em; }
+	[data-theme="gruvbox-dark"] .musing-card-lang { color: #a89984; }
+	/* Musing post page styles */
+	.musing-post-figure { margin-bottom: 24px; }
+	.musing-post-figure img { width: 100%; border-radius: 8px; }
+	.musing-post-figure figcaption { font-size: 0.85em; color: #777; margin-top: 8px; text-align: center; font-style: italic; }
+	[data-theme="gruvbox-dark"] .musing-post-figure figcaption { color: #a89984; }
+	.musing-post-header { margin-bottom: 30px; }
+	.musing-post-meta-row { display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; }
+	.musing-post-meta-left { flex: 1; min-width: 0; }
+	.musing-post-meta { font-size: 0.9em; color: #777; margin-bottom: 8px; }
+	.musing-post-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+	.musing-post-content { font-size: 1.05em; line-height: 1.75; }
+	.musing-post-content h2,
+	.musing-post-content h3,
+	.musing-post-content h4 { margin-top: 1.5em; }
+	.musing-post-content img { max-width: 100%; border-radius: 6px; }
+	.musing-post-content pre { border-radius: 6px; padding: 16px; overflow-x: auto; }
+	.musing-post-content blockquote {
+	    border-left: 4px solid #4e73df;
+	    padding-left: 16px;
+	    margin-left: 0;
+	    color: #555;
+	    font-style: italic;
+	}
+	.musing-post-title { display: none; }
+	.musing-post-title.active { display: block; }
+	[data-theme="gruvbox-dark"] .musing-post-meta { color: #a89984; }
+	[data-theme="gruvbox-dark"] .musing-post-content blockquote {
+	    border-left-color: #458588;
+	    color: #bdae93;
+	}
+	.embed-responsive {
+ 	    border-radius: 8px;
+ 	    border: 1px solid rgba(30, 41, 59, 0.18);
+ 	    box-shadow: 0 6px 16px rgba(15, 23, 42, 0.08);
+ 	    overflow: hidden;
+ 	    margin-bottom: 18px;
+	}
+	.course-embed {
+	    background-color: #ffffff;
+	    position: relative;
+	    cursor: pointer;
+	}
+	.course-embed iframe {
+	    pointer-events: none;
+	}
+	.course-embed__overlay {
+	    position: absolute;
+	    inset: 0;
+	    z-index: 2;
+	    display: block;
+	    border-radius: inherit;
+	    text-decoration: none;
+	    color: inherit;
+	    transition: background-color 0.2s ease;
+	}
+	.course-embed__overlay:hover,
+	.course-embed__overlay:focus {
+	    background-color: rgba(15, 23, 42, 0.15);
+	    outline: none;
+	}
+	.course-embed__overlay:focus {
+	    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.35);
+	}
+	.course-title-link {
+	    color: inherit;
+	    text-decoration: none;
+	}
+	.course-title-link:hover,
+	.course-title-link:focus {
+	    text-decoration: underline;
+	}
+	[data-theme="gruvbox-dark"] .embed-responsive {
+	    border-color: #665c54;
+	    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.25);
+	    background-color: rgba(40, 40, 40, 0.9);
+	}
+	[data-theme="gruvbox-dark"] .course-embed {
+	    background-color: rgba(40, 40, 40, 0.9);
+	}
+	[data-theme="gruvbox-dark"] .course-embed__overlay:hover,
+	[data-theme="gruvbox-dark"] .course-embed__overlay:focus {
+	    background-color: rgba(235, 219, 178, 0.12);
+	}
+	[data-theme="gruvbox-dark"] .course-embed__overlay:focus {
+	    box-shadow: 0 0 0 3px rgba(235, 219, 178, 0.25);
+	}
+	</style>
+    </head>
+    <body>
+	<div class="container">
+
+	    <div class="row">
+		<div class="page-header">
+		    <button type="button" class="theme-toggle-btn pull-right" id="theme-toggle" role="switch" aria-checked="false" aria-label="Switch to dark theme">
+			<span class="theme-icon theme-icon--sun"><i class="fa-solid fa-sun"></i></span>
+			<span class="theme-icon theme-icon--moon"><i class="fa-solid fa-moon"></i></span>
+			<span class="theme-toggle-handle"></span>
+		    </button>
+		    <ul class="nav nav-pills pull-right">
+			
+			
+			<li><a href="/"><i class="fa fa-home"></i> <span class="visible-md-inline visible-lg-inline">Home</span></a></li>
+			
+			
+			
+			<li><a href="#courses"><i class="fa fa-chalkboard-user"></i> <span class="visible-md-inline visible-lg-inline">Courses</span></a></li>
+			
+			
+			
+			<li><a href="#visualizations"><i class="fa fa-chart-line"></i> <span class="visible-md-inline visible-lg-inline">Visualizations</span></a></li>
+			
+			
+			
+			<li><a href="#learning"><i class="fa fa-brain"></i> <span class="visible-md-inline visible-lg-inline">Learning</span></a></li>
+			
+			
+			
+			<li><a href="#library"><i class="fa fa-book"></i> <span class="visible-md-inline visible-lg-inline">Library</span></a></li>
+			
+			
+		    </ul>
+		    
+		    <h1><i class="fa fa-rocket"></i> Exploring Artificial Intelligence</h1>
+		    
+		</div>
+	    </div>
+
+		
+<link rel="stylesheet" href="static/css/topics.css">
+
+<div class="row">
+    <div class="col-sm-12">
+        <div class="topics-search-bar">
+            <div class="form-group" style="margin-bottom: 12px;">
+                <label for="topics-search" class="sr-only">Search topics</label>
+                <div class="input-group">
+                    <span class="input-group-addon"><i class="fa fa-search"></i></span>
+                    <input type="text" id="topics-search" class="form-control" placeholder="Search topics by name or category&hellip;">
+                </div>
+            </div>
+        </div>
+
+        <div id="topics-legend" class="topics-legend"></div>
+
+        <div id="topics-graph-container" class="topics-graph-container topics-graph--full"></div>
+    </div>
+</div>
+
+<script type="application/json" id="topics-graph-data">{"nodes":[{"id":"machine-learning","name":"Machine Learning","group":"Foundations","size":3,"description":"The study of algorithms that improve automatically through experience and data.","resources":[],"visualization":null},{"id":"supervised-learning","name":"Supervised Learning","group":"Foundations","size":2,"description":"Learning from labeled input-output pairs to predict outcomes on new data.","resources":[],"visualization":null},{"id":"unsupervised-learning","name":"Unsupervised Learning","group":"Foundations","size":2,"description":"Finding hidden patterns in data without labeled examples.","resources":[],"visualization":null},{"id":"reinforcement-learning","name":"Reinforcement Learning","group":"Foundations","size":2,"description":"Learning optimal behavior through trial-and-error interaction with an environment.","resources":[],"visualization":"reinforcement-learning.html"},{"id":"optimization","name":"Optimization","group":"Foundations","size":2,"description":"Techniques for finding the best parameters to minimize or maximize an objective function.","resources":[],"visualization":null},{"id":"statistics","name":"Statistics","group":"Foundations","size":1,"description":"Mathematical methods for collecting and analyzing data to draw conclusions.","resources":[],"visualization":null},{"id":"linear-regression","name":"Linear Regression","group":"Foundations","size":1,"description":"Predicting a continuous output as a linear combination of input features.","resources":[],"visualization":"linear-regression.html"},{"id":"logistic-regression","name":"Logistic Regression","group":"Foundations","size":1,"description":"Classification by estimating probabilities with a sigmoid function.","resources":[],"visualization":"logistic-regression.html"},{"id":"decision-trees","name":"Decision Trees","group":"Foundations","size":1,"description":"Tree-structured models that split data on feature thresholds to make predictions.","resources":[],"visualization":"dtree.html"},{"id":"svm","name":"Support Vector Machines","group":"Foundations","size":1,"description":"Classification by finding the optimal hyperplane that separates classes with maximum margin.","resources":[],"visualization":"svm.html"},{"id":"knn","name":"K-Nearest Neighbors","group":"Foundations","size":1,"description":"Classifying data points based on the majority class of their closest neighbors.","resources":[],"visualization":"knn.html"},{"id":"naive-bayes","name":"Naive Bayes","group":"Foundations","size":1,"description":"Probabilistic classifier using Bayes theorem with feature independence assumptions.","resources":[],"visualization":"naive-bayes.html"},{"id":"entropy","name":"Entropy","group":"Foundations","size":1,"description":"A measure of uncertainty or information content in a probability distribution.","resources":[],"visualization":"entropy.html"},{"id":"cross-entropy","name":"Cross-Entropy","group":"Foundations","size":1,"description":"A loss function measuring the difference between predicted and true probability distributions.","resources":[],"visualization":"cross-entropy.html"},{"id":"deep-learning","name":"Deep Learning","group":"Neural Networks","size":3,"description":"Neural networks with multiple hidden layers that learn hierarchical representations.","resources":[],"visualization":null},{"id":"neural-networks","name":"Neural Networks","group":"Neural Networks","size":2,"description":"Computational models composed of layers of interconnected nodes inspired by biological neurons.","resources":[],"visualization":"neural-network.html"},{"id":"perceptron","name":"Perceptron","group":"Neural Networks","size":1,"description":"The simplest neural network unit that computes a weighted sum with a threshold activation.","resources":[],"visualization":"perceptron.html"},{"id":"activation-functions","name":"Activation Functions","group":"Neural Networks","size":1,"description":"Nonlinear functions applied to neuron outputs to introduce representational power.","resources":[],"visualization":null},{"id":"backpropagation","name":"Backpropagation","group":"Neural Networks","size":2,"description":"Algorithm for computing gradients through the network to update weights via the chain rule.","resources":[],"visualization":"backpropagation.html"},{"id":"cnn","name":"Convolutional Neural Networks","group":"Vision","size":2,"description":"Networks using convolutional filters to detect spatial patterns in grid-structured data.","resources":[],"visualization":"cnn.html"},{"id":"image-classification","name":"Image Classification","group":"Vision","size":1,"description":"Assigning a category label to an entire image based on its visual content.","resources":[],"visualization":"mnist.html"},{"id":"computer-vision","name":"Computer Vision","group":"Vision","size":2,"description":"Enabling machines to interpret and understand visual information from images and video.","resources":[],"visualization":null},{"id":"gans","name":"Generative Adversarial Networks","group":"Generative AI","size":2,"description":"Two networks competing to generate increasingly realistic synthetic data.","resources":[],"visualization":null},{"id":"diffusion-models","name":"Diffusion Models","group":"Generative AI","size":2,"description":"Generating data by learning to reverse a gradual noising process.","resources":[],"visualization":"diffusion.html"},{"id":"rnn","name":"Recurrent Neural Networks","group":"Neural Networks","size":2,"description":"Networks with loops that process sequential data by maintaining hidden state over time.","resources":[],"visualization":"rnn.html"},{"id":"transformer","name":"Transformers","group":"Neural Networks","size":3,"description":"Attention-based architecture that processes sequences in parallel for powerful modeling.","resources":[],"visualization":"transformer.html"},{"id":"attention","name":"Attention","group":"Neural Networks","size":2,"description":"Mechanism allowing models to focus on the most relevant parts of the input dynamically.","resources":[],"visualization":"attention.html"},{"id":"nlp","name":"Natural Language Processing","group":"NLP","size":3,"description":"Enabling computers to understand and generate human language.","resources":[],"visualization":null},{"id":"word-embeddings","name":"Word Embeddings","group":"NLP","size":1,"description":"Dense vector representations of words that capture semantic relationships.","resources":[],"visualization":null},{"id":"language-models","name":"Language Models","group":"NLP","size":2,"description":"Models that predict the probability of word sequences to generate or understand text.","resources":[],"visualization":"markov-babbler.html"},{"id":"bpe","name":"BPE / Tokenization","group":"NLP","size":1,"description":"Breaking text into subword units to build a compact vocabulary for language models.","resources":[],"visualization":"bpe.html"},{"id":"bert","name":"BERT","group":"NLP","size":1,"description":"Bidirectional transformer trained on masked language modeling for understanding tasks.","resources":[],"visualization":null},{"id":"gpt","name":"GPT","group":"NLP","size":2,"description":"Autoregressive transformer that generates text by predicting the next token.","resources":[],"visualization":null},{"id":"rlhf","name":"RLHF","group":"Applied","size":2,"description":"Fine-tuning language models with human preference feedback via reinforcement learning.","resources":[],"visualization":"rlhf.html"},{"id":"prompt-engineering","name":"Prompt Engineering","group":"Applied","size":1,"description":"Designing effective input prompts to guide language model behavior and outputs.","resources":[],"visualization":null},{"id":"rag","name":"Retrieval-Augmented Generation","group":"Applied","size":1,"description":"Combining language models with external knowledge retrieval for grounded generation.","resources":[],"visualization":null},{"id":"fine-tuning","name":"Fine-Tuning","group":"Applied","size":1,"description":"Adapting a pretrained model to a specific task by continuing training on task data.","resources":[],"visualization":null},{"id":"clustering","name":"Clustering","group":"Foundations","size":1,"description":"Grouping similar data points together without predefined labels.","resources":[],"visualization":"clustering.html"},{"id":"pca","name":"Dimensionality Reduction","group":"Foundations","size":1,"description":"Reducing the number of features while preserving important structure in the data.","resources":[],"visualization":"pca.html"}],"links":[{"source":"machine-learning","target":"deep-learning"},{"source":"machine-learning","target":"supervised-learning"},{"source":"machine-learning","target":"unsupervised-learning"},{"source":"machine-learning","target":"reinforcement-learning"},{"source":"machine-learning","target":"optimization"},{"source":"supervised-learning","target":"linear-regression"},{"source":"supervised-learning","target":"logistic-regression"},{"source":"supervised-learning","target":"decision-trees"},{"source":"supervised-learning","target":"svm"},{"source":"supervised-learning","target":"knn"},{"source":"unsupervised-learning","target":"clustering"},{"source":"unsupervised-learning","target":"pca"},{"source":"optimization","target":"backpropagation"},{"source":"optimization","target":"linear-regression"},{"source":"statistics","target":"naive-bayes"},{"source":"statistics","target":"pca"},{"source":"statistics","target":"machine-learning"},{"source":"linear-regression","target":"logistic-regression"},{"source":"logistic-regression","target":"cross-entropy"},{"source":"decision-trees","target":"entropy"},{"source":"naive-bayes","target":"supervised-learning"},{"source":"entropy","target":"cross-entropy"},{"source":"deep-learning","target":"neural-networks"},{"source":"deep-learning","target":"cnn"},{"source":"deep-learning","target":"rnn"},{"source":"deep-learning","target":"transformer"},{"source":"neural-networks","target":"perceptron"},{"source":"neural-networks","target":"activation-functions"},{"source":"neural-networks","target":"backpropagation"},{"source":"cnn","target":"image-classification"},{"source":"image-classification","target":"computer-vision"},{"source":"computer-vision","target":"cnn"},{"source":"computer-vision","target":"gans"},{"source":"gans","target":"deep-learning"},{"source":"gans","target":"diffusion-models"},{"source":"diffusion-models","target":"deep-learning"},{"source":"rnn","target":"transformer"},{"source":"rnn","target":"nlp"},{"source":"transformer","target":"attention"},{"source":"transformer","target":"bert"},{"source":"transformer","target":"gpt"},{"source":"nlp","target":"word-embeddings"},{"source":"nlp","target":"language-models"},{"source":"nlp","target":"bpe"},{"source":"nlp","target":"transformer"},{"source":"word-embeddings","target":"language-models"},{"source":"language-models","target":"bert"},{"source":"language-models","target":"gpt"},{"source":"bpe","target":"language-models"},{"source":"gpt","target":"rlhf"},{"source":"rlhf","target":"reinforcement-learning"},{"source":"rlhf","target":"fine-tuning"},{"source":"prompt-engineering","target":"gpt"},{"source":"prompt-engineering","target":"rag"},{"source":"rag","target":"language-models"},{"source":"fine-tuning","target":"language-models"}],"groups":["Applied","Foundations","Generative AI","NLP","Neural Networks","Vision"]}</script>
+<script src="https://d3js.org/d3.v7.min.js"></script>
+<script src="static/js/topics.js"></script>
+
+
+	    <div class="row">
+		<hr/>
+
+		<footer class="text-center">
+		    <p class="text-muted">
+		    <small>
+		    Built using
+		    <a href="https://www.11ty.dev/">Eleventy</a>,
+		    <a href="http://twitter.github.com/bootstrap/">Bootstrap</a>,
+		    <a href="http://fortawesome.github.com/Font-Awesome/">Font Awesome</a>, and
+		    <a href="https://nodejs.org/">Node.js</a>.
+		    <br/>
+		    &copy; 2022 <a href="http://www.nd.edu">University of Notre Dame</a>
+		    </small>
+		    </p>
+		</footer>
+	    </div>
+
+	</div> <!-- /container -->
+
+	<!-- Bootstrap core JavaScript
+	================================================== -->
+	<!-- Placed at the end of the document so the pages load faster -->
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+	<!-- Shared visualization library modules (load before visualization scripts) -->
+	
+	<script>
+	(function() {
+	    var STORAGE_KEY = 'ai-landing-theme';
+	    var prefix = '';
+	    var themes = {
+	        'gruvbox-dark': prefix + 'static/css/gruvbox-dark.css',
+	        'bluegold': prefix + 'static/css/bluegold.css'
+	    };
+	    var linkEl = document.getElementById('theme-style');
+	    var toggleBtn = document.getElementById('theme-toggle');
+	    if (!linkEl || !toggleBtn) {
+	        return;
+	    }
+        function updateButton(theme) {
+            var isDark = theme === 'gruvbox-dark';
+            var label = isDark ? 'Switch to light theme' : 'Switch to dark theme';
+            toggleBtn.setAttribute('aria-label', label);
+            toggleBtn.setAttribute('title', label);
+            toggleBtn.setAttribute('aria-checked', isDark ? 'true' : 'false');
+        }
+        function updateNotebookFrames(theme) {
+            var frames = document.querySelectorAll('iframe[data-src-dark][data-src-light]');
+            var attr = theme === 'bluegold' ? 'data-src-light' : 'data-src-dark';
+            Array.prototype.forEach.call(frames, function(frame) {
+                var nextSrc = frame.getAttribute(attr);
+                if (nextSrc && frame.getAttribute('src') !== nextSrc) {
+                    frame.setAttribute('src', nextSrc);
+                }
+            });
+        }
+        function applyTheme(theme) {
+            var name = themes[theme] ? theme : 'bluegold';
+            linkEl.setAttribute('href', themes[name]);
+            document.documentElement.setAttribute('data-theme', name);
+            updateButton(name);
+            updateNotebookFrames(name);
+            return name;
+        }
+	    var savedTheme = (function() {
+	        try {
+	            return localStorage.getItem(STORAGE_KEY);
+	        } catch (err) {
+	            return null;
+	        }
+    })();
+        var currentTheme = applyTheme(savedTheme);
+        document.addEventListener('themechange', function(event) {
+            updateNotebookFrames(event.detail || currentTheme);
+        });
+        toggleBtn.addEventListener('click', function() {
+            var nextTheme = currentTheme === 'gruvbox-dark' ? 'bluegold' : 'gruvbox-dark';
+            currentTheme = applyTheme(nextTheme);
+            document.dispatchEvent(new CustomEvent('themechange', { detail: currentTheme }));
+            try {
+                localStorage.setItem(STORAGE_KEY, currentTheme);
+            } catch (err) {
+                /* ignore write errors */
+            }
+        });
+	})();
+	</script>
+    </body>
+</html>

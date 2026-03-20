@@ -1,0 +1,1452 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="bluegold">
+    <head>
+	
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+
+	<meta name="description" content="Visualize the A* search algorithm finding optimal paths through grids. Compare heuristics like Manhattan, Euclidean, and Dijkstra.">
+	<meta name="author" content="William Theisen">
+
+	<title>A* Pathfinding Visualizer | Exploring Artificial Intelligence</title>
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+	<link rel="canonical" href="https://ai.williamtheisen.com/astar.html">
+
+	<!-- Open Graph -->
+	<meta property="og:type" content="article">
+	<meta property="og:title" content="A* Pathfinding Visualizer | Exploring Artificial Intelligence">
+	<meta property="og:description" content="Visualize the A* search algorithm finding optimal paths through grids. Compare heuristics like Manhattan, Euclidean, and Dijkstra.">
+	<meta property="og:url" content="https://ai.williamtheisen.com/astar.html">
+	<meta property="og:image" content="https://ai.williamtheisen.com/static/img/og-default.png">
+	<meta property="og:site_name" content="Exploring Artificial Intelligence">
+
+	<!-- Twitter Card -->
+	<meta name="twitter:card" content="summary_large_image">
+	<meta name="twitter:title" content="A* Pathfinding Visualizer | Exploring Artificial Intelligence">
+	<meta name="twitter:description" content="Visualize the A* search algorithm finding optimal paths through grids. Compare heuristics like Manhattan, Euclidean, and Dijkstra.">
+	<meta name="twitter:image" content="https://ai.williamtheisen.com/static/img/og-default.png">
+
+	<!-- JSON-LD Structured Data -->
+	
+	<script type="application/ld+json">
+	{
+		"@context": "https://schema.org",
+		"@type": "LearningResource",
+		"name": "A* Pathfinding Visualizer",
+		"description": "Visualize the A* search algorithm finding optimal paths through grids. Compare heuristics like Manhattan, Euclidean, and Dijkstra.",
+		"url": "https://ai.williamtheisen.com/astar.html",
+		"image": "https://ai.williamtheisen.com/static/img/og-default.png",
+		"educationalLevel": "Undergraduate",
+		"learningResourceType": "Interactive visualization",
+		"author": {
+			"@type": "Person",
+			"name": "William Theisen"
+		},
+		"provider": {
+			"@type": "Organization",
+			"name": "University of Notre Dame"
+		},
+		"keywords": "Search, Heuristics"
+	}
+	</script>
+	
+
+	<!-- Theme CSS (toggleable) -->
+	<link id="theme-style" href="static/css/bluegold.css" rel="stylesheet">
+	
+	<!-- Shared visualization styles -->
+	<link rel="stylesheet" href="static/css/visualizations.css">
+	
+	<script src="https://kit.fontawesome.com/9d2722956c.js" crossorigin="anonymous"></script>
+
+	<style>
+	body {
+	    padding: 10px;
+	}
+	.resource-list {
+	    list-style: none;
+	    padding-left: 0;
+	    margin-bottom: 1.25em;
+	}
+	.resource-credit {
+	    margin-left: 0.5em;
+	    font-size: 0.85em;
+	    color: #777;
+	    font-style: italic;
+	}
+	.resource-credit::before {
+	    content: "\2014";
+	    margin-right: 0.35em;
+	}
+	.teaser-row {
+	    position: relative;
+	    padding-right: 42%;
+	}
+	.teaser-row .teaser-text {
+	    margin-right: 0;
+	}
+	.teaser-row .teaser-image-col {
+	    position: absolute;
+	    right: 0;
+	    top: 0;
+	    height: 100%;
+	    width: 41.66666667%;
+	    display: flex;
+	    align-items: center;
+	    justify-content: center;
+	    padding-left: 15px;
+	    box-sizing: border-box;
+	}
+	.teaser-row .teaser-image {
+	    max-height: 100%;
+	    width: auto;
+	    max-width: 100%;
+	    object-fit: contain;
+	}
+	@media (max-width: 991px) {
+	    .teaser-row {
+	        padding-right: 0;
+	    }
+	    .teaser-row .teaser-image-col {
+	        position: static;
+	        height: auto;
+	        width: 100%;
+	        padding-left: 0;
+	        margin-top: 1em;
+	    }
+	    .teaser-row .teaser-image {
+	        max-height: 320px;
+	    }
+	}
+#library-card-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    margin-top: 10px;
+    max-height: 540px;
+    overflow-y: auto;
+    padding-right: 8px;
+}
+.library-card-wrapper {
+    flex: 1 1 calc(20% - 16px);
+    max-width: calc(20% - 16px);
+    min-width: 180px;
+    display: flex;
+    max-height: 100%;
+}
+    .theme-toggle-btn {
+        position: relative;
+        display: inline-flex;
+        align-items: center;
+        justify-content: space-between;
+        width: 54px;
+        height: 28px;
+        margin-top: 8px;
+        margin-left: 12px;
+        padding: 0 8px;
+        border-radius: 999px;
+        border: 1px solid rgba(15, 23, 42, 0.18);
+        background-color: #f2f6ff;
+        cursor: pointer;
+        transition: background-color 0.25s ease, border-color 0.25s ease;
+    }
+    .theme-toggle-btn:focus {
+        outline: none;
+        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.35);
+    }
+    .theme-toggle-btn .theme-icon,
+    .theme-toggle-btn .theme-toggle-handle {
+        pointer-events: none;
+    }
+    .theme-toggle-btn .theme-icon {
+        font-size: 0.85em;
+        opacity: 0.5;
+        transition: opacity 0.25s ease;
+        position: relative;
+        z-index: 2;
+    }
+    .theme-toggle-btn .theme-icon--sun {
+        color: #f59e0b;
+        opacity: 1;
+    }
+    .theme-toggle-btn .theme-icon--moon {
+        color: #c084fc;
+    }
+    .theme-toggle-btn .theme-toggle-handle {
+        position: absolute;
+        top: 2px;
+        left: 2px;
+        width: 24px;
+        height: 24px;
+        border-radius: 50%;
+        background-color: #ffffff;
+        box-shadow: 0 1px 4px rgba(0, 0, 0, 0.15);
+        transition: transform 0.25s ease, background-color 0.25s ease;
+        z-index: 1;
+    }
+    [data-theme="bluegold"] .theme-toggle-btn {
+        background-color: #f2f6ff;
+        border-color: rgba(15, 23, 42, 0.18);
+    }
+    [data-theme="bluegold"] .theme-toggle-btn .theme-toggle-handle {
+        transform: translateX(0);
+        background-color: #ffffff;
+    }
+    [data-theme="bluegold"] .theme-toggle-btn .theme-icon--sun {
+        opacity: 1;
+    }
+    [data-theme="bluegold"] .theme-toggle-btn .theme-icon--moon {
+        opacity: 0.35;
+    }
+    [data-theme="gruvbox-dark"] .theme-toggle-btn {
+        background-color: #3c3836;
+        border-color: #665c54;
+        color: #ebdbb2;
+    }
+    [data-theme="gruvbox-dark"] .theme-toggle-btn .theme-toggle-handle {
+        transform: translateX(26px);
+        background-color: #1d2021;
+    }
+    [data-theme="gruvbox-dark"] .theme-toggle-btn .theme-icon--sun {
+        opacity: 0.35;
+    }
+    [data-theme="gruvbox-dark"] .theme-toggle-btn .theme-icon--moon {
+        opacity: 1;
+    }
+	.library-card {
+	    display: flex;
+	    flex-direction: column;
+	    width: 100%;
+	    border-radius: 6px;
+	    border: 1px solid #ddd;
+	    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+	    overflow: hidden;
+	    background-color: #fff;
+	    color: #333;
+	}
+	.library-card-cover {
+	    aspect-ratio: 2 / 3;
+	    width: 100%;
+	    min-height: 220px;
+	    max-height: 320px;
+	    background-color: #f7f7f7;
+	    display: grid;
+	    place-items: center;
+	    overflow: hidden;
+	    padding: 6px;
+	}
+	.library-card-cover img {
+	    width: 100%;
+	    height: 100%;
+	    object-fit: contain;
+	    background-color: transparent;
+	}
+	.library-card-body {
+	    flex: 1 1 auto;
+	    display: flex;
+	    flex-direction: column;
+	}
+	.library-card-title {
+	    margin-top: 0;
+	    font-size: 0.95em;
+	    line-height: 1.35;
+	    min-height: 2.7em;
+	}
+	.library-card-meta {
+	    font-size: 0.82em;
+	    color: #555;
+	    margin-bottom: 6px;
+	}
+	.library-card-footer {
+	    display: flex;
+	    align-items: center;
+	    justify-content: space-between;
+	    font-size: 0.78em;
+	}
+	[data-theme="gruvbox-dark"] .library-card {
+	    border-color: #504945;
+	    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.45);
+	    background-color: #282828;
+	    color: #ebdbb2;
+	}
+	[data-theme="gruvbox-dark"] .library-card-cover {
+	    background-color: #32302f;
+	}
+	[data-theme="gruvbox-dark"] .library-card-body {
+	    color: #ebdbb2;
+	}
+	[data-theme="gruvbox-dark"] .library-card-footer {
+	    color: #d5c4a1;
+	}
+	[data-theme="gruvbox-dark"] .library-card-title,
+	[data-theme="gruvbox-dark"] .library-card-meta {
+	    color: #d5c4a1;
+	}
+	/* Learning cards */
+	.learning-card-container {
+	    display: flex;
+	    flex-wrap: wrap;
+	    gap: 16px;
+	    margin-top: 10px;
+	    max-height: 540px;
+	    overflow-y: auto;
+	    padding-right: 8px;
+	}
+	.learning-card-wrapper {
+	    flex: 1 1 calc(25% - 16px);
+	    max-width: calc(25% - 16px);
+	    min-width: 220px;
+	    display: flex;
+	}
+	@media (max-width: 991px) {
+	    .learning-card-wrapper {
+	        flex: 1 1 calc(50% - 16px);
+	        max-width: calc(50% - 16px);
+	    }
+	}
+	@media (max-width: 575px) {
+	    .learning-card-wrapper {
+	        flex: 1 1 100%;
+	        max-width: 100%;
+	    }
+	}
+	.learning-card {
+	    display: flex;
+	    flex-direction: column;
+	    width: 100%;
+	    border-radius: 6px;
+	    border: 1px solid #ddd;
+	    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+	    overflow: hidden;
+	    background-color: #fff;
+	    color: #333;
+	    transition: transform 0.2s ease, box-shadow 0.2s ease;
+	}
+	.learning-card:hover {
+	    transform: translateY(-2px);
+	    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+	}
+	.learning-card-header {
+	    display: flex;
+	    align-items: flex-start;
+	    gap: 12px;
+	    padding: 12px 12px 8px 12px;
+	}
+	.learning-card-icon {
+	    width: 36px;
+	    height: 36px;
+	    border-radius: 6px;
+	    background: #4e73df;
+	    display: flex;
+	    align-items: center;
+	    justify-content: center;
+	    flex-shrink: 0;
+	}
+	.learning-card-icon i {
+	    font-size: 16px;
+	    color: #fff;
+	}
+	.learning-card-icon.tweet-icon {
+	    background: #1da1f2;
+	}
+	.learning-card-title-group {
+	    flex: 1;
+	    min-width: 0;
+	}
+	.learning-card-title {
+	    margin: 0 0 4px 0;
+	    font-size: 0.92em;
+	    font-weight: 600;
+	    line-height: 1.35;
+	}
+	.learning-card-title a {
+	    color: inherit;
+	    text-decoration: none;
+	}
+	.learning-card-title a:hover {
+	    text-decoration: underline;
+	}
+	.learning-card-author {
+	    font-size: 0.82em;
+	    color: #666;
+	    margin: 0;
+	}
+	.learning-card-body {
+	    flex: 1 1 auto;
+	    padding: 0 12px 12px 12px;
+	    font-size: 0.85em;
+	    color: #555;
+	    line-height: 1.5;
+	}
+	.learning-card-body p {
+	    margin: 0;
+	}
+	.learning-card-media {
+	    display: flex;
+	    flex-wrap: wrap;
+	    gap: 6px;
+	    justify-content: center;
+	    padding: 0 12px;
+	    margin-bottom: 8px;
+	}
+	.learning-card-media img {
+	    max-width: 100%;
+	    max-height: 150px;
+	    border-radius: 6px;
+	    object-fit: cover;
+	}
+	.learning-card-footer {
+	    display: flex;
+	    align-items: center;
+	    justify-content: space-between;
+	    padding: 8px 12px;
+	    border-top: 1px solid #eee;
+	    font-size: 0.78em;
+	    margin-top: auto;
+	}
+	.learning-card-type {
+	    padding: 2px 8px;
+	    border-radius: 4px;
+	    background: #f0f0f5;
+	    color: #555;
+	    font-weight: 500;
+	    text-transform: capitalize;
+	}
+	.learning-card-date {
+	    color: #777;
+	}
+	.learning-card-link {
+	    color: #666;
+	    font-size: 1.1em;
+	    transition: color 0.2s ease;
+	}
+	.learning-card-link:hover {
+	    color: #1da1f2;
+	}
+	/* Learning cards dark theme */
+	[data-theme="gruvbox-dark"] .learning-card {
+	    border-color: #504945;
+	    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.45);
+	    background-color: #282828;
+	    color: #ebdbb2;
+	}
+	[data-theme="gruvbox-dark"] .learning-card:hover {
+	    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.55);
+	}
+	[data-theme="gruvbox-dark"] .learning-card-icon {
+	    background: #458588;
+	}
+	[data-theme="gruvbox-dark"] .learning-card-icon.tweet-icon {
+	    background: #83a598;
+	}
+	[data-theme="gruvbox-dark"] .learning-card-title {
+	    color: #ebdbb2;
+	}
+	[data-theme="gruvbox-dark"] .learning-card-author {
+	    color: #a89984;
+	}
+	[data-theme="gruvbox-dark"] .learning-card-body {
+	    color: #bdae93;
+	}
+	[data-theme="gruvbox-dark"] .learning-card-footer {
+	    border-top-color: #504945;
+	}
+	[data-theme="gruvbox-dark"] .learning-card-type {
+	    background: #3c3836;
+	    color: #bdae93;
+	}
+	[data-theme="gruvbox-dark"] .learning-card-date {
+	    color: #a89984;
+	}
+	[data-theme="gruvbox-dark"] .learning-card-link {
+	    color: #a89984;
+	}
+	[data-theme="gruvbox-dark"] .learning-card-link:hover {
+	    color: #83a598;
+	}
+	/* Video thumbnail styles */
+	.learning-card-thumbnail {
+	    position: relative;
+	    aspect-ratio: 16 / 9;
+	    overflow: hidden;
+	    background: #000;
+	    margin: 0 12px 12px 12px;
+	    border-radius: 6px;
+	}
+	.learning-card-thumbnail img {
+	    width: 100%;
+	    height: 100%;
+	    object-fit: cover;
+	    transition: transform 0.2s ease;
+	}
+	.learning-card:hover .learning-card-thumbnail img {
+	    transform: scale(1.03);
+	}
+	.learning-card-play-overlay {
+	    position: absolute;
+	    inset: 0;
+	    display: flex;
+	    align-items: center;
+	    justify-content: center;
+	    background: rgba(0, 0, 0, 0.25);
+	    opacity: 0;
+	    transition: opacity 0.2s ease;
+	}
+	.learning-card-thumbnail:hover .learning-card-play-overlay {
+	    opacity: 1;
+	}
+	.learning-card-play-overlay i {
+	    font-size: 40px;
+	    color: #fff;
+	    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+	}
+	/* Dark theme video thumbnail */
+	[data-theme="gruvbox-dark"] .learning-card-thumbnail {
+	    background: #1d2021;
+	}
+	/* Musings / blog cards */
+	.musings-list {
+	    display: flex;
+	    flex-direction: column;
+	    gap: 16px;
+	}
+	.musing-card {
+	    border-radius: 6px;
+	    border: 1px solid #ddd;
+	    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+	    background-color: #fff;
+	    color: #333;
+	    transition: transform 0.2s ease, box-shadow 0.2s ease;
+	}
+	.musing-card:hover {
+	    transform: translateY(-2px);
+	    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+	}
+	.musing-card-body {
+	    padding: 16px 20px;
+	}
+	.musing-card-title {
+	    margin: 0 0 6px 0;
+	    font-size: 1.05em;
+	    font-weight: 600;
+	    line-height: 1.35;
+	}
+	.musing-card-title a {
+	    color: inherit;
+	    text-decoration: none;
+	}
+	.musing-card-title a:hover {
+	    text-decoration: underline;
+	}
+	.musing-card-date {
+	    font-size: 0.82em;
+	    color: #777;
+	}
+	.musing-card-summary {
+	    margin: 10px 0 0 0;
+	    font-size: 0.9em;
+	    color: #555;
+	    line-height: 1.55;
+	}
+	.musing-card-tags {
+	    display: flex;
+	    flex-wrap: wrap;
+	    gap: 6px;
+	    margin-top: 10px;
+	}
+	.musing-tag {
+	    padding: 2px 10px;
+	    border-radius: 4px;
+	    background: #f0f0f5;
+	    color: #555;
+	    font-size: 0.78em;
+	    font-weight: 500;
+	}
+	/* Musings dark theme */
+	[data-theme="gruvbox-dark"] .musing-card {
+	    border-color: #504945;
+	    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.45);
+	    background-color: #282828;
+	    color: #ebdbb2;
+	}
+	[data-theme="gruvbox-dark"] .musing-card:hover {
+	    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.55);
+	}
+	[data-theme="gruvbox-dark"] .musing-card-title {
+	    color: #ebdbb2;
+	}
+	[data-theme="gruvbox-dark"] .musing-card-date {
+	    color: #a89984;
+	}
+	[data-theme="gruvbox-dark"] .musing-card-summary {
+	    color: #bdae93;
+	}
+	[data-theme="gruvbox-dark"] .musing-tag {
+	    background: #3c3836;
+	    color: #bdae93;
+	}
+	/* Language toggle for bilingual posts */
+	.lang-toggle {
+	    display: inline-flex;
+	    gap: 0;
+	    border-radius: 6px;
+	    overflow: hidden;
+	    border: 1px solid #ddd;
+	    margin-bottom: 20px;
+	}
+	.lang-btn {
+	    padding: 6px 16px;
+	    border: none;
+	    background: #f5f5f5;
+	    color: #555;
+	    font-size: 0.85em;
+	    font-weight: 500;
+	    cursor: pointer;
+	    transition: background-color 0.2s ease, color 0.2s ease;
+	    outline: none;
+	}
+	.lang-btn:not(:last-child) {
+	    border-right: 1px solid #ddd;
+	}
+	.lang-btn:hover {
+	    background: #e8e8ee;
+	}
+	.lang-btn.active {
+	    background: #4e73df;
+	    color: #fff;
+	}
+	.lang-btn:focus-visible {
+	    box-shadow: 0 0 0 3px rgba(78, 115, 223, 0.35);
+	    z-index: 1;
+	    position: relative;
+	}
+	.lang-section { display: none; }
+	.lang-section.active { display: block; }
+	/* Language toggle dark theme */
+	[data-theme="gruvbox-dark"] .lang-toggle {
+	    border-color: #504945;
+	}
+	[data-theme="gruvbox-dark"] .lang-btn {
+	    background: #3c3836;
+	    color: #bdae93;
+	}
+	[data-theme="gruvbox-dark"] .lang-btn:not(:last-child) {
+	    border-right-color: #504945;
+	}
+	[data-theme="gruvbox-dark"] .lang-btn:hover {
+	    background: #504945;
+	}
+	[data-theme="gruvbox-dark"] .lang-btn.active {
+	    background: #458588;
+	    color: #ebdbb2;
+	}
+	[data-theme="gruvbox-dark"] .lang-btn:focus-visible {
+	    box-shadow: 0 0 0 3px rgba(69, 133, 136, 0.35);
+	}
+	/* Language indicator on homepage cards */
+	.musing-card-lang {
+	    display: inline-flex;
+	    align-items: center;
+	    gap: 4px;
+	    font-size: 0.78em;
+	    color: #888;
+	    margin-left: 10px;
+	}
+	.musing-card-lang i { font-size: 0.9em; }
+	[data-theme="gruvbox-dark"] .musing-card-lang { color: #a89984; }
+	/* Musing post page styles */
+	.musing-post-figure { margin-bottom: 24px; }
+	.musing-post-figure img { width: 100%; border-radius: 8px; }
+	.musing-post-figure figcaption { font-size: 0.85em; color: #777; margin-top: 8px; text-align: center; font-style: italic; }
+	[data-theme="gruvbox-dark"] .musing-post-figure figcaption { color: #a89984; }
+	.musing-post-header { margin-bottom: 30px; }
+	.musing-post-meta-row { display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; }
+	.musing-post-meta-left { flex: 1; min-width: 0; }
+	.musing-post-meta { font-size: 0.9em; color: #777; margin-bottom: 8px; }
+	.musing-post-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+	.musing-post-content { font-size: 1.05em; line-height: 1.75; }
+	.musing-post-content h2,
+	.musing-post-content h3,
+	.musing-post-content h4 { margin-top: 1.5em; }
+	.musing-post-content img { max-width: 100%; border-radius: 6px; }
+	.musing-post-content pre { border-radius: 6px; padding: 16px; overflow-x: auto; }
+	.musing-post-content blockquote {
+	    border-left: 4px solid #4e73df;
+	    padding-left: 16px;
+	    margin-left: 0;
+	    color: #555;
+	    font-style: italic;
+	}
+	.musing-post-title { display: none; }
+	.musing-post-title.active { display: block; }
+	[data-theme="gruvbox-dark"] .musing-post-meta { color: #a89984; }
+	[data-theme="gruvbox-dark"] .musing-post-content blockquote {
+	    border-left-color: #458588;
+	    color: #bdae93;
+	}
+	.embed-responsive {
+ 	    border-radius: 8px;
+ 	    border: 1px solid rgba(30, 41, 59, 0.18);
+ 	    box-shadow: 0 6px 16px rgba(15, 23, 42, 0.08);
+ 	    overflow: hidden;
+ 	    margin-bottom: 18px;
+	}
+	.course-embed {
+	    background-color: #ffffff;
+	    position: relative;
+	    cursor: pointer;
+	}
+	.course-embed iframe {
+	    pointer-events: none;
+	}
+	.course-embed__overlay {
+	    position: absolute;
+	    inset: 0;
+	    z-index: 2;
+	    display: block;
+	    border-radius: inherit;
+	    text-decoration: none;
+	    color: inherit;
+	    transition: background-color 0.2s ease;
+	}
+	.course-embed__overlay:hover,
+	.course-embed__overlay:focus {
+	    background-color: rgba(15, 23, 42, 0.15);
+	    outline: none;
+	}
+	.course-embed__overlay:focus {
+	    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.35);
+	}
+	.course-title-link {
+	    color: inherit;
+	    text-decoration: none;
+	}
+	.course-title-link:hover,
+	.course-title-link:focus {
+	    text-decoration: underline;
+	}
+	[data-theme="gruvbox-dark"] .embed-responsive {
+	    border-color: #665c54;
+	    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.25);
+	    background-color: rgba(40, 40, 40, 0.9);
+	}
+	[data-theme="gruvbox-dark"] .course-embed {
+	    background-color: rgba(40, 40, 40, 0.9);
+	}
+	[data-theme="gruvbox-dark"] .course-embed__overlay:hover,
+	[data-theme="gruvbox-dark"] .course-embed__overlay:focus {
+	    background-color: rgba(235, 219, 178, 0.12);
+	}
+	[data-theme="gruvbox-dark"] .course-embed__overlay:focus {
+	    box-shadow: 0 0 0 3px rgba(235, 219, 178, 0.25);
+	}
+	</style>
+    </head>
+    <body>
+	<div class="container">
+
+	    <div class="row">
+		<div class="page-header">
+		    
+		    <ul class="nav nav-pills pull-right">
+		    </ul>
+		    
+		    <h1><i class="fa fa-rocket"></i> E-AI: A* Pathfinding Visualizer</h1>
+		    
+		</div>
+	    </div>
+
+		
+
+
+
+
+
+<link rel="stylesheet" href="static/css/astar.css">
+
+<!-- Main Content: Grid (left) + Info Tabs (right) -->
+<div class="row" id="main-content">
+
+    <!-- Left Column: Pathfinding Grid + Options/Metrics -->
+    <div class="col-md-7">
+        <div class="panel panel-default">
+            <div class="panel-body grid-panel-body">
+                <!-- Combined Toolbar: Sample select, Edit buttons, Playback controls (custom - too integrated) -->
+                <div class="unified-toolbar">
+                    <div class="toolbar-left">
+                        <div class="sample-select-wrapper">
+                            <select id="sample-select" class="form-control input-sm">
+                                <optgroup label="Grid Maps">
+                                    <option value="easy" selected>Grid: Easy</option>
+                                    <option value="medium">Grid: Medium</option>
+                                    <option value="hard">Grid: Hard</option>
+                                    <option value="maze">Grid: Maze</option>
+                                    <option value="nosolution">Grid: No Solution</option>
+                                    <option value="custom">Grid: Custom</option>
+                                </optgroup>
+                                <optgroup label="Direct Graphs">
+                                    <option value="graph-simple">Graph: Simple</option>
+                                    <option value="graph-trap">Graph: Trap</option>
+                                    <option value="graph-custom">Graph: Custom</option>
+                                </optgroup>
+                            </select>
+                        </div>
+                        <!-- Grid edit buttons -->
+                        <div class="btn-group edit-mode-buttons grid-controls" role="group" id="edit-mode-buttons">
+                            <button type="button" class="btn btn-sm btn-default" data-mode="wall" title="Draw walls" disabled>
+                                <i class="fa fa-square"></i>
+                            </button>
+                            <button type="button" class="btn btn-sm btn-default" data-mode="start" title="Place start" disabled>
+                                <i class="fa fa-play-circle"></i>
+                            </button>
+                            <button type="button" class="btn btn-sm btn-default" data-mode="goal" title="Place goal" disabled>
+                                <i class="fa fa-flag-checkered"></i>
+                            </button>
+                            <button type="button" class="btn btn-sm btn-default" data-mode="erase" title="Erase cells" disabled>
+                                <i class="fa fa-eraser"></i>
+                            </button>
+							<button type="button" class="btn btn-sm btn-default" data-mode="weight" title="Paint tile weight" disabled>
+                                <i class="fa fa-sliders"></i>
+                            </button>
+                        </div>
+                        <div id="tile-weight-control" class="tile-weight-control grid-controls" title="Tile weight applied in Weight mode">
+                            <label for="tile-weight-slider">w</label>
+                            <input type="range" id="tile-weight-slider" min="-5" max="10" step="0.5" value="1" disabled>
+                            <span id="tile-weight-value">1.0</span>
+                        </div>
+                        <button id="btn-clear-grid" class="btn btn-sm btn-danger grid-controls" title="Clear entire grid" disabled>
+                            <i class="fa fa-trash"></i>
+                        </button>
+                        <!-- Graph edit buttons (hidden by default) -->
+                        <div class="btn-group graph-edit-buttons graph-controls" role="group" style="display: none;">
+                            <button type="button" class="btn btn-sm btn-default" data-mode="node" title="Add/edit node" disabled>
+                                <i class="fa fa-circle-o"></i>
+                            </button>
+                            <button type="button" class="btn btn-sm btn-default" data-mode="edge" title="Add edge" disabled>
+                                <i class="fa fa-long-arrow-right"></i>
+                            </button>
+                            <button type="button" class="btn btn-sm btn-default" data-mode="start" title="Set start" disabled>
+                                <i class="fa fa-play-circle"></i>
+                            </button>
+                            <button type="button" class="btn btn-sm btn-default" data-mode="goal" title="Set goal" disabled>
+                                <i class="fa fa-flag-checkered"></i>
+                            </button>
+                            <button type="button" class="btn btn-sm btn-default" data-mode="delete" title="Delete" disabled>
+                                <i class="fa fa-eraser"></i>
+                            </button>
+                        </div>
+                        <button id="btn-clear-graph" class="btn btn-sm btn-danger graph-controls" title="Clear graph" disabled style="display: none;">
+                            <i class="fa fa-trash"></i>
+                        </button>
+                    </div>
+                    <div class="toolbar-right">
+                        <div class="btn-group playback-buttons" role="group">
+                            <button id="btn-solve" class="btn btn-sm btn-success" title="Run A* algorithm">
+                                <i class="fa fa-play"></i>
+                            </button>
+                            <button id="btn-pause" class="btn btn-sm btn-warning" title="Pause/Resume" disabled>
+                                <i class="fa fa-pause"></i>
+                            </button>
+                            <button id="btn-step-back" class="btn btn-sm btn-info" title="Step backward" disabled>
+                                <i class="fa fa-step-backward"></i>
+                            </button>
+                            <button id="btn-step" class="btn btn-sm btn-info" title="Step forward" disabled>
+                                <i class="fa fa-step-forward"></i>
+                            </button>
+                            <button id="btn-reset" class="btn btn-sm btn-danger" title="Reset visualization">
+                                <i class="fa fa-refresh"></i>
+                            </button>
+                        </div>
+                        <div class="speed-control-inline">
+                            <input type="range" id="speed-slider" min="1" max="10" value="9" title="Playback speed">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="grid-wrapper">
+                    <!-- Grid visualization -->
+                    <div id="pathfinding-grid" class="pathfinding-grid">
+                        <!-- Grid cells generated by JavaScript -->
+                    </div>
+                    <svg id="heuristic-overlay" class="heuristic-overlay">
+                        <!-- Heuristic visualization lines drawn here -->
+                    </svg>
+                    <!-- Graph visualization (hidden by default) -->
+                    <div id="graph-visualization" class="graph-visualization" style="display: none;">
+                        <!-- SVG graph rendered by JavaScript -->
+                    </div>
+                </div>
+
+                <!-- Graph heuristics table (hidden by default) -->
+                <div id="graph-heuristics-panel" class="graph-heuristics-panel graph-controls" style="display: none;">
+                    <span class="heuristics-title">Node Heuristics (h-values)</span>
+                    <div id="graph-heuristics-table" class="heuristics-table">
+                        <!-- Populated by JavaScript -->
+                    </div>
+                </div>
+
+                <div class="grid-footer">
+                    <!-- Grid legend -->
+                    <div class="grid-controls">
+                        
+<div class="grid-legend">
+    
+    <span class="legend-item">
+        
+        <span class="legend-color legend-start"></span>
+        
+        Start
+    </span>
+    
+    <span class="legend-item">
+        
+        <span class="legend-color legend-goal"></span>
+        
+        Goal
+    </span>
+    
+    <span class="legend-item">
+        
+        <span class="legend-color legend-wall"></span>
+        
+        Wall
+    </span>
+    
+    <span class="legend-item">
+        
+        <span class="legend-color legend-open"></span>
+        
+        Frontier
+    </span>
+    
+    <span class="legend-item">
+        
+        <span class="legend-color legend-closed"></span>
+        
+        Visited
+    </span>
+    
+    <span class="legend-item">
+        
+        <span class="legend-color legend-path"></span>
+        
+        Path
+    </span>
+    
+</div>
+
+                    </div>
+                    <!-- Graph legend (hidden by default) -->
+                    <div class="graph-controls" style="display: none;">
+                        
+<div class="grid-legend">
+    
+    <span class="legend-item">
+        
+        <span class="legend-color legend-start"></span>
+        
+        Start
+    </span>
+    
+    <span class="legend-item">
+        
+        <span class="legend-color legend-goal"></span>
+        
+        Goal
+    </span>
+    
+    <span class="legend-item">
+        
+        <span class="legend-color legend-open"></span>
+        
+        Frontier
+    </span>
+    
+    <span class="legend-item">
+        
+        <span class="legend-color legend-closed"></span>
+        
+        Visited
+    </span>
+    
+    <span class="legend-item">
+        
+        <span class="legend-color legend-path"></span>
+        
+        Path
+    </span>
+    
+</div>
+
+                    </div>
+                    <div class="playback-status">
+                        <span id="playback-step">Step: 0 / 0</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Algorithm Options + Metrics (side by side under grid) -->
+        <div class="row options-metrics-row">
+            <div class="col-sm-7">
+                
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h3 class="panel-title"><i class="fa fa-cogs"></i> Algorithm Options</h3>
+    </div>
+    <div class="panel-body compact-panel">
+        
+        <div class="option-row">
+            
+            <label>Algorithm:</label>
+            <select id="heuristic-select" class="form-control input-sm">
+                
+                <option value="manhattan" selected>A* Manhattan</option>
+                
+                <option value="euclidean">A* Euclidean</option>
+                
+                <option value="chebyshev">A* Chebyshev</option>
+                
+                <option value="dijkstra">Dijkstra (h=0)</option>
+                
+                <option value="bfs">BFS</option>
+                
+                <option value="dfs">DFS</option>
+                
+            </select>
+
+            
+        </div>
+        
+        <div class="option-row grid-controls">
+            
+            <label>Movement:</label>
+            <select id="movement-mode" class="form-control input-sm">
+                
+                <option value="grid" selected>4-Dir</option>
+                
+                <option value="free">8-Dir</option>
+                
+            </select>
+
+            
+        </div>
+        
+        <div class="option-row">
+            
+            <label>Tie-break:</label>
+            <select id="tiebreaker-select" class="form-control input-sm">
+                
+                <option value="none">None</option>
+                
+                <option value="highg" selected>High g</option>
+                
+                <option value="lowg">Low g</option>
+                
+            </select>
+
+            
+        </div>
+        
+        <div class="option-row">
+            
+            <label>Heuristic Weight:</label>
+            <div class="slider-control">
+                <input type="range" id="heuristic-weight" min="1" max="3" value="1" step="0.1">
+                <span id="weight-value">1</span>
+            </div>
+
+            
+        </div>
+        
+        <div class="option-row">
+            
+            <label class="checkbox-label">
+                <input type="checkbox" id="show-values">
+                Show f/g/h
+            </label>
+        </div>
+		<div class="option-row">
+			<label class="checkbox-label">
+                <input type="checkbox" id="show-parent-chain">
+                Show parents
+            </label>  
+        </div>
+    </div>
+</div>
+
+            </div>
+            <div class="col-sm-5">
+                
+<div class="panel panel-default">
+    
+    <div class="panel-heading">
+        <h3 class="panel-title"><i class="fa fa-bar-chart"></i> Metrics</h3>
+    </div>
+    
+    <div class="panel-body compact-panel">
+        <table class="table table-condensed metrics-table">
+            <tbody>
+                
+                    
+                    <tr>
+                        
+                        <td><i class="fa fa-expand"></i> Explored</td>
+                        <td id="metric-expanded" class="text-right metric-value">0</td>
+                        
+                        <td><i class="fa fa-plus-square"></i> Discovered</td>
+                        <td id="metric-generated" class="text-right metric-value">0</td>
+                        
+                    </tr>
+                    
+                    <tr>
+                        
+                        <td><i class="fa fa-road"></i> Path Len</td>
+                        <td id="metric-path-length" class="text-right metric-value">-</td>
+                        
+                        <td><i class="fa fa-calculator"></i> Cost</td>
+                        <td id="metric-path-cost" class="text-right metric-value">-</td>
+                        
+                    </tr>
+                    
+                    <tr>
+                        
+                        <td><i class="fa fa-clock-o"></i> Time</td>
+                        <td id="metric-time" class="text-right metric-value" colspan="3">0.00ms</td>
+                        
+                    </tr>
+                    
+                
+            </tbody>
+        </table>
+        
+    </div>
+</div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- Right Column: Info Tabs -->
+    <div class="col-md-5">
+        
+<div class="panel panel-default">
+    <div class="panel-heading">
+        
+        <div class="btn-group info-panel-tabs" role="group">
+            
+            <button type="button"
+                    class="btn btn-sm btn-default active"
+                    data-tab="about">
+                <i class="fa fa-info-circle"></i> About
+            </button>
+            
+            <button type="button"
+                    class="btn btn-sm btn-default"
+                    data-tab="pseudocode">
+                <i class="fa fa-code"></i> Code
+            </button>
+            
+            <button type="button"
+                    class="btn btn-sm btn-default"
+                    data-tab="lists">
+                <i class="fa fa-list"></i> Lists
+            </button>
+            
+            <button type="button"
+                    class="btn btn-sm btn-default"
+                    data-tab="log">
+                <i class="fa fa-terminal"></i> Log
+            </button>
+            
+            <button type="button"
+                    class="btn btn-sm btn-default"
+                    data-tab="compare">
+                <i class="fa fa-table"></i> Compare
+            </button>
+            
+        </div>
+        
+    </div>
+    <div class="panel-body info-panel-body">
+        
+        
+        <div id="tab-about" class="info-tab-content active">
+            
+                    <h4><i class="fa fa-route"></i> What is A*?</h4>
+                    <p>
+                        <strong>A*</strong> (A-star) is the most popular pathfinding algorithm. It combines
+                        Dijkstra"s guaranteed shortest path with heuristic guidance toward the goal.
+                    </p>
+                    <h4><i class="fa fa-calculator"></i> The Formula</h4>
+                    <p>
+                        A* evaluates nodes using: <code>f(n) = g(n) + h(n)</code>
+                    </p>
+                    <ul class="formula-list">
+                        <li><strong>g(n)</strong> - Actual cost from start to node n</li>
+                        <li><strong>h(n)</strong> - Estimated cost from n to goal (heuristic)</li>
+                        <li><strong>f(n)</strong> - Total estimated cost through n</li>
+                    </ul>
+                    <h4><i class="fa fa-compass"></i> Heuristics & Movement</h4>
+                    <p><strong>Grid (4-dir):</strong> Use <em>Manhattan</em> - it exactly matches the movement cost.</p>
+                    <p><strong>Free Space (8-dir):</strong> Use <em>Euclidean</em> or <em>Chebyshev</em> - they match diagonal movement costs.</p>
+                    <ul class="algorithm-list">
+                        <li><strong>Manhattan</strong> - |dx| + |dy|</li>
+                        <li><strong>Euclidean</strong> - sqrt(dx² + dy²)</li>
+                        <li><strong>Chebyshev</strong> - max(|dx|, |dy|)</li>
+                        <li><strong>Dijkstra</strong> - h=0 (no heuristic)</li>
+                    </ul>
+                    <h4><i class="fa fa-sitemap"></i> Other Algorithms</h4>
+                    <ul class="algorithm-list">
+                        <li><strong>BFS</strong> - Breadth-first search explores all nodes at depth d before d+1. Guarantees shortest path (by hop count).</li>
+                        <li><strong>DFS</strong> - Depth-first search explores as deep as possible before backtracking. Fast but does not guarantee shortest path.</li>
+                    </ul>
+                
+        </div>
+        
+        <div id="tab-pseudocode" class="info-tab-content">
+            
+                    <div class="pseudocode-container">
+                        <pre class="pseudocode"><code><span class="line" data-line="init"><span class="keyword">function</span> <span class="function">A*</span>(start, goal):</span>
+<span class="line" data-line="init-open">    openSet ← {start}</span>
+<span class="line" data-line="init-closed">    closedSet ← {}</span>
+<span class="line" data-line="init-g">    g[start] ← <span class="number">0</span></span>
+<span class="line" data-line="init-f">    f[start] ← h(start, goal)</span>
+<span class="line" data-line="while">    <span class="keyword">while</span> openSet <span class="keyword">is not</span> empty:</span>
+<span class="line" data-line="select">        current ← node in openSet with lowest f</span>
+<span class="line" data-line="goal-found">        <span class="keyword">if</span> current = goal:</span>
+<span class="line" data-line="return-path">            <span class="keyword">return</span> reconstructPath(current)</span>
+<span class="line" data-line="remove-open">        openSet.remove(current)</span>
+<span class="line" data-line="add-closed">        closedSet.add(current)</span>
+<span class="line" data-line="for-neighbor">        <span class="keyword">for each</span> neighbor <span class="keyword">of</span> current:</span>
+<span class="line" data-line="skip-closed">            <span class="keyword">if</span> neighbor <span class="keyword">in</span> closedSet: <span class="keyword">continue</span></span>
+<span class="line" data-line="tentative-g">            tentativeG ← g[current] + cost(current, neighbor)</span>
+<span class="line" data-line="if-better">            <span class="keyword">if</span> tentativeG &lt; g[neighbor]:</span>
+<span class="line" data-line="update-parent">                parent[neighbor] ← current</span>
+<span class="line" data-line="update-g">                g[neighbor] ← tentativeG</span>
+<span class="line" data-line="update-f">                f[neighbor] ← g[neighbor] + h(neighbor, goal)</span>
+<span class="line" data-line="add-to-open">                <span class="keyword">if</span> neighbor <span class="keyword">not in</span> openSet:</span>
+<span class="line" data-line="push-open">                    openSet.add(neighbor)</span>
+<span class="line" data-line="no-path">    <span class="keyword">return</span> <span class="string">"no path found"</span></span></code></pre>
+                    </div>
+                    <div class="pseudocode-legend">
+                        <span class="legend-active"><i class="fa fa-arrow-right"></i> Current step</span>
+                    </div>
+                
+        </div>
+        
+        <div id="tab-lists" class="info-tab-content">
+            
+                    <div class="lists-container">
+                        <div class="list-section">
+                            <h5><i class="fa fa-folder-open"></i> Frontier <span id="open-count" class="badge">0</span></h5>
+                            <div id="open-list" class="node-list">
+                                <div class="list-empty">No nodes yet</div>
+                            </div>
+                        </div>
+                        <div class="list-section">
+                            <h5><i class="fa fa-folder"></i> Visited <span id="closed-count" class="badge">0</span></h5>
+                            <div id="closed-list" class="node-list">
+                                <div class="list-empty">No nodes yet</div>
+                            </div>
+                        </div>
+                    </div>
+                
+        </div>
+        
+        <div id="tab-log" class="info-tab-content">
+            
+                    <div class="log-header">
+                        <button id="btn-clear-log" class="btn btn-xs btn-default pull-right">
+                            <i class="fa fa-trash"></i> Clear
+                        </button>
+                    </div>
+                    <div id="execution-log" class="execution-log">
+                        <div class="log-entry log-info">
+                            <span class="log-icon"><i class="fa fa-info-circle"></i></span>
+                            <span class="log-message">Select Custom to draw, then click Solve.</span>
+                        </div>
+                    </div>
+                
+        </div>
+        
+        <div id="tab-compare" class="info-tab-content">
+            
+                    <div class="compare-controls">
+                        <button id="btn-run-comparison" class="btn btn-sm btn-default">
+                            <i class="fa fa-refresh"></i> Refresh
+                        </button>
+                    </div>
+                    <div class="compare-table-container">
+                        <table id="comparison-table" class="table table-bordered table-striped table-condensed">
+                            <thead>
+                                <tr>
+                                    <th>Heuristic</th>
+                                    <th>Explored</th>
+                                    <th>Discovered</th>
+                                    <th>Path</th>
+                                    <th>Cost</th>
+                                    <th>Time</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                    <p class="compare-hint">
+                        <i class="fa fa-lightbulb-o"></i> Click a row to visualize.
+                    </p>
+                
+        </div>
+        
+        
+    </div>
+</div>
+
+    </div>
+</div>
+
+
+	    <div class="row">
+		<hr/>
+
+		<footer class="text-center">
+		    <p class="text-muted">
+		    <small>
+		    Built using
+		    <a href="https://www.11ty.dev/">Eleventy</a>,
+		    <a href="http://twitter.github.com/bootstrap/">Bootstrap</a>,
+		    <a href="http://fortawesome.github.com/Font-Awesome/">Font Awesome</a>, and
+		    <a href="https://nodejs.org/">Node.js</a>.
+		    <br/>
+		    &copy; 2022 <a href="http://www.nd.edu">University of Notre Dame</a>
+		    </small>
+		    </p>
+		</footer>
+	    </div>
+
+	</div> <!-- /container -->
+
+	<!-- Bootstrap core JavaScript
+	================================================== -->
+	<!-- Placed at the end of the document so the pages load faster -->
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+	<!-- Shared visualization library modules (load before visualization scripts) -->
+	
+	<script type="module">
+		// Load shared modules and expose them globally for IIFE-based visualizations
+		import { PlaybackController } from './static/js/lib/playback-controller.js';
+		import { ThemeManager } from './static/js/lib/theme-manager.js';
+		import { Quadtree } from './static/js/lib/quadtree.js';
+		import { setupHiDPICanvas, resetCanvasTransform, clearCanvas, roundRect, drawLine, drawCircle, getMousePosition, createOffscreenCanvas, CoordinateMapper, hexToRgb, colorLerp } from './static/js/lib/canvas-utils.js';
+		import { TreeLayoutEngine } from './static/js/lib/tree-layout.js';
+		import { normalize, clamp, euclideanDistance, manhattanDistance, chebyshevDistance, gaussian, lerp, remapRange } from './static/js/lib/math-utils.js';
+		import { DatasetGenerators } from './static/js/lib/dataset-generators.js';
+		import { URLStateManager } from './static/js/lib/url-state-manager.js';
+		import { setTextContent, wireStepper, wireSlider } from './static/js/lib/dom-utils.js';
+
+		window.VizLib = {
+			PlaybackController,
+			ThemeManager,
+			Quadtree,
+			setupHiDPICanvas,
+			resetCanvasTransform,
+			clearCanvas,
+			CanvasUtils: { setupHiDPICanvas, resetCanvasTransform, clearCanvas, roundRect, drawLine, drawCircle, getMousePosition, createOffscreenCanvas, CoordinateMapper, hexToRgb, colorLerp },
+			TreeLayoutEngine,
+			MathUtils: { normalize, clamp, euclideanDistance, manhattanDistance, chebyshevDistance, gaussian, lerp, remapRange },
+			DatasetGenerators,
+			URLStateManager,
+			DomUtils: { setTextContent, wireStepper, wireSlider }
+		};
+
+		// Helper for viz scripts to wait for VizLib readiness
+		window.VizLib._ready = true;
+		window.VizLib.onReady = function(fn) {
+			if (window.VizLib._ready) fn();
+			else window.addEventListener('vizlib-ready', fn);
+		};
+
+		// Signal that VizLib is ready
+		window.dispatchEvent(new CustomEvent('vizlib-ready'));
+	</script>
+	<script src="static/js/astar.js"></script>
+	<script type="module">
+		// Auto-initialize URL state management for visualizations
+		window.addEventListener('vizlib-ready', function() {
+			if (document.getElementById('main-content')) {
+				var urlState = new VizLib.URLStateManager();
+				setTimeout(function() {
+					urlState.applyFromURL();
+					urlState.enableAutoSync();
+					urlState.bindShareButton();
+				}, 100);
+				window._urlState = urlState;
+			}
+		});
+	</script>
+	
+	<script>
+	(function() {
+	    var STORAGE_KEY = 'ai-landing-theme';
+	    var prefix = '';
+	    var themes = {
+	        'gruvbox-dark': prefix + 'static/css/gruvbox-dark.css',
+	        'bluegold': prefix + 'static/css/bluegold.css'
+	    };
+	    var linkEl = document.getElementById('theme-style');
+	    var toggleBtn = document.getElementById('theme-toggle');
+	    if (!linkEl || !toggleBtn) {
+	        return;
+	    }
+        function updateButton(theme) {
+            var isDark = theme === 'gruvbox-dark';
+            var label = isDark ? 'Switch to light theme' : 'Switch to dark theme';
+            toggleBtn.setAttribute('aria-label', label);
+            toggleBtn.setAttribute('title', label);
+            toggleBtn.setAttribute('aria-checked', isDark ? 'true' : 'false');
+        }
+        function updateNotebookFrames(theme) {
+            var frames = document.querySelectorAll('iframe[data-src-dark][data-src-light]');
+            var attr = theme === 'bluegold' ? 'data-src-light' : 'data-src-dark';
+            Array.prototype.forEach.call(frames, function(frame) {
+                var nextSrc = frame.getAttribute(attr);
+                if (nextSrc && frame.getAttribute('src') !== nextSrc) {
+                    frame.setAttribute('src', nextSrc);
+                }
+            });
+        }
+        function applyTheme(theme) {
+            var name = themes[theme] ? theme : 'bluegold';
+            linkEl.setAttribute('href', themes[name]);
+            document.documentElement.setAttribute('data-theme', name);
+            updateButton(name);
+            updateNotebookFrames(name);
+            return name;
+        }
+	    var savedTheme = (function() {
+	        try {
+	            return localStorage.getItem(STORAGE_KEY);
+	        } catch (err) {
+	            return null;
+	        }
+    })();
+        var currentTheme = applyTheme(savedTheme);
+        document.addEventListener('themechange', function(event) {
+            updateNotebookFrames(event.detail || currentTheme);
+        });
+        toggleBtn.addEventListener('click', function() {
+            var nextTheme = currentTheme === 'gruvbox-dark' ? 'bluegold' : 'gruvbox-dark';
+            currentTheme = applyTheme(nextTheme);
+            document.dispatchEvent(new CustomEvent('themechange', { detail: currentTheme }));
+            try {
+                localStorage.setItem(STORAGE_KEY, currentTheme);
+            } catch (err) {
+                /* ignore write errors */
+            }
+        });
+	})();
+	</script>
+    </body>
+</html>

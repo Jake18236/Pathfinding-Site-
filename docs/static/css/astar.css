@@ -1,0 +1,1120 @@
+/**
+ * A* Pathfinding Visualizer Styles
+ *
+ * Visualization-specific styles only. Common styles are in visualizations.css.
+ */
+
+/* ============================================
+   A*-Specific CSS Custom Properties
+   ============================================ */
+:root {
+    /* Grid colors - map to shared */
+    --astar-bg: var(--viz-bg);
+    --astar-border: var(--viz-border);
+    --astar-cell-bg: #ffffff;
+    --astar-text: var(--viz-text);
+    --astar-domain-text: var(--viz-text-muted);
+    --astar-hover-bg: var(--viz-hover-bg);
+
+    /* Cell state colors */
+    --astar-start-bg: #28a745;
+    --astar-start-border: #1e7e34;
+    --astar-goal-bg: #dc3545;
+    --astar-goal-border: #bd2130;
+    --astar-wall-bg: #343a40;
+    --astar-wall-border: #1d2124;
+    --astar-open-bg: var(--viz-warning-bg);
+    --astar-open-border: var(--viz-warning-border);
+    --astar-closed-bg: #e2e3e5;
+    --astar-closed-border: #6c757d;
+    --astar-current-bg: var(--viz-active-bg);
+    --astar-current-border: var(--viz-active-border);
+    --astar-path-bg: var(--viz-success-bg);
+    --astar-path-border: var(--viz-success-border);
+    --astar-neighbor-bg: var(--viz-danger-bg);
+    --astar-neighbor-border: #f5c6cb;
+
+    /* Value display colors */
+    --astar-f-color: #6c757d;
+    --astar-g-color: #007bff;
+    --astar-h-color: #28a745;
+}
+.grid-cell.parent-chain {
+    background-color: rgba(111, 66, 193, 0.35) !important;
+    border: 1px solid #6f42c1 !important;
+}
+ 
+[data-theme="gruvbox-dark"] .grid-cell.parent-chain {
+    background-color: rgba(211, 134, 155, 0.35) !important;
+    border: 1px solid var(--gruvbox-purple) !important;
+}
+ 
+/* ============================================
+   ADD these rules at the bottom of astar.css —
+   they do not exist yet.
+   ============================================ */
+ 
+/* Graph nodes: intermediate nodes on the best-known path */
+.graph-node.parent-chain {
+    fill: rgba(111, 66, 193, 0.25) !important;
+    stroke: #6f42c1 !important;
+    stroke-width: 3 !important;
+}
+ 
+[data-theme="gruvbox-dark"] .graph-node.parent-chain {
+    fill: rgba(211, 134, 155, 0.25) !important;
+    stroke: var(--gruvbox-purple) !important;
+    stroke-width: 3 !important;
+}
+ 
+/* Graph edges: edges along the best-known path to current node */
+.graph-edge.chain-edge {
+    stroke: #6f42c1 !important;
+    stroke-width: 2.5 !important;
+    stroke-dasharray: 5 3 !important;
+    opacity: 0.8 !important;
+}
+ 
+[data-theme="gruvbox-dark"] .graph-edge.chain-edge {
+    stroke: var(--gruvbox-purple) !important;
+}
+[data-theme="gruvbox-dark"] {
+    --astar-cell-bg: var(--gruvbox-bg-dim);
+
+    /* Cell state colors - gruvbox palette */
+    --astar-start-bg: rgba(184, 187, 38, 0.6);
+    --astar-start-border: var(--gruvbox-green);
+    --astar-goal-bg: rgba(251, 73, 52, 0.6);
+    --astar-goal-border: var(--gruvbox-red);
+    --astar-wall-bg: var(--gruvbox-bg-darkest);
+    --astar-wall-border: var(--gruvbox-bg2);
+    --astar-closed-bg: rgba(168, 153, 132, 0.3);
+    --astar-closed-border: var(--gruvbox-gray);
+    --astar-neighbor-border: var(--gruvbox-purple);
+
+    /* Value display colors */
+    --astar-f-color: var(--gruvbox-gray);
+    --astar-g-color: var(--gruvbox-blue);
+    --astar-h-color: var(--gruvbox-green);
+}
+
+/* ============================================
+   Grid Container
+   ============================================ */
+.grid-panel-body {
+    padding: 8px !important;
+    text-align: center;
+}
+
+.grid-wrapper {
+    position: relative;
+    display: inline-block;
+}
+
+/* ============================================
+   Unified Toolbar
+   ============================================ */
+.unified-toolbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 8px;
+    flex-wrap: wrap;
+}
+
+.toolbar-left,
+.toolbar-right {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.sample-select-wrapper {
+    min-width: 90px;
+}
+
+.sample-select-wrapper select {
+    font-size: 11px;
+    padding: 3px 6px;
+    height: auto;
+}
+
+.playback-buttons .btn {
+    padding: 4px 8px;
+}
+
+/* Grid Footer */
+.grid-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 6px;
+    padding: 0 4px;
+}
+
+/* ============================================
+   Options/Metrics Row
+   ============================================ */
+.options-metrics-row {
+    margin-top: 8px;
+    margin-left: 0;
+    margin-right: 0;
+}
+
+.options-metrics-row > [class*="col-"] {
+    padding-left: 4px;
+    padding-right: 4px;
+}
+
+/* Compact panel heading */
+.panel-heading-sm {
+    padding: 6px 10px;
+}
+
+.panel-heading-sm .panel-title {
+    font-size: 12px;
+}
+
+.panel-heading-sm .panel-title i {
+    margin-right: 4px;
+}
+
+.compact-options-panel .panel-body,
+.compact-metrics-panel .panel-body {
+    padding: 8px 10px !important;
+}
+
+.options-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    align-items: center;
+}
+
+.option-item {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 11px;
+}
+
+.option-item label {
+    margin: 0;
+    font-weight: normal;
+    white-space: nowrap;
+}
+
+.option-item select {
+    font-size: 11px;
+    padding: 2px 4px;
+    height: auto;
+    min-width: 80px;
+}
+
+.option-item .weight-control {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.option-item .weight-control input[type="range"] {
+    width: 50px;
+}
+
+.option-item .weight-control span {
+    font-size: 10px;
+    min-width: 24px;
+}
+
+.checkbox-item label {
+    font-size: 11px;
+}
+
+/* ============================================
+   Compact Metrics Grid
+   ============================================ */
+.metrics-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 4px 8px;
+}
+
+.metric-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 11px;
+}
+
+.metric-item .metric-label {
+    color: var(--astar-domain-text);
+}
+
+.metric-item .metric-label i {
+    margin-right: 3px;
+    width: 12px;
+    text-align: center;
+}
+
+.metric-item .metric-value {
+    font-family: var(--viz-mono-font);
+    font-weight: bold;
+}
+
+.metric-time {
+    grid-column: span 2;
+}
+
+/* ============================================
+   Info Panel
+   ============================================ */
+.info-panel {
+    height: calc(100vh - 180px);
+    min-height: 400px;
+    display: flex;
+    flex-direction: column;
+}
+
+.info-panel .panel-body {
+    flex: 1;
+    overflow-y: auto;
+}
+
+.edit-mode-buttons .btn.active {
+    background-color: var(--astar-current-bg);
+    border-color: var(--astar-current-border);
+    color: var(--astar-text);
+}
+
+[data-theme="gruvbox-dark"] .edit-mode-buttons .btn.active {
+    background-color: rgba(250, 189, 47, 0.3);
+    border-color: var(--gruvbox-yellow);
+    color: var(--gruvbox-fg);
+}
+
+/* ============================================
+   Pathfinding Grid
+   ============================================ */
+.pathfinding-grid {
+    display: inline-grid;
+    grid-template-columns: 20px repeat(20, 28px);
+    grid-template-rows: 20px repeat(15, 28px);
+    gap: 1px;
+    background-color: var(--astar-border);
+    border: 2px solid var(--astar-border);
+    padding: 1px;
+    user-select: none;
+}
+
+/* Grid coordinate labels */
+.grid-label {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 9px;
+    font-family: var(--viz-mono-font);
+    color: var(--astar-domain-text);
+    background-color: var(--astar-cell-bg);
+}
+
+.grid-corner {
+    background-color: transparent;
+}
+
+.grid-col-label,
+.grid-row-label {
+    font-weight: bold;
+}
+
+.grid-cell {
+    width: 28px;
+    height: 28px;
+    background-color: var(--astar-cell-bg);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-size: 7px;
+    color: var(--astar-text);
+    cursor: pointer;
+    position: relative;
+    transition: background-color 0.1s ease, border-color 0.1s ease;
+    box-sizing: border-box;
+    border: 1px solid transparent;
+}
+
+.grid-cell:hover {
+    background-color: var(--astar-hover-bg);
+}
+
+/* Editing disabled state */
+.pathfinding-grid.editing-disabled .grid-cell {
+    cursor: default;
+}
+
+.pathfinding-grid.editing-disabled .grid-cell:hover {
+    background-color: var(--astar-cell-bg);
+}
+
+/* ============================================
+   Cell States
+   ============================================ */
+.grid-cell.start {
+    background-color: var(--astar-start-bg);
+    border-color: var(--astar-start-border);
+}
+
+.grid-cell.start::after {
+    content: '\f04b';
+    font-family: 'FontAwesome';
+    font-size: 14px;
+    color: white;
+}
+
+.grid-cell.goal {
+    background-color: var(--astar-goal-bg);
+    border-color: var(--astar-goal-border);
+}
+
+.grid-cell.goal::after {
+    content: '\f11e';
+    font-family: 'FontAwesome';
+    font-size: 14px;
+    color: white;
+}
+
+.grid-cell.wall {
+    background-color: var(--astar-wall-bg);
+    border-color: var(--astar-wall-border);
+}
+
+.grid-cell.open {
+    background-color: var(--astar-open-bg);
+    border-color: var(--astar-open-border);
+}
+
+.grid-cell.closed {
+    background-color: var(--astar-closed-bg);
+    border-color: var(--astar-closed-border);
+}
+
+.grid-cell.current {
+    background-color: var(--astar-current-bg);
+    border: 2px solid var(--astar-current-border);
+    animation: pulse-current 0.5s ease-in-out;
+}
+
+@keyframes pulse-current {
+    0%, 100% { box-shadow: 0 0 0 0 var(--astar-current-border); }
+    50% { box-shadow: 0 0 8px 2px var(--astar-current-border); }
+}
+
+.grid-cell.path {
+    background-color: var(--astar-path-bg);
+    border: 2px solid var(--astar-path-border);
+}
+
+.grid-cell.neighbor {
+    background-color: var(--astar-neighbor-bg);
+    border-color: var(--astar-neighbor-border);
+}
+
+.grid-cell.hover-highlight {
+    background-color: #cce5ff !important;
+    border: 2px solid #007bff !important;
+    box-shadow: 0 0 8px rgba(0, 123, 255, 0.5);
+}
+
+[data-theme="gruvbox-dark"] .grid-cell.hover-highlight {
+    background-color: rgba(131, 165, 152, 0.5) !important;
+    border: 2px solid var(--gruvbox-blue) !important;
+    box-shadow: 0 0 8px rgba(131, 165, 152, 0.5);
+}
+
+/* f/g/h value display */
+.grid-cell .cell-values {
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    font-size: 6px;
+    line-height: 1.1;
+    font-family: var(--viz-mono-font);
+}
+
+.grid-cell.show-values .cell-values {
+    display: flex;
+}
+
+.grid-cell .cell-values .f-value {
+    color: var(--astar-f-color);
+    font-weight: bold;
+}
+
+.grid-cell .cell-values .g-value {
+    color: var(--astar-g-color);
+}
+
+.grid-cell .cell-values .h-value {
+    color: var(--astar-h-color);
+}
+
+/* Hide values on special cells */
+.grid-cell.start .cell-values,
+.grid-cell.goal .cell-values,
+.grid-cell.wall .cell-values {
+    display: none !important;
+}
+
+/* ============================================
+   Heuristic Visualization Overlay
+   ============================================ */
+.heuristic-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 10;
+}
+
+/* Main heuristic line */
+.heuristic-line {
+    stroke: var(--astar-heuristic-color, #007bff);
+    stroke-width: 2.5;
+    stroke-dasharray: 6 4;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    fill: none;
+    opacity: 0.85;
+}
+
+.heuristic-line-glow {
+    stroke: var(--astar-heuristic-color, #007bff);
+    stroke-width: 10;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    fill: none;
+    opacity: 0.2;
+    filter: blur(4px);
+}
+
+.heuristic-arrow {
+    fill: var(--astar-heuristic-color, #9c27b0);
+    opacity: 0.8;
+}
+
+/* G-cost line from start to current */
+.g-cost-line {
+    stroke: var(--astar-g-color, #007bff);
+    stroke-width: 2;
+    stroke-dasharray: 4 2;
+    stroke-linecap: round;
+    fill: none;
+    opacity: 0.6;
+}
+
+/* Path line */
+.path-line {
+    stroke: #28a745;
+    stroke-width: 3;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    fill: none;
+    opacity: 0.9;
+}
+
+.path-line-glow {
+    stroke: #28a745;
+    stroke-width: 12;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    fill: none;
+    opacity: 0.25;
+    filter: blur(4px);
+}
+
+[data-theme="gruvbox-dark"] .path-line,
+[data-theme="gruvbox-dark"] .path-line-glow {
+    stroke: var(--gruvbox-green);
+}
+
+/* Heuristic label */
+.heuristic-label {
+    font-family: var(--viz-mono-font);
+    font-size: 10px;
+    fill: var(--astar-heuristic-color, #9c27b0);
+    font-weight: bold;
+}
+
+.heuristic-label-bg {
+    fill: var(--astar-cell-bg);
+    opacity: 0.85;
+}
+
+/* Different heuristic colors */
+.heuristic-manhattan .heuristic-line,
+.heuristic-manhattan .heuristic-line-glow,
+.heuristic-manhattan .heuristic-arrow,
+.heuristic-manhattan .heuristic-label,
+.heuristic-euclidean .heuristic-line,
+.heuristic-euclidean .heuristic-line-glow,
+.heuristic-euclidean .heuristic-arrow,
+.heuristic-euclidean .heuristic-label,
+.heuristic-chebyshev .heuristic-line,
+.heuristic-chebyshev .heuristic-line-glow,
+.heuristic-chebyshev .heuristic-arrow,
+.heuristic-chebyshev .heuristic-label {
+    --astar-heuristic-color: #007bff;
+}
+
+.heuristic-dijkstra .heuristic-line,
+.heuristic-dijkstra .heuristic-line-glow {
+    display: none;
+}
+
+[data-theme="gruvbox-dark"] {
+    --astar-heuristic-color: var(--gruvbox-blue);
+}
+
+[data-theme="gruvbox-dark"] .heuristic-manhattan .heuristic-line,
+[data-theme="gruvbox-dark"] .heuristic-manhattan .heuristic-line-glow,
+[data-theme="gruvbox-dark"] .heuristic-manhattan .heuristic-arrow,
+[data-theme="gruvbox-dark"] .heuristic-manhattan .heuristic-label,
+[data-theme="gruvbox-dark"] .heuristic-euclidean .heuristic-line,
+[data-theme="gruvbox-dark"] .heuristic-euclidean .heuristic-line-glow,
+[data-theme="gruvbox-dark"] .heuristic-euclidean .heuristic-arrow,
+[data-theme="gruvbox-dark"] .heuristic-euclidean .heuristic-label,
+[data-theme="gruvbox-dark"] .heuristic-chebyshev .heuristic-line,
+[data-theme="gruvbox-dark"] .heuristic-chebyshev .heuristic-line-glow,
+[data-theme="gruvbox-dark"] .heuristic-chebyshev .heuristic-arrow,
+[data-theme="gruvbox-dark"] .heuristic-chebyshev .heuristic-label {
+    --astar-heuristic-color: var(--gruvbox-blue);
+}
+
+/* ============================================
+   Grid Legend
+   ============================================ */
+.legend-start {
+    background-color: var(--astar-start-bg);
+    border-color: var(--astar-start-border);
+}
+
+.legend-goal {
+    background-color: var(--astar-goal-bg);
+    border-color: var(--astar-goal-border);
+}
+
+.legend-wall {
+    background-color: var(--astar-wall-bg);
+    border-color: var(--astar-wall-border);
+}
+
+.legend-open {
+    background-color: var(--astar-open-bg);
+    border-color: var(--astar-open-border);
+}
+
+.legend-closed {
+    background-color: var(--astar-closed-bg);
+    border-color: var(--astar-closed-border);
+}
+
+.legend-current {
+    background-color: var(--astar-current-bg);
+    border-color: var(--astar-current-border);
+}
+
+.legend-path {
+    background-color: var(--astar-path-bg);
+    border-color: var(--astar-path-border);
+}
+
+.legend-heuristic {
+    background: repeating-linear-gradient(
+        90deg,
+        #007bff,
+        #007bff 4px,
+        transparent 4px,
+        transparent 7px
+    );
+}
+
+[data-theme="gruvbox-dark"] .legend-heuristic {
+    background: repeating-linear-gradient(
+        90deg,
+        var(--gruvbox-blue),
+        var(--gruvbox-blue) 4px,
+        transparent 4px,
+        transparent 7px
+    );
+}
+
+/* ============================================
+   Sample Input Tabs
+   ============================================ */
+.sample-input-tabs {
+    display: flex;
+    width: 100%;
+}
+
+.sample-input-tabs .btn {
+    flex: 1;
+    border-radius: 0;
+}
+
+.sample-input-tabs .btn.active {
+    background-color: var(--astar-current-bg);
+    border-color: var(--astar-current-border);
+    color: var(--astar-text);
+}
+
+[data-theme="gruvbox-dark"] .sample-input-tabs .btn.active {
+    background-color: rgba(250, 189, 47, 0.3);
+    border-color: var(--gruvbox-yellow);
+    color: var(--gruvbox-fg);
+}
+
+/* ============================================
+   Weight Control
+   ============================================ */
+.weight-control {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex: 1;
+}
+
+.weight-control input[type="range"] {
+    flex: 1;
+    height: 4px;
+}
+
+.weight-control span {
+    min-width: 28px;
+    font-size: 12px;
+    font-weight: bold;
+    color: var(--astar-text);
+}
+
+/* ============================================
+   About Tab
+   ============================================ */
+#tab-about h4 {
+    margin-top: 12px;
+    margin-bottom: 8px;
+    font-size: 14px;
+}
+
+#tab-about h4:first-child {
+    margin-top: 0;
+}
+
+#tab-about p {
+    font-size: 12px;
+    margin-bottom: 8px;
+}
+
+/* ============================================
+   Open/Closed Lists Tab
+   ============================================ */
+.lists-container {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.list-section h5 {
+    margin: 0 0 8px 0;
+    font-size: 12px;
+    color: var(--astar-text);
+}
+
+.list-section h5 .badge {
+    font-size: 10px;
+    margin-left: 5px;
+}
+
+.node-list {
+    max-height: 100px;
+    overflow-y: auto;
+    font-family: var(--viz-mono-font);
+    font-size: 10px;
+    background-color: var(--astar-cell-bg);
+    border: 1px solid var(--astar-border);
+    border-radius: 4px;
+    padding: 6px;
+}
+
+.node-list-item {
+    display: inline-block;
+    padding: 2px 6px;
+    margin: 2px;
+    border-radius: 3px;
+    background-color: var(--astar-hover-bg);
+    cursor: pointer;
+}
+
+.node-list-item:hover {
+    background-color: var(--astar-current-bg);
+}
+
+.node-list-item.highlight {
+    background-color: var(--astar-current-bg);
+    border: 1px solid var(--astar-current-border);
+}
+
+/* ============================================
+   A*-specific Log Entry Types
+   ============================================ */
+.log-entry.log-expand {
+    background-color: rgba(250, 189, 47, 0.15);
+    color: #d79921;
+}
+
+.log-entry.log-neighbor {
+    background-color: rgba(214, 93, 14, 0.15);
+    color: #d65d0e;
+}
+
+.log-entry.log-add {
+    background-color: rgba(184, 187, 38, 0.15);
+    color: #98971a;
+}
+
+.log-entry.log-update {
+    background-color: rgba(131, 165, 152, 0.15);
+    color: #458588;
+}
+
+[data-theme="gruvbox-dark"] .log-entry.log-expand { color: var(--gruvbox-yellow); }
+[data-theme="gruvbox-dark"] .log-entry.log-neighbor { color: var(--gruvbox-orange); }
+[data-theme="gruvbox-dark"] .log-entry.log-add { color: var(--gruvbox-green); }
+[data-theme="gruvbox-dark"] .log-entry.log-update { color: var(--gruvbox-blue); }
+
+/* ============================================
+   A*-specific Comparison Table
+   ============================================ */
+#comparison-table td.no-solution-value {
+    background-color: var(--astar-current-bg);
+    color: var(--astar-current-border);
+    font-weight: bold;
+    font-family: inherit;
+    border: 1px solid var(--astar-current-border);
+}
+
+/* ============================================
+   Responsive Adjustments
+   ============================================ */
+@media (max-width: 992px) {
+    .pathfinding-grid {
+        grid-template-columns: 18px repeat(20, 24px);
+        grid-template-rows: 18px repeat(15, 24px);
+    }
+
+    .grid-cell {
+        width: 24px;
+        height: 24px;
+        font-size: 6px;
+    }
+
+    .grid-cell.start::after,
+    .grid-cell.goal::after {
+        font-size: 12px;
+    }
+
+    .grid-label {
+        font-size: 8px;
+    }
+}
+
+@media (max-width: 768px) {
+    .pathfinding-grid {
+        grid-template-columns: 16px repeat(20, 20px);
+        grid-template-rows: 16px repeat(15, 20px);
+    }
+
+    .grid-cell {
+        width: 20px;
+        height: 20px;
+        font-size: 5px;
+    }
+
+    .grid-cell.start::after,
+    .grid-cell.goal::after {
+        font-size: 10px;
+    }
+
+    .grid-cell .cell-values {
+        font-size: 5px;
+    }
+
+    .grid-label {
+        font-size: 7px;
+    }
+
+    .edit-toolbar {
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .grid-legend {
+        font-size: 10px;
+        gap: 8px;
+    }
+}
+
+@media (max-width: 480px) {
+    .pathfinding-grid {
+        grid-template-columns: 14px repeat(15, 18px);
+        grid-template-rows: 14px repeat(12, 18px);
+    }
+
+    .grid-cell {
+        width: 18px;
+        height: 18px;
+    }
+
+    .grid-cell.start::after,
+    .grid-cell.goal::after {
+        font-size: 9px;
+    }
+
+    .grid-label {
+        font-size: 6px;
+    }
+}
+
+/* ============================================
+   Graph Visualization Styles
+   ============================================ */
+.graph-visualization {
+    width: 100%;
+    height: 400px;
+    background-color: var(--astar-cell-bg);
+    border: 2px solid var(--astar-border);
+    border-radius: 4px;
+    position: relative;
+}
+
+.graph-visualization.editing-disabled {
+    cursor: default;
+}
+
+.graph-svg {
+    width: 100%;
+    height: 100%;
+}
+
+/* Graph Edges */
+.graph-edge {
+    stroke: var(--astar-border);
+    stroke-width: 2;
+    fill: none;
+    transition: stroke 0.2s ease, stroke-width 0.2s ease;
+}
+
+.graph-edge.path-edge {
+    stroke: #28a745 !important;
+    stroke-width: 4 !important;
+}
+
+.graph-edge-label {
+    fill: var(--astar-text);
+    font-size: 12px;
+    font-weight: bold;
+    text-anchor: middle;
+    dominant-baseline: middle;
+    pointer-events: none;
+}
+
+/* Graph Nodes */
+.graph-node-group {
+    cursor: pointer;
+}
+
+.graph-node {
+    fill: var(--astar-cell-bg);
+    stroke: var(--astar-border);
+    stroke-width: 3;
+    transition: fill 0.2s ease, stroke 0.2s ease;
+}
+
+.graph-node:hover {
+    fill: var(--astar-hover-bg);
+}
+
+.graph-node.start {
+    fill: var(--astar-start-bg);
+    stroke: var(--astar-start-border);
+}
+
+.graph-node.goal {
+    fill: var(--astar-goal-bg);
+    stroke: var(--astar-goal-border);
+}
+
+.graph-node.open {
+    fill: #fff3cd !important;
+    stroke: #ffc107 !important;
+}
+
+.graph-node.closed {
+    fill: #e2e3e5 !important;
+    stroke: #6c757d !important;
+}
+
+.graph-node.current {
+    fill: orange !important;
+    stroke: darkorange !important;
+    stroke-width: 4;
+}
+
+.graph-node.path {
+    fill: #90EE90 !important;
+    stroke: #28a745 !important;
+}
+
+.graph-node.edge-source {
+    stroke: #f39c12;
+    stroke-width: 4;
+    stroke-dasharray: 4 2;
+}
+
+.graph-node-label {
+    fill: var(--astar-text);
+    font-size: 14px;
+    font-weight: bold;
+    pointer-events: none;
+}
+
+.graph-node.start .graph-node-label,
+.graph-node.goal .graph-node-label {
+    fill: white;
+}
+
+.graph-node-heuristic {
+    fill: var(--astar-domain-text);
+    font-size: 10px;
+    pointer-events: none;
+}
+
+.graph-node-values {
+    fill: var(--astar-domain-text);
+    font-size: 9px;
+    pointer-events: none;
+}
+
+/* Graph Edit Buttons */
+.graph-edit-buttons .btn {
+    padding: 4px 8px;
+}
+
+.graph-edit-buttons .btn.active {
+    background-color: var(--astar-open-bg);
+    border-color: var(--astar-border);
+}
+
+/* Arrow markers */
+#arrowhead polygon {
+    fill: var(--astar-border);
+}
+
+#arrowhead-path polygon {
+    fill: var(--astar-path-border);
+}
+
+#arrowhead-frontier polygon {
+    fill: var(--astar-open-border);
+}
+
+/* ============================================
+   Graph Heuristics Panel
+   ============================================ */
+.graph-heuristics-panel {
+    margin-top: 8px;
+    padding: 8px 12px;
+    background: var(--astar-bg);
+    border: 1px solid var(--astar-border);
+    border-radius: 4px;
+}
+
+.heuristics-title {
+    font-weight: bold;
+    font-size: 12px;
+    color: var(--astar-text);
+    margin-right: 12px;
+}
+
+.heuristics-table {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.heuristic-item {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 4px 8px;
+    background: var(--astar-cell-bg);
+    border: 1px solid var(--astar-border);
+    border-radius: 4px;
+}
+
+.heuristic-item.start {
+    border-color: var(--astar-start-border);
+    background: rgba(40, 167, 69, 0.1);
+}
+
+.heuristic-item.goal {
+    border-color: var(--astar-goal-border);
+    background: rgba(220, 53, 69, 0.1);
+}
+
+.heuristic-item.inadmissible {
+    border-color: #dc3545;
+    background: rgba(220, 53, 69, 0.2);
+}
+
+.heuristic-item.inadmissible label {
+    color: #dc3545;
+}
+
+.heuristic-item.inconsistent {
+    border-color: #ffc107;
+    background: rgba(255, 193, 7, 0.2);
+}
+
+.heuristic-item.inconsistent label {
+    color: #856404;
+}
+
+.heuristic-item label {
+    font-weight: bold;
+    font-size: 12px;
+    margin: 0;
+    min-width: 24px;
+}
+
+.heuristic-item input {
+    width: 50px;
+    padding: 2px 4px;
+    font-size: 12px;
+    text-align: center;
+    border: 1px solid var(--astar-border);
+    border-radius: 3px;
+    background: var(--astar-bg);
+    color: var(--astar-text);
+}
+
+.heuristic-item input:focus {
+    outline: none;
+    border-color: #007bff;
+}
+
+.heuristic-item input:disabled {
+    background: var(--astar-closed-bg);
+    cursor: not-allowed;
+}

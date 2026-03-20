@@ -1,0 +1,218 @@
+/* Topics Mind-Map Styles */
+
+/* --- Container --- */
+.topics-graph-container {
+    width: 100%;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    background: #fafbfc;
+    overflow: hidden;
+}
+
+.topics-graph--compact {
+    height: 420px;
+}
+
+.topics-graph--full {
+    height: calc(100vh - 260px);
+    min-height: 500px;
+}
+
+.topics-graph-container svg {
+    display: block;
+    cursor: grab;
+}
+
+.topics-graph-container svg:active {
+    cursor: grabbing;
+}
+
+/* --- Links --- */
+.topics-link {
+    stroke: #ccc;
+    stroke-width: 1.2;
+    stroke-opacity: 0.6;
+    transition: stroke-opacity 0.3s ease;
+}
+
+.topics-link--dimmed {
+    stroke-opacity: 0.08;
+}
+
+/* --- Nodes --- */
+.topics-node {
+    cursor: pointer;
+    transition: opacity 0.3s ease;
+}
+
+.topics-node circle {
+    transition: r 0.3s ease, fill 0.3s ease;
+}
+
+.topics-node:hover circle {
+    filter: brightness(1.15);
+}
+
+.topics-node-label {
+    font-size: 11px;
+    fill: #333;
+    pointer-events: none;
+    font-family: inherit;
+}
+
+.topics-node--dimmed {
+    opacity: 0.15;
+}
+
+/* --- Expand panel --- */
+.topics-expand-panel {
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    padding: 12px;
+    font-size: 12px;
+    line-height: 1.45;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+    max-height: 200px;
+    overflow-y: auto;
+}
+
+.topics-expand-panel strong {
+    font-size: 13px;
+    display: block;
+    margin-bottom: 6px;
+}
+
+.topics-expand-panel p {
+    margin: 0 0 8px 0;
+    color: #555;
+}
+
+.topics-expand-links {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    margin-bottom: 8px;
+}
+
+.topics-expand-links a {
+    color: #4e73df;
+    text-decoration: none;
+    font-size: 11px;
+}
+
+.topics-expand-links a:hover {
+    text-decoration: underline;
+}
+
+.topics-viz-link {
+    display: inline-block;
+    padding: 4px 12px;
+    background: #4e73df;
+    color: #fff !important;
+    border-radius: 4px;
+    text-decoration: none !important;
+    font-size: 11px;
+    font-weight: 500;
+    transition: background 0.2s ease;
+}
+
+.topics-viz-link:hover {
+    background: #2e59d9;
+}
+
+/* --- Search bar --- */
+.topics-search-bar {
+    margin-bottom: 16px;
+}
+
+/* --- Legend --- */
+.topics-legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-bottom: 16px;
+    font-size: 13px;
+    color: #555;
+}
+
+.topics-legend-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.topics-legend-swatch {
+    display: inline-block;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+}
+
+/* --- "Explore full map" link --- */
+.topics-explore-link {
+    display: inline-block;
+    margin-top: 12px;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+/* ======================================
+   Dark theme (gruvbox-dark)
+   ====================================== */
+
+[data-theme="gruvbox-dark"] .topics-graph-container {
+    background: #1d2021;
+    border-color: #504945;
+}
+
+[data-theme="gruvbox-dark"] .topics-link {
+    stroke: #665c54;
+}
+
+[data-theme="gruvbox-dark"] .topics-node-label {
+    fill: #ebdbb2;
+}
+
+[data-theme="gruvbox-dark"] .topics-node circle {
+    stroke: #3c3836;
+}
+
+[data-theme="gruvbox-dark"] .topics-expand-panel {
+    background: #282828;
+    border-color: #504945;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.45);
+    color: #ebdbb2;
+}
+
+[data-theme="gruvbox-dark"] .topics-expand-panel p {
+    color: #bdae93;
+}
+
+[data-theme="gruvbox-dark"] .topics-expand-links a {
+    color: #83a598;
+}
+
+[data-theme="gruvbox-dark"] .topics-viz-link {
+    background: #458588;
+}
+
+[data-theme="gruvbox-dark"] .topics-viz-link:hover {
+    background: #689d6a;
+}
+
+[data-theme="gruvbox-dark"] .topics-legend {
+    color: #bdae93;
+}
+
+/* --- Responsive --- */
+@media (max-width: 767px) {
+    .topics-graph--compact {
+        height: 300px;
+    }
+
+    .topics-graph--full {
+        height: calc(100vh - 200px);
+        min-height: 350px;
+    }
+}

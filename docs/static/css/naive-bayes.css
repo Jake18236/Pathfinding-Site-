@@ -1,0 +1,940 @@
+/**
+ * Naive Bayes Classifier Visualizer Styles
+ *
+ * Visualization-specific styles only. Common styles are in visualizations.css.
+ */
+
+/* ============================================
+   Custom Properties
+   ============================================ */
+:root {
+    --nb-spam-color: #dc3545;
+    --nb-spam-bg: rgba(220, 53, 69, 0.15);
+    --nb-spam-border: #dc3545;
+    --nb-ham-color: #28a745;
+    --nb-ham-bg: rgba(40, 167, 69, 0.15);
+    --nb-ham-border: #28a745;
+    --nb-bar-track: #e9ecef;
+    --nb-word-highlight: rgba(0, 123, 255, 0.08);
+    --nb-positive-ratio: #dc3545;
+    --nb-negative-ratio: #28a745;
+    --nb-neutral-ratio: #6c757d;
+}
+
+[data-theme="gruvbox-dark"] {
+    --nb-spam-color: var(--gruvbox-red);
+    --nb-spam-bg: rgba(251, 73, 52, 0.2);
+    --nb-spam-border: var(--gruvbox-red);
+    --nb-ham-color: var(--gruvbox-green);
+    --nb-ham-bg: rgba(184, 187, 38, 0.2);
+    --nb-ham-border: var(--gruvbox-green);
+    --nb-bar-track: var(--gruvbox-bg1);
+    --nb-word-highlight: rgba(131, 165, 152, 0.1);
+    --nb-positive-ratio: var(--gruvbox-red);
+    --nb-negative-ratio: var(--gruvbox-green);
+    --nb-neutral-ratio: var(--gruvbox-gray);
+}
+
+/* ============================================
+   Panel Header
+   ============================================ */
+.result-badge {
+    transition: all 0.3s ease;
+}
+
+.result-badge.spam {
+    background: var(--nb-spam-bg);
+    color: var(--nb-spam-color);
+    border-color: var(--nb-spam-border);
+}
+
+.result-badge.ham {
+    background: var(--nb-ham-bg);
+    color: var(--nb-ham-color);
+    border-color: var(--nb-ham-border);
+}
+
+/* ============================================
+   Classification Input
+   ============================================ */
+.classify-input-group {
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+    margin-bottom: 12px;
+}
+
+.nb-textarea {
+    font-size: 13px;
+    resize: vertical;
+    min-height: 50px;
+    flex: 1;
+}
+
+.nb-classify-btn {
+    white-space: nowrap;
+    padding: 8px 16px;
+    min-height: 50px;
+}
+
+/* ============================================
+   Result Display Bars
+   ============================================ */
+.result-display {
+    margin-bottom: 12px;
+}
+
+.result-bar-group {
+    margin-bottom: 8px;
+}
+
+.result-bar-group:last-child {
+    margin-bottom: 0;
+}
+
+.result-label {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 4px;
+    font-size: 12px;
+}
+
+.result-class {
+    font-weight: 600;
+}
+
+.spam-label {
+    color: var(--nb-spam-color);
+}
+
+.ham-label {
+    color: var(--nb-ham-color);
+}
+
+.result-prob {
+    font-family: var(--viz-mono-font);
+    font-weight: 600;
+    font-size: 13px;
+}
+
+.result-bar-track {
+    height: 20px;
+    background: var(--nb-bar-track);
+    border-radius: 4px;
+    overflow: hidden;
+    position: relative;
+}
+
+.result-bar {
+    height: 100%;
+    border-radius: 4px;
+    transition: width 0.4s ease;
+    min-width: 0;
+}
+
+.spam-bar {
+    background: linear-gradient(90deg, var(--nb-spam-color), rgba(220, 53, 69, 0.7));
+}
+
+.ham-bar {
+    background: linear-gradient(90deg, var(--nb-ham-color), rgba(40, 167, 69, 0.7));
+}
+
+[data-theme="gruvbox-dark"] .spam-bar {
+    background: linear-gradient(90deg, var(--gruvbox-red), rgba(251, 73, 52, 0.6));
+}
+
+[data-theme="gruvbox-dark"] .ham-bar {
+    background: linear-gradient(90deg, var(--gruvbox-green), rgba(184, 187, 38, 0.6));
+}
+
+/* ============================================
+   Prior/Posterior Canvas
+   ============================================ */
+.prior-posterior-section {
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 1px solid var(--viz-border);
+}
+
+.prior-posterior-header {
+    margin-bottom: 8px;
+}
+
+.section-label {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--viz-text-muted);
+}
+
+#prior-posterior-canvas {
+    display: block;
+    width: 100%;
+    height: 100px;
+    background: var(--viz-canvas-bg);
+    border-radius: 4px;
+}
+
+/* ============================================
+   Word Probabilities Table
+   ============================================ */
+.word-count-badge {
+    font-size: 11px;
+    font-weight: normal;
+}
+
+.word-table-wrapper {
+    max-height: 300px;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+.word-prob-table {
+    font-size: 12px;
+    margin-bottom: 0;
+}
+
+.word-prob-table thead th {
+    position: sticky;
+    top: 0;
+    background: var(--viz-bg);
+    z-index: 1;
+    cursor: pointer;
+    user-select: none;
+    white-space: nowrap;
+    font-size: 11px;
+    border-bottom: 2px solid var(--viz-border);
+}
+
+.word-prob-table thead th:hover {
+    background: var(--viz-hover-bg);
+}
+
+.word-prob-table thead th .fa-sort {
+    opacity: 0.4;
+    font-size: 10px;
+    margin-left: 3px;
+}
+
+.word-prob-table thead th.sort-active .fa-sort {
+    opacity: 1;
+}
+
+.word-prob-table td {
+    font-family: var(--viz-mono-font);
+    font-size: 11px;
+    padding: 4px 8px;
+    vertical-align: middle;
+}
+
+.word-prob-table td:first-child {
+    font-family: inherit;
+    font-weight: 500;
+}
+
+.word-prob-table tr.word-highlight {
+    background: var(--nb-word-highlight);
+}
+
+.ratio-positive {
+    color: var(--nb-positive-ratio);
+    font-weight: 600;
+}
+
+.ratio-negative {
+    color: var(--nb-negative-ratio);
+    font-weight: 600;
+}
+
+.ratio-neutral {
+    color: var(--nb-neutral-ratio);
+}
+
+/* ============================================
+   Training Data Panel
+   ============================================ */
+.training-list-wrapper {
+    max-height: 250px;
+    overflow-y: auto;
+    margin-bottom: 12px;
+}
+
+.training-list {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.training-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 12px;
+    background: var(--viz-hover-bg);
+    border-left: 3px solid transparent;
+}
+
+.training-item.spam {
+    border-left-color: var(--nb-spam-color);
+}
+
+.training-item.ham {
+    border-left-color: var(--nb-ham-color);
+}
+
+.training-item-label {
+    font-weight: 600;
+    font-size: 10px;
+    text-transform: uppercase;
+    min-width: 36px;
+}
+
+.training-item-label.spam {
+    color: var(--nb-spam-color);
+}
+
+.training-item-label.ham {
+    color: var(--nb-ham-color);
+}
+
+.training-item-text {
+    flex: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    color: var(--viz-text);
+}
+
+.training-item-remove {
+    cursor: pointer;
+    opacity: 0.5;
+    font-size: 11px;
+    color: var(--viz-text-muted);
+}
+
+.training-item-remove:hover {
+    opacity: 1;
+    color: var(--viz-danger-border);
+}
+
+/* Add Training Section */
+.add-training-section {
+    padding-top: 10px;
+    border-top: 1px solid var(--viz-border);
+}
+
+.add-training-section h5 {
+    font-size: 12px;
+    font-weight: 600;
+    margin: 0 0 8px 0;
+    color: var(--viz-text-muted);
+}
+
+.add-training-row {
+    display: flex;
+    gap: 8px;
+    align-items: flex-start;
+}
+
+.add-training-row textarea {
+    flex: 1;
+    font-size: 12px;
+    min-height: 30px;
+}
+
+.add-training-controls {
+    display: flex;
+    gap: 4px;
+    align-items: center;
+}
+
+.add-training-controls select {
+    width: auto;
+    font-size: 12px;
+    padding: 3px 6px;
+}
+
+/* ============================================
+   Controls Panel
+   ============================================ */
+.nb-controls-panel {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.nb-options-col {
+    flex: 1;
+}
+
+.nb-options-col .option-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 6px;
+}
+
+.nb-options-col .option-row label {
+    font-size: 12px;
+    margin: 0;
+    white-space: nowrap;
+    min-width: 140px;
+}
+
+.nb-options-col .option-row input[type="range"] {
+    flex: 1;
+    max-width: 120px;
+}
+
+.nb-actions-col {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+/* ============================================
+   Info Panel Content
+   ============================================ */
+.algorithm-steps {
+    padding-left: 20px;
+    font-size: 13px;
+    line-height: 1.8;
+}
+
+.algorithm-steps li {
+    margin-bottom: 4px;
+}
+
+.interaction-list {
+    padding-left: 20px;
+    font-size: 13px;
+    line-height: 1.6;
+}
+
+.interaction-list li {
+    margin-bottom: 6px;
+}
+
+/* ============================================
+   Log Probability Display
+   ============================================ */
+.log-prob-row {
+    display: flex;
+    justify-content: space-between;
+    font-size: 11px;
+    font-family: var(--viz-mono-font);
+    color: var(--viz-text-muted);
+    padding: 2px 0;
+}
+
+.log-prob-section {
+    margin-top: 8px;
+    padding: 8px;
+    background: var(--viz-hover-bg);
+    border-radius: 4px;
+    font-size: 11px;
+}
+
+.log-prob-section .log-prob-header {
+    font-weight: 600;
+    margin-bottom: 4px;
+    color: var(--viz-text);
+}
+
+.log-prob-term {
+    display: flex;
+    justify-content: space-between;
+    padding: 1px 0;
+    font-family: var(--viz-mono-font);
+}
+
+.log-prob-term.total {
+    border-top: 1px solid var(--viz-border);
+    margin-top: 4px;
+    padding-top: 4px;
+    font-weight: 600;
+}
+
+/* ============================================
+   Mode Toggle
+   ============================================ */
+.nb-heading-right {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.nb-mode-toggle .btn {
+    padding: 4px 10px;
+    font-size: 12px;
+}
+
+.nb-mode-toggle .btn.active {
+    background: var(--viz-active-bg);
+    border-color: var(--viz-active-border);
+    color: var(--viz-active-border);
+}
+
+/* ============================================
+   Gaussian NB - CSS Grid Layout
+   ============================================ */
+.gnb-grid-wrapper {
+    display: grid;
+    grid-template-columns: 120px 1fr;
+    grid-template-rows: 1fr 120px;
+    gap: 0;
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    max-height: 520px;
+}
+
+.gnb-scatter {
+    grid-column: 2;
+    grid-row: 1;
+}
+
+.gnb-scatter canvas {
+    display: block;
+    width: 100%;
+    height: 100%;
+    background: var(--viz-canvas-bg);
+    border-radius: 0 4px 0 0;
+    cursor: crosshair;
+}
+
+.gnb-dist2 {
+    grid-column: 1;
+    grid-row: 1;
+}
+
+.gnb-dist2 canvas {
+    display: block;
+    width: 100%;
+    height: 100%;
+    background: var(--viz-canvas-bg);
+    border-radius: 4px 0 0 0;
+}
+
+.gnb-dist1 {
+    grid-column: 2;
+    grid-row: 2;
+}
+
+.gnb-dist1 canvas {
+    display: block;
+    width: 100%;
+    height: 100%;
+    background: var(--viz-canvas-bg);
+    border-radius: 0 0 4px 0;
+}
+
+.gnb-corner {
+    grid-column: 1;
+    grid-row: 2;
+    background: var(--viz-canvas-bg);
+    border-radius: 0 0 0 4px;
+}
+
+/* Calc Panel (in Math tab) */
+.gnb-calc-panel {
+    margin-top: 8px;
+    padding: 10px 12px;
+    background: var(--viz-hover-bg);
+    border-radius: 6px;
+    border: 1px solid var(--viz-border);
+    font-family: var(--viz-mono-font);
+    font-size: 12px;
+    line-height: 1.6;
+    color: var(--viz-text);
+}
+
+.gnb-calc-panel .gnb-calc-title {
+    font-weight: 700;
+    font-size: 12px;
+    margin-bottom: 6px;
+    padding-bottom: 4px;
+    border-bottom: 1px solid var(--viz-border);
+}
+
+.gnb-calc-panel .gnb-calc-class-block {
+    margin-bottom: 8px;
+    padding: 6px 8px;
+    border-radius: 4px;
+    background: var(--viz-bg);
+}
+
+.gnb-calc-panel .gnb-calc-class-block:last-of-type {
+    margin-bottom: 0;
+}
+
+/* Clickable class blocks */
+.gnb-clickable-class {
+    cursor: pointer;
+    transition: opacity 0.15s ease, box-shadow 0.15s ease, transform 0.1s ease;
+}
+
+.gnb-clickable-class:hover {
+    box-shadow: 0 0 0 2px var(--viz-active-border);
+}
+
+.gnb-clickable-class.gnb-class-selected {
+    box-shadow: 0 0 0 2px var(--viz-active-border);
+}
+
+.gnb-clickable-class.gnb-class-dimmed {
+    opacity: 0.3;
+}
+
+.gnb-clickable-class.gnb-class-dimmed:hover {
+    opacity: 0.7;
+}
+
+.gnb-calc-panel .gnb-calc-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 1px 0;
+}
+
+.gnb-calc-panel .gnb-calc-result {
+    margin-top: 8px;
+    padding-top: 8px;
+    border-top: 2px solid var(--viz-border);
+    font-weight: 600;
+    font-size: 13px;
+}
+
+/* Fit Parameters Table */
+.gnb-fit-table {
+    width: 100%;
+    font-size: 11px;
+    border-collapse: collapse;
+    margin-top: 4px;
+}
+
+.gnb-fit-table th {
+    text-align: right;
+    padding: 2px 8px;
+    font-weight: 600;
+    font-size: 10px;
+    opacity: 0.7;
+    border-bottom: 1px solid var(--viz-border);
+}
+
+.gnb-fit-table th:first-child {
+    text-align: left;
+}
+
+.gnb-fit-table td {
+    text-align: right;
+    padding: 3px 8px;
+}
+
+.gnb-fit-table td:first-child {
+    text-align: left;
+    font-size: 10px;
+    opacity: 0.8;
+}
+
+/* Header: test point badge + result badge */
+.gnb-header-badges {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.gnb-header-badges .gnb-test-point-label,
+.gnb-header-badges .viz-badge {
+    font-family: var(--viz-mono-font);
+    font-size: 11px;
+    font-weight: 500;
+    padding: 3px 10px;
+    border-radius: 4px;
+    border: 1px solid;
+    white-space: nowrap;
+}
+
+.gnb-header-arrow {
+    color: var(--viz-text-muted);
+    font-size: 12px;
+    opacity: 0.6;
+}
+
+.gnb-test-point-label {
+    color: #a855f7;
+    background: rgba(168, 85, 247, 0.12);
+    border-color: rgba(168, 85, 247, 0.3);
+}
+
+[data-theme="gruvbox-dark"] .gnb-test-point-label {
+    color: #d3869b;
+    background: rgba(211, 134, 155, 0.15);
+    border-color: rgba(211, 134, 155, 0.3);
+}
+
+#gnb-result-badge.gnb-badge-0 {
+    background: rgba(59, 130, 246, 0.15);
+    color: #3b82f6;
+    border-color: #3b82f6;
+}
+
+#gnb-result-badge.gnb-badge-1 {
+    background: rgba(239, 68, 68, 0.15);
+    color: #ef4444;
+    border-color: #ef4444;
+}
+
+[data-theme="gruvbox-dark"] #gnb-result-badge.gnb-badge-0 {
+    background: rgba(131, 165, 152, 0.2);
+    color: #83a598;
+    border-color: #83a598;
+}
+
+[data-theme="gruvbox-dark"] #gnb-result-badge.gnb-badge-1 {
+    background: rgba(251, 73, 52, 0.2);
+    color: #fb4934;
+    border-color: #fb4934;
+}
+
+#gnb-result-badge.gnb-badge-2 { background: rgba(34,197,94,0.15); color: #22c55e; border-color: #22c55e; }
+#gnb-result-badge.gnb-badge-3 { background: rgba(245,158,11,0.15); color: #f59e0b; border-color: #f59e0b; }
+#gnb-result-badge.gnb-badge-4 { background: rgba(6,182,212,0.15); color: #06b6d4; border-color: #06b6d4; }
+
+[data-theme="gruvbox-dark"] #gnb-result-badge.gnb-badge-2 { background: rgba(184,187,38,0.2); color: #b8bb26; border-color: #b8bb26; }
+[data-theme="gruvbox-dark"] #gnb-result-badge.gnb-badge-3 { background: rgba(254,128,25,0.2); color: #fe8019; border-color: #fe8019; }
+[data-theme="gruvbox-dark"] #gnb-result-badge.gnb-badge-4 { background: rgba(142,192,124,0.2); color: #8ec07c; border-color: #8ec07c; }
+
+.gnb-calc-panel .gnb-class-0 {
+    color: #3b82f6;
+}
+
+.gnb-calc-panel .gnb-class-1 {
+    color: #ef4444;
+}
+
+[data-theme="gruvbox-dark"] .gnb-calc-panel .gnb-class-0 {
+    color: #83a598;
+}
+
+[data-theme="gruvbox-dark"] .gnb-calc-panel .gnb-class-1 {
+    color: #fb4934;
+}
+
+.gnb-calc-panel .gnb-class-2 { color: #22c55e; }
+.gnb-calc-panel .gnb-class-3 { color: #f59e0b; }
+.gnb-calc-panel .gnb-class-4 { color: #06b6d4; }
+
+[data-theme="gruvbox-dark"] .gnb-calc-panel .gnb-class-2 { color: #b8bb26; }
+[data-theme="gruvbox-dark"] .gnb-calc-panel .gnb-class-3 { color: #fe8019; }
+[data-theme="gruvbox-dark"] .gnb-calc-panel .gnb-class-4 { color: #8ec07c; }
+
+.gnb-calc-panel .gnb-test-pt {
+    color: #a855f7;
+    font-weight: 700;
+}
+
+[data-theme="gruvbox-dark"] .gnb-calc-panel .gnb-test-pt {
+    color: #d3869b;
+}
+
+/* Green value badges for test point values */
+.gnb-val-badge {
+    display: inline-block;
+    font-family: var(--viz-mono-font);
+    font-size: 10px;
+    font-weight: 600;
+    padding: 1px 5px;
+    border-radius: 3px;
+    vertical-align: baseline;
+}
+
+.gnb-val-test-pt {
+    color: #a855f7;
+    background: rgba(168, 85, 247, 0.12);
+    border: 1px solid rgba(168, 85, 247, 0.3);
+}
+
+[data-theme="gruvbox-dark"] .gnb-val-test-pt {
+    color: #d3869b;
+    background: rgba(211, 134, 155, 0.12);
+    border-color: rgba(211, 134, 155, 0.3);
+}
+
+.gnb-val-class-0 {
+    color: #3b82f6;
+    background: rgba(59, 130, 246, 0.12);
+    border: 1px solid rgba(59, 130, 246, 0.3);
+}
+
+.gnb-val-class-1 {
+    color: #ef4444;
+    background: rgba(239, 68, 68, 0.12);
+    border: 1px solid rgba(239, 68, 68, 0.3);
+}
+
+[data-theme="gruvbox-dark"] .gnb-val-class-0 {
+    color: #83a598;
+    background: rgba(131, 165, 152, 0.15);
+    border-color: rgba(131, 165, 152, 0.3);
+}
+
+[data-theme="gruvbox-dark"] .gnb-val-class-1 {
+    color: #fb4934;
+    background: rgba(251, 73, 52, 0.15);
+    border-color: rgba(251, 73, 52, 0.3);
+}
+
+.gnb-val-class-2 { color: #22c55e; background: rgba(34,197,94,0.12); border: 1px solid rgba(34,197,94,0.3); }
+.gnb-val-class-3 { color: #f59e0b; background: rgba(245,158,11,0.12); border: 1px solid rgba(245,158,11,0.3); }
+.gnb-val-class-4 { color: #06b6d4; background: rgba(6,182,212,0.12); border: 1px solid rgba(6,182,212,0.3); }
+
+[data-theme="gruvbox-dark"] .gnb-val-class-2 { color: #b8bb26; background: rgba(184,187,38,0.15); border-color: rgba(184,187,38,0.3); }
+[data-theme="gruvbox-dark"] .gnb-val-class-3 { color: #fe8019; background: rgba(254,128,25,0.15); border-color: rgba(254,128,25,0.3); }
+[data-theme="gruvbox-dark"] .gnb-val-class-4 { color: #8ec07c; background: rgba(142,192,124,0.15); border-color: rgba(142,192,124,0.3); }
+
+/* Formula + numbers rows */
+.gnb-calc-formula-row {
+    border-top: 1px solid var(--viz-border);
+    margin-top: 3px;
+    padding-top: 3px;
+    font-weight: 600;
+}
+
+.gnb-calc-numbers-row {
+    opacity: 0.8;
+    font-size: 11px;
+}
+
+/* Gaussian Legend */
+.gnb-legend {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 6px 0;
+    font-size: 11px;
+    color: var(--viz-text-muted);
+}
+
+.gnb-legend-item {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.gnb-legend-swatch {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    display: inline-block;
+}
+
+.gnb-legend-swatch.class-0 { background: #3b82f6; }
+.gnb-legend-swatch.class-1 { background: #ef4444; }
+.gnb-legend-swatch.test-pt { background: #a855f7; }
+
+[data-theme="gruvbox-dark"] .gnb-legend-swatch.class-0 { background: #83a598; }
+[data-theme="gruvbox-dark"] .gnb-legend-swatch.class-1 { background: #fb4934; }
+.gnb-legend-swatch.class-2 { background: #22c55e; }
+.gnb-legend-swatch.class-3 { background: #f59e0b; }
+.gnb-legend-swatch.class-4 { background: #06b6d4; }
+[data-theme="gruvbox-dark"] .gnb-legend-swatch.class-2 { background: #b8bb26; }
+[data-theme="gruvbox-dark"] .gnb-legend-swatch.class-3 { background: #fe8019; }
+[data-theme="gruvbox-dark"] .gnb-legend-swatch.class-4 { background: #8ec07c; }
+[data-theme="gruvbox-dark"] .gnb-legend-swatch.test-pt { background: #d3869b; }
+
+/* Gaussian Controls */
+.gnb-controls-panel {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+.gnb-controls-panel .gnb-options-col {
+    flex: 1;
+    min-width: 200px;
+}
+
+.gnb-controls-panel .option-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 6px;
+}
+
+.gnb-controls-panel .option-row label {
+    font-size: 12px;
+    margin: 0;
+    white-space: nowrap;
+    min-width: 100px;
+}
+
+.gnb-controls-panel .option-row input[type="range"] {
+    flex: 1;
+    max-width: 120px;
+}
+
+.gnb-controls-panel .option-row select {
+    width: auto;
+    font-size: 12px;
+    padding: 3px 6px;
+}
+
+.gnb-controls-panel .gnb-actions-col {
+    display: flex;
+    gap: 6px;
+}
+
+/* ============================================
+   Responsive
+   ============================================ */
+@media (max-width: 992px) {
+    .classify-input-group {
+        flex-direction: column;
+    }
+
+    .nb-classify-btn {
+        min-height: auto;
+        width: 100%;
+    }
+
+    .nb-controls-panel {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .nb-options-col .option-row {
+        flex-wrap: wrap;
+    }
+}
+
+@media (max-width: 768px) {
+    .word-table-wrapper {
+        max-height: 200px;
+    }
+
+    .training-list-wrapper {
+        max-height: 150px;
+    }
+
+    .add-training-row {
+        flex-direction: column;
+    }
+
+    .add-training-controls {
+        width: 100%;
+    }
+
+    .gnb-grid-wrapper {
+        grid-template-columns: 80px 1fr;
+        grid-template-rows: 1fr 80px;
+        max-height: 400px;
+    }
+
+    .gnb-controls-panel {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+}

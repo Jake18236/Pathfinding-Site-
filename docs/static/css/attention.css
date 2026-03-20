@@ -1,0 +1,592 @@
+/**
+ * Attention Mechanism Visualizer Styles
+ * Visualization-specific styles only. Common styles are in visualizations.css.
+ */
+
+/* ============================================
+   CSS Custom Properties
+   ============================================ */
+:root {
+    /* Q/K/V projection colors */
+    --attn-q-bg: rgba(21, 101, 192, 0.12);
+    --attn-q-border: #1565c0;
+    --attn-q-fill: #1565c0;
+    --attn-q-text: #1565c0;
+    --attn-k-bg: rgba(198, 40, 40, 0.10);
+    --attn-k-border: #c62828;
+    --attn-k-fill: #c62828;
+    --attn-k-text: #c62828;
+    --attn-v-bg: rgba(106, 27, 154, 0.10);
+    --attn-v-border: #6a1b9a;
+    --attn-v-fill: #6a1b9a;
+    --attn-v-text: #6a1b9a;
+
+    /* Token pills */
+    --attn-token-bg: #e8f5e9;
+    --attn-token-border: #43a047;
+    --attn-token-text: #2e7d32;
+
+    /* Embedding bars */
+    --attn-embed-pos: #42a5f5;
+    --attn-embed-neg: #ef5350;
+
+    /* Score matrix */
+    --attn-cell-bg: #f5f5f5;
+    --attn-cell-border: #e0e0e0;
+    --attn-cell-text: #333;
+    --attn-active-glow: rgba(255, 152, 0, 0.5);
+    --attn-active-border: #ff9800;
+
+    /* Heatmap gradient (blue → green) */
+    --attn-heat-cool: #e8f4f8;
+    --attn-heat-mid: #4da8da;
+    --attn-heat-warm: #10b981;
+
+    /* Output vectors */
+    --attn-output-fill: #66bb6a;
+    --attn-output-border: #43a047;
+    --attn-output-text: #2e7d32;
+
+    /* General */
+    --attn-section-title: #666;
+    --attn-label-color: #555;
+    --attn-canvas-text: #333;
+    --attn-arrow-color: #ff9800;
+    --attn-arrow-glow: rgba(255, 152, 0, 0.3);
+    --attn-dashed-line: rgba(255, 152, 0, 0.4);
+    --attn-divider: #e0e0e0;
+    --attn-scale-label: #ff9800;
+
+    /* Head colors (BertViz-style) */
+    --attn-head-0: #1f77b4;
+    --attn-head-1: #ff7f0e;
+    --attn-head-2: #2ca02c;
+    --attn-head-3: #d62728;
+    --attn-head-4: #9467bd;
+    --attn-head-5: #8c564b;
+    --attn-head-6: #e377c2;
+    --attn-head-7: #7f7f7f;
+}
+
+[data-theme="gruvbox-dark"] {
+    /* Q/K/V projection colors */
+    --attn-q-bg: rgba(131, 165, 152, 0.15);
+    --attn-q-border: #83a598;
+    --attn-q-fill: #83a598;
+    --attn-q-text: #83a598;
+    --attn-k-bg: rgba(251, 73, 52, 0.15);
+    --attn-k-border: #fb4934;
+    --attn-k-fill: #fb4934;
+    --attn-k-text: #fb4934;
+    --attn-v-bg: rgba(211, 134, 155, 0.15);
+    --attn-v-border: #d3869b;
+    --attn-v-fill: #d3869b;
+    --attn-v-text: #d3869b;
+
+    /* Token pills */
+    --attn-token-bg: rgba(184, 187, 38, 0.15);
+    --attn-token-border: #b8bb26;
+    --attn-token-text: #b8bb26;
+
+    /* Embedding bars */
+    --attn-embed-pos: #83a598;
+    --attn-embed-neg: #fb4934;
+
+    /* Score matrix */
+    --attn-cell-bg: rgba(168, 153, 132, 0.1);
+    --attn-cell-border: rgba(168, 153, 132, 0.25);
+    --attn-cell-text: #ebdbb2;
+    --attn-active-glow: rgba(254, 128, 25, 0.5);
+    --attn-active-border: #fe8019;
+
+    /* Heatmap gradient (blue → green) */
+    --attn-heat-cool: #3c3836;
+    --attn-heat-mid: #458588;
+    --attn-heat-warm: #50d67a;
+
+    /* Output vectors */
+    --attn-output-fill: #b8bb26;
+    --attn-output-border: #98971a;
+    --attn-output-text: #b8bb26;
+
+    /* General */
+    --attn-section-title: #a89984;
+    --attn-label-color: #a89984;
+    --attn-canvas-text: #ebdbb2;
+    --attn-arrow-color: #fe8019;
+    --attn-arrow-glow: rgba(254, 128, 25, 0.3);
+    --attn-dashed-line: rgba(254, 128, 25, 0.4);
+    --attn-divider: rgba(168, 153, 132, 0.3);
+    --attn-scale-label: #fe8019;
+
+    /* Head colors (BertViz-style) */
+    --attn-head-0: #83a598;
+    --attn-head-1: #fe8019;
+    --attn-head-2: #b8bb26;
+    --attn-head-3: #fb4934;
+    --attn-head-4: #d3869b;
+    --attn-head-5: #8ec07c;
+    --attn-head-6: #fabd2f;
+    --attn-head-7: #a89984;
+}
+
+/* ============================================
+   SVG Container
+   ============================================ */
+.attn-svg-container {
+    width: 100%;
+    background: var(--viz-canvas-bg);
+}
+
+.attn-svg-container svg {
+    display: block;
+    width: 100%;
+    height: auto;
+}
+
+/* ============================================
+   Controls Panel
+   ============================================ */
+.attn-controls-panel {
+    display: flex;
+    gap: 20px;
+}
+
+.attn-options-col {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.attn-actions-col {
+    width: 150px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    justify-content: center;
+}
+
+.attn-actions-col .btn-toolbar {
+    display: flex;
+    gap: 6px;
+    flex-direction: column;
+}
+
+.attn-input-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.attn-input-row label {
+    white-space: nowrap;
+    margin: 0;
+    font-weight: 600;
+    font-size: 12px;
+    min-width: 85px;
+}
+
+.attn-input-row .form-control {
+    flex: 1;
+}
+
+.attn-stepper {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.attn-stepper .btn {
+    padding: 2px 8px;
+    font-size: 11px;
+    line-height: 1.4;
+}
+
+.attn-stepper .stepper-value {
+    min-width: 28px;
+    text-align: center;
+    font-weight: 600;
+    font-size: 13px;
+}
+
+#custom-sentence-row {
+    display: none;
+}
+
+#custom-sentence-row.visible {
+    display: flex;
+}
+
+/* Custom sentence synthetic hint */
+.attn-custom-hint {
+    display: none;
+    font-size: 10px;
+    color: var(--attn-scale-label);
+    padding: 4px 8px;
+    background: rgba(255, 152, 0, 0.08);
+    border-radius: 3px;
+    margin-left: 90px;
+}
+
+.attn-custom-hint.visible {
+    display: block;
+}
+
+.attn-custom-hint i {
+    margin-right: 4px;
+}
+
+/* ============================================
+   Speed Control
+   ============================================ */
+.speed-control {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12px;
+    color: var(--viz-text-muted);
+}
+
+/* ============================================
+   Legend Overrides
+   ============================================ */
+.legend-color.attn-q-vec {
+    background-color: var(--attn-q-bg);
+    border: 2px solid var(--attn-q-border);
+}
+
+.legend-color.attn-k-vec {
+    background-color: var(--attn-k-bg);
+    border: 2px solid var(--attn-k-border);
+}
+
+.legend-color.attn-v-vec {
+    background-color: var(--attn-v-bg);
+    border: 2px solid var(--attn-v-border);
+}
+
+.legend-color.attn-token-pill {
+    background-color: var(--attn-token-bg);
+    border: 2px solid var(--attn-token-border);
+}
+
+.legend-dot.attn-heatmap-dot {
+    background: linear-gradient(90deg, var(--attn-heat-cool), var(--attn-heat-mid), var(--attn-heat-warm));
+}
+
+.legend-color.attn-output-vec {
+    background-color: rgba(102, 187, 106, 0.15);
+    border: 2px solid var(--attn-output-border);
+}
+
+/* ============================================
+   Head Color Bar (BertViz-style overlay control)
+   ============================================ */
+.attn-head-color-bar {
+    display: none;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 4px;
+    padding: 6px 10px;
+    border-bottom: 1px solid var(--attn-divider);
+    background: var(--viz-canvas-bg);
+}
+
+.attn-head-color-bar.visible {
+    display: flex;
+}
+
+.attn-head-color-bar-label {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--viz-text-muted);
+    margin-right: 4px;
+}
+
+.attn-head-btn {
+    width: 24px;
+    height: 24px;
+    border: 2px solid transparent;
+    border-radius: 4px;
+    cursor: pointer;
+    opacity: 0.35;
+    transition: opacity 0.15s, border-color 0.15s;
+    padding: 0;
+}
+
+.attn-head-btn.active {
+    opacity: 1;
+    border-color: var(--attn-cell-text);
+}
+
+.attn-head-btn:hover {
+    opacity: 0.85;
+}
+
+/* Head button tooltip */
+.attn-head-btn {
+    position: relative;
+}
+
+.attn-head-tooltip {
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--attn-cell-bg);
+    border: 1px solid var(--attn-cell-border);
+    border-radius: 4px;
+    padding: 6px 10px;
+    font-size: 10px;
+    font-family: inherit;
+    color: var(--attn-cell-text);
+    white-space: nowrap;
+    pointer-events: none;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.15s, visibility 0.15s;
+    z-index: 100;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    margin-bottom: 6px;
+    text-align: left;
+    line-height: 1.4;
+}
+
+.attn-head-tooltip::after {
+    content: '';
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    border: 5px solid transparent;
+    border-top-color: var(--attn-cell-border);
+}
+
+.attn-head-btn:hover .attn-head-tooltip {
+    opacity: 1;
+    visibility: visible;
+}
+
+.attn-head-tooltip .tooltip-stats {
+    color: var(--viz-text-muted);
+}
+
+.attn-head-btn-all {
+    width: auto;
+    height: 24px;
+    padding: 0 8px;
+    border: 1px solid var(--attn-cell-border);
+    border-radius: 4px;
+    background: var(--attn-cell-bg);
+    color: var(--attn-cell-text);
+    font-size: 10px;
+    font-weight: 600;
+    cursor: pointer;
+    margin-left: 4px;
+}
+
+.attn-head-btn-all:hover {
+    border-color: var(--attn-active-border);
+}
+
+/* ============================================
+   View Mode Bar (Lines / Heatmap toggle)
+   ============================================ */
+.attn-view-mode-bar {
+    display: none;
+    align-items: center;
+    gap: 8px;
+    padding: 4px 10px;
+    border-bottom: 1px solid var(--attn-divider);
+    background: var(--viz-canvas-bg);
+}
+
+.attn-view-mode-bar.visible {
+    display: flex;
+}
+
+.attn-view-mode-label {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--viz-text-muted);
+}
+
+.attn-layer-compare-btn {
+    margin-left: 12px;
+}
+
+.attn-layer-compare-btn.active {
+    background: var(--attn-active-border);
+    border-color: var(--attn-active-border);
+    color: #fff;
+}
+
+/* Layer comparison cell hover */
+.layer-cell:hover rect:first-child {
+    fill: var(--attn-active-border) !important;
+    opacity: 0.1 !important;
+}
+
+/* ============================================
+   View Toggle
+   ============================================ */
+.attn-view-toggle {
+    display: flex;
+    gap: 0;
+}
+
+.attn-view-toggle .btn {
+    border-radius: 0;
+    font-size: 11px;
+    padding: 3px 10px;
+}
+
+.attn-view-toggle .btn:first-child {
+    border-radius: 3px 0 0 3px;
+}
+
+.attn-view-toggle .btn:last-child {
+    border-radius: 0 3px 3px 0;
+}
+
+.attn-view-toggle .btn.active {
+    background: var(--attn-active-border);
+    border-color: var(--attn-active-border);
+    color: #fff;
+}
+
+/* ============================================
+   Equation Bar Chips
+   ============================================ */
+.eq-chip { cursor: pointer; }
+.eq-chip .eq-chip-border { opacity: 1; }
+.eq-chip:hover .eq-chip-bg { opacity: 0.18; }
+.eq-chip:hover .eq-chip-border { opacity: 1; }
+.eq-chip.active .eq-chip-bg { opacity: 0.22; }
+.eq-chip.active .eq-chip-border { opacity: 1; stroke-width: 2.5; }
+.eq-chip.active .eq-chip-underline { opacity: 1; }
+.eq-chip.locked { cursor: default; opacity: 0.3; }
+.eq-chip.locked:hover .eq-chip-bg { opacity: 0; }
+.eq-chip.locked:hover .eq-chip-border { opacity: 0.5; }
+
+/* Toggle hint hover state */
+.toggle-hint { cursor: pointer; }
+.toggle-hint text { transition: opacity 0.15s, fill 0.15s; }
+.toggle-hint:hover text { opacity: 1 !important; fill: var(--attn-active-border); }
+
+/* ============================================
+   Heading Controls (Dim / Heads / Layer)
+   ============================================ */
+.attn-heading-controls {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-left: auto;
+}
+
+.attn-heading-control {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.attn-heading-label {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--viz-text-muted);
+    white-space: nowrap;
+}
+
+.attn-heading-hint {
+    font-size: 10px;
+    color: var(--viz-text-muted);
+}
+
+/* ============================================
+   BERT Mode
+   ============================================ */
+/* Disabled stepper styling for BERT mode */
+.attn-stepper.disabled .btn {
+    opacity: 0.4;
+    pointer-events: none;
+}
+.attn-stepper.disabled .stepper-value {
+    opacity: 0.6;
+}
+
+/* ============================================
+   Run Button Pulse (IDLE state)
+   ============================================ */
+@keyframes pulse-ready {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(76, 175, 80, 0.5); }
+    50% { box-shadow: 0 0 0 6px rgba(76, 175, 80, 0); }
+}
+
+.btn.pulse-ready {
+    animation: pulse-ready 2s ease-in-out infinite;
+}
+
+[data-theme="gruvbox-dark"] .btn.pulse-ready {
+    animation-name: pulse-ready-dark;
+}
+
+@keyframes pulse-ready-dark {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(184, 187, 38, 0.5); }
+    50% { box-shadow: 0 0 0 6px rgba(184, 187, 38, 0); }
+}
+
+/* ============================================
+   Layer Animation Play Button
+   ============================================ */
+.attn-layer-play-btn {
+    margin-left: 6px;
+    padding: 2px 6px;
+}
+
+.attn-layer-play-btn.active {
+    background: var(--attn-active-border);
+    border-color: var(--attn-active-border);
+    color: #fff;
+}
+
+.attn-layer-anim-indicator {
+    font-family: 'SF Mono','Menlo','Monaco','Consolas','Courier New',monospace;
+    font-size: 10px;
+    font-weight: 600;
+    color: var(--attn-active-border);
+    margin-left: 4px;
+    min-width: 32px;
+    display: inline-block;
+}
+
+/* ============================================
+   Responsive
+   ============================================ */
+@media (max-width: 992px) {
+    .attn-controls-panel {
+        flex-direction: column;
+    }
+
+    .attn-actions-col {
+        width: 100%;
+    }
+
+    .attn-actions-col .btn-toolbar {
+        flex-direction: row;
+        justify-content: center;
+    }
+
+    .attn-head-color-bar {
+        justify-content: center;
+    }
+
+    .attn-head-card {
+        min-width: clamp(4rem, 18vw, 6rem);
+    }
+
+    .attn-mini-heatmap-cell {
+        width: clamp(5px, 2vw, 8px);
+        height: clamp(5px, 2vw, 8px);
+    }
+}

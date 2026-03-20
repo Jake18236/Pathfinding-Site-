@@ -1,0 +1,994 @@
+/**
+ * Decision Tree Classification Visualizer Styles
+ *
+ * Visualization-specific styles only. Common styles are in visualizations.css.
+ * Colors for classes 0-2 use shared --viz-class-* variables.
+ */
+
+/* ============================================
+   Decision Tree-Specific CSS Custom Properties
+   ============================================ */
+:root {
+    /* Query point size */
+    --dtree-query-size: 14px;
+
+    /* Split line styling */
+    --dtree-split-line: #333;
+    --dtree-split-line-width: 2px;
+
+    /* Decision boundary */
+    --dtree-boundary-opacity: 0.25;
+
+    /* Tree node colors */
+    --dtree-node-bg: #ffffff;
+    --dtree-node-border: #333333;
+    --dtree-node-selected: #ffd700;
+    --dtree-edge-color: #999999;
+}
+
+[data-theme="gruvbox-dark"] {
+    --dtree-split-line: var(--gruvbox-fg);
+    --dtree-node-bg: var(--gruvbox-bg1);
+    --dtree-node-border: var(--gruvbox-fg);
+    --dtree-node-selected: var(--gruvbox-yellow);
+    --dtree-edge-color: var(--gruvbox-gray);
+}
+
+/* ============================================
+   Canvas Styling
+   ============================================ */
+#dtree-canvas,
+#boundary-canvas {
+    border: none;
+    border-radius: 0;
+    display: block;
+}
+
+#boundary-canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 1;
+    pointer-events: none;
+}
+
+#dtree-canvas {
+    position: relative;
+    z-index: 2;
+    cursor: crosshair;
+}
+
+/* ============================================
+   Legend Colors
+   ============================================ */
+.legend-line.split-line {
+    background-color: var(--dtree-split-line);
+    height: 2px;
+    width: 20px;
+    display: inline-block;
+    vertical-align: middle;
+    border-style: dashed;
+}
+
+/* ============================================
+   Tree Structure Panel
+   ============================================ */
+.tree-panel-body {
+    padding: 12px;
+    text-align: center;
+    min-height: 200px;
+}
+
+#tree-svg {
+    display: block;
+    margin: 0 auto;
+    min-height: 180px;
+}
+
+#tree-svg .tree-node {
+    cursor: pointer;
+}
+
+#tree-svg .tree-node:hover circle {
+    stroke-width: 3;
+}
+
+.tree-stats {
+    display: flex;
+    justify-content: center;
+    gap: 24px;
+    padding-top: 12px;
+    border-top: 1px solid var(--viz-border);
+    font-size: 13px;
+    color: var(--viz-text-muted);
+}
+
+.tree-stats span {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.tree-stats strong {
+    color: var(--viz-text);
+    font-weight: 600;
+}
+
+/* Tree Mode Controls */
+.tree-controls {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
+.tree-mode-toggle .btn {
+    padding: 4px 10px;
+    font-size: 12px;
+}
+
+.tree-mode-toggle .btn.active {
+    background-color: var(--primary-color, #007bff);
+    border-color: var(--primary-color, #007bff);
+    color: #fff;
+}
+
+/* Design Mode Instructions */
+.design-instructions {
+    background: rgba(255, 215, 0, 0.1);
+    border: 1px solid rgba(255, 215, 0, 0.3);
+    border-radius: 4px;
+    padding: 8px 12px;
+    margin-bottom: 12px;
+    font-size: 12px;
+    color: var(--viz-text);
+    text-align: left;
+}
+
+.design-instructions i {
+    color: #ffd700;
+    margin-right: 6px;
+}
+
+/* ============================================
+   Split Dialog
+   ============================================ */
+.split-dialog {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+
+.split-dialog-content {
+    background: var(--viz-bg);
+    border-radius: 8px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    min-width: 320px;
+    max-width: 400px;
+}
+
+.split-dialog-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--viz-border);
+    font-weight: 600;
+    font-size: 14px;
+}
+
+.split-dialog-header i {
+    margin-right: 8px;
+    color: var(--viz-text-muted);
+}
+
+.split-dialog-body {
+    padding: 16px;
+}
+
+.split-option-row {
+    margin-bottom: 16px;
+}
+
+.split-option-row label {
+    display: block;
+    margin-bottom: 8px;
+    font-size: 13px;
+    font-weight: 500;
+}
+
+.split-option-row .btn-group {
+    display: flex;
+    gap: 4px;
+}
+
+.split-option-row .btn-group .btn {
+    flex: 1;
+    padding: 6px 12px;
+    font-size: 12px;
+}
+
+.split-option-row .btn-group .btn.active {
+    background-color: var(--primary-color, #007bff);
+    border-color: var(--primary-color, #007bff);
+    color: #fff;
+}
+
+.split-option-row input[type="range"] {
+    width: 100%;
+    margin-top: 8px;
+}
+
+.split-preview {
+    background: var(--viz-hover-bg);
+    border-radius: 4px;
+    padding: 10px 12px;
+    text-align: center;
+    font-family: var(--viz-mono-font);
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.split-dialog-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+    padding: 12px 16px;
+    border-top: 1px solid var(--viz-border);
+}
+
+.split-dialog-footer .btn {
+    padding: 6px 16px;
+    font-size: 13px;
+}
+
+/* ============================================
+   Class Distribution Bars
+   ============================================ */
+.class-distribution {
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 1px solid var(--viz-border);
+}
+
+.distribution-header {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--viz-text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 8px;
+}
+
+.distribution-bars {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.distribution-bar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.distribution-label {
+    min-width: 28px;
+    font-size: 11px;
+    font-weight: 600;
+}
+
+.distribution-label.class-0 { color: var(--viz-class-0); }
+.distribution-label.class-1 { color: var(--viz-class-1); }
+.distribution-label.class-2 { color: var(--viz-class-2); }
+
+.distribution-track {
+    flex: 1;
+    height: 12px;
+    background: var(--viz-hover-bg);
+    border-radius: 3px;
+    overflow: hidden;
+}
+
+.distribution-fill {
+    height: 100%;
+    border-radius: 3px;
+    transition: width 0.3s ease;
+}
+
+.distribution-fill.class-0 { background-color: var(--viz-class-0); }
+.distribution-fill.class-1 { background-color: var(--viz-class-1); }
+.distribution-fill.class-2 { background-color: var(--viz-class-2); }
+
+.distribution-value {
+    min-width: 24px;
+    font-size: 11px;
+    color: var(--viz-text-muted);
+    text-align: right;
+}
+
+/* ============================================
+   Path List
+   ============================================ */
+.path-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+    font-weight: 600;
+}
+
+.path-list {
+    max-height: 180px;
+    overflow-y: auto;
+}
+
+.path-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 6px 10px;
+    margin: 3px 0;
+    border-radius: 4px;
+    font-size: 12px;
+    background: var(--viz-hover-bg);
+    border-left: 3px solid var(--viz-border);
+}
+
+.path-item.path-leaf {
+    border-left-color: var(--dtree-node-selected);
+    background: rgba(255, 215, 0, 0.1);
+}
+
+.path-step {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: var(--viz-border);
+    font-size: 10px;
+    font-weight: 600;
+    color: var(--viz-text);
+}
+
+.path-desc {
+    flex: 1;
+    font-family: var(--viz-mono-font);
+}
+
+.path-desc i {
+    margin-left: 6px;
+    color: var(--viz-text-muted);
+}
+
+/* ============================================
+   Algorithm Steps & Formulas
+   ============================================ */
+.algorithm-steps {
+    padding-left: 20px;
+    margin: 12px 0;
+}
+
+.algorithm-steps li {
+    margin-bottom: 6px;
+}
+
+.criteria-list {
+    padding-left: 20px;
+}
+
+.criteria-list li {
+    margin-bottom: 4px;
+}
+
+/* ============================================
+   Controls Panel - Two Column Layout
+   ============================================ */
+.dtree-controls-panel {
+    display: flex;
+    gap: 20px;
+}
+
+/* Left column: Dataset & Algorithm Options */
+.dtree-options-col {
+    flex: 1;
+    display: flex;
+    gap: 16px;
+}
+
+.dtree-option-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.dtree-options-col .option-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.dtree-options-col .option-row > label:first-child {
+    min-width: 55px;
+    font-size: 12px;
+}
+
+.dtree-options-col .option-row select {
+    width: auto;
+    min-width: 100px;
+    font-size: 12px;
+}
+
+.dtree-options-col .checkbox-label {
+    font-size: 12px;
+}
+
+/* Depth stepper */
+.depth-stepper {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+}
+
+.depth-stepper .btn {
+    padding: 2px 8px;
+    font-size: 14px;
+    line-height: 1;
+}
+
+.depth-input {
+    width: 32px;
+    text-align: center;
+    font-size: 12px;
+    font-weight: 600;
+    border: 1px solid var(--viz-border);
+    border-radius: 3px;
+    padding: 2px 4px;
+    background: var(--viz-bg);
+    color: var(--viz-text);
+}
+
+/* Right column: Tree Mode */
+.dtree-mode-col {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    border-left: 1px solid var(--viz-border);
+    padding-left: 20px;
+}
+
+.tree-action-buttons {
+    display: flex;
+    gap: 4px;
+}
+
+.tree-action-buttons .btn {
+    padding: 4px 8px;
+}
+
+/* Tree tab header with stats */
+.tree-tab-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--viz-border);
+}
+
+.tree-stats-inline {
+    display: flex;
+    gap: 16px;
+    font-size: 12px;
+    color: var(--viz-text-muted);
+}
+
+.tree-stats-inline strong {
+    color: var(--viz-text);
+    font-weight: 600;
+}
+
+/* Tree wrapper with pan/zoom */
+.dtree-tree-wrapper {
+    position: relative;
+    overflow: hidden;
+    border: 1px solid var(--viz-border);
+    border-radius: 4px;
+    background: var(--viz-bg);
+    cursor: grab;
+    height: 300px;
+}
+
+.dtree-tree-wrapper:active {
+    cursor: grabbing;
+}
+
+.dtree-tree-wrapper svg {
+    display: block;
+}
+
+.tree-controls-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 6px;
+}
+
+.tree-hint {
+    font-size: 10px;
+    color: var(--viz-text-muted);
+}
+
+.tree-hint i {
+    margin-right: 4px;
+}
+
+.animation-controls {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.animation-controls .checkbox-label {
+    font-size: 11px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+/* Animation pulse effect on nodes */
+@keyframes node-pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.3); }
+    100% { transform: scale(1); }
+}
+
+.tree-node.animating circle {
+    animation: node-pulse 0.4s ease-in-out;
+}
+
+/* Animating decision display */
+.animating-decision {
+    display: inline-block;
+    font-family: var(--viz-mono-font);
+    font-weight: 600;
+    color: var(--viz-query-border);
+    animation: decision-fade 0.3s ease-in-out;
+}
+
+@keyframes decision-fade {
+    0% { opacity: 0; transform: translateY(-5px); }
+    100% { opacity: 1; transform: translateY(0); }
+}
+
+/* Tab pane styling */
+.tab-pane {
+    min-height: 350px;
+}
+
+/* Panel Tabs - match panel-heading height exactly (39px) */
+.panel-heading .nav-tabs.panel-tabs {
+    margin: -10px -15px;
+    border-bottom: none;
+    display: flex;
+}
+
+.panel-heading .nav-tabs.panel-tabs > li {
+    margin-bottom: 0;
+    float: none;
+}
+
+.panel-heading .nav-tabs.panel-tabs > li > a {
+    padding: 9px 12px;
+    border: none;
+    border-radius: 0;
+    margin: 0;
+    font-size: 13px;
+    line-height: 1.42857143;
+    display: block;
+}
+
+.panel-heading .nav-tabs.panel-tabs > li.active > a,
+.panel-heading .nav-tabs.panel-tabs > li.active > a:hover,
+.panel-heading .nav-tabs.panel-tabs > li.active > a:focus {
+    background-color: var(--viz-bg);
+    border: none;
+    border-bottom: 2px solid var(--viz-class-1, #377eb8);
+}
+
+.panel-heading .nav-tabs.panel-tabs > li > a:hover {
+    background-color: var(--viz-hover-bg);
+}
+
+/* ============================================
+   Math Tab Styles
+   ============================================ */
+.math-tab-content {
+    font-size: 13px;
+}
+
+.math-section {
+    padding: 10px 12px;
+    margin-bottom: 8px;
+    background: var(--viz-hover-bg);
+    border-radius: 6px;
+    border-left: 3px solid var(--viz-border);
+}
+
+.math-header-section {
+    border-left-color: var(--dtree-node-selected);
+    background: rgba(255, 215, 0, 0.08);
+}
+
+.math-node-title {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 4px;
+    font-weight: 600;
+}
+
+.math-split-condition code {
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.math-section-title {
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--viz-text-muted);
+    margin-bottom: 6px;
+}
+
+.math-stats {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 4px;
+    flex-wrap: wrap;
+}
+
+.math-stat {
+    color: var(--viz-text-muted);
+}
+
+.math-stat strong {
+    color: var(--viz-text);
+}
+
+.math-class-dot {
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    margin-right: 3px;
+    vertical-align: middle;
+    border: 1px solid rgba(0, 0, 0, 0.2);
+}
+
+.math-sum-box {
+    display: inline-block;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-weight: 500;
+    margin: 0 2px;
+}
+
+.math-sum-parent {
+    background-color: rgba(106, 27, 154, 0.15);
+    border: 1px solid rgba(106, 27, 154, 0.3);
+}
+
+.math-sum-left {
+    background-color: rgba(46, 125, 50, 0.15);
+    border: 1px solid rgba(46, 125, 50, 0.3);
+}
+
+.math-sum-right {
+    background-color: rgba(21, 101, 192, 0.15);
+    border: 1px solid rgba(21, 101, 192, 0.3);
+}
+
+.math-formula {
+    font-family: var(--viz-mono-font);
+    font-size: 11px;
+    color: var(--viz-text-muted);
+    margin-top: 6px;
+    line-height: 1.6;
+    word-break: break-word;
+}
+
+.math-result {
+    color: var(--viz-text);
+}
+
+.math-result strong {
+    color: var(--viz-class-1);
+    font-size: 14px;
+}
+
+.math-child-section {
+    margin-bottom: 8px;
+}
+
+.math-region-section {
+    border-radius: 6px;
+    padding: 10px 12px !important;
+    border-left-width: 4px !important;
+}
+
+.math-term {
+    display: inline-flex;
+    align-items: center;
+    white-space: nowrap;
+}
+
+.math-parent-title {
+    color: #6a1b9a;
+}
+
+.math-left-title {
+    color: #2e7d32;
+}
+
+.math-left-title::before {
+    content: "◀ ";
+    font-size: 10px;
+}
+
+.math-right-title {
+    color: #1565c0;
+}
+
+.math-right-title::before {
+    content: "▶ ";
+    font-size: 10px;
+}
+
+.math-child-section .math-section-title small {
+    font-weight: 400;
+    text-transform: none;
+    letter-spacing: normal;
+    opacity: 0.7;
+}
+
+.math-gain-section {
+    border-left-color: var(--viz-class-1);
+}
+
+.math-gain-formula {
+    margin-top: 4px;
+}
+
+.math-gain-breakdown {
+    font-size: 11px;
+    line-height: 1.6;
+    margin-bottom: 8px;
+    word-break: break-word;
+}
+
+.math-gain-weights {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 10px;
+    padding: 10px 12px;
+    background: var(--viz-bg-secondary, #f8f9fa);
+    border-radius: 4px;
+}
+
+.math-gain-weights > div {
+    color: var(--viz-text-muted);
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 4px;
+}
+
+.math-gain-weights strong {
+    color: var(--viz-text);
+}
+
+.math-fraction {
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+    vertical-align: middle;
+    margin: 0 4px;
+}
+
+.math-numerator {
+    border-bottom: 1px solid var(--viz-text-muted);
+    padding: 0 3px 1px;
+    line-height: 1.1;
+    font-size: 0.95em;
+}
+
+.math-denominator {
+    padding: 1px 3px 0;
+    line-height: 1.1;
+    font-size: 0.95em;
+}
+
+.math-formula-term {
+    white-space: nowrap;
+}
+
+.math-weight-left {
+    border-left: 3px solid #2e7d32;
+    padding-left: 8px;
+}
+
+.math-weight-right {
+    border-left: 3px solid #1565c0;
+    padding-left: 8px;
+}
+
+.math-symbol-left {
+    color: #2e7d32;
+    font-size: 10px;
+    margin-right: 4px;
+}
+
+.math-symbol-right {
+    color: #1565c0;
+    font-size: 10px;
+    margin-right: 4px;
+}
+
+.math-val-parent {
+    color: #6a1b9a;
+    font-weight: 600;
+}
+
+.math-val-left {
+    color: #2e7d32;
+    font-weight: 500;
+}
+
+.math-val-right {
+    color: #1565c0;
+    font-weight: 500;
+}
+
+.math-gain-calculation {
+    padding-left: 4px;
+    line-height: 1.8;
+}
+
+.math-gain-result {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--viz-text);
+    padding-top: 6px;
+    border-top: 1px dashed var(--viz-border);
+}
+
+.math-gain-result strong {
+    color: var(--viz-class-1);
+    font-size: 16px;
+}
+
+.math-reset-section {
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 1px solid var(--viz-border);
+    text-align: center;
+}
+
+.math-reset-section .btn {
+    font-size: 12px;
+}
+
+#tab-math .list-empty {
+    text-align: center;
+    padding: 40px 20px;
+    color: var(--viz-text-muted);
+}
+
+/* Math tab node selection highlight */
+#tree-svg .tree-node.math-selected circle {
+    stroke: var(--viz-class-1);
+    stroke-width: 3px;
+    stroke-dasharray: 4 2;
+}
+
+/* ============================================
+   Dark Theme Overrides
+   ============================================ */
+[data-theme="gruvbox-dark"] .math-class-dot {
+    border-color: rgba(235, 219, 178, 0.3);
+}
+
+[data-theme="gruvbox-dark"] .math-parent-title,
+[data-theme="gruvbox-dark"] .math-val-parent {
+    color: var(--gruvbox-purple);
+}
+
+[data-theme="gruvbox-dark"] .math-left-title,
+[data-theme="gruvbox-dark"] .math-val-left,
+[data-theme="gruvbox-dark"] .math-symbol-left {
+    color: var(--gruvbox-green);
+}
+
+[data-theme="gruvbox-dark"] .math-right-title,
+[data-theme="gruvbox-dark"] .math-val-right,
+[data-theme="gruvbox-dark"] .math-symbol-right {
+    color: var(--gruvbox-blue);
+}
+
+[data-theme="gruvbox-dark"] .math-sum-parent {
+    background-color: rgba(211, 134, 155, 0.15);
+    border-color: rgba(211, 134, 155, 0.3);
+}
+
+[data-theme="gruvbox-dark"] .math-sum-left {
+    background-color: rgba(184, 187, 38, 0.15);
+    border-color: rgba(184, 187, 38, 0.3);
+}
+
+[data-theme="gruvbox-dark"] .math-sum-right {
+    background-color: rgba(131, 165, 152, 0.15);
+    border-color: rgba(131, 165, 152, 0.3);
+}
+
+[data-theme="gruvbox-dark"] .math-weight-left {
+    border-left-color: var(--gruvbox-green);
+}
+
+[data-theme="gruvbox-dark"] .math-weight-right {
+    border-left-color: var(--gruvbox-blue);
+}
+
+[data-theme="gruvbox-dark"] .math-header-section {
+    background: rgba(250, 189, 47, 0.08);
+}
+
+[data-theme="gruvbox-dark"] .design-instructions {
+    background: rgba(250, 189, 47, 0.1);
+    border-color: rgba(250, 189, 47, 0.3);
+}
+
+[data-theme="gruvbox-dark"] .design-instructions i {
+    color: var(--gruvbox-yellow);
+}
+
+[data-theme="gruvbox-dark"] .path-item.path-leaf {
+    background: rgba(250, 189, 47, 0.1);
+}
+
+[data-theme="gruvbox-dark"] .math-gain-weights {
+    background: var(--viz-hover-bg);
+}
+
+/* ============================================
+   Responsive Adjustments
+   ============================================ */
+@media (max-width: 992px) {
+    .dtree-controls-panel {
+        flex-direction: column;
+    }
+
+    .dtree-mode-col {
+        border-left: none;
+        border-top: 1px solid var(--viz-border);
+        padding-left: 0;
+        padding-top: 15px;
+    }
+
+    .split-dialog-content {
+        margin: 16px;
+        min-width: auto;
+        max-width: calc(100% - 32px);
+    }
+}

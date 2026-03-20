@@ -1,0 +1,232 @@
+/**
+ * Perceptron Learning Visualizer Styles
+ * Visualization-specific styles only. Common styles are in visualizations.css.
+ */
+
+/* ============================================
+   Perceptron CSS Custom Properties
+   ============================================ */
+:root {
+    --perceptron-boundary: #111827;
+    --perceptron-vector: #0f766e;
+    --perceptron-margin: rgba(17, 24, 39, 0.25);
+
+    --perceptron-misclassified: #f59e0b;
+    --perceptron-highlight: #facc15;
+}
+
+[data-theme="gruvbox-dark"] {
+    --perceptron-boundary: var(--gruvbox-fg);
+    --perceptron-vector: var(--gruvbox-blue);
+    --perceptron-margin: rgba(235, 219, 178, 0.25);
+
+    --perceptron-misclassified: var(--gruvbox-yellow);
+    --perceptron-highlight: var(--gruvbox-orange);
+}
+
+/* ============================================
+   Canvas Styling
+   ============================================ */
+#perceptron-canvas {
+    border: none;
+    border-radius: 0;
+    display: block;
+    width: 100%;
+    cursor: default;
+}
+
+/* ============================================
+   Click Overlay
+   ============================================ */
+.click-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0, 0, 0, 0.3);
+    z-index: 5;
+    border-radius: 4px;
+    pointer-events: none;
+}
+
+.click-overlay span {
+    color: #fff;
+    font-size: 1rem;
+    font-weight: 500;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+}
+
+/* ============================================
+   Panel Header Controls
+   ============================================ */
+.perceptron-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+
+.header-left {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.header-left select {
+    width: auto;
+    min-width: 6rem;
+}
+
+.header-right {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.header-right .speed-control {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 11px;
+    color: var(--viz-text-muted);
+}
+
+.header-right .speed-control input[type="range"] {
+    width: 4rem;
+}
+
+/* ============================================
+   Controls Tab
+   ============================================ */
+.perceptron-tab-controls {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.perceptron-tab-controls .option-row {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.perceptron-tab-controls .option-row > label {
+    min-width: 4rem;
+    font-size: 12px;
+    font-weight: 600;
+    margin: 0;
+}
+
+.perceptron-tab-controls .option-row select {
+    flex: 1;
+}
+
+.perceptron-tab-controls .option-row input[type="range"] {
+    flex: 1;
+}
+
+.perceptron-tab-controls .range-value {
+    font-family: var(--viz-mono-font);
+    font-size: 11px;
+    min-width: 2.5rem;
+    text-align: right;
+}
+
+.perceptron-tab-controls .checkbox-row {
+    padding-left: 4rem;
+}
+
+.controls-divider {
+    margin: 0.25rem 0;
+    border-color: var(--viz-border);
+}
+
+.checkbox-label {
+    font-size: 12px;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+/* ============================================
+   Step List Highlight
+   ============================================ */
+.algo-step-list {
+    margin: 0;
+    padding-left: 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.algo-step-list li {
+    padding: 6px 8px;
+    border-radius: 4px;
+    transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.algo-step-list li.active {
+    background: var(--viz-active-bg);
+    border: 1px solid var(--viz-active-border);
+    color: var(--viz-text);
+}
+
+/* ============================================
+   Sample Metrics
+   ============================================ */
+.sample-metrics {
+    margin-top: 10px;
+    padding-top: 10px;
+    border-top: 1px solid var(--viz-border);
+    font-size: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.sample-label {
+    font-weight: 600;
+    margin-right: 4px;
+}
+
+/* ============================================
+   Legend Overrides
+   ============================================ */
+.legend-line.boundary-line {
+    background-color: var(--perceptron-boundary);
+    height: 2px;
+}
+
+.legend-line.weight-vector {
+    background-color: var(--perceptron-vector);
+    height: 2px;
+}
+
+.legend-line.margin-line {
+    background-color: var(--perceptron-margin);
+    height: 2px;
+}
+
+.legend-color.misclassified {
+    background-color: var(--perceptron-misclassified);
+}
+
+/* ============================================
+   Responsive Tuning
+   ============================================ */
+@media (max-width: 991px) {
+    .perceptron-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .perceptron-tab-controls .checkbox-row {
+        padding-left: 0;
+    }
+}

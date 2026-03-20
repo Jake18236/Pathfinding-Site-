@@ -1,0 +1,367 @@
+/**
+ * Linear Transformations Visualizer Styles
+ * Visualization-specific styles only. Common styles are in visualizations.css.
+ */
+
+/* ============================================
+   CSS Custom Properties
+   ============================================ */
+:root {
+    --lt-e1: #e41a1c;
+    --lt-e2: #377eb8;
+    --lt-circle: #ff7f00;
+    --lt-eigen: #984ea3;
+    --lt-data: #4daf4a;
+    --lt-bracket: #555;
+    --lt-input-bg: #fff;
+    --lt-input-border: #ccc;
+}
+
+[data-theme="gruvbox-dark"] {
+    --lt-e1: #fb4934;
+    --lt-e2: #83a598;
+    --lt-circle: #fabd2f;
+    --lt-eigen: #d3869b;
+    --lt-data: #b8bb26;
+    --lt-bracket: #a89984;
+    --lt-input-bg: #3c3836;
+    --lt-input-border: #504945;
+}
+
+/* ============================================
+   Canvas
+   ============================================ */
+#transform-canvas {
+    display: block;
+    width: 100%;
+    cursor: default;
+    background: var(--viz-canvas-bg);
+}
+
+/* ============================================
+   Determinant Badge
+   ============================================ */
+.det-badge {
+    transition: all 0.3s ease;
+}
+
+/* ============================================
+   Controls Layout
+   ============================================ */
+.lt-controls-panel {
+    display: flex;
+    gap: 20px;
+}
+
+.lt-matrix-col {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.lt-toggles-col {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    justify-content: center;
+}
+
+.lt-actions-col {
+    width: 140px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    justify-content: center;
+}
+
+.lt-actions-col .btn-toolbar {
+    display: flex;
+    gap: 6px;
+    flex-direction: column;
+}
+
+.control-label-sm {
+    font-size: 12px;
+    font-weight: 600;
+    margin: 0;
+}
+
+/* ============================================
+   Matrix Editor
+   ============================================ */
+.matrix-editor {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.matrix-bracket {
+    font-size: 42px;
+    font-weight: 200;
+    line-height: 1;
+    color: var(--lt-bracket);
+    user-select: none;
+}
+
+.matrix-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4px;
+}
+
+.matrix-input {
+    width: 60px;
+    height: 30px;
+    text-align: center;
+    font-family: var(--viz-mono-font);
+    font-size: 13px;
+    font-weight: 600;
+    border: 1px solid var(--lt-input-border);
+    border-radius: 3px;
+    background: var(--lt-input-bg);
+    color: var(--viz-text);
+    padding: 0 4px;
+}
+
+/* Hide number spinners */
+.matrix-input::-webkit-outer-spin-button,
+.matrix-input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+.matrix-input[type=number] {
+    -moz-appearance: textfield;
+}
+
+.matrix-input:focus {
+    outline: none;
+    border-color: var(--viz-active-border);
+    box-shadow: 0 0 0 2px rgba(40, 167, 69, 0.2);
+}
+
+/* ============================================
+   Legend Line/Dot Overrides
+   ============================================ */
+.legend-line.basis-e1 {
+    background-color: var(--lt-e1);
+    height: 3px;
+}
+
+.legend-line.basis-e2 {
+    background-color: var(--lt-e2);
+    height: 3px;
+}
+
+.legend-line.unit-circle {
+    background-color: var(--lt-circle);
+    height: 2px;
+}
+
+.legend-line.eigen-line {
+    background-color: var(--lt-eigen);
+    height: 2px;
+    border-top: 1px dashed var(--lt-eigen);
+    background: none;
+}
+
+.legend-dot.data-point {
+    background-color: var(--lt-data);
+}
+
+/* ============================================
+   Speed Control
+   ============================================ */
+.speed-control {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12px;
+    color: var(--viz-text-muted);
+}
+
+/* ============================================
+   Checkbox Labels
+   ============================================ */
+.checkbox-label {
+    font-size: 12px;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    cursor: pointer;
+}
+
+/* ============================================
+   Composition Panel
+   ============================================ */
+.lt-compose-panel {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.chain-hint {
+    font-size: 12px;
+    color: var(--viz-text-muted);
+    margin: 0;
+    line-height: 1.4;
+}
+
+.chain-display {
+    min-height: 32px;
+}
+
+.chain-empty {
+    text-align: center;
+    color: var(--viz-text-muted);
+    font-size: 12px;
+    padding: 10px;
+    border: 1px dashed var(--lt-input-border);
+    border-radius: 6px;
+}
+
+.chain-items {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.chain-arrow {
+    color: var(--viz-text-muted);
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.chain-chip {
+    border: 1px solid var(--lt-input-border);
+    border-radius: 6px;
+    padding: 6px 8px;
+    background: var(--lt-input-bg);
+    min-width: 88px;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease, opacity 0.3s ease;
+}
+
+.chain-chip-active {
+    border-color: var(--lt-e1);
+    box-shadow: 0 0 0 2px rgba(228, 26, 28, 0.25);
+}
+
+[data-theme="gruvbox-dark"] .chain-chip-active {
+    box-shadow: 0 0 0 2px rgba(251, 73, 52, 0.3);
+}
+
+.chain-chip-done {
+    opacity: 0.5;
+}
+
+.chain-chip-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2px;
+}
+
+.chain-chip-label {
+    font-weight: 700;
+    font-size: 13px;
+    color: var(--viz-text);
+}
+
+.chain-chip-remove {
+    background: none;
+    border: none;
+    color: var(--viz-text-muted);
+    cursor: pointer;
+    font-size: 16px;
+    line-height: 1;
+    padding: 0 2px;
+}
+
+.chain-chip-remove:hover {
+    color: var(--lt-e1);
+}
+
+.chain-chip-name {
+    font-size: 10px;
+    color: var(--viz-text-muted);
+    margin-bottom: 2px;
+}
+
+.chain-chip-matrix {
+    font-family: var(--viz-mono-font);
+    font-size: 11px;
+    color: var(--viz-text);
+    line-height: 1.3;
+}
+
+/* Composed result */
+.chain-composed {
+    padding: 8px 10px;
+    background: var(--lt-input-bg);
+    border-radius: 6px;
+    border: 1px dashed var(--lt-input-border);
+}
+
+.composed-equation {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 4px;
+}
+
+.composed-label {
+    font-family: var(--viz-mono-font);
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--viz-text);
+    white-space: nowrap;
+}
+
+.composed-matrix {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+}
+
+.composed-matrix .matrix-bracket {
+    font-size: 32px;
+}
+
+.composed-values {
+    font-family: var(--viz-mono-font);
+    font-size: 12px;
+    font-weight: 600;
+    line-height: 1.4;
+    color: var(--viz-text);
+}
+
+/* Chain actions */
+.chain-actions {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+}
+
+/* ============================================
+   Responsive
+   ============================================ */
+@media (max-width: 992px) {
+    .lt-controls-panel {
+        flex-direction: column;
+    }
+
+    .lt-actions-col {
+        width: 100%;
+    }
+
+    .lt-actions-col .btn-toolbar {
+        flex-direction: row;
+        justify-content: center;
+    }
+
+    .chain-actions {
+        justify-content: center;
+    }
+}

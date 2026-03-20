@@ -1,0 +1,131 @@
+/**
+ * Clustering Visualizer Styles
+ *
+ * Visualization-specific styles only. Common styles are in visualizations.css.
+ * Colors for clusters 0-7 use shared --viz-class-* variables.
+ */
+
+/* ============================================
+   Clustering-Specific CSS Custom Properties
+   ============================================ */
+:root {
+    /* Centroid styling */
+    --cluster-centroid-stroke: #333333;
+    --cluster-centroid-fill: #ffffff;
+
+    /* Voronoi region opacity */
+    --cluster-voronoi-opacity: 0.12;
+
+    /* History trail */
+    --cluster-history-opacity: 0.4;
+}
+
+[data-theme="gruvbox-dark"] {
+    --cluster-centroid-stroke: #ebdbb2;
+    --cluster-centroid-fill: #3c3836;
+    --cluster-voronoi-opacity: 0.15;
+    --cluster-history-opacity: 0.5;
+}
+
+/* ============================================
+   Canvas Styling
+   ============================================ */
+#clustering-canvas {
+    cursor: crosshair;
+    position: relative;
+    z-index: 2;
+}
+
+/* ============================================
+   Legend Colors
+   ============================================ */
+.legend-color.cluster-centroid {
+    background-color: var(--cluster-centroid-fill);
+    border: 2px solid var(--cluster-centroid-stroke);
+    border-radius: 0;
+    transform: rotate(45deg);
+    width: 12px;
+    height: 12px;
+}
+
+/* ============================================
+   Controls Panel Layout
+   ============================================ */
+.cluster-controls-panel {
+    display: flex;
+    gap: 20px;
+}
+
+.cluster-options-col {
+    flex: 1;
+}
+
+.cluster-option-group {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    flex-wrap: wrap;
+    margin-bottom: 6px;
+}
+
+.cluster-option-group:last-child {
+    margin-bottom: 0;
+}
+
+.cluster-options-col .option-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.cluster-options-col .option-row > label:first-child {
+    min-width: 55px;
+    font-size: 12px;
+    margin: 0;
+}
+
+.cluster-options-col .option-row select {
+    width: auto;
+    min-width: 120px;
+    font-size: 12px;
+}
+
+.cluster-options-col .checkbox-label {
+    font-size: 12px;
+    margin-right: 10px;
+}
+
+/* Right column: Playback */
+.cluster-playback-col {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    border-left: 1px solid var(--viz-border);
+    padding-left: 20px;
+}
+
+.cluster-playback-col .btn-toolbar {
+    display: flex;
+    gap: 4px;
+}
+
+.cluster-playback-col .btn-toolbar .btn {
+    padding: 4px 8px;
+}
+
+/* ============================================
+   Responsive Adjustments
+   ============================================ */
+@media (max-width: 992px) {
+    .cluster-controls-panel {
+        flex-direction: column;
+    }
+
+    .cluster-playback-col {
+        border-left: none;
+        border-top: 1px solid var(--viz-border);
+        padding-left: 0;
+        padding-top: 15px;
+    }
+}

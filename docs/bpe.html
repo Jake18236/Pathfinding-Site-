@@ -1,0 +1,1201 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="bluegold">
+    <head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+
+	<meta name="description" content="Watch BPE build a subword vocabulary by iteratively merging the most frequent character pairs.">
+	<meta name="author" content="William Theisen">
+
+	<title>Byte Pair Encoding (BPE) | Exploring Artificial Intelligence</title>
+
+	<link rel="canonical" href="https://ai.williamtheisen.com/bpe.html">
+
+	<!-- Open Graph -->
+	<meta property="og:type" content="article">
+	<meta property="og:title" content="Byte Pair Encoding (BPE) | Exploring Artificial Intelligence">
+	<meta property="og:description" content="Watch BPE build a subword vocabulary by iteratively merging the most frequent character pairs.">
+	<meta property="og:url" content="https://ai.williamtheisen.com/bpe.html">
+	<meta property="og:image" content="https://ai.williamtheisen.com/static/img/og-default.png">
+	<meta property="og:site_name" content="Exploring Artificial Intelligence">
+
+	<!-- Twitter Card -->
+	<meta name="twitter:card" content="summary_large_image">
+	<meta name="twitter:title" content="Byte Pair Encoding (BPE) | Exploring Artificial Intelligence">
+	<meta name="twitter:description" content="Watch BPE build a subword vocabulary by iteratively merging the most frequent character pairs.">
+	<meta name="twitter:image" content="https://ai.williamtheisen.com/static/img/og-default.png">
+
+	<!-- JSON-LD Structured Data -->
+	
+	<script type="application/ld+json">
+	{
+		"@context": "https://schema.org",
+		"@type": "LearningResource",
+		"name": "Byte Pair Encoding (BPE)",
+		"description": "Watch BPE build a subword vocabulary by iteratively merging the most frequent character pairs.",
+		"url": "https://ai.williamtheisen.com/bpe.html",
+		"image": "https://ai.williamtheisen.com/static/img/og-default.png",
+		"educationalLevel": "Undergraduate",
+		"learningResourceType": "Interactive visualization",
+		"author": {
+			"@type": "Person",
+			"name": "William Theisen"
+		},
+		"provider": {
+			"@type": "Organization",
+			"name": "University of Notre Dame"
+		},
+		"keywords": "NLP, Tokenization"
+	}
+	</script>
+	
+
+	<!-- Theme CSS (toggleable) -->
+	<link id="theme-style" href="static/css/bluegold.css" rel="stylesheet">
+	
+	<!-- Shared visualization styles -->
+	<link rel="stylesheet" href="static/css/visualizations.css">
+	
+	<script src="https://kit.fontawesome.com/9d2722956c.js" crossorigin="anonymous"></script>
+
+	<style>
+	body {
+	    padding: 10px;
+	}
+	.resource-list {
+	    list-style: none;
+	    padding-left: 0;
+	    margin-bottom: 1.25em;
+	}
+	.resource-credit {
+	    margin-left: 0.5em;
+	    font-size: 0.85em;
+	    color: #777;
+	    font-style: italic;
+	}
+	.resource-credit::before {
+	    content: "\2014";
+	    margin-right: 0.35em;
+	}
+	.teaser-row {
+	    position: relative;
+	    padding-right: 42%;
+	}
+	.teaser-row .teaser-text {
+	    margin-right: 0;
+	}
+	.teaser-row .teaser-image-col {
+	    position: absolute;
+	    right: 0;
+	    top: 0;
+	    height: 100%;
+	    width: 41.66666667%;
+	    display: flex;
+	    align-items: center;
+	    justify-content: center;
+	    padding-left: 15px;
+	    box-sizing: border-box;
+	}
+	.teaser-row .teaser-image {
+	    max-height: 100%;
+	    width: auto;
+	    max-width: 100%;
+	    object-fit: contain;
+	}
+	@media (max-width: 991px) {
+	    .teaser-row {
+	        padding-right: 0;
+	    }
+	    .teaser-row .teaser-image-col {
+	        position: static;
+	        height: auto;
+	        width: 100%;
+	        padding-left: 0;
+	        margin-top: 1em;
+	    }
+	    .teaser-row .teaser-image {
+	        max-height: 320px;
+	    }
+	}
+#library-card-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    margin-top: 10px;
+    max-height: 540px;
+    overflow-y: auto;
+    padding-right: 8px;
+}
+.library-card-wrapper {
+    flex: 1 1 calc(20% - 16px);
+    max-width: calc(20% - 16px);
+    min-width: 180px;
+    display: flex;
+    max-height: 100%;
+}
+    .theme-toggle-btn {
+        position: relative;
+        display: inline-flex;
+        align-items: center;
+        justify-content: space-between;
+        width: 54px;
+        height: 28px;
+        margin-top: 8px;
+        margin-left: 12px;
+        padding: 0 8px;
+        border-radius: 999px;
+        border: 1px solid rgba(15, 23, 42, 0.18);
+        background-color: #f2f6ff;
+        cursor: pointer;
+        transition: background-color 0.25s ease, border-color 0.25s ease;
+    }
+    .theme-toggle-btn:focus {
+        outline: none;
+        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.35);
+    }
+    .theme-toggle-btn .theme-icon,
+    .theme-toggle-btn .theme-toggle-handle {
+        pointer-events: none;
+    }
+    .theme-toggle-btn .theme-icon {
+        font-size: 0.85em;
+        opacity: 0.5;
+        transition: opacity 0.25s ease;
+        position: relative;
+        z-index: 2;
+    }
+    .theme-toggle-btn .theme-icon--sun {
+        color: #f59e0b;
+        opacity: 1;
+    }
+    .theme-toggle-btn .theme-icon--moon {
+        color: #c084fc;
+    }
+    .theme-toggle-btn .theme-toggle-handle {
+        position: absolute;
+        top: 2px;
+        left: 2px;
+        width: 24px;
+        height: 24px;
+        border-radius: 50%;
+        background-color: #ffffff;
+        box-shadow: 0 1px 4px rgba(0, 0, 0, 0.15);
+        transition: transform 0.25s ease, background-color 0.25s ease;
+        z-index: 1;
+    }
+    [data-theme="bluegold"] .theme-toggle-btn {
+        background-color: #f2f6ff;
+        border-color: rgba(15, 23, 42, 0.18);
+    }
+    [data-theme="bluegold"] .theme-toggle-btn .theme-toggle-handle {
+        transform: translateX(0);
+        background-color: #ffffff;
+    }
+    [data-theme="bluegold"] .theme-toggle-btn .theme-icon--sun {
+        opacity: 1;
+    }
+    [data-theme="bluegold"] .theme-toggle-btn .theme-icon--moon {
+        opacity: 0.35;
+    }
+    [data-theme="gruvbox-dark"] .theme-toggle-btn {
+        background-color: #3c3836;
+        border-color: #665c54;
+        color: #ebdbb2;
+    }
+    [data-theme="gruvbox-dark"] .theme-toggle-btn .theme-toggle-handle {
+        transform: translateX(26px);
+        background-color: #1d2021;
+    }
+    [data-theme="gruvbox-dark"] .theme-toggle-btn .theme-icon--sun {
+        opacity: 0.35;
+    }
+    [data-theme="gruvbox-dark"] .theme-toggle-btn .theme-icon--moon {
+        opacity: 1;
+    }
+	.library-card {
+	    display: flex;
+	    flex-direction: column;
+	    width: 100%;
+	    border-radius: 6px;
+	    border: 1px solid #ddd;
+	    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+	    overflow: hidden;
+	    background-color: #fff;
+	    color: #333;
+	}
+	.library-card-cover {
+	    aspect-ratio: 2 / 3;
+	    width: 100%;
+	    min-height: 220px;
+	    max-height: 320px;
+	    background-color: #f7f7f7;
+	    display: grid;
+	    place-items: center;
+	    overflow: hidden;
+	    padding: 6px;
+	}
+	.library-card-cover img {
+	    width: 100%;
+	    height: 100%;
+	    object-fit: contain;
+	    background-color: transparent;
+	}
+	.library-card-body {
+	    flex: 1 1 auto;
+	    display: flex;
+	    flex-direction: column;
+	}
+	.library-card-title {
+	    margin-top: 0;
+	    font-size: 0.95em;
+	    line-height: 1.35;
+	    min-height: 2.7em;
+	}
+	.library-card-meta {
+	    font-size: 0.82em;
+	    color: #555;
+	    margin-bottom: 6px;
+	}
+	.library-card-footer {
+	    display: flex;
+	    align-items: center;
+	    justify-content: space-between;
+	    font-size: 0.78em;
+	}
+	[data-theme="gruvbox-dark"] .library-card {
+	    border-color: #504945;
+	    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.45);
+	    background-color: #282828;
+	    color: #ebdbb2;
+	}
+	[data-theme="gruvbox-dark"] .library-card-cover {
+	    background-color: #32302f;
+	}
+	[data-theme="gruvbox-dark"] .library-card-body {
+	    color: #ebdbb2;
+	}
+	[data-theme="gruvbox-dark"] .library-card-footer {
+	    color: #d5c4a1;
+	}
+	[data-theme="gruvbox-dark"] .library-card-title,
+	[data-theme="gruvbox-dark"] .library-card-meta {
+	    color: #d5c4a1;
+	}
+	/* Learning cards */
+	.learning-card-container {
+	    display: flex;
+	    flex-wrap: wrap;
+	    gap: 16px;
+	    margin-top: 10px;
+	    max-height: 540px;
+	    overflow-y: auto;
+	    padding-right: 8px;
+	}
+	.learning-card-wrapper {
+	    flex: 1 1 calc(25% - 16px);
+	    max-width: calc(25% - 16px);
+	    min-width: 220px;
+	    display: flex;
+	}
+	@media (max-width: 991px) {
+	    .learning-card-wrapper {
+	        flex: 1 1 calc(50% - 16px);
+	        max-width: calc(50% - 16px);
+	    }
+	}
+	@media (max-width: 575px) {
+	    .learning-card-wrapper {
+	        flex: 1 1 100%;
+	        max-width: 100%;
+	    }
+	}
+	.learning-card {
+	    display: flex;
+	    flex-direction: column;
+	    width: 100%;
+	    border-radius: 6px;
+	    border: 1px solid #ddd;
+	    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+	    overflow: hidden;
+	    background-color: #fff;
+	    color: #333;
+	    transition: transform 0.2s ease, box-shadow 0.2s ease;
+	}
+	.learning-card:hover {
+	    transform: translateY(-2px);
+	    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+	}
+	.learning-card-header {
+	    display: flex;
+	    align-items: flex-start;
+	    gap: 12px;
+	    padding: 12px 12px 8px 12px;
+	}
+	.learning-card-icon {
+	    width: 36px;
+	    height: 36px;
+	    border-radius: 6px;
+	    background: #4e73df;
+	    display: flex;
+	    align-items: center;
+	    justify-content: center;
+	    flex-shrink: 0;
+	}
+	.learning-card-icon i {
+	    font-size: 16px;
+	    color: #fff;
+	}
+	.learning-card-icon.tweet-icon {
+	    background: #1da1f2;
+	}
+	.learning-card-title-group {
+	    flex: 1;
+	    min-width: 0;
+	}
+	.learning-card-title {
+	    margin: 0 0 4px 0;
+	    font-size: 0.92em;
+	    font-weight: 600;
+	    line-height: 1.35;
+	}
+	.learning-card-title a {
+	    color: inherit;
+	    text-decoration: none;
+	}
+	.learning-card-title a:hover {
+	    text-decoration: underline;
+	}
+	.learning-card-author {
+	    font-size: 0.82em;
+	    color: #666;
+	    margin: 0;
+	}
+	.learning-card-body {
+	    flex: 1 1 auto;
+	    padding: 0 12px 12px 12px;
+	    font-size: 0.85em;
+	    color: #555;
+	    line-height: 1.5;
+	}
+	.learning-card-body p {
+	    margin: 0;
+	}
+	.learning-card-media {
+	    display: flex;
+	    flex-wrap: wrap;
+	    gap: 6px;
+	    justify-content: center;
+	    padding: 0 12px;
+	    margin-bottom: 8px;
+	}
+	.learning-card-media img {
+	    max-width: 100%;
+	    max-height: 150px;
+	    border-radius: 6px;
+	    object-fit: cover;
+	}
+	.learning-card-footer {
+	    display: flex;
+	    align-items: center;
+	    justify-content: space-between;
+	    padding: 8px 12px;
+	    border-top: 1px solid #eee;
+	    font-size: 0.78em;
+	    margin-top: auto;
+	}
+	.learning-card-type {
+	    padding: 2px 8px;
+	    border-radius: 4px;
+	    background: #f0f0f5;
+	    color: #555;
+	    font-weight: 500;
+	    text-transform: capitalize;
+	}
+	.learning-card-date {
+	    color: #777;
+	}
+	.learning-card-link {
+	    color: #666;
+	    font-size: 1.1em;
+	    transition: color 0.2s ease;
+	}
+	.learning-card-link:hover {
+	    color: #1da1f2;
+	}
+	/* Learning cards dark theme */
+	[data-theme="gruvbox-dark"] .learning-card {
+	    border-color: #504945;
+	    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.45);
+	    background-color: #282828;
+	    color: #ebdbb2;
+	}
+	[data-theme="gruvbox-dark"] .learning-card:hover {
+	    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.55);
+	}
+	[data-theme="gruvbox-dark"] .learning-card-icon {
+	    background: #458588;
+	}
+	[data-theme="gruvbox-dark"] .learning-card-icon.tweet-icon {
+	    background: #83a598;
+	}
+	[data-theme="gruvbox-dark"] .learning-card-title {
+	    color: #ebdbb2;
+	}
+	[data-theme="gruvbox-dark"] .learning-card-author {
+	    color: #a89984;
+	}
+	[data-theme="gruvbox-dark"] .learning-card-body {
+	    color: #bdae93;
+	}
+	[data-theme="gruvbox-dark"] .learning-card-footer {
+	    border-top-color: #504945;
+	}
+	[data-theme="gruvbox-dark"] .learning-card-type {
+	    background: #3c3836;
+	    color: #bdae93;
+	}
+	[data-theme="gruvbox-dark"] .learning-card-date {
+	    color: #a89984;
+	}
+	[data-theme="gruvbox-dark"] .learning-card-link {
+	    color: #a89984;
+	}
+	[data-theme="gruvbox-dark"] .learning-card-link:hover {
+	    color: #83a598;
+	}
+	/* Video thumbnail styles */
+	.learning-card-thumbnail {
+	    position: relative;
+	    aspect-ratio: 16 / 9;
+	    overflow: hidden;
+	    background: #000;
+	    margin: 0 12px 12px 12px;
+	    border-radius: 6px;
+	}
+	.learning-card-thumbnail img {
+	    width: 100%;
+	    height: 100%;
+	    object-fit: cover;
+	    transition: transform 0.2s ease;
+	}
+	.learning-card:hover .learning-card-thumbnail img {
+	    transform: scale(1.03);
+	}
+	.learning-card-play-overlay {
+	    position: absolute;
+	    inset: 0;
+	    display: flex;
+	    align-items: center;
+	    justify-content: center;
+	    background: rgba(0, 0, 0, 0.25);
+	    opacity: 0;
+	    transition: opacity 0.2s ease;
+	}
+	.learning-card-thumbnail:hover .learning-card-play-overlay {
+	    opacity: 1;
+	}
+	.learning-card-play-overlay i {
+	    font-size: 40px;
+	    color: #fff;
+	    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+	}
+	/* Dark theme video thumbnail */
+	[data-theme="gruvbox-dark"] .learning-card-thumbnail {
+	    background: #1d2021;
+	}
+	/* Musings / blog cards */
+	.musings-list {
+	    display: flex;
+	    flex-direction: column;
+	    gap: 16px;
+	}
+	.musing-card {
+	    border-radius: 6px;
+	    border: 1px solid #ddd;
+	    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+	    background-color: #fff;
+	    color: #333;
+	    transition: transform 0.2s ease, box-shadow 0.2s ease;
+	}
+	.musing-card:hover {
+	    transform: translateY(-2px);
+	    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+	}
+	.musing-card-body {
+	    padding: 16px 20px;
+	}
+	.musing-card-title {
+	    margin: 0 0 6px 0;
+	    font-size: 1.05em;
+	    font-weight: 600;
+	    line-height: 1.35;
+	}
+	.musing-card-title a {
+	    color: inherit;
+	    text-decoration: none;
+	}
+	.musing-card-title a:hover {
+	    text-decoration: underline;
+	}
+	.musing-card-date {
+	    font-size: 0.82em;
+	    color: #777;
+	}
+	.musing-card-summary {
+	    margin: 10px 0 0 0;
+	    font-size: 0.9em;
+	    color: #555;
+	    line-height: 1.55;
+	}
+	.musing-card-tags {
+	    display: flex;
+	    flex-wrap: wrap;
+	    gap: 6px;
+	    margin-top: 10px;
+	}
+	.musing-tag {
+	    padding: 2px 10px;
+	    border-radius: 4px;
+	    background: #f0f0f5;
+	    color: #555;
+	    font-size: 0.78em;
+	    font-weight: 500;
+	}
+	/* Musings dark theme */
+	[data-theme="gruvbox-dark"] .musing-card {
+	    border-color: #504945;
+	    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.45);
+	    background-color: #282828;
+	    color: #ebdbb2;
+	}
+	[data-theme="gruvbox-dark"] .musing-card:hover {
+	    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.55);
+	}
+	[data-theme="gruvbox-dark"] .musing-card-title {
+	    color: #ebdbb2;
+	}
+	[data-theme="gruvbox-dark"] .musing-card-date {
+	    color: #a89984;
+	}
+	[data-theme="gruvbox-dark"] .musing-card-summary {
+	    color: #bdae93;
+	}
+	[data-theme="gruvbox-dark"] .musing-tag {
+	    background: #3c3836;
+	    color: #bdae93;
+	}
+	/* Language toggle for bilingual posts */
+	.lang-toggle {
+	    display: inline-flex;
+	    gap: 0;
+	    border-radius: 6px;
+	    overflow: hidden;
+	    border: 1px solid #ddd;
+	    margin-bottom: 20px;
+	}
+	.lang-btn {
+	    padding: 6px 16px;
+	    border: none;
+	    background: #f5f5f5;
+	    color: #555;
+	    font-size: 0.85em;
+	    font-weight: 500;
+	    cursor: pointer;
+	    transition: background-color 0.2s ease, color 0.2s ease;
+	    outline: none;
+	}
+	.lang-btn:not(:last-child) {
+	    border-right: 1px solid #ddd;
+	}
+	.lang-btn:hover {
+	    background: #e8e8ee;
+	}
+	.lang-btn.active {
+	    background: #4e73df;
+	    color: #fff;
+	}
+	.lang-btn:focus-visible {
+	    box-shadow: 0 0 0 3px rgba(78, 115, 223, 0.35);
+	    z-index: 1;
+	    position: relative;
+	}
+	.lang-section { display: none; }
+	.lang-section.active { display: block; }
+	/* Language toggle dark theme */
+	[data-theme="gruvbox-dark"] .lang-toggle {
+	    border-color: #504945;
+	}
+	[data-theme="gruvbox-dark"] .lang-btn {
+	    background: #3c3836;
+	    color: #bdae93;
+	}
+	[data-theme="gruvbox-dark"] .lang-btn:not(:last-child) {
+	    border-right-color: #504945;
+	}
+	[data-theme="gruvbox-dark"] .lang-btn:hover {
+	    background: #504945;
+	}
+	[data-theme="gruvbox-dark"] .lang-btn.active {
+	    background: #458588;
+	    color: #ebdbb2;
+	}
+	[data-theme="gruvbox-dark"] .lang-btn:focus-visible {
+	    box-shadow: 0 0 0 3px rgba(69, 133, 136, 0.35);
+	}
+	/* Language indicator on homepage cards */
+	.musing-card-lang {
+	    display: inline-flex;
+	    align-items: center;
+	    gap: 4px;
+	    font-size: 0.78em;
+	    color: #888;
+	    margin-left: 10px;
+	}
+	.musing-card-lang i { font-size: 0.9em; }
+	[data-theme="gruvbox-dark"] .musing-card-lang { color: #a89984; }
+	/* Musing post page styles */
+	.musing-post-figure { margin-bottom: 24px; }
+	.musing-post-figure img { width: 100%; border-radius: 8px; }
+	.musing-post-figure figcaption { font-size: 0.85em; color: #777; margin-top: 8px; text-align: center; font-style: italic; }
+	[data-theme="gruvbox-dark"] .musing-post-figure figcaption { color: #a89984; }
+	.musing-post-header { margin-bottom: 30px; }
+	.musing-post-meta-row { display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; }
+	.musing-post-meta-left { flex: 1; min-width: 0; }
+	.musing-post-meta { font-size: 0.9em; color: #777; margin-bottom: 8px; }
+	.musing-post-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+	.musing-post-content { font-size: 1.05em; line-height: 1.75; }
+	.musing-post-content h2,
+	.musing-post-content h3,
+	.musing-post-content h4 { margin-top: 1.5em; }
+	.musing-post-content img { max-width: 100%; border-radius: 6px; }
+	.musing-post-content pre { border-radius: 6px; padding: 16px; overflow-x: auto; }
+	.musing-post-content blockquote {
+	    border-left: 4px solid #4e73df;
+	    padding-left: 16px;
+	    margin-left: 0;
+	    color: #555;
+	    font-style: italic;
+	}
+	.musing-post-title { display: none; }
+	.musing-post-title.active { display: block; }
+	[data-theme="gruvbox-dark"] .musing-post-meta { color: #a89984; }
+	[data-theme="gruvbox-dark"] .musing-post-content blockquote {
+	    border-left-color: #458588;
+	    color: #bdae93;
+	}
+	.embed-responsive {
+ 	    border-radius: 8px;
+ 	    border: 1px solid rgba(30, 41, 59, 0.18);
+ 	    box-shadow: 0 6px 16px rgba(15, 23, 42, 0.08);
+ 	    overflow: hidden;
+ 	    margin-bottom: 18px;
+	}
+	.course-embed {
+	    background-color: #ffffff;
+	    position: relative;
+	    cursor: pointer;
+	}
+	.course-embed iframe {
+	    pointer-events: none;
+	}
+	.course-embed__overlay {
+	    position: absolute;
+	    inset: 0;
+	    z-index: 2;
+	    display: block;
+	    border-radius: inherit;
+	    text-decoration: none;
+	    color: inherit;
+	    transition: background-color 0.2s ease;
+	}
+	.course-embed__overlay:hover,
+	.course-embed__overlay:focus {
+	    background-color: rgba(15, 23, 42, 0.15);
+	    outline: none;
+	}
+	.course-embed__overlay:focus {
+	    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.35);
+	}
+	.course-title-link {
+	    color: inherit;
+	    text-decoration: none;
+	}
+	.course-title-link:hover,
+	.course-title-link:focus {
+	    text-decoration: underline;
+	}
+	[data-theme="gruvbox-dark"] .embed-responsive {
+	    border-color: #665c54;
+	    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.25);
+	    background-color: rgba(40, 40, 40, 0.9);
+	}
+	[data-theme="gruvbox-dark"] .course-embed {
+	    background-color: rgba(40, 40, 40, 0.9);
+	}
+	[data-theme="gruvbox-dark"] .course-embed__overlay:hover,
+	[data-theme="gruvbox-dark"] .course-embed__overlay:focus {
+	    background-color: rgba(235, 219, 178, 0.12);
+	}
+	[data-theme="gruvbox-dark"] .course-embed__overlay:focus {
+	    box-shadow: 0 0 0 3px rgba(235, 219, 178, 0.25);
+	}
+	</style>
+    </head>
+    <body>
+	<div class="container">
+
+	    <div class="row">
+		<div class="page-header">
+		    <button type="button" class="theme-toggle-btn pull-right" id="theme-toggle" role="switch" aria-checked="false" aria-label="Switch to dark theme">
+			<span class="theme-icon theme-icon--sun"><i class="fa-solid fa-sun"></i></span>
+			<span class="theme-icon theme-icon--moon"><i class="fa-solid fa-moon"></i></span>
+			<span class="theme-toggle-handle"></span>
+		    </button>
+		    <ul class="nav nav-pills pull-right">
+			
+			
+			<li><a href="/"><i class="fa fa-home"></i> <span class="visible-md-inline visible-lg-inline">Home</span></a></li>
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+		    </ul>
+		    
+		    <h1><i class="fa fa-rocket"></i> E-AI: Byte Pair Encoding (BPE)</h1>
+		    
+		</div>
+	    </div>
+
+		
+
+
+
+
+<link rel="stylesheet" href="static/css/bpe.css">
+
+<div class="row" id="main-content">
+    
+<button type="button" id="share-btn" class="btn btn-default btn-xs share-btn" title="Copy shareable link">
+    <i class="fa fa-link"></i> Share
+</button>
+
+    <!-- Left Column: Canvas + Controls -->
+    <div class="col-md-7">
+        <!-- BPE Canvas Panel -->
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <div class="panel-heading-content">
+                    <span class="panel-title-text"><i class="fa fa-scissors"></i> Byte Pair Encoding</span>
+                </div>
+            </div>
+            <div class="panel-body canvas-panel-body">
+                <div class="canvas-wrapper">
+                    <canvas id="bpe-canvas" width="720" height="700"></canvas>
+                </div>
+            </div>
+            <div class="panel-footer legend-footer">
+                
+<div class="canvas-legend">
+    
+    <span class="legend-item">
+        
+        <span class="legend-color bpe-char-token"></span>
+        
+        Character
+    </span>
+    
+    <span class="legend-item">
+        
+        <span class="legend-color bpe-merged-token"></span>
+        
+        Merged
+    </span>
+    
+    <span class="legend-item">
+        
+        <span class="legend-color bpe-active-token"></span>
+        
+        Active Pair
+    </span>
+    
+    <span class="legend-item">
+        
+        <span class="legend-color bpe-eow-token"></span>
+        
+        End-of-Word
+    </span>
+    
+    <span class="legend-item">
+        
+        <span class="legend-dot bpe-freq-bar"></span>
+        
+        Frequency
+    </span>
+    
+</div>
+
+            </div>
+        </div>
+
+        <!-- Controls Panel -->
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title"><i class="fa fa-sliders"></i> Controls</h3>
+            </div>
+            <div class="panel-body compact-panel bpe-controls-panel">
+                <div class="bpe-options-col">
+                    <div class="bpe-input-row">
+                        <label>Corpus:</label>
+                        <select id="corpus-select" class="form-control input-sm">
+                            <option value="default">low, low, lowest, newer, wider</option>
+                            <option value="hello">hello, world, hello, there, help, held</option>
+                            <option value="custom">Custom...</option>
+                        </select>
+                    </div>
+                    <div class="bpe-input-row" id="custom-corpus-row">
+                        <label>Custom:</label>
+                        <input type="text" id="custom-corpus" class="form-control input-sm" placeholder="word1, word2, word3, ..." />
+                    </div>
+                    <div class="bpe-input-row">
+                        <label>Max Merges:</label>
+                        <div class="bpe-stepper">
+                            <button id="btn-merges-down" class="btn btn-xs btn-default"><i class="fa fa-minus"></i></button>
+                            <span id="max-merges-value" class="stepper-value">10</span>
+                            <button id="btn-merges-up" class="btn btn-xs btn-default"><i class="fa fa-plus"></i></button>
+                        </div>
+                    </div>
+                </div>
+                <div class="bpe-actions-col">
+                    <div class="btn-toolbar" role="toolbar">
+                        <button id="btn-run" class="btn btn-sm btn-success" title="Auto-play all merge steps">
+                            <i class="fa fa-play"></i> Run
+                        </button>
+                        <button id="btn-step" class="btn btn-sm btn-info" title="Advance one merge cycle">
+                            <i class="fa fa-step-forward"></i> Step
+                        </button>
+                        <button id="btn-reset" class="btn btn-sm btn-danger" title="Reset">
+                            <i class="fa fa-refresh"></i> Reset
+                        </button>
+                    </div>
+                    <div class="speed-control">
+                        <i class="fa fa-tachometer"></i>
+                        <input type="range" id="speed-slider" min="1" max="10" value="5">
+                        <span id="speed-value" class="range-value">5</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Right Column: Info + Metrics -->
+    <div class="col-md-5">
+        
+<div class="panel panel-default">
+    <div class="panel-heading">
+        
+        <div class="btn-group info-panel-tabs" role="group">
+            
+            <button type="button"
+                    class="btn btn-sm btn-default active"
+                    data-tab="about">
+                <i class="fa fa-info-circle"></i> About
+            </button>
+            
+            <button type="button"
+                    class="btn btn-sm btn-default"
+                    data-tab="algorithm">
+                <i class="fa fa-book"></i> Algorithm
+            </button>
+            
+            <button type="button"
+                    class="btn btn-sm btn-default"
+                    data-tab="math">
+                <i class="fa fa-superscript"></i> Math
+            </button>
+            
+        </div>
+        
+    </div>
+    <div class="panel-body info-panel-body">
+        
+        
+        <div id="tab-about" class="info-tab-content active">
+            
+                    <h4><i class="fa fa-scissors"></i> Byte Pair Encoding</h4>
+                    <p>
+                        <strong>BPE</strong> is a subword tokenization algorithm used by most modern LLMs
+                        (GPT, LLaMA, etc.). It iteratively merges the most frequent adjacent pair of tokens,
+                        starting from individual characters, to build a compact vocabulary.
+                    </p>
+                    <p>
+                        Unlike word-level tokenization (huge vocabulary, can&rsquo;t handle new words) or
+                        character-level (too granular, long sequences), BPE finds a middle ground:
+                        common words become single tokens while rare words decompose into meaningful subwords.
+                    </p>
+                    <h4><i class="fa fa-mouse-pointer"></i> How to Use</h4>
+                    <ul class="interaction-list">
+                        <li><strong>Select a corpus</strong> from the dropdown or enter custom words</li>
+                        <li><strong>Press Run</strong> to animate all merge steps automatically</li>
+                        <li><strong>Press Step</strong> to advance one merge cycle at a time</li>
+                        <li><strong>Watch pairs merge</strong> in the tokenization, frequency chart, and vocabulary</li>
+                        <li><strong>Adjust speed</strong> with the slider</li>
+                    </ul>
+                
+        </div>
+        
+        <div id="tab-algorithm" class="info-tab-content">
+            
+                    <h4><i class="fa fa-book"></i> BPE Merge Loop</h4>
+                    <ol class="algorithm-list">
+                        <li><strong>Initialize</strong>: Split each word into characters, append end-of-word marker <code>_</code></li>
+                        <li><strong>Count pairs</strong>: For each adjacent token pair across all words, count frequency</li>
+                        <li><strong>Find best pair</strong>: Select the pair with highest frequency</li>
+                        <li><strong>Merge</strong>: Replace every occurrence of the best pair with a single merged token</li>
+                        <li><strong>Add to vocabulary</strong>: Record the new merged token and the merge rule</li>
+                        <li><strong>Repeat</strong> steps 2&ndash;5 until max merges reached</li>
+                    </ol>
+                    <h4><i class="fa fa-code"></i> Pseudocode</h4>
+                    <pre style="font-size: 11px; margin-top: 8px;">vocab = all unique characters + "_"
+for i in 1..max_merges:
+  pairs = count_pairs(corpus)
+  best = argmax(pairs)
+  corpus = merge(corpus, best)
+  vocab.add(best[0] + best[1])
+  rules.add(best &rarr; merged)</pre>
+                
+        </div>
+        
+        <div id="tab-math" class="info-tab-content">
+            
+                    <h4><i class="fa fa-superscript"></i> Pair Frequency</h4>
+                    <div class="math-formula-display">
+                        <code>freq(a, b) = &Sigma;<sub>w &isin; corpus</sub> count(ab in w) &times; freq(w)</code>
+                    </div>
+                    <p class="formula-note">
+                        Each adjacent pair (a, b) is counted across all words, weighted by word frequency.
+                    </p>
+                    <h4><i class="fa fa-compress"></i> Compression Ratio</h4>
+                    <div class="math-formula-display">
+                        <code>compression = initial_tokens / current_tokens</code>
+                    </div>
+                    <p class="formula-note">
+                        Measures how much the total token count has been reduced by merging.
+                    </p>
+                    <h4><i class="fa fa-book"></i> Vocabulary Growth</h4>
+                    <div class="math-formula-display">
+                        <code>|V<sub>i</sub>| = |V<sub>0</sub>| + i</code>
+                    </div>
+                    <p class="formula-note">
+                        Each merge adds exactly one new token to the vocabulary.
+                    </p>
+                
+        </div>
+        
+        
+    </div>
+</div>
+
+
+        
+<div class="panel panel-default">
+    
+    <div class="panel-heading">
+        <h3 class="panel-title"><i class="fa fa-bar-chart"></i> BPE Metrics</h3>
+    </div>
+    
+    <div class="panel-body compact-panel">
+        <table class="table table-condensed metrics-table">
+            <tbody>
+                
+                    
+                    <tr>
+                        <td><i class="fa fa-cog"></i> Phase</td>
+                        <td id="metric-phase" class="text-right metric-value">Idle</td>
+                    </tr>
+                    
+                    <tr>
+                        <td><i class="fa fa-compress"></i> Merge Step</td>
+                        <td id="metric-merge-step" class="text-right metric-value">0 / 10</td>
+                    </tr>
+                    
+                    <tr>
+                        <td><i class="fa fa-book"></i> Vocab Size</td>
+                        <td id="metric-vocab-size" class="text-right metric-value">-</td>
+                    </tr>
+                    
+                    <tr>
+                        <td><i class="fa fa-th"></i> Total Tokens</td>
+                        <td id="metric-total-tokens" class="text-right metric-value">-</td>
+                    </tr>
+                    
+                    <tr>
+                        <td><i class="fa fa-area-chart"></i> Compression</td>
+                        <td id="metric-compression" class="text-right metric-value">1.00x</td>
+                    </tr>
+                    
+                    <tr>
+                        <td><i class="fa fa-star"></i> Best Pair</td>
+                        <td id="metric-best-pair" class="text-right metric-value">-</td>
+                    </tr>
+                    
+                
+            </tbody>
+        </table>
+        
+    </div>
+</div>
+
+    </div>
+</div>
+
+
+	    <div class="row">
+		<hr/>
+
+		<footer class="text-center">
+		    <p class="text-muted">
+		    <small>
+		    Built using
+		    <a href="https://www.11ty.dev/">Eleventy</a>,
+		    <a href="http://twitter.github.com/bootstrap/">Bootstrap</a>,
+		    <a href="http://fortawesome.github.com/Font-Awesome/">Font Awesome</a>, and
+		    <a href="https://nodejs.org/">Node.js</a>.
+		    <br/>
+		    &copy; 2022 <a href="http://www.nd.edu">University of Notre Dame</a>
+		    </small>
+		    </p>
+		</footer>
+	    </div>
+
+	</div> <!-- /container -->
+
+	<!-- Bootstrap core JavaScript
+	================================================== -->
+	<!-- Placed at the end of the document so the pages load faster -->
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+	<!-- Shared visualization library modules (load before visualization scripts) -->
+	
+	<script type="module">
+		// Load shared modules and expose them globally for IIFE-based visualizations
+		import { PlaybackController } from './static/js/lib/playback-controller.js';
+		import { ThemeManager } from './static/js/lib/theme-manager.js';
+		import { Quadtree } from './static/js/lib/quadtree.js';
+		import { setupHiDPICanvas, resetCanvasTransform, clearCanvas, roundRect, drawLine, drawCircle, getMousePosition, createOffscreenCanvas, CoordinateMapper, hexToRgb, colorLerp } from './static/js/lib/canvas-utils.js';
+		import { TreeLayoutEngine } from './static/js/lib/tree-layout.js';
+		import { normalize, clamp, euclideanDistance, manhattanDistance, chebyshevDistance, gaussian, lerp, remapRange } from './static/js/lib/math-utils.js';
+		import { DatasetGenerators } from './static/js/lib/dataset-generators.js';
+		import { URLStateManager } from './static/js/lib/url-state-manager.js';
+		import { setTextContent, wireStepper, wireSlider } from './static/js/lib/dom-utils.js';
+
+		window.VizLib = {
+			PlaybackController,
+			ThemeManager,
+			Quadtree,
+			setupHiDPICanvas,
+			resetCanvasTransform,
+			clearCanvas,
+			CanvasUtils: { setupHiDPICanvas, resetCanvasTransform, clearCanvas, roundRect, drawLine, drawCircle, getMousePosition, createOffscreenCanvas, CoordinateMapper, hexToRgb, colorLerp },
+			TreeLayoutEngine,
+			MathUtils: { normalize, clamp, euclideanDistance, manhattanDistance, chebyshevDistance, gaussian, lerp, remapRange },
+			DatasetGenerators,
+			URLStateManager,
+			DomUtils: { setTextContent, wireStepper, wireSlider }
+		};
+
+		// Helper for viz scripts to wait for VizLib readiness
+		window.VizLib._ready = true;
+		window.VizLib.onReady = function(fn) {
+			if (window.VizLib._ready) fn();
+			else window.addEventListener('vizlib-ready', fn);
+		};
+
+		// Signal that VizLib is ready
+		window.dispatchEvent(new CustomEvent('vizlib-ready'));
+	</script>
+	<script src="static/js/bpe.js"></script>
+	<script type="module">
+		// Auto-initialize URL state management for visualizations
+		window.addEventListener('vizlib-ready', function() {
+			if (document.getElementById('main-content')) {
+				var urlState = new VizLib.URLStateManager();
+				setTimeout(function() {
+					urlState.applyFromURL();
+					urlState.enableAutoSync();
+					urlState.bindShareButton();
+				}, 100);
+				window._urlState = urlState;
+			}
+		});
+	</script>
+	
+	<script>
+	(function() {
+	    var STORAGE_KEY = 'ai-landing-theme';
+	    var prefix = '';
+	    var themes = {
+	        'gruvbox-dark': prefix + 'static/css/gruvbox-dark.css',
+	        'bluegold': prefix + 'static/css/bluegold.css'
+	    };
+	    var linkEl = document.getElementById('theme-style');
+	    var toggleBtn = document.getElementById('theme-toggle');
+	    if (!linkEl || !toggleBtn) {
+	        return;
+	    }
+        function updateButton(theme) {
+            var isDark = theme === 'gruvbox-dark';
+            var label = isDark ? 'Switch to light theme' : 'Switch to dark theme';
+            toggleBtn.setAttribute('aria-label', label);
+            toggleBtn.setAttribute('title', label);
+            toggleBtn.setAttribute('aria-checked', isDark ? 'true' : 'false');
+        }
+        function updateNotebookFrames(theme) {
+            var frames = document.querySelectorAll('iframe[data-src-dark][data-src-light]');
+            var attr = theme === 'bluegold' ? 'data-src-light' : 'data-src-dark';
+            Array.prototype.forEach.call(frames, function(frame) {
+                var nextSrc = frame.getAttribute(attr);
+                if (nextSrc && frame.getAttribute('src') !== nextSrc) {
+                    frame.setAttribute('src', nextSrc);
+                }
+            });
+        }
+        function applyTheme(theme) {
+            var name = themes[theme] ? theme : 'bluegold';
+            linkEl.setAttribute('href', themes[name]);
+            document.documentElement.setAttribute('data-theme', name);
+            updateButton(name);
+            updateNotebookFrames(name);
+            return name;
+        }
+	    var savedTheme = (function() {
+	        try {
+	            return localStorage.getItem(STORAGE_KEY);
+	        } catch (err) {
+	            return null;
+	        }
+    })();
+        var currentTheme = applyTheme(savedTheme);
+        document.addEventListener('themechange', function(event) {
+            updateNotebookFrames(event.detail || currentTheme);
+        });
+        toggleBtn.addEventListener('click', function() {
+            var nextTheme = currentTheme === 'gruvbox-dark' ? 'bluegold' : 'gruvbox-dark';
+            currentTheme = applyTheme(nextTheme);
+            document.dispatchEvent(new CustomEvent('themechange', { detail: currentTheme }));
+            try {
+                localStorage.setItem(STORAGE_KEY, currentTheme);
+            } catch (err) {
+                /* ignore write errors */
+            }
+        });
+	})();
+	</script>
+    </body>
+</html>

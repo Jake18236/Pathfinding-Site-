@@ -1,0 +1,58 @@
+/**
+ * PCA Visualizer Styles
+ */
+
+:root {
+    --pca-point-color: #377eb8;
+    --pca-point-projected: #e41a1c;
+    --pca-pc1-color: #e41a1c;
+    --pca-pc2-color: #4daf4a;
+    --pca-projection-color: rgba(100, 100, 100, 0.3);
+    --pca-mean-color: #ff9800;
+    --pca-bar-color: #377eb8;
+}
+
+[data-theme="gruvbox-dark"] {
+    --pca-point-color: #83a598;
+    --pca-point-projected: #fb4934;
+    --pca-pc1-color: #fb4934;
+    --pca-pc2-color: #b8bb26;
+    --pca-projection-color: rgba(168, 153, 132, 0.3);
+    --pca-mean-color: #fe8019;
+    --pca-bar-color: #83a598;
+}
+
+#pca-canvas { cursor: crosshair; position: relative; z-index: 2; }
+
+.legend-color.data-point { background-color: var(--pca-point-color); border-radius: 50%; }
+.legend-line.pc1-line { background-color: var(--pca-pc1-color); height: 3px; width: 24px; }
+.legend-line.pc2-line { background-color: var(--pca-pc2-color); height: 3px; width: 24px; }
+.legend-line.projection-line {
+    background-color: var(--pca-projection-color); height: 1px; width: 24px;
+    border-top: 1px dashed var(--pca-projection-color);
+}
+
+.pca-controls-panel { display: flex; gap: 20px; }
+.pca-options-col { flex: 1; }
+.pca-option-group {
+    display: flex; align-items: center; gap: 16px; flex-wrap: wrap; margin-bottom: 6px;
+}
+.pca-option-group:last-child { margin-bottom: 0; }
+.pca-options-col .option-row { display: flex; align-items: center; gap: 8px; }
+.pca-options-col .option-row > label:first-child { min-width: 80px; font-size: 12px; margin: 0; }
+.pca-options-col .option-row select { width: auto; min-width: 120px; font-size: 12px; }
+.pca-options-col .checkbox-label { font-size: 12px; margin-right: 10px; }
+
+.pca-playback-col {
+    display: flex; flex-direction: column; align-items: center; gap: 8px;
+    border-left: 1px solid var(--viz-border); padding-left: 20px;
+}
+.pca-playback-col .btn { width: 90px; }
+
+@media (max-width: 992px) {
+    .pca-controls-panel { flex-direction: column; }
+    .pca-playback-col {
+        border-left: none; border-top: 1px solid var(--viz-border);
+        padding-left: 0; padding-top: 15px; flex-direction: row;
+    }
+}
